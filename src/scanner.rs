@@ -11,21 +11,16 @@ pub enum TokenType {
 	CURLY_BRACKET_OPEN, CURLY_BRACKET_CLOSED,
 	COMMA, SEMICOLON, NOT, AND, OR, DOLLAR,
 	PLUS, MINUS, STAR, SLASH, PERCENTUAL, CARET, HASHTAG,
-	SAFE_DOUBLE_COLON, DOUBLE_COLON, DOT, TWODOTS, TREDOTS,
-	SAFEDOT, SAFE_SQUARE_BRACKET, PROTECTED_GET,
-	BIT_AND, BIT_OR, BIT_XOR, BIT_NOT, LEFT_SHIFT, RIGHT_SHIFT,
-	TERNARY_THEN, TERNARY_ELSE, ARROW,
+	COLON, DOT, TWODOTS, TREDOTS,
 	
 	//definition and comparison
-	DEFINE, DEFINE_AND, DEFINE_OR, INCREASE, DECREASE, MULTIPLY, DIVIDE,
-	EXPONENTIATE, CONCATENATE, MODULATE,
-	EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
+	DEFINE, DIVIDE, CONCATENATE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
 	
 	//literals
 	IDENTIFIER, NUMBER, STRING,
 	
 	//keywords
-	IF, ELSEIF, ELSE, FOR, IN, WHILE, GLOBAL, UNTIL, LOCAL, FUNCTION, METHOD, 
+	IF, ELSEIF, ELSE, FOR, IN, WHILE, GLOBAL, UNTIL, LOCAL, FN, METHOD, 
     RETURN, TRUE, FALSE, NIL, LOOP, BREAK, TRY, THEN, DO, END,
 
     COMMENT,MULTILINE_COMMENT,
@@ -140,17 +135,6 @@ impl CodeInfo {
         let kind: TokenType = match self.compare(c) {
             true => kt,
             false => kf,
-        };
-        self.addToken(kind);
-    }
-
-    fn matchAndAdd(&mut self, c1: char, k1: TokenType, c2: char, k2: TokenType, kd: TokenType) {
-        let kind: TokenType = match self.compare(c1) {
-            true => k1,
-            false => match self.compare(c2) {
-                true => k2,
-                false => kd,
-            },
         };
         self.addToken(kind);
     }
@@ -289,7 +273,7 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                 }
             }
             ';' => i.addToken(SEMICOLON),
-            '+' => i.compareAndAdd('=', INCREASE, PLUS),
+            '+' => i.addToken(PLUS),
             '-' => match i.peek(0) {
                 '-' => match i.peek(1) {
                     '[' => {
@@ -299,11 +283,10 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                     }
                     _ => i.readComment(),
                 },
-
-                _ => i.compareAndAdd('=', DECREASE, MINUS),
+                _ => i.addToken(MINUS),
             },
-            '*' => i.compareAndAdd('=', MULTIPLY, STAR),
-            '^' => i.matchAndAdd('=', EXPONENTIATE, '^', BIT_XOR, CARET),
+            '*' => i.addToken(STAR),
+            '^' => i.addToken(CARET),
             '#' => i.addToken(HASHTAG),
             '/' => match i.peek(0) {
                 '=' => {
@@ -312,39 +295,18 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                 }
                 _ => i.addToken(SLASH),
             },
-            '%' => i.compareAndAdd('=', MODULATE, PERCENTUAL),
-            '!' => i.compareAndAdd('=', NOT_EQUAL, NOT),
-            '~' => i.addToken(BIT_NOT),
-            '=' => i.matchAndAdd('=', EQUAL, '>', ARROW, DEFINE),
-            '<' => i.matchAndAdd('=', SMALLER_EQUAL, '<', LEFT_SHIFT, SMALLER),
-            '>' => i.matchAndAdd('=', BIGGER_EQUAL, '>', RIGHT_SHIFT, BIGGER),
-            '?' => {
-                let kind = match i.readNext() {
-                    '=' => DEFINE_AND,
-                    '>' => {
-                        i.warning("?> is deprecated");
-                        PROTECTED_GET
-                    }
-                    '.' => SAFEDOT,
-                    ':' => {
-                        if i.compare(':') {
-                            SAFE_DOUBLE_COLON
-                        } else {
-                            i.current -= 1;
-                            continue;
-                        }
-                    }
-                    '[' => SAFE_SQUARE_BRACKET,
-                    _ => {
-                        i.current -= 1;
-                        TERNARY_THEN
-                    }
-                };
-                i.addToken(kind);
+            '%' => i.addToken(PERCENTUAL),
+            '~' => {
+                if i.peek(0) == '=' {
+                    i.current += 1;
+                    i.addToken(NOT_EQUAL);
+                }
             }
-            '&' => i.compareAndAdd('&', AND, BIT_AND),
-            ':' => i.matchAndAdd(':', DOUBLE_COLON, '=', DEFINE_OR, TERNARY_ELSE),
-            '|' => i.compareAndAdd('|', OR, BIT_OR),
+            '=' => i.compareAndAdd('=', EQUAL, DEFINE),
+
+            '<' => i.compareAndAdd('=', SMALLER_EQUAL, SMALLER),
+            '>' => i.compareAndAdd('=', BIGGER_EQUAL, BIGGER),
+            ':' => i.addToken(COLON),
             '$' => i.addToken(DOLLAR),
             ' ' | '\r' | '\t' => {}
             '\n' => i.line += 1,
@@ -406,7 +368,7 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                         "global" => GLOBAL,
                         "until" => UNTIL,
                         "local" => LOCAL,
-                        "function" => FUNCTION,
+                        "function" => FN,
                         "method" => METHOD,
                         "return" => RETURN,
                         "true" => TRUE,
@@ -418,6 +380,9 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                         "then" => THEN,
                         "do" => DO,
                         "end" => END,
+                        "and" => AND,
+                        "or" => OR,
+                        "not" => NOT,
                         _ => IDENTIFIER,
                     };
                     i.addToken(kind);
