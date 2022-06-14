@@ -229,7 +229,6 @@ impl CodeInfo {
     }
 
     fn readComment(&mut self) {
-        let aline = self.line;
         while !self.ended() && self.peek(0) != '\n' {
             self.current += 1;
         }
@@ -237,14 +236,31 @@ impl CodeInfo {
             self.warning("Unterminated string");
         } else {
             self.current += 1;
-            let mut literal: String = self.substr(self.start, self.current);
-            literal.retain(|c| match c {
-                '\r' | '\n' | '\t' => false,
-                _ => true,
-            });
+            let literal: String = self.substr(self.start, self.current);
             self.addLiteralToken(COMMENT, literal);
         }
-        self.line = aline;
+    }
+
+    fn readMultilineComment(&mut self) {
+        let mut aline = self.line;
+        while !self.ended() {
+            if self.peek(0) == '\n' {
+                aline += 1
+            };
+            if self.peek(0) == ']' && self.peek(1) == ']' {
+                self.current += 2;
+                break;
+            }
+            self.current += 1;
+        }
+        if self.ended() {
+            self.warning("Unterminated multiline comment");
+        } else {
+            self.current += 1;
+            let literal: String = self.substr(self.start, self.current);
+            self.addLiteralToken(MULTILINE_COMMENT, literal);
+        }
+        self.line = aline
     }
 }
 
@@ -254,12 +270,6 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
         i.start = i.current;
         let c: char = i.readNext();
         match c {
-            '(' => i.addToken(ROUND_BRACKET_OPEN),
-            ')' => i.addToken(ROUND_BRACKET_CLOSED),
-            '[' => i.addToken(SQUARE_BRACKET_OPEN),
-            ']' => i.addToken(SQUARE_BRACKET_CLOSED),
-            '{' => i.addToken(CURLY_BRACKET_OPEN),
-            '}' => i.addToken(CURLY_BRACKET_CLOSED),
             ',' => i.addToken(COMMA),
             '.' => {
                 if i.peek(0) == '.' {
@@ -281,10 +291,16 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
             ';' => i.addToken(SEMICOLON),
             '+' => i.compareAndAdd('=', INCREASE, PLUS),
             '-' => match i.peek(0) {
-                '-' => i.readComment(),
+                '-' => match i.peek(1) {
+                    '[' => {
+                        if i.peek(2) == '[' {
+                            i.readMultilineComment();
+                        }
+                    }
+                    _ => i.readComment(),
+                },
 
-                '\0' => i.compareAndAdd('=', DECREASE, MINUS),
-                _ => {}
+                _ => i.compareAndAdd('=', DECREASE, MINUS),
             },
             '*' => i.compareAndAdd('=', MULTIPLY, STAR),
             '^' => i.matchAndAdd('=', EXPONENTIATE, '^', BIT_XOR, CARET),
@@ -333,6 +349,13 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
             ' ' | '\r' | '\t' => {}
             '\n' => i.line += 1,
             '"' | '\'' => i.readString(c),
+
+            '(' => i.addToken(ROUND_BRACKET_OPEN),
+            ')' => i.addToken(ROUND_BRACKET_CLOSED),
+            '[' => i.addToken(SQUARE_BRACKET_OPEN),
+            ']' => i.addToken(SQUARE_BRACKET_CLOSED),
+            '{' => i.addToken(CURLY_BRACKET_OPEN),
+            '}' => i.addToken(CURLY_BRACKET_CLOSED),
 
             _ => {
                 if c.is_ascii_digit() {
