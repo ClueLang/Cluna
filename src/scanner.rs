@@ -1,5 +1,6 @@
 #![allow(non_camel_case_types)]
 
+use self::CommentType::*;
 use self::TokenType::*;
 
 #[rustfmt::skip]
@@ -11,21 +12,27 @@ pub enum TokenType {
 	CURLY_BRACKET_OPEN, CURLY_BRACKET_CLOSED,
 	COMMA, SEMICOLON, NOT, AND, OR, DOLLAR,
 	PLUS, MINUS, STAR, SLASH, PERCENTUAL, CARET, HASHTAG,
-	COLON, DOT, TWODOTS, TREDOTS,
+	COLON, DOT, TWODOTS, THREEDOTS,
 	
 	//definition and comparison
-	DEFINE, DIVIDE, CONCATENATE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
+	DEFINE, CONCATENATE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
 	
 	//literals
 	IDENTIFIER, NUMBER, STRING,
 	
 	//keywords
 	IF, ELSEIF, ELSE, FOR, IN, WHILE, GLOBAL, UNTIL, LOCAL, FN, METHOD, 
-    RETURN, TRUE, FALSE, NIL, LOOP, BREAK, TRY, THEN, DO, END,
+    RETURN, TRUE, FALSE, NIL, LOOP, BREAK, TRY, THEN, DO, END, REPEAT,
 
-    COMMENT,MULTILINE_COMMENT,
+    NONE_BLOCK,
 
 	EOF
+}
+
+#[derive(Debug, Copy, Clone, PartialEq)]
+pub enum CommentType {
+    COMMENT,
+    MULTILINE_COMMENT,
 }
 
 #[derive(Clone, Debug)]
@@ -34,13 +41,29 @@ pub struct Token {
     pub lexeme: String,
     pub line: usize,
 }
+#[derive(Clone, Debug)]
+pub struct Comment {
+    pub kind: CommentType,
+    pub lexeme: String,
+    pub line: usize,
+}
+
+impl Comment {
+    pub fn new(kind: CommentType, lexeme: String, line: usize) -> Self {
+        Self {
+            kind,
+            lexeme: String::from(lexeme),
+            line,
+        }
+    }
+}
 
 impl Token {
-    pub fn new(kind: TokenType, lexeme: String, line: usize) -> Token {
-        Token {
-            kind: kind,
+    pub fn new(kind: TokenType, lexeme: String, line: usize) -> Self {
+        Self {
+            kind,
             lexeme: String::from(lexeme),
-            line: line,
+            line,
         }
     }
 }
@@ -59,7 +82,7 @@ struct CodeInfo {
 impl CodeInfo {
     fn new(code: String, filename: String) -> CodeInfo {
         let chars = code.chars();
-        CodeInfo {
+        Self {
             line: 1,
             start: 0,
             current: 0,
@@ -82,7 +105,7 @@ impl CodeInfo {
         self.code[pos]
     }
 
-    fn readNext(&mut self) -> char {
+    fn read_next(&mut self) -> char {
         let prev: char = self.at(self.current);
         self.current += 1;
         prev
@@ -122,21 +145,21 @@ impl CodeInfo {
         result
     }
 
-    fn addLiteralToken(&mut self, kind: TokenType, literal: String) {
+    fn add_literal_token(&mut self, kind: TokenType, literal: String) {
         self.tokens.push(Token::new(kind, literal, self.line));
     }
 
-    fn addToken(&mut self, kind: TokenType) {
+    fn add_token(&mut self, kind: TokenType) {
         let lexeme: String = self.substr(self.start, self.current);
         self.tokens.push(Token::new(kind, lexeme, self.line));
     }
 
-    fn compareAndAdd(&mut self, c: char, kt: TokenType, kf: TokenType) {
+    fn compare_and_add(&mut self, c: char, kt: TokenType, kf: TokenType) {
         let kind: TokenType = match self.compare(c) {
             true => kt,
             false => kf,
         };
-        self.addToken(kind);
+        self.add_token(kind);
     }
 
     fn warning(&mut self, message: &str) {
@@ -147,7 +170,7 @@ impl CodeInfo {
         self.errored = true;
     }
 
-    fn readNumber(&mut self, check: impl Fn(&char) -> bool, simple: bool) {
+    fn read_number(&mut self, check: impl Fn(&char) -> bool, simple: bool) {
         let start = self.current;
         while check(&self.peek(0)) {
             self.current += 1
@@ -187,10 +210,10 @@ impl CodeInfo {
                 self.warning("Malformed number");
             }
         }
-        self.addLiteralToken(NUMBER, self.substr(self.start, self.current));
+        self.add_literal_token(NUMBER, self.substr(self.start, self.current));
     }
 
-    fn readString(&mut self, strend: char) {
+    fn read_string(&mut self, strend: char) {
         let mut aline = self.line;
         while !self.ended() && self.peek(0) != strend {
             if self.peek(0) == '\n' {
@@ -207,12 +230,83 @@ impl CodeInfo {
                 '\r' | '\n' | '\t' => false,
                 _ => true,
             });
-            self.addLiteralToken(STRING, literal);
+            self.add_literal_token(STRING, literal);
         }
         self.line = aline;
     }
+}
 
-    fn readComment(&mut self) {
+struct CommentInfo {
+    line: usize,
+    start: usize,
+    current: usize,
+    size: usize,
+    code: Vec<char>,
+    filename: String,
+    tokens: Vec<Comment>,
+    errored: bool,
+}
+
+impl CommentInfo {
+    fn new(code: String, filename: String) -> Self {
+        let chars = code.chars();
+        Self {
+            line: 1,
+            start: 0,
+            current: 0,
+            size: chars.clone().count(),
+            code: chars.collect(),
+            filename,
+            tokens: Vec::new(),
+            errored: false,
+        }
+    }
+
+    fn ended(&self) -> bool {
+        self.current >= self.size
+    }
+
+    fn at(&self, pos: usize) -> char {
+        if pos >= self.size {
+            return 0 as char;
+        }
+        self.code[pos]
+    }
+
+    fn peek(&self, pos: usize) -> char {
+        let pos: usize = self.current + pos;
+        if pos >= self.size {
+            return 0 as char;
+        }
+        self.at(pos)
+    }
+
+    //isNumber: c.is_ascii_digit()
+    //isChar: c.is_ascii_alphabetic()
+    //isCharOrNumber: c.is_ascii_alphanumeric()
+
+    fn substr(&self, start: usize, end: usize) -> String {
+        let mut result: String = String::new();
+        for i in start..end {
+            if i >= self.size {
+                break;
+            }
+            result.push(self.at(i));
+        }
+        result
+    }
+
+    fn add_literal_token(&mut self, kind: CommentType, literal: String) {
+        self.tokens.push(Comment::new(kind, literal, self.line));
+    }
+    fn warning(&mut self, message: &str) {
+        println!(
+            "Error in file \"{}\" at line {}!\nError: \"{}\"\n",
+            self.filename, self.line, message
+        );
+        self.errored = true;
+    }
+    fn read_comment(&mut self) {
         while !self.ended() && self.peek(0) != '\n' {
             self.current += 1;
         }
@@ -221,11 +315,11 @@ impl CodeInfo {
         } else {
             self.current += 1;
             let literal: String = self.substr(self.start, self.current);
-            self.addLiteralToken(COMMENT, literal);
+            self.add_literal_token(COMMENT, literal);
         }
     }
 
-    fn readMultilineComment(&mut self) {
+    fn read_multiline_comment(&mut self) {
         let mut aline = self.line;
         while !self.ended() {
             if self.peek(0) == '\n' {
@@ -242,82 +336,78 @@ impl CodeInfo {
         } else {
             self.current += 1;
             let literal: String = self.substr(self.start, self.current);
-            self.addLiteralToken(MULTILINE_COMMENT, literal);
+            self.add_literal_token(MULTILINE_COMMENT, literal);
         }
         self.line = aline
     }
 }
 
-pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
-    let mut i: CodeInfo = CodeInfo::new(code, filename);
+pub fn ScanCode(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comment>), String> {
+    let mut i = CodeInfo::new(code.clone(), filename.clone());
+    let mut comments = CommentInfo::new(code.clone(), filename.clone());
     while !i.ended() {
         i.start = i.current;
-        let c: char = i.readNext();
+        let c: char = i.read_next();
         match c {
-            ',' => i.addToken(COMMA),
+            ',' => i.add_token(COMMA),
             '.' => {
                 if i.peek(0) == '.' {
                     i.current += 1;
                     let f: char = i.peek(0);
                     if f == '.' {
                         i.current += 1;
-                        i.addToken(TREDOTS);
-                    } else if f == '=' {
-                        i.current += 1;
-                        i.addToken(CONCATENATE);
+                        i.add_token(THREEDOTS);
                     } else {
-                        i.addToken(TWODOTS);
+                        i.add_token(TWODOTS);
                     }
                 } else {
-                    i.addToken(DOT);
+                    i.add_token(DOT);
                 }
             }
-            ';' => i.addToken(SEMICOLON),
-            '+' => i.addToken(PLUS),
+            ';' => i.add_token(SEMICOLON),
+            '+' => i.add_token(PLUS),
             '-' => match i.peek(0) {
                 '-' => match i.peek(1) {
                     '[' => {
                         if i.peek(2) == '[' {
-                            i.readMultilineComment();
+                            comments.read_multiline_comment();
+                            i.current = comments.current + 1;
                         }
                     }
-                    _ => i.readComment(),
+                    _ => {
+                        comments.read_comment();
+                        i.current = comments.current + 1;
+                    }
                 },
-                _ => i.addToken(MINUS),
+                _ => i.add_token(MINUS),
             },
-            '*' => i.addToken(STAR),
-            '^' => i.addToken(CARET),
-            '#' => i.addToken(HASHTAG),
-            '/' => match i.peek(0) {
-                '=' => {
-                    i.current += 1;
-                    i.addToken(DIVIDE);
-                }
-                _ => i.addToken(SLASH),
-            },
-            '%' => i.addToken(PERCENTUAL),
+            '*' => i.add_token(STAR),
+            '^' => i.add_token(CARET),
+            '#' => i.add_token(HASHTAG),
+            '/' => i.add_token(SLASH),
+            '%' => i.add_token(PERCENTUAL),
             '~' => {
                 if i.peek(0) == '=' {
                     i.current += 1;
-                    i.addToken(NOT_EQUAL);
+                    i.add_token(NOT_EQUAL);
                 }
             }
-            '=' => i.compareAndAdd('=', EQUAL, DEFINE),
+            '=' => i.compare_and_add('=', EQUAL, DEFINE),
 
-            '<' => i.compareAndAdd('=', SMALLER_EQUAL, SMALLER),
-            '>' => i.compareAndAdd('=', BIGGER_EQUAL, BIGGER),
-            ':' => i.addToken(COLON),
-            '$' => i.addToken(DOLLAR),
+            '<' => i.compare_and_add('=', SMALLER_EQUAL, SMALLER),
+            '>' => i.compare_and_add('=', BIGGER_EQUAL, BIGGER),
+            ':' => i.add_token(COLON),
+            '$' => i.add_token(DOLLAR),
             ' ' | '\r' | '\t' => {}
             '\n' => i.line += 1,
-            '"' | '\'' => i.readString(c),
+            '"' | '\'' => i.read_string(c),
 
-            '(' => i.addToken(ROUND_BRACKET_OPEN),
-            ')' => i.addToken(ROUND_BRACKET_CLOSED),
-            '[' => i.addToken(SQUARE_BRACKET_OPEN),
-            ']' => i.addToken(SQUARE_BRACKET_CLOSED),
-            '{' => i.addToken(CURLY_BRACKET_OPEN),
-            '}' => i.addToken(CURLY_BRACKET_CLOSED),
+            '(' => i.add_token(ROUND_BRACKET_OPEN),
+            ')' => i.add_token(ROUND_BRACKET_CLOSED),
+            '[' => i.add_token(SQUARE_BRACKET_OPEN),
+            ']' => i.add_token(SQUARE_BRACKET_CLOSED),
+            '{' => i.add_token(CURLY_BRACKET_OPEN),
+            '}' => i.add_token(CURLY_BRACKET_CLOSED),
 
             _ => {
                 if c.is_ascii_digit() {
@@ -325,7 +415,7 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                         match i.peek(0) {
                             'x' | 'X' => {
                                 i.current += 1;
-                                i.readNumber(
+                                i.read_number(
                                     |c| {
                                         let c = *c;
                                         c.is_ascii_digit()
@@ -337,7 +427,7 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                             }
                             'b' | 'B' => {
                                 i.current += 1;
-                                i.readNumber(
+                                i.read_number(
                                     |c| {
                                         let c = *c;
                                         c == '0' || c == '1'
@@ -345,10 +435,10 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                                     false,
                                 );
                             }
-                            _ => i.readNumber(char::is_ascii_digit, true),
+                            _ => i.read_number(char::is_ascii_digit, true),
                         }
                     } else {
-                        i.readNumber(char::is_ascii_digit, true);
+                        i.read_number(char::is_ascii_digit, true);
                     }
                 } else if c.is_ascii_alphabetic() || c == '_' {
                     while {
@@ -365,7 +455,6 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                         "for" => FOR,
                         "in" => IN,
                         "while" => WHILE,
-                        "global" => GLOBAL,
                         "until" => UNTIL,
                         "local" => LOCAL,
                         "function" => FN,
@@ -383,9 +472,10 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
                         "and" => AND,
                         "or" => OR,
                         "not" => NOT,
+                        "repeat" => REPEAT,
                         _ => IDENTIFIER,
                     };
-                    i.addToken(kind);
+                    i.add_token(kind);
                 } else {
                     i.warning(format!("Unexpected character '{}'", c).as_str());
                 }
@@ -397,6 +487,6 @@ pub fn ScanCode(code: String, filename: String) -> Result<Vec<Token>, String> {
             "Cannot continue until the above errors are fixed",
         ));
     }
-    i.addLiteralToken(EOF, String::from("<end>"));
-    Ok(i.tokens)
+    i.add_literal_token(EOF, String::from("<end>"));
+    Ok((i.tokens, comments.tokens))
 }
