@@ -1,0 +1,47 @@
+{
+    // Use IntelliSense to learn about possible attributes.
+    // Hover to view descriptions of existing attributes.
+    // For more information, visit: https://go.microsoft.com/fwlink/?linkid=830387
+    "version": "0.2.0",
+    "configurations": [
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug executable 'find'",
+            "cargo": {
+                "args": [
+                    "build",
+                    "--bin=find",
+                    "--package=find"
+                ],
+                "filter": {
+                    "name": "find",
+                    "kind": "bin"
+                }
+            },
+            "args": [
+                "main.lua"
+            ],
+            "cwd": "${workspaceFolder}"
+        },
+        {
+            "type": "lldb",
+            "request": "launch",
+            "name": "Debug unit tests in executable 'find'",
+            "cargo": {
+                "args": [
+                    "test",
+                    "--no-run",
+                    "--bin=find",
+                    "--package=find"
+                ],
+                "filter": {
+                    "name": "find",
+                    "kind": "bin"
+                }
+            },
+            "args": [],
+            "cwd": "${workspaceFolder}"
+        }
+    ]
+}
