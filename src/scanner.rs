@@ -15,13 +15,13 @@ pub enum TokenType {
 	COLON, DOT, TWODOTS, THREEDOTS,
 	
 	//definition and comparison
-	DEFINE, CONCATENATE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
+	DEFINE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
 	
 	//literals
 	IDENTIFIER, NUMBER, STRING,
 	
 	//keywords
-	IF, ELSEIF, ELSE, FOR, IN, WHILE, GLOBAL, UNTIL, LOCAL, FN, METHOD, 
+	IF, ELSEIF, ELSE, FOR, IN, WHILE, UNTIL, LOCAL, FN, METHOD, 
     RETURN, TRUE, FALSE, NIL, LOOP, BREAK, TRY, THEN, DO, END, REPEAT,
 
     NONE_BLOCK,
@@ -35,7 +35,7 @@ pub enum CommentType {
     MULTILINE_COMMENT,
 }
 
-#[derive(Clone, Debug)]
+#[derive(Debug, Clone)]
 pub struct Token {
     pub kind: TokenType,
     pub lexeme: String,
@@ -67,7 +67,7 @@ impl Token {
         }
     }
 }
-#[derive(Debug)]
+
 struct CodeInfo {
     line: usize,
     start: usize,
@@ -342,7 +342,7 @@ impl CommentInfo {
     }
 }
 
-pub fn ScanCode(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comment>), String> {
+pub fn scan_code(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comment>), String> {
     let mut i = CodeInfo::new(code.clone(), filename.clone());
     let mut comments = CommentInfo::new(code.clone(), filename.clone());
     while !i.ended() {
