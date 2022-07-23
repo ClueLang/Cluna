@@ -820,10 +820,7 @@ impl ParserInfo {
 				let result = match t.kind {
 					ELSEIF => Some(Box::new(self.build_else_if_chain(IF_TYPE)?)),
 					ELSE => Some(Box::new(ELSE_BLOCK(self.build_code_block(NONE_TYPE)?))),
-					_ => {
-						self.current -= 1;
-						None
-					}
+					_ => None
 				};
 
 				result
