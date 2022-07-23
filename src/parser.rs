@@ -1045,7 +1045,6 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
 				i.expr.push_back(RETURN_EXPR(expr));
 			}
 			EOF => break,
-			END => break,
 			_ => return Err(i.expected("<end>", &t.lexeme, t.line)),
 		}
 	}
