@@ -655,6 +655,7 @@ impl ParserInfo {
 	}
 
 	fn build_code_block(&mut self, blockType: BlockType) -> Result<CodeBlock, String> {
+		println!("start");
 		let blockTypeValue = match blockType {
 			THEN_TYPE => "then",
 			DO_TYPE => "do",
@@ -683,7 +684,7 @@ impl ParserInfo {
 		let end: usize;
 		loop {
 			let t = self.advance();
-
+			println!("{:?} {}", t, cscope);
 			match t.kind {
 				THEN | DO => cscope += 1,
 				REPEAT => {
@@ -714,11 +715,11 @@ impl ParserInfo {
 				}
 				ELSE | ELSEIF => {
 					let t = self.look_back(0);
+					cscope -= 1;
 					if blockType != THEN_TYPE {
+						tokens.push(t);
 						continue;
 					}
-
-					cscope -= 1;
 
 					if cscope == 0 {
 						end = t.line;
