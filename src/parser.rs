@@ -34,7 +34,6 @@ pub enum ComplexToken {
     },
 
     ALTER {
-        kind: TokenType,
         names: Vec<Expression>,
         values: Vec<Expression>,
         line: usize,
@@ -934,45 +933,38 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
                 });
             }
             IDENTIFIER => {
-                if i.peek(0).kind == DEFINE || i.peek(0).kind == COMMA {
-                    // i.current -= 1;
-                    println!("{:?}", i.look_back(0));
-                    let variables = i.build_variables(false, t.line)?;
-
-                    i.expr.push_back(variables)
-                }
-
                 let testexpr = i.test(|i| i.build_name()).0;
-                if let Err(msg) = testexpr {
-                    if &msg == "You can't call functions here" {
-                        let expr = &mut i.build_expression(None)?;
-                        i.expr.append(expr);
-                        i.current -= 1;
-                        continue;
-                    }
-                    return Err(i.error(msg, i.testing.unwrap()));
-                }
-                i.current += 1;
-                let mut names: Vec<Expression> = Vec::new();
-                while {
-                    names.push(i.build_name()?);
-                    i.current += 1;
-                    i.look_back(1).kind == COMMA
-                } {}
-                i.current -= 1;
-                let checkt = i.look_back(0);
-                let check = checkt.kind.clone() as u8;
-                if check < DEFINE as u8 || check > PERCENTUAL as u8 {
-                    return Err(i.expected("=", &checkt.lexeme, checkt.line));
-                }
-                let values: Vec<Expression> = i.find_expressions(COMMA, None)?;
-                i.expr.push_back(ALTER {
-                    kind: checkt.kind,
-                    line: t.line,
-                    names,
-                    values,
-                });
-                i.current -= 1;
+				if let Err(msg) = testexpr {
+					match msg.as_str() {
+						"You can't call functions here" => {
+							let expr = &mut i.build_expression(None)?;
+							i.expr.append(expr);
+							i.current -= 1;
+							continue;
+						}
+						_ => return Err(i.error(msg, i.testing.unwrap())),
+					}
+				}
+				i.current += 1;
+				let mut names: Vec<Expression> = Vec::new();
+				while {
+					names.push(i.build_name()?);
+					i.current += 1;
+					i.look_back(1).kind == COMMA
+				} {}
+				i.current -= 1;
+				let checkt = i.look_back(0);
+				let check = checkt.kind.clone() as u8;
+				if check != DEFINE as u8 {
+					return Err(i.expected("=", &checkt.lexeme, checkt.line));
+				}
+				let values: Vec<Expression> = i.find_expressions(COMMA, None)?;
+				i.expr.push_back(ALTER {
+					line: t.line,
+					names,
+					values,
+				});
+				i.current -= 1;
             }
             ROUND_BRACKET_OPEN => {
                 let expr = i.build_expression(Some((ROUND_BRACKET_CLOSED, ")")))?;
