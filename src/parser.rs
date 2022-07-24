@@ -1,10 +1,10 @@
 #![allow(non_camel_case_types)]
 
 use self::ComplexToken::*;
+use self::BlockType::*;
 use crate::{
 	// compiler::CompileTokens,
 	scanner::{Token, TokenType, TokenType::*},
-	BlockType::*,
 	ConditionType::*,
 };
 use std::{cmp, collections::LinkedList};
@@ -557,7 +557,7 @@ impl ParserInfo {
 						} else {
 							Vec::new()
 						};
-						let code = self.build_code_block(NONE_TYPE)?;
+						let code = self.build_code_block(DO_TYPE)?;
 						expr.push_back(LAMBDA { args, code });
 						if self.check_val() {
 							break t;
@@ -654,39 +654,16 @@ impl ParserInfo {
 		Ok(IDENT { expr, line })
 	}
 
-	fn build_code_block(&mut self, blockType: BlockType) -> Result<CodeBlock, String> {
+	fn get_code_block(&mut self, blocktype: BlockType) -> Result<(Vec<Token>, usize), String> {
 		println!("start");
-		let blockTypeValue = match blockType {
-			THEN_TYPE => "then",
-			DO_TYPE => "do",
-			NONE_TYPE => "",
-			REPEAT_TYPE => "",
-		};
-		let tokenType = match blockType {
-			THEN_TYPE => THEN,
-			DO_TYPE => DO,
-			NONE_TYPE | REPEAT_TYPE => NONE_BLOCK,
-		};
-		let start = {
-			let t = self.advance();
-			if t.kind != tokenType && tokenType != NONE_BLOCK {
-				self.current -= 2;
-				self.assert_advance(tokenType, blockTypeValue)?.line
-			} else if t.kind != tokenType && tokenType == NONE_BLOCK {
-				self.current -= 1;
-				t.line
-			} else {
-				t.line
-			}
-		};
 		let mut tokens: Vec<Token> = Vec::new();
-		let mut cscope = 1u8;
 		let end: usize;
 		loop {
 			let t = self.advance();
-			println!("{:?} {}", t, cscope);
-			match t.kind {
-				THEN | DO => cscope += 1,
+			println!("{:?} {:?}", t, blocktype);
+			match t.kind { //VERY UNFINISHED, DO NOT ALTER
+				//IF => 
+				/*THEN | DO => cscope += 1,
 				REPEAT => {
 					cscope += 1;
 				}
@@ -702,7 +679,7 @@ impl ParserInfo {
 					}
 				}
 				UNTIL => {
-					if blockType == REPEAT_TYPE {
+					if block_type == REPEAT_TYPE {
 						cscope -= 1;
 
 						if cscope == 0 {
@@ -716,7 +693,7 @@ impl ParserInfo {
 				ELSE | ELSEIF => {
 					let t = self.look_back(0);
 					cscope -= 1;
-					if blockType != THEN_TYPE {
+					if block_type != THEN_TYPE {
 						tokens.push(t);
 						continue;
 					}
@@ -729,17 +706,55 @@ impl ParserInfo {
 				EOF => return Err(self.expected_before("end", "<end>", t.line)),
 				_ => {
 					// return Err(self.unexpected(&t.lexeme, t.line));
+				}*/
+				DO => {
+					tokens.push(t);
+					tokens.append(&mut self.get_code_block(DO_TYPE)?.0);
+					tokens.push(self.look_back(0));
+					continue;
+				},
+				END => {
+					if blocktype != REPEAT_TYPE {
+						end = t.line;
+						break;
+					}
 				}
+				EOF => return Err(self.expected_before("end", "<end>", t.line)),
+				_ => {}
 			}
 			tokens.push(t);
 		}
+		return Ok((tokens, end))
+	}
+
+	fn build_code_block(&mut self, blocktype: BlockType) -> Result<CodeBlock, String> {
+		let tokentype = match blocktype {
+			THEN_TYPE => THEN,
+			DO_TYPE => DO,
+			NONE_TYPE | REPEAT_TYPE => NONE_BLOCK,
+		};
+		let start = {
+			let t = self.advance();
+			if t.kind != tokentype && tokentype != NONE_BLOCK {
+				self.current -= 2;
+				let lexeme = self.peek(0).lexeme;
+				self.assert_advance(tokentype, &lexeme)?.line
+			} else if t.kind != tokentype && tokentype == NONE_BLOCK {
+				self.current -= 1;
+				t.line
+			} else {
+				t.line
+			}
+		};
+		let (mut tokens, end) = self.get_code_block(blocktype)?;
+		println!("{:#?}", tokens);
 		let code = if tokens.is_empty() {
 			Expression::new()
 		} else {
 			tokens.push(self.tokens.last().unwrap().clone());
 			parse_tokens(tokens, self.filename.clone())?
 		};
-		Ok(CodeBlock { start, code, end })
+		Ok(CodeBlock {start, code, end})
 	}
 
 	fn build_loop_block(&mut self) -> Result<CodeBlock, String> {
@@ -802,17 +817,15 @@ impl ParserInfo {
 		} {}
 		Ok(args)
 	}
-
 	fn build_else_if_chain(
 		&mut self,
-		conditionType: ConditionType,
+		conditiontype: ConditionType,
 	) -> Result<ComplexToken, String> {
 		let condition = self.build_expression(Some((THEN, "then")))?;
-		let blockType = match conditionType {
+		let code = self.build_code_block(match conditiontype {
 			IF_TYPE => THEN_TYPE,
 			_ => NONE_TYPE,
-		};
-		let code = self.build_code_block(blockType)?;
+		})?;
 		Ok(IF_STATEMENT {
 			condition,
 			code,
@@ -874,6 +887,7 @@ impl ParserInfo {
 		})
 	}
 }
+
 pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, String> {
 	let mut i = ParserInfo::new(tokens, filename);
 	while !i.ended() {
