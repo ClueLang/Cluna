@@ -12,7 +12,8 @@ pub enum TokenType {
 	CURLY_BRACKET_OPEN, CURLY_BRACKET_CLOSED,
 	COMMA, SEMICOLON, NOT, AND, OR, DOLLAR,
 	PLUS, MINUS, STAR, SLASH, PERCENTUAL, CARET, HASHTAG,
-	COLON, DOT, TWODOTS, THREEDOTS,
+	COLON, DOT, TWODOTS, THREEDOTS, 
+    BIT_AND, BIT_OR, TILDE, LEFT_SHIFT, RIGHT_SHIFT,
 	
 	//definition and comparison
 	DEFINE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
@@ -158,6 +159,17 @@ impl CodeInfo {
         let kind: TokenType = match self.compare(c) {
             true => kt,
             false => kf,
+        };
+        self.add_token(kind);
+    }
+
+    fn match_and_add(&mut self, c1: char, k1: TokenType, c2: char, k2: TokenType, kd: TokenType) {
+        let kind: TokenType = match self.compare(c1) {
+            true => k1,
+            false => match self.compare(c2) {
+                true => k2,
+                false => kd,
+            },
         };
         self.add_token(kind);
     }
@@ -390,12 +402,15 @@ pub fn scan_code(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comm
                 if i.peek(0) == '=' {
                     i.current += 1;
                     i.add_token(NOT_EQUAL);
+                } else {
+                    i.current += 1;
+                    i.add_token(TILDE);
                 }
             }
             '=' => i.compare_and_add('=', EQUAL, DEFINE),
 
-            '<' => i.compare_and_add('=', SMALLER_EQUAL, SMALLER),
-            '>' => i.compare_and_add('=', BIGGER_EQUAL, BIGGER),
+            '<' => i.match_and_add('=', SMALLER_EQUAL, '<', LEFT_SHIFT, SMALLER),
+            '>' => i.match_and_add('=', BIGGER_EQUAL, '>', RIGHT_SHIFT, BIGGER),
             ':' => i.add_token(COLON),
             '$' => i.add_token(DOLLAR),
             ' ' | '\r' | '\t' => {}
@@ -408,6 +423,9 @@ pub fn scan_code(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comm
             ']' => i.add_token(SQUARE_BRACKET_CLOSED),
             '{' => i.add_token(CURLY_BRACKET_OPEN),
             '}' => i.add_token(CURLY_BRACKET_CLOSED),
+
+            '&' => i.add_token(BIT_AND),
+            '|' => i.add_token(BIT_OR),
 
             _ => {
                 if c.is_ascii_digit() {
