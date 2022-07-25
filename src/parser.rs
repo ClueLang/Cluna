@@ -655,59 +655,13 @@ impl ParserInfo {
 	}
 
 	fn get_code_block(&mut self, blocktype: BlockType) -> Result<(Vec<Token>, usize), String> {
-		println!("start");
 		let mut tokens: Vec<Token> = Vec::new();
 		let end: usize;
 		loop {
 			let t = self.advance();
-			println!("{:?} {:?}", t, blocktype);
 			match t.kind { //VERY UNFINISHED, DO NOT ALTER
-				//IF => 
-				/*THEN | DO => cscope += 1,
-				REPEAT => {
-					cscope += 1;
-				}
-				NONE_BLOCK => {
-					cscope += 1;
-				}
-				END => {
-					cscope -= 1;
-
-					if cscope == 0 {
-						end = t.line;
-						break;
-					}
-				}
-				UNTIL => {
-					if block_type == REPEAT_TYPE {
-						cscope -= 1;
-
-						if cscope == 0 {
-							end = t.line;
-							break;
-						}
-					} else {
-						return Err(self.unexpected("until", t.line));
-					}
-				}
-				ELSE | ELSEIF => {
-					let t = self.look_back(0);
-					cscope -= 1;
-					if block_type != THEN_TYPE {
-						tokens.push(t);
-						continue;
-					}
-
-					if cscope == 0 {
-						end = t.line;
-						break;
-					}
-				}
-				EOF => return Err(self.expected_before("end", "<end>", t.line)),
-				_ => {
-					// return Err(self.unexpected(&t.lexeme, t.line));
-				}*/
-				DO => {
+				
+				DO | IF => {
 					tokens.push(t);
 					tokens.append(&mut self.get_code_block(DO_TYPE)?.0);
 					tokens.push(self.look_back(0));
@@ -715,6 +669,12 @@ impl ParserInfo {
 				},
 				END => {
 					if blocktype != REPEAT_TYPE {
+						end = t.line;
+						break;
+					}
+				}
+				ELSE | ELSEIF => {
+					if blocktype == THEN_TYPE {
 						end = t.line;
 						break;
 					}
@@ -747,7 +707,6 @@ impl ParserInfo {
 			}
 		};
 		let (mut tokens, end) = self.get_code_block(blocktype)?;
-		println!("{:#?}", tokens);
 		let code = if tokens.is_empty() {
 			Expression::new()
 		} else {
