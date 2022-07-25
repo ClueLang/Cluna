@@ -659,14 +659,19 @@ impl ParserInfo {
 		let end: usize;
 		loop {
 			let t = self.advance();
-			match t.kind { //VERY UNFINISHED, DO NOT ALTER
-				
+			match t.kind {
 				DO | IF => {
 					tokens.push(t);
 					tokens.append(&mut self.get_code_block(DO_TYPE)?.0);
 					tokens.push(self.look_back(0));
 					continue;
-				},
+				}
+				REPEAT => {
+					tokens.push(t);
+					tokens.append(&mut self.get_code_block(REPEAT_TYPE)?.0);
+					tokens.push(self.look_back(0));
+					continue;
+				}
 				END => {
 					if blocktype != REPEAT_TYPE {
 						end = t.line;
@@ -675,6 +680,12 @@ impl ParserInfo {
 				}
 				ELSE | ELSEIF => {
 					if blocktype == THEN_TYPE {
+						end = t.line;
+						break;
+					}
+				}
+				UNTIL => {
+					if blocktype == REPEAT_TYPE {
 						end = t.line;
 						break;
 					}
