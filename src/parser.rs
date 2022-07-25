@@ -67,7 +67,7 @@ pub enum ComplexToken {
 		code: CodeBlock,
 	},
 
-	LOOP_UNTIL {
+	REPEAT_UNTIL {
 		condition: Expression,
 		code: CodeBlock,
 	},
@@ -974,7 +974,7 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
 				let code = i.build_code_block(REPEAT_TYPE)?;
 
 				let condition = i.build_expression(None)?;
-				i.expr.push_back(LOOP_UNTIL { condition, code })
+				i.expr.push_back(REPEAT_UNTIL { condition, code })
 			}
 			FOR => {
 				if i.peek(1).kind == DEFINE {
