@@ -165,25 +165,17 @@ fn main() -> Result<(), String> {
         ENV_RAWSETGLOBALS = cli.rawsetglobals;
         ENV_DEBUGCOMMENTS = cli.debugcomments;
     }
-    if let Some(bit) = arg!(&ENV_JITBIT) {
-        todo!("Handle luajit bit")
-    }
     let codepath = cli.path.unwrap();
     if arg!(ENV_PATHISCODE) {
-        todo!("Evaluate code received as argument");
+        println!(
+            "{}",
+            compile_code(codepath.clone(), "(command line)".to_owned(), 0)?
+        );
+        return Ok(());
     }
     let path: &Path = Path::new(&codepath);
 
     if path.is_dir() {
-        let outputname = &format!("{}.clue", cli.outputname);
-        let compiledname = if path.display().to_string().ends_with('/')
-            || path.display().to_string().ends_with('\\')
-        {
-            format!("{}{}", path.display(), outputname)
-        } else {
-            format!("{}/{}", path.display(), outputname)
-        };
-
         compile_folder(path, String::new())?;
     } else if path.is_file() {
         let compiledname =
