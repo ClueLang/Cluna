@@ -198,7 +198,9 @@ fn compile_else_if_chain(
 ) -> String {
     let condition = compile_expression(scope, None, condition);
     let code = compile_code_block(scope, "{", code);
+    let mut should_end = false;
     let next = if let Some(next) = next {
+        should_end = true;
         String::from("else")
             + &match *next {
                 IF_STATEMENT {
@@ -214,7 +216,13 @@ fn compile_else_if_chain(
     } else {
         String::new()
     };
-    format!("if ({}) {}}}{}", condition, code, next)
+    format!(
+        "if ({}) {}{}{}",
+        condition,
+        code,
+        if should_end { "}" } else { "" },
+        next
+    )
 }
 
 pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
