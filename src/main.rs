@@ -17,11 +17,12 @@ macro_rules! arg {
 }
 
 // mod compiler;
+mod compiler;
 mod parser;
 mod scanner;
 
 use clap::Parser;
-// use compiler::*;
+use compiler::compile_tokens;
 use parser::*;
 use scanner::*;
 use std::{fs, fs::File, io::prelude::*, path::Path, time::Instant};
@@ -36,14 +37,14 @@ pub static mut ENV_CONTINUE: bool = false;
 pub static mut ENV_DONTSAVE: bool = false;
 pub static mut ENV_PATHISCODE: bool = false;
 pub static mut ENV_RAWSETGLOBALS: bool = false;
-pub static mut ENV_NODEBUGCOMMENTS: bool = false;
+pub static mut ENV_DEBUGCOMMENTS: bool = false;
 
 #[derive(Parser)]
 #[clap(about, version, long_about = None)]
 struct Cli {
-    /// The path to the directory where the *.clue files are located.
+    /// The path to the directory where the *.lua files are located.
     /// Every directory inside the given directory will be checked too.
-    /// If the path points to a single *.clue file, only that file will be compiled.
+    /// If the path points to a single *.lua file, only that file will be compiled.
     #[clap(required_unless_present = "license")]
     path: Option<String>,
 
@@ -76,10 +77,10 @@ struct Cli {
     r#continue: bool,
 
     /// Don't save compiled code
-    #[clap(short, long)]
+    #[clap(short = 'D', long)]
     dontsave: bool,
 
-    /// Treat PATH not as a path but as Clue code
+    /// Treat PATH not as a path but as lua code
     #[clap(short, long)]
     pathiscode: bool,
 
@@ -89,12 +90,12 @@ struct Cli {
 
     /// Don't include debug comments in the output
     #[clap(short, long)]
-    nodebugcomments: bool,
+    debugcomments: bool,
 }
 
-// fn AddToOutput(string: &str) {
-//     unsafe { finaloutput += string }
-// }
+fn add_to_output(string: &str) {
+    unsafe { finaloutput += string }
+}
 
 fn compile_code(code: String, name: String, scope: usize) -> Result<String, String> {
     let time = Instant::now();
@@ -106,9 +107,8 @@ fn compile_code(code: String, name: String, scope: usize) -> Result<String, Stri
     if arg!(ENV_STRUCT) {
         println!("Parsed structure of file \"{}\":\n{:#?}", name, ctokens);
     }
-    println!("{:#?}", ctokens);
-    /*
-    let code = CompileTokens(scope, ctokens);
+
+    let code = compile_tokens(scope, ctokens);
     if arg!(ENV_OUTPUT) {
         println!("Compiled Lua code of file \"{}\":\n{}", name, code);
     }
@@ -116,9 +116,8 @@ fn compile_code(code: String, name: String, scope: usize) -> Result<String, Stri
         "Compiled file \"{}\" in {} seconds!",
         name,
         time.elapsed().as_secs_f32()
-    );*/
-    //Ok(code)
-    Ok(String::new())
+    );
+    Ok(code)
 }
 
 fn compile_file(path: &Path, name: String, scope: usize) -> Result<String, String> {
@@ -127,31 +126,31 @@ fn compile_file(path: &Path, name: String, scope: usize) -> Result<String, Strin
     Ok(compile_code(code, name, scope)?)
 }
 
-// fn CompileFolder(path: &Path, rpath: String) -> Result<(), String> {
-//     for entry in check!(fs::read_dir(path)) {
-//         let entry = check!(entry);
-//         let name: String = entry
-//             .path()
-//             .file_name()
-//             .unwrap()
-//             .to_string_lossy()
-//             .into_owned();
-//         let filePathName: String = path.display().to_string() + "\\" + &name;
-//         let filepath: &Path = &Path::new(&filePathName);
-//         let rname = rpath.clone() + &name;
-//         if filepath.is_dir() {
-//             CompileFolder(filepath, rname + ".")?;
-//         } else if filePathName.ends_with(".clue") {
-//             let code = CompileFile(filepath, name, 2)?;
-//             let rname = rname.strip_suffix(".clue").unwrap();
-//             AddToOutput(&format!(
-//                 "[\"{}\"] = function()\n{}\n\tend,\n\t",
-//                 rname, code
-//             ));
-//         }
-//     }
-//     Ok(())
-// }
+fn compile_folder(path: &Path, rpath: String) -> Result<(), String> {
+    for entry in check!(fs::read_dir(path)) {
+        let entry = check!(entry);
+        let name: String = entry
+            .path()
+            .file_name()
+            .unwrap()
+            .to_string_lossy()
+            .into_owned();
+        let filePathName: String = format!("{}/{}", path.display(), name);
+        let filepath: &Path = &Path::new(&filePathName);
+        let rname = rpath.clone() + &name;
+        if filepath.is_dir() {
+            compile_folder(filepath, rname + ".")?;
+        } else if filePathName.ends_with(".lua") {
+            let code = compile_file(filepath, name, 2)?;
+            let rname = rname.strip_suffix(".lua").unwrap();
+            add_to_output(&format!(
+                "[\"{}\"] = function()\n{}\n\tend,\n\t",
+                rname, code
+            ));
+        }
+    }
+    Ok(())
+}
 
 fn main() -> Result<(), String> {
     let cli = Cli::parse();
@@ -168,7 +167,7 @@ fn main() -> Result<(), String> {
         ENV_DONTSAVE = cli.dontsave;
         ENV_PATHISCODE = cli.pathiscode;
         ENV_RAWSETGLOBALS = cli.rawsetglobals;
-        ENV_NODEBUGCOMMENTS = cli.nodebugcomments;
+        ENV_DEBUGCOMMENTS = cli.debugcomments;
     }
     if let Some(bit) = arg!(&ENV_JITBIT) {
         todo!("Handle luajit bit")
@@ -178,14 +177,29 @@ fn main() -> Result<(), String> {
         todo!("Evaluate code received as argument");
     }
     let path: &Path = Path::new(&codepath);
+
     if path.is_dir() {
-        todo!("Compile folder");
+        let outputname = &format!("{}.lua", cli.outputname);
+        let compiledname = if path.display().to_string().ends_with('/')
+            || path.display().to_string().ends_with('\\')
+        {
+            format!("{}{}", path.display(), outputname)
+        } else {
+            format!("{}/{}", path.display(), outputname)
+        };
+
+        compile_folder(path, String::new())?;
+        check!(fs::write(compiledname, unsafe { &finaloutput }))
     } else if path.is_file() {
-        compile_file(
+        let compiledname =
+            String::from(path.display().to_string().strip_suffix(".lua").unwrap()) + ".clue";
+        let code = compile_file(
             path,
             path.file_name().unwrap().to_string_lossy().into_owned(),
             0,
         )?;
+        add_to_output(&code);
+        check!(fs::write(compiledname, unsafe { &finaloutput }))
     } else {
         return Err(String::from("The given path doesn't exist"));
     }
