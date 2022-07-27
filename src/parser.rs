@@ -2,11 +2,7 @@
 
 use self::BlockType::*;
 use self::ComplexToken::*;
-use crate::{
-    // compiler::CompileTokens,
-    scanner::{Token, TokenType, TokenType::*},
-    ConditionType::*,
-};
+use crate::scanner::{Token, TokenType, TokenType::*};
 use std::{cmp, collections::LinkedList};
 
 macro_rules! expression {
@@ -22,7 +18,6 @@ macro_rules! expression {
 pub type Expression = LinkedList<ComplexToken>;
 pub type FunctionArgs = Vec<(String, Option<(Expression, usize)>)>;
 type OptionalEnd = Option<(TokenType, &'static str)>;
-type MatchCase = (Vec<Expression>, Option<Expression>, CodeBlock);
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ComplexToken {
@@ -115,13 +110,7 @@ pub enum BlockType {
     NONE_TYPE,
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub enum ConditionType {
-    IF_TYPE,
-    ELSE_TYPE,
-}
-
-#[derive(Debug)]
+#[derive(Clone, Debug)]
 struct ParserInfo {
     current: usize,
     size: usize,
@@ -129,7 +118,6 @@ struct ParserInfo {
     filename: String,
     expr: Expression,
     testing: Option<usize>,
-    localid: u8,
 }
 
 impl ParserInfo {
@@ -141,7 +129,6 @@ impl ParserInfo {
             filename,
             expr: Expression::new(),
             testing: None,
-            localid: 0,
         }
     }
 
@@ -422,28 +409,17 @@ impl ParserInfo {
         Ok(())
     }
 
-    fn build_bitwise_op(
-        &mut self,
-        t: Token,
-        expr: &mut Expression,
-        fname: &str,
-        end: OptionalEnd,
-    ) -> Result<(), String> {
+    fn build_bitwise_op(&mut self, t: Token, expr: &mut Expression) -> Result<(), String> {
         self.check_operator(&t, true)?;
         expr.push_back(SYMBOL(t.lexeme));
 
         Ok(())
     }
 
-    fn build_tilde_operator(
-        &mut self,
-        t: Token,
-        expr: &mut Expression,
-        end: OptionalEnd,
-    ) -> Result<(), String> {
+    fn build_tilde_operator(&mut self, t: Token, expr: &mut Expression) -> Result<(), String> {
         let isXor = self.check_operator(&t, true).is_ok();
         if isXor {
-            self.build_bitwise_op(t, expr, "bxor", end)?;
+            self.build_bitwise_op(t, expr)?;
         } else {
             self.check_operator(&t, false)?;
             expr.push_back(SYMBOL(t.lexeme))
@@ -514,11 +490,11 @@ impl ParserInfo {
                     self.check_operator(&t, true)?;
                     expr.push_back(SYMBOL(t.lexeme))
                 }
-                BIT_AND => self.build_bitwise_op(t, &mut expr, "band", end)?,
-                BIT_OR => self.build_bitwise_op(t, &mut expr, "bor", end)?,
-                TILDE => self.build_tilde_operator(t, &mut expr, end)?,
-                LEFT_SHIFT => self.build_bitwise_op(t, &mut expr, "lshift", end)?,
-                RIGHT_SHIFT => self.build_bitwise_op(t, &mut expr, "rshift", end)?,
+                BIT_AND => self.build_bitwise_op(t, &mut expr)?,
+                BIT_OR => self.build_bitwise_op(t, &mut expr)?,
+                TILDE => self.build_tilde_operator(t, &mut expr)?,
+                LEFT_SHIFT => self.build_bitwise_op(t, &mut expr)?,
+                RIGHT_SHIFT => self.build_bitwise_op(t, &mut expr)?,
                 MINUS => {
                     self.check_operator(&t, false)?;
                     expr.push_back(SYMBOL(if self.look_back(1).kind == MINUS {
@@ -820,22 +796,16 @@ impl ParserInfo {
         } {}
         Ok(args)
     }
-    fn build_else_if_chain(
-        &mut self,
-        conditiontype: ConditionType,
-    ) -> Result<ComplexToken, String> {
+    fn build_else_if_chain(&mut self) -> Result<ComplexToken, String> {
         let condition = self.build_expression(Some((THEN, "then")))?;
-        let code = self.build_code_block(match conditiontype {
-            IF_TYPE => THEN_TYPE,
-            _ => NONE_TYPE,
-        })?;
+        let code = self.build_code_block(THEN_TYPE)?;
         Ok(IF_STATEMENT {
             condition,
             code,
             next: {
                 let t = self.look_back(0);
                 let result = match t.kind {
-                    ELSEIF => Some(Box::new(self.build_else_if_chain(IF_TYPE)?)),
+                    ELSEIF => Some(Box::new(self.build_else_if_chain()?)),
                     ELSE => Some(Box::new(ELSE_BLOCK(self.build_code_block(NONE_TYPE)?))),
                     _ => None,
                 };
@@ -1001,7 +971,7 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
                 i.expr.push_back(DO_BLOCK(block));
             }
             IF => {
-                let ctoken = i.build_else_if_chain(IF_TYPE)?;
+                let ctoken = i.build_else_if_chain()?;
                 i.expr.push_back(ctoken);
             }
             WHILE => {
