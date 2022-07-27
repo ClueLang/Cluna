@@ -27,8 +27,6 @@ use parser::*;
 use scanner::*;
 use std::{fs, fs::File, io::prelude::*, path::Path, time::Instant};
 
-pub static mut finaloutput: String = String::new();
-
 pub static mut ENV_TOKENS: bool = false;
 pub static mut ENV_STRUCT: bool = false;
 pub static mut ENV_OUTPUT: bool = false;
@@ -93,10 +91,6 @@ struct Cli {
     debugcomments: bool,
 }
 
-fn add_to_output(string: &str) {
-    unsafe { finaloutput += string }
-}
-
 fn compile_code(code: String, name: String, scope: usize) -> Result<String, String> {
     let time = Instant::now();
     let (tokens, comments): (Vec<Token>, Vec<Comment>) = scan_code(code, name.clone())?;
@@ -142,11 +136,13 @@ fn compile_folder(path: &Path, rpath: String) -> Result<(), String> {
             compile_folder(filepath, rname + ".")?;
         } else if filePathName.ends_with(".lua") {
             let code = compile_file(filepath, name, 2)?;
-            let rname = rname.strip_suffix(".lua").unwrap();
-            add_to_output(&format!(
-                "[\"{}\"] = function()\n{}\n\tend,\n\t",
-                rname, code
-            ));
+            let compiled_path = format!(
+                "{}{}",
+                filepath.display().to_string().strip_suffix(".lua").unwrap(),
+                ".clue"
+            );
+
+            check!(fs::write(compiled_path, code))
         }
     }
     Ok(())
@@ -179,7 +175,7 @@ fn main() -> Result<(), String> {
     let path: &Path = Path::new(&codepath);
 
     if path.is_dir() {
-        let outputname = &format!("{}.lua", cli.outputname);
+        let outputname = &format!("{}.clue", cli.outputname);
         let compiledname = if path.display().to_string().ends_with('/')
             || path.display().to_string().ends_with('\\')
         {
@@ -189,7 +185,6 @@ fn main() -> Result<(), String> {
         };
 
         compile_folder(path, String::new())?;
-        check!(fs::write(compiledname, unsafe { &finaloutput }))
     } else if path.is_file() {
         let compiledname =
             String::from(path.display().to_string().strip_suffix(".lua").unwrap()) + ".clue";
@@ -198,10 +193,21 @@ fn main() -> Result<(), String> {
             path.file_name().unwrap().to_string_lossy().into_owned(),
             0,
         )?;
-        add_to_output(&code);
-        check!(fs::write(compiledname, unsafe { &finaloutput }))
+
+        check!(fs::write(compiledname, code))
     } else {
         return Err(String::from("The given path doesn't exist"));
     }
     Ok(())
+}
+
+#[cfg(test)]
+mod test {
+    use crate::compile_folder;
+    use std::path::Path;
+
+    #[test]
+    fn compile() {
+        compile_folder(Path::new("tests/"), String::new()).unwrap();
+    }
 }
