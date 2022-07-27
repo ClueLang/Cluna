@@ -92,13 +92,11 @@ pub enum ComplexToken {
     },
 
     SYMBOL(String),
-    PSEUDO(usize),
     CALL(Vec<Expression>),
     EXPR(Expression),
     DO_BLOCK(CodeBlock),
     ELSE_BLOCK(CodeBlock),
     RETURN_EXPR(Option<Vec<Expression>>),
-    CONTINUE_LOOP,
     BREAK_LOOP,
 }
 
@@ -848,7 +846,9 @@ impl ParserInfo {
     }
 
     fn build_function(&mut self, local: bool) -> Result<ComplexToken, String> {
-        self.current += 1;
+        if local {
+            self.current += 1;
+        }
         let name = expression![SYMBOL(self.assert_advance(IDENTIFIER, "<name>")?.lexeme)];
         self.assert(ROUND_BRACKET_OPEN, "(")?;
         let args = if !self.advance_if(ROUND_BRACKET_CLOSED) {
@@ -908,6 +908,10 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
                     value = i.build_variables(local, t.line)?;
                 }
                 i.expr.push_back(value);
+            }
+            FN => {
+                let function = i.build_function(false)?;
+                i.expr.push_back(function);
             }
             METHOD => {
                 let name = {
@@ -1054,7 +1058,7 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
                 i.advance_if(SEMICOLON);
             }
             RETURN => {
-                let expr = if i.advance_if(SEMICOLON) {
+                let expr = if i.ended() || i.advance_if(SEMICOLON) {
                     None
                 } else {
                     Some(i.find_expressions(COMMA, None)?)
