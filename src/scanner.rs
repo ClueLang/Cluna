@@ -403,7 +403,6 @@ pub fn scan_code(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comm
                     i.current += 1;
                     i.add_token(NOT_EQUAL);
                 } else {
-                    i.current += 1;
                     i.add_token(TILDE);
                 }
             }
