@@ -7,7 +7,7 @@ jobs:
   build-windows:
     runs-on: windows-latest
     env:
-      CRATE_NAME: clue
+      CRATE_NAME: find
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -27,17 +27,17 @@ jobs:
           cd target\x86_64-pc-windows-msvc\release && tar -cavf "$env:CRATE_NAME-x86_64-pc-windows-msvc.zip" "$env:CRATE_NAME.exe"  && cd ../../..
           cd target\i686-pc-windows-msvc\release && tar -cavf "$env:CRATE_NAME-i686-pc-windows-msvc.zip" "$env:CRATE_NAME.exe"  && cd ../../..
           cd target\aarch64-pc-windows-msvc\release && tar -cavf "$env:CRATE_NAME-aarch64-pc-windows-msvc.zip" "$env:CRATE_NAME.exe"  && cd ../../..
-      - name: Upload clue-x86_64-pc-windows-msvc
+      - name: Upload find-x86_64-pc-windows-msvc
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-x86_64-pc-windows-msvc.zip
           path: target\x86_64-pc-windows-msvc\release\${{ env.CRATE_NAME }}-x86_64-pc-windows-msvc.zip
-      - name: Upload clue-i686-pc-windows-msvc
+      - name: Upload find-i686-pc-windows-msvc
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-i686-pc-windows-msvc.zip
           path: target\i686-pc-windows-msvc\release\${{ env.CRATE_NAME }}-i686-pc-windows-msvc.zip
-      - name: Upload clue-aarch64-pc-windows-msvc
+      - name: Upload find-aarch64-pc-windows-msvc
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-aarch64-pc-windows-msvc.zip
@@ -54,7 +54,7 @@ jobs:
   build-macos:
     runs-on: macos-latest
     env:
-      CRATE_NAME: "clue"
+      CRATE_NAME: "find"
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -72,7 +72,7 @@ jobs:
           cargo build --release -Zmultitarget --target=x86_64-apple-darwin --target=aarch64-apple-darwin -vv
           cd target/x86_64-apple-darwin/release/ && tar -cvf "$CRATE_NAME-x86_64-apple-darwin.tar.gz" "$CRATE_NAME"  && cd ../../..
           cd target/aarch64-apple-darwin/release/ && tar -cvf "$CRATE_NAME-aarch64-apple-darwin.tar.gz" "$CRATE_NAME" && cd ../../..
-      - name: Upload clue-x86_64-apple-darwin.tar.gz
+      - name: Upload find-x86_64-apple-darwin.tar.gz
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-x86_64-apple-darwin.tar.gz
@@ -93,7 +93,7 @@ jobs:
   build-gnu-linux:
     runs-on: ubuntu-latest
     env:
-      CRATE_NAME: "clue"
+      CRATE_NAME: "find"
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
@@ -133,7 +133,7 @@ jobs:
           cd target/i686-unknown-linux-gnu/release/ && tar -cvf "$CRATE_NAME-i686-unknown-linux-gnu.tar.gz" "$CRATE_NAME" && cd ../../..
           cd target/armv7-unknown-linux-gnueabi/release/ && tar -cvf "$CRATE_NAME-armv7-unknown-linux-gnueabi.tar.gz" "$CRATE_NAME"  && cd ../../..
           cd target/armv7-unknown-linux-gnueabihf/release/ && tar -cvf "$CRATE_NAME-armv7-unknown-linux-gnueabihf.tar.gz" "$CRATE_NAME"  && cd ../../..
-      - name: Upload clue-x86_64-unknown-linux-gnu.tar.gz
+      - name: Upload find-x86_64-unknown-linux-gnu.tar.gz
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-x86_64-unknown-linux-gnu.tar.gz
@@ -171,15 +171,15 @@ jobs:
   build-musl-linux:
     runs-on: ubuntu-latest
     env:
-      CRATE_NAME: "clue"
+      CRATE_NAME: "find"
     steps:
       - name: Check out repository code
         uses: actions/checkout@v3
       - name: Build the binary
         uses: ./actions/linux-musl
         with:
-          name: clue
-      - name: Upload clue-x86_64-unknown-linux-musl.tar.gz
+          name: find
+      - name: Upload find-x86_64-unknown-linux-musl.tar.gz
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-x86_64-unknown-linux-musl.tar.gz
@@ -194,12 +194,12 @@ jobs:
         with:
           name: ${{ env.CRATE_NAME }}-i686-unknown-linux-musl.tar.gz
           path: target/i686-unknown-linux-musl/release/${{ env.CRATE_NAME }}-i686-unknown-linux-musl.tar.gz
-      - name: Upload clue-armv7-unknown-linux-musleabi.tar.gz
+      - name: Upload find-armv7-unknown-linux-musleabi.tar.gz
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-armv7-unknown-linux-musleabi.tar.gz
           path: target/armv7-unknown-linux-musleabi/release/${{ env.CRATE_NAME }}-armv7-unknown-linux-musleabi.tar.gz
-      - name: Upload clue-armv7-unknown-linux-musleabihf.tar.gz
+      - name: Upload find-armv7-unknown-linux-musleabihf.tar.gz
         uses: actions/upload-artifact@v3
         with:
           name: ${{ env.CRATE_NAME }}-armv7-unknown-linux-musleabihf.tar.gz
