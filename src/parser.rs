@@ -432,8 +432,24 @@ impl ParserInfo {
         end: OptionalEnd,
     ) -> Result<(), String> {
         self.check_operator(&t, true)?;
-        if (t.lexeme == "~") {}
         expr.push_back(SYMBOL(t.lexeme));
+
+        Ok(())
+    }
+
+    fn build_tilde_operator(
+        &mut self,
+        t: Token,
+        expr: &mut Expression,
+        end: OptionalEnd,
+    ) -> Result<(), String> {
+        let isXor = self.check_operator(&t, true).is_ok();
+        if isXor {
+            self.build_bitwise_op(t, expr, "bxor", end)?;
+        } else {
+            self.check_operator(&t, false)?;
+            expr.push_back(SYMBOL(t.lexeme))
+        }
 
         Ok(())
     }
@@ -502,12 +518,7 @@ impl ParserInfo {
                 }
                 BIT_AND => self.build_bitwise_op(t, &mut expr, "band", end)?,
                 BIT_OR => self.build_bitwise_op(t, &mut expr, "bor", end)?,
-                BIT_XOR => self.build_bitwise_op(t, &mut expr, "bxor", end)?,
-                BIT_NOT => {
-                    self.check_operator(&t, false)?;
-
-                    expr.push_back(SYMBOL(t.lexeme))
-                }
+                TILDE => self.build_tilde_operator(t, &mut expr, end)?,
                 LEFT_SHIFT => self.build_bitwise_op(t, &mut expr, "lshift", end)?,
                 RIGHT_SHIFT => self.build_bitwise_op(t, &mut expr, "rshift", end)?,
                 MINUS => {
