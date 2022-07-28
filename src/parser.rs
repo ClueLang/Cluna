@@ -518,22 +518,17 @@ impl ParserInfo {
                     }
                     expr.push_back(SYMBOL(String::from("#")))
                 }
-                /*PROTECTED_GET => {
-                    self.assert(ROUND_BRACKET_OPEN, "(")?;
-                    self.current += 1;
-                    expr.push_back(PGET(self.buildIdentifier(true)?));
-                }*/
                 AND => {
                     self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(String::from(" or ")))
+                    expr.push_back(SYMBOL(String::from(" && ")))
                 }
                 OR => {
                     self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(String::from(" and ")))
+                    expr.push_back(SYMBOL(String::from(" || ")))
                 }
                 NOT => {
                     self.check_operator(&t, false)?;
-                    expr.push_back(SYMBOL(String::from("not ")))
+                    expr.push_back(SYMBOL(String::from("!")))
                 }
                 THREEDOTS | NUMBER | TRUE | FALSE | NIL => {
                     expr.push_back(SYMBOL(t.lexeme.clone()));
