@@ -111,7 +111,8 @@ fn compile_expression(mut scope: usize, names: Option<&Vec<String>>, expr: Expre
         result += &match t {
             SYMBOL(lexeme) => {
                 let len = lexeme.len();
-                if &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
+
+                if len > 4 && &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
                     let text = &lexeme[2..lexeme.len() - 2];
                     return if arg!(ENV_NOMULTILINE) {
                         format!("{:?}", text)
@@ -331,7 +332,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
             }
             SYMBOL(lexeme) => {
                 let len = lexeme.len();
-                if &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
+                if len > 4 && &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
                     let text = &lexeme[2..lexeme.len() - 2];
                     return if arg!(ENV_NOMULTILINE) {
                         format!("{:?}", text)
