@@ -1,4 +1,7 @@
-use crate::parser::{CodeBlock, ComplexToken, ComplexToken::*, Expression, FunctionArgs};
+use crate::{
+    parser::{CodeBlock, ComplexToken, ComplexToken::*, Expression, FunctionArgs},
+    ENV_NOMULTILINE,
+};
 use std::iter::{Iterator, Peekable};
 
 fn indent(scope: usize) -> String {
@@ -77,35 +80,14 @@ fn compile_code_block(scope: usize, start: &str, block: CodeBlock) -> String {
 }
 
 fn compile_identifier(scope: usize, names: Option<&Vec<String>>, expr: Expression) -> String {
-    let mut result = String::new();
+    let result = String::new();
     let mut checked = String::new();
     let mut iter = expr.into_iter().peekable();
     while let Some(t) = iter.next() {
         match t.clone() {
             SYMBOL(lexeme) => {
                 let lexeme = lexeme.as_str();
-                match lexeme {
-                    "?." => {
-                        result += &(checked.clone() + " and ");
-                        checked += ".";
-                    }
-                    "?::" => {
-                        result += &(checked.clone() + " and ");
-                        checked += ":";
-                    }
-                    "?[" => {
-                        result += &(checked.clone() + " and ");
-                        let texpr = iter.next();
-                        let rexpr = if let Some(EXPR(expr)) = texpr {
-                            compile_expression(scope, names, expr.clone())
-                        } else {
-                            panic!("This message should never appear");
-                        };
-                        checked += &format!("[({})]", rexpr);
-                    }
-                    "]" => {}
-                    _ => checked += lexeme,
-                }
+                checked += lexeme
             }
             EXPR(expr) => {
                 let expr = compile_expression(scope, names, expr);
@@ -115,6 +97,7 @@ fn compile_identifier(scope: usize, names: Option<&Vec<String>>, expr: Expressio
             _ => {}
         }
     }
+
     if result.is_empty() {
         result + &checked
     } else {
@@ -126,7 +109,18 @@ fn compile_expression(mut scope: usize, names: Option<&Vec<String>>, expr: Expre
     let mut result = String::new();
     for t in expr {
         result += &match t {
-            SYMBOL(lexeme) => lexeme,
+            SYMBOL(lexeme) => {
+                let len = lexeme.len();
+                if &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
+                    let text = &lexeme[2..lexeme.len() - 2];
+                    return if arg!(ENV_NOMULTILINE) {
+                        format!("{:?}", text)
+                    } else {
+                        format!("`{}`", text)
+                    };
+                }
+                lexeme
+            }
             TABLE { values, metas } => {
                 scope += 1;
                 let mut prevline = 0usize;
@@ -335,7 +329,18 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                 let expr = compile_identifier(scope, None, expr);
                 format!("{};{}", expr, indent_if(ctokens, scope))
             }
-            SYMBOL(lexeme) => lexeme,
+            SYMBOL(lexeme) => {
+                let len = lexeme.len();
+                if &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
+                    let text = &lexeme[2..lexeme.len() - 2];
+                    return if arg!(ENV_NOMULTILINE) {
+                        format!("{:?}", text)
+                    } else {
+                        format!("`{}`", text)
+                    };
+                }
+                lexeme
+            }
             CALL(args) => {
                 format!(
                     "({}){}",

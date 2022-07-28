@@ -30,12 +30,9 @@ use std::{fs, fs::File, io::prelude::*, path::Path, time::Instant};
 pub static mut ENV_TOKENS: bool = false;
 pub static mut ENV_STRUCT: bool = false;
 pub static mut ENV_OUTPUT: bool = false;
-pub static mut ENV_JITBIT: Option<String> = None;
-pub static mut ENV_CONTINUE: bool = false;
 pub static mut ENV_DONTSAVE: bool = false;
 pub static mut ENV_PATHISCODE: bool = false;
-pub static mut ENV_RAWSETGLOBALS: bool = false;
-pub static mut ENV_DEBUGCOMMENTS: bool = false;
+pub static mut ENV_NOMULTILINE: bool = false;
 
 #[derive(Parser)]
 #[clap(about, version, long_about = None)]
@@ -62,38 +59,26 @@ struct Cli {
     #[clap(long)]
     r#struct: bool,
 
-    /// Print output Lua code in the console
-    #[clap(long)]
-    output: bool,
-
-    /// Use LuaJIT's bit library for bitwise operations
-    #[clap(short, long, value_name = "VAR NAME")]
-    jitbit: Option<String>,
-
-    /// Use tags and goto for continue
+    /// Print output Clue code in the console
     #[clap(short, long)]
-    r#continue: bool,
+    output: bool,
 
     /// Don't save compiled code
     #[clap(short = 'D', long)]
     dontsave: bool,
 
-    /// Treat PATH not as a path but as lua code
+    /// Treat PATH not as a path but as clue code
     #[clap(short, long)]
     pathiscode: bool,
 
-    /// Use rawset to create globals
-    #[clap(short, long)]
-    rawsetglobals: bool,
-
-    /// Don't include debug comments in the output
-    #[clap(short, long)]
-    debugcomments: bool,
+    /// Don't use multiline strings in the output
+    #[clap(long)]
+    nomultiline: bool,
 }
 
 fn compile_code(code: String, name: String, scope: usize) -> Result<String, String> {
     let time = Instant::now();
-    let (tokens, comments): (Vec<Token>, Vec<Comment>) = scan_code(code, name.clone())?;
+    let (tokens, _comments): (Vec<Token>, Vec<Comment>) = scan_code(code, name.clone())?;
     if arg!(ENV_TOKENS) {
         println!("Scanned tokens of file \"{}\":\n{:#?}", name, tokens);
     }
@@ -141,8 +126,9 @@ fn compile_folder(path: &Path, rpath: String) -> Result<(), String> {
                 filepath.display().to_string().strip_suffix(".lua").unwrap(),
                 ".clue"
             );
-
-            check!(fs::write(compiled_path, code))
+            if !arg!(ENV_DONTSAVE) {
+                check!(fs::write(compiled_path, code))
+            }
         }
     }
     Ok(())
@@ -158,12 +144,9 @@ fn main() -> Result<(), String> {
         ENV_TOKENS = cli.tokens;
         ENV_STRUCT = cli.r#struct;
         ENV_OUTPUT = cli.output;
-        ENV_JITBIT = cli.jitbit;
-        ENV_CONTINUE = cli.r#continue;
         ENV_DONTSAVE = cli.dontsave;
         ENV_PATHISCODE = cli.pathiscode;
-        ENV_RAWSETGLOBALS = cli.rawsetglobals;
-        ENV_DEBUGCOMMENTS = cli.debugcomments;
+        ENV_NOMULTILINE = cli.nomultiline;
     }
     let codepath = cli.path.unwrap();
     if arg!(ENV_PATHISCODE) {
@@ -178,7 +161,7 @@ fn main() -> Result<(), String> {
     if path.is_dir() {
         compile_folder(path, String::new())?;
     } else if path.is_file() {
-        let compiledname =
+        let compiled_name =
             String::from(path.display().to_string().strip_suffix(".lua").unwrap()) + ".clue";
         let code = compile_file(
             path,
@@ -186,7 +169,9 @@ fn main() -> Result<(), String> {
             0,
         )?;
 
-        check!(fs::write(compiledname, code))
+        if !arg!(ENV_DONTSAVE) {
+            check!(fs::write(compiled_name, code))
+        }
     } else {
         return Err(String::from("The given path doesn't exist"));
     }

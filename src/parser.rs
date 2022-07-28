@@ -377,8 +377,8 @@ impl ParserInfo {
 
     fn check_operator(&mut self, t: &Token, checkback: bool) -> Result<(), String> {
         if match self.peek(0).kind {
-            NUMBER | IDENTIFIER | STRING | DOLLAR | TRUE | FALSE | MINUS | NIL | NOT | HASHTAG
-            | ROUND_BRACKET_OPEN | THREEDOTS => false,
+            NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE | MINUS
+            | NIL | NOT | HASHTAG | ROUND_BRACKET_OPEN | THREEDOTS => false,
             _ => true,
         } {
             return Err(self.error(
@@ -391,6 +391,7 @@ impl ParserInfo {
                 NUMBER
                 | IDENTIFIER
                 | STRING
+                | MULTILINE_STRING
                 | DOLLAR
                 | TRUE
                 | FALSE
@@ -451,8 +452,8 @@ impl ParserInfo {
 
     fn check_val(&mut self) -> bool {
         match self.peek(0).kind {
-            NUMBER | IDENTIFIER | STRING | DOLLAR | TRUE | FALSE | NIL | NOT | HASHTAG
-            | CURLY_BRACKET_OPEN | THREEDOTS => {
+            NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE | NIL | NOT
+            | HASHTAG | CURLY_BRACKET_OPEN | THREEDOTS => {
                 self.current += 1;
                 true
             }
@@ -546,6 +547,12 @@ impl ParserInfo {
                         break t;
                     }
                 }
+                MULTILINE_STRING => {
+                    expr.push_back(SYMBOL(format!("[[{}]]", t.lexeme)));
+                    if self.check_val() {
+                        break t;
+                    }
+                }
                 ROUND_BRACKET_OPEN => {
                     expr.push_back(EXPR(
                         self.build_expression(Some((ROUND_BRACKET_CLOSED, ")")))?,
@@ -596,6 +603,7 @@ impl ParserInfo {
         self.current -= 1;
         loop {
             let t = self.advance();
+
             match t.kind {
                 IDENTIFIER => {
                     expr.push_back(SYMBOL(t.lexeme));

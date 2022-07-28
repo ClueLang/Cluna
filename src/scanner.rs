@@ -19,7 +19,7 @@ pub enum TokenType {
 	DEFINE, EQUAL, NOT_EQUAL, BIGGER, BIGGER_EQUAL, SMALLER, SMALLER_EQUAL,
 	
 	//literals
-	IDENTIFIER, NUMBER, STRING,
+	IDENTIFIER, NUMBER, STRING, MULTILINE_STRING,
 	
 	//keywords
 	IF, ELSEIF, ELSE, FOR, IN, WHILE, UNTIL, LOCAL, FN, METHOD, 
@@ -226,8 +226,25 @@ impl CodeInfo {
     }
 
     fn read_string(&mut self, strend: char) {
-        let mut aline = self.line;
         while !self.ended() && self.peek(0) != strend {
+            if self.peek(0) == '\n' {
+                self.warning("Unterminated string");
+                break;
+            };
+            self.current += 1;
+        }
+        if self.ended() {
+            self.warning("Unterminated string");
+        } else {
+            self.current += 1;
+            let literal: String = self.substr(self.start + 1, self.current - 1);
+            self.add_literal_token(STRING, literal);
+        }
+    }
+
+    fn read_multiline_string(&mut self) {
+        let mut aline = self.line;
+        while !self.ended() && self.peek(0) != ']' && self.peek(1) != ']' {
             if self.peek(0) == '\n' {
                 aline += 1
             };
@@ -237,14 +254,11 @@ impl CodeInfo {
             self.warning("Unterminated string");
         } else {
             self.current += 1;
-            let mut literal: String = self.substr(self.start + 1, self.current - 1);
-            literal.retain(|c| match c {
-                '\r' | '\n' | '\t' => false,
-                _ => true,
-            });
-            self.add_literal_token(STRING, literal);
+            let literal: String = self.substr(self.start + 2, self.current);
+            self.add_literal_token(MULTILINE_STRING, literal);
         }
-        self.line = aline;
+        self.current += 2;
+        self.line = aline
     }
 }
 
@@ -418,7 +432,13 @@ pub fn scan_code(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comm
 
             '(' => i.add_token(ROUND_BRACKET_OPEN),
             ')' => i.add_token(ROUND_BRACKET_CLOSED),
-            '[' => i.add_token(SQUARE_BRACKET_OPEN),
+            '[' => {
+                if i.peek(0) == '[' {
+                    i.read_multiline_string();
+                } else {
+                    i.add_token(SQUARE_BRACKET_OPEN)
+                }
+            }
             ']' => i.add_token(SQUARE_BRACKET_CLOSED),
             '{' => i.add_token(CURLY_BRACKET_OPEN),
             '}' => i.add_token(CURLY_BRACKET_CLOSED),
