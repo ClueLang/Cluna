@@ -1,10 +1,7 @@
-use crate::{
-    parser::{CodeBlock, ComplexToken, ComplexToken::*, Expression, FunctionArgs},
-    ENV_DEBUGCOMMENTS,
-};
+use crate::parser::{CodeBlock, ComplexToken, ComplexToken::*, Expression, FunctionArgs};
 use std::iter::{Iterator, Peekable};
 
-fn indentate(scope: usize) -> String {
+fn indent(scope: usize) -> String {
     let mut result = String::new();
     for _ in 0..scope {
         result += "\t";
@@ -12,9 +9,9 @@ fn indentate(scope: usize) -> String {
     result
 }
 
-fn indentate_if<T: Iterator>(ctokens: &mut Peekable<T>, scope: usize) -> String {
+fn indent_if<T: Iterator>(ctokens: &mut Peekable<T>, scope: usize) -> String {
     match ctokens.peek() {
-        Some(_) => format!("\n{}", indentate(scope)),
+        Some(_) => format!("\n{}", indent(scope)),
         None => String::new(),
     }
 }
@@ -61,7 +58,7 @@ fn compile_function(
     let args = compile_list(args, ", ", &mut |(arg, default)| {
         if let Some((default, _)) = default {
             let default = compile_expression(scope + 2, names, default);
-            let pre = indentate(scope + 1);
+            let pre = indent(scope + 1);
             code = format!(
                 "\n{}if {} == nil then\n{}\t{} = {}\n{}}}{}",
                 pre, arg, pre, arg, default, pre, code
@@ -74,15 +71,9 @@ fn compile_function(
 
 fn compile_code_block(scope: usize, start: &str, block: CodeBlock) -> String {
     let code = compile_tokens(scope + 1, block.code);
-    let pre = indentate(scope);
-    if arg!(ENV_DEBUGCOMMENTS) {
-        format!(
-            "{}\n{}\t--{}->{}\n{}\n{}",
-            start, pre, block.start, block.end, code, pre
-        )
-    } else {
-        format!("{}\n{}\n{}", start, code, pre)
-    }
+    let pre = indent(scope);
+
+    format!("{}\n{}\n{}", start, code, pre)
 }
 
 fn compile_identifier(scope: usize, names: Option<&Vec<String>>, expr: Expression) -> String {
@@ -139,7 +130,7 @@ fn compile_expression(mut scope: usize, names: Option<&Vec<String>>, expr: Expre
             TABLE { values, metas } => {
                 scope += 1;
                 let mut prevline = 0usize;
-                let pre1 = indentate(scope);
+                let pre1 = indent(scope);
                 let values = if values.is_empty() {
                     String::new()
                 } else {
@@ -156,7 +147,7 @@ fn compile_expression(mut scope: usize, names: Option<&Vec<String>>, expr: Expre
                     }) + "\n"
                 };
                 prevline = 0;
-                let pre2 = indentate(scope - 1);
+                let pre2 = indent(scope - 1);
                 if metas.is_empty() {
                     scope -= 1;
 
@@ -177,7 +168,7 @@ fn compile_expression(mut scope: usize, names: Option<&Vec<String>>, expr: Expre
             }
             LAMBDA { args, code } => {
                 let (code, args) = compile_function(scope, names, args, code);
-                format!("function({}){}end", args, code)
+                format!("fn({}){{{}}}", args, code)
             }
             IDENT { expr, .. } => compile_identifier(scope, names, expr),
             CALL(args) => format!("({})", compile_expressions(scope, names, args)),
@@ -236,7 +227,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                 values,
                 line: _,
             } => {
-                let end = indentate_if(ctokens, scope);
+                let end = indent_if(ctokens, scope);
                 let pre = if local { "local " } else { "" };
                 if local && values.is_empty() {
                     format!("{}{}{}", pre, compile_identifiers(names), end)
@@ -261,7 +252,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                 });
                 let names = compile_identifiers(names);
 
-                format!("{} = {}{}", names, values, indentate_if(ctokens, scope))
+                format!("{} = {}{}", names, values, indent_if(ctokens, scope))
             }
             FUNCTION {
                 local,
@@ -270,7 +261,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                 code,
             } => {
                 let pre = if local { "local " } else { "" };
-                let end = indentate_if(ctokens, scope);
+                let end = indent_if(ctokens, scope);
                 let name = compile_expression(scope, None, name);
                 let (code, args) = compile_function(scope, None, args, code);
                 format!("{}fn {}({}){{{}}}{}", pre, name, args, code, end)
@@ -285,7 +276,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                 next,
             } => {
                 let code = compile_else_if_chain(scope, condition, code, next);
-                format!("{}}}{}", code, indentate_if(ctokens, scope))
+                format!("{}}}{}", code, indent_if(ctokens, scope))
             }
             WHILE_LOOP { condition, code } => {
                 let condition = compile_expression(scope, None, condition);
@@ -294,7 +285,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                     "while {} {}}}{}",
                     condition,
                     code,
-                    indentate_if(ctokens, scope)
+                    indent_if(ctokens, scope)
                 )
             }
             REPEAT_UNTIL { condition, code } => {
@@ -304,7 +295,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                     "loop {{{}}} until {}{}",
                     code,
                     condition,
-                    indentate_if(ctokens, scope)
+                    indent_if(ctokens, scope)
                 )
             }
             FOR_LOOP {
@@ -318,7 +309,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                 let endexpr = compile_expression(scope, None, end);
                 let alter = compile_expression(scope, None, alter);
                 let code = compile_code_block(scope, "", code);
-                let end = indentate_if(ctokens, scope);
+                let end = indent_if(ctokens, scope);
                 format!(
                     "for {} = {}, {}, {} {{{}}}{}",
                     iterator, start, endexpr, alter, code, end
@@ -337,26 +328,26 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                     iterators,
                     expr,
                     code,
-                    indentate_if(ctokens, scope)
+                    indent_if(ctokens, scope)
                 )
             }
             IDENT { expr, line: _ } => {
                 let expr = compile_identifier(scope, None, expr);
-                format!("{};{}", expr, indentate_if(ctokens, scope))
+                format!("{};{}", expr, indent_if(ctokens, scope))
             }
             SYMBOL(lexeme) => lexeme,
             CALL(args) => {
                 format!(
                     "({}){}",
                     compile_expressions(scope, None, args),
-                    indentate_if(ctokens, scope)
+                    indent_if(ctokens, scope)
                 )
             }
             EXPR(expr) => format!("({})", compile_expression(scope, None, expr)),
             DO_BLOCK(code) => format!(
                 "{}}}{}",
                 compile_code_block(scope, "{", code),
-                indentate_if(ctokens, scope)
+                indent_if(ctokens, scope)
             ),
             RETURN_EXPR(exprs) => {
                 if let Some(exprs) = exprs {
@@ -365,7 +356,7 @@ pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
                     String::from("return")
                 }
             }
-            BREAK_LOOP => String::from("break") + &indentate_if(ctokens, scope),
+            BREAK_LOOP => String::from("break") + &indent_if(ctokens, scope),
             _ => {
                 panic!("Unexpected ComplexToken {:?} found", t)
             }

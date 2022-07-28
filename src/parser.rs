@@ -566,7 +566,7 @@ impl ParserInfo {
                         } else {
                             Vec::new()
                         };
-                        let code = self.build_code_block(DO_TYPE)?;
+                        let code = self.build_code_block(NONE_TYPE)?;
                         expr.push_back(LAMBDA { args, code });
                         if self.check_val() {
                             break t;
@@ -781,6 +781,7 @@ impl ParserInfo {
                             ROUND_BRACKET_CLOSED => self.current -= 1,
                             _ => {
                                 let t = self.peek(0);
+
                                 return Err(self.expected(")", &t.lexeme, t.line));
                             }
                         }
@@ -791,7 +792,9 @@ impl ParserInfo {
                     args.push((name.lexeme, None));
                     false
                 }
-                _ => return Err(self.expected(")", &t.lexeme, t.line)),
+                _ => {
+                    return Err(self.expected(")", &t.lexeme, t.line));
+                }
             }
         } {}
         Ok(args)
@@ -878,10 +881,6 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
                     value = i.build_variables(local, t.line)?;
                 }
                 i.expr.push_back(value);
-            }
-            FN => {
-                let function = i.build_function(false)?;
-                i.expr.push_back(function);
             }
             METHOD => {
                 let name = {
@@ -1034,6 +1033,10 @@ pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, 
                     Some(i.find_expressions(COMMA, None)?)
                 };
                 i.expr.push_back(RETURN_EXPR(expr));
+            }
+            FN => {
+                let function = i.build_function(false)?;
+                i.expr.push_back(function);
             }
             EOF => break,
             _ => return Err(i.expected("<end>", &t.lexeme, t.line)),
