@@ -507,7 +507,7 @@ impl ParserInfo {
                 }
                 NOT_EQUAL => {
                     self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(String::from("~=")))
+                    expr.push_back(SYMBOL(String::from("!=")))
                 }
                 HASHTAG => {
                     if match self.peek(0).kind {
