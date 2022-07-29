@@ -251,7 +251,7 @@ impl CodeInfo {
             self.current += 1;
         }
         if self.ended() {
-            self.warning("Unterminated string");
+            self.warning("Unterminated multiline string");
         } else {
             self.current += 1;
             let literal: String = self.substr(self.start + 2, self.current);
@@ -336,13 +336,10 @@ impl CommentInfo {
         while !self.ended() && self.peek(0) != '\n' {
             self.current += 1;
         }
-        if self.ended() {
-            self.warning("Unterminated string");
-        } else {
-            self.current += 1;
-            let literal: String = self.substr(self.start, self.current);
-            self.add_literal_token(COMMENT, literal);
-        }
+
+        self.current += 1;
+        let literal: String = self.substr(self.start, self.current);
+        self.add_literal_token(COMMENT, literal);
     }
 
     fn read_multiline_comment(&mut self) {
@@ -397,12 +394,12 @@ pub fn scan_code(code: String, filename: String) -> Result<(Vec<Token>, Vec<Comm
                     '[' => {
                         if i.peek(2) == '[' {
                             comments.read_multiline_comment();
-                            i.current = comments.current + 1;
+                            i.current = comments.current;
                         }
                     }
                     _ => {
                         comments.read_comment();
-                        i.current = comments.current + 1;
+                        i.current = comments.current;
                     }
                 },
                 _ => i.add_token(MINUS),

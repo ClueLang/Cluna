@@ -378,7 +378,7 @@ impl ParserInfo {
     fn check_operator(&mut self, t: &Token, checkback: bool) -> Result<(), String> {
         if match self.peek(0).kind {
             NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE | MINUS
-            | NIL | NOT | HASHTAG | ROUND_BRACKET_OPEN | THREEDOTS => false,
+            | NIL | NOT | HASHTAG | ROUND_BRACKET_OPEN | THREEDOTS | TILDE => false,
             _ => true,
         } {
             return Err(self.error(
@@ -418,8 +418,9 @@ impl ParserInfo {
     }
 
     fn build_tilde_operator(&mut self, t: Token, expr: &mut Expression) -> Result<(), String> {
-        let isXor = self.check_operator(&t, true).is_ok();
-        if isXor {
+        self.testing = Some(0);
+        let is_xor = self.check_operator(&t, true).is_ok();
+        if is_xor {
             self.build_bitwise_op(t, expr)?;
         } else {
             self.check_operator(&t, false)?;

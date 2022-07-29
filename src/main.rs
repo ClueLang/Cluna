@@ -79,6 +79,7 @@ struct Cli {
 fn compile_code(code: String, name: String, scope: usize) -> Result<String, String> {
     let time = Instant::now();
     let (tokens, _comments): (Vec<Token>, Vec<Comment>) = scan_code(code, name.clone())?;
+
     if arg!(ENV_TOKENS) {
         println!("Scanned tokens of file \"{}\":\n{:#?}", name, tokens);
     }
