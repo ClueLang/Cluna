@@ -40,45 +40,45 @@ struct Cli {
     /// The path to the directory where the *.lua files are located.
     /// Every directory inside the given directory will be checked too.
     /// If the path points to a single *.lua file, only that file will be compiled.
-    #[clap(required_unless_present = "license")]
+    #[clap(required_unless_present = "license", value_parser)]
     path: Option<String>,
 
     /// The name the output file will have
-    #[clap(default_value = "main", value_name = "OUTPUT FILE NAME")]
+    #[clap(default_value = "main", value_name = "OUTPUT FILE NAME", value_parser)]
     outputname: String,
 
     /// Print license information
-    #[clap(short = 'L', long, display_order = 1000)]
+    #[clap(short = 'L', long, display_order = 1000, value_parser)]
     license: bool,
 
     /// Print list of detected tokens in compiled files
-    #[clap(long)]
+    #[clap(long, value_parser)]
     tokens: bool,
 
     /// Print syntax structure of the tokens of the compiled files
-    #[clap(long)]
+    #[clap(long, value_parser)]
     r#struct: bool,
 
     /// Print output Clue code in the console
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     output: bool,
 
     /// Don't save compiled code
-    #[clap(short = 'D', long)]
+    #[clap(short = 'D', long, value_parser)]
     dontsave: bool,
 
     /// Treat PATH not as a path but as clue code
-    #[clap(short, long)]
+    #[clap(short, long, value_parser)]
     pathiscode: bool,
 
     /// Don't use multiline strings in the output
-    #[clap(long)]
+    #[clap(long, value_parser)]
     nomultiline: bool,
 }
 
 fn compile_code(code: String, name: String, scope: usize) -> Result<String, String> {
     let time = Instant::now();
-    let (tokens, _comments): (Vec<Token>, Vec<Comment>) = scan_code(code, name.clone())?;
+    let (tokens, _comments) = scan_code(code, name.clone())?;
 
     if arg!(ENV_TOKENS) {
         println!("Scanned tokens of file \"{}\":\n{:#?}", name, tokens);
