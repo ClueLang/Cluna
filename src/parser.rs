@@ -243,30 +243,30 @@ impl ParserInfo {
         Ok(())
     }
 
-    fn build_call(&mut self) -> Result<ComplexToken, String> {
+    fn build_call(&mut self) -> Result<(ComplexToken, usize), String> {
         self.current += 2;
         let t = self.look_back(0);
         let has_round_brackets = t.kind == ROUND_BRACKET_OPEN;
         if !has_round_brackets {
             self.current -= 1;
         }
+        let mut more = 0;
         let args: Vec<Expression> = if self.advance_if(ROUND_BRACKET_CLOSED) {
             Vec::new()
         } else if has_round_brackets {
             self.find_expressions(Some(COMMA), Some((ROUND_BRACKET_CLOSED, ")")))?
         } else {
             let exprs = self.find_expressions(None, None)?;
-            if exprs.len() < 1 {
-                self.error(
-                    "Function call without brackets can't have more than one argument",
-                    t.line,
-                );
+
+            if exprs.len() > 1 {
+                self.current -= exprs.len() + 1;
+                more += exprs.len() - 1;
             }
 
-            exprs
+            exprs[0..=0].to_vec()
         };
 
-        Ok(CALL(args))
+        Ok((CALL(args), more))
     }
 
     fn find_expressions(
@@ -285,9 +285,13 @@ impl ParserInfo {
                         return self.assert_end(&t, end, exprs);
                     }
                 }
-                _ => {
-                    return self.assert_end(&t, end, exprs);
-                }
+                _ => match t.kind {
+                    NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE
+                    | NIL | NOT | HASHTAG | CURLY_BRACKET_OPEN | THREEDOTS => {}
+                    _ => {
+                        return Ok(exprs);
+                    }
+                },
             }
         }
     }
@@ -475,11 +479,13 @@ impl ParserInfo {
         Ok(())
     }
 
-    fn check_val(&mut self) -> bool {
+    fn check_val(&mut self, ignore_token: bool) -> bool {
         match self.peek(0).kind {
             NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE | NIL | NOT
             | HASHTAG | CURLY_BRACKET_OPEN | THREEDOTS => {
-                self.current += 1;
+                if ignore_token {
+                    self.current += 1
+                };
                 true
             }
             _ => false,
@@ -498,13 +504,12 @@ impl ParserInfo {
         let mut expr = Expression::new();
         let last = loop {
             let t = self.advance();
-
             match t.kind {
                 IDENTIFIER => {
                     let fname = self.build_identifier()?;
                     self.current -= 1;
                     expr.push_back(fname);
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break t;
                     }
                 }
@@ -515,7 +520,7 @@ impl ParserInfo {
                         }
                     }
                     expr.push_back(self.build_table()?);
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break t;
                     }
                 }
@@ -565,19 +570,19 @@ impl ParserInfo {
                 }
                 THREEDOTS | NUMBER | TRUE | FALSE | NIL => {
                     expr.push_back(SYMBOL(t.lexeme.clone()));
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break t;
                     }
                 }
                 STRING => {
                     expr.push_back(SYMBOL(format!("\"{}\"", t.lexeme)));
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break t;
                     }
                 }
                 MULTILINE_STRING => {
                     expr.push_back(SYMBOL(format!("[[{}]]", t.lexeme)));
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break t;
                     }
                 }
@@ -603,7 +608,7 @@ impl ParserInfo {
                         };
                         let code = self.build_code_block(NONE_TYPE)?;
                         expr.push_back(LAMBDA { args, code });
-                        if self.check_val() {
+                        if self.check_val(false) {
                             break t;
                         }
                     }
@@ -636,7 +641,7 @@ impl ParserInfo {
                 IDENTIFIER => {
                     expr.push_back(SYMBOL(t.lexeme));
 
-                    if self.check_function_call() && self.check_val() {
+                    if self.check_function_call() && self.check_val(false) {
                         break;
                     }
                 }
@@ -668,7 +673,7 @@ impl ParserInfo {
                 IDENTIFIER => {
                     expr.push_back(SYMBOL(t.lexeme));
 
-                    if self.check_function_call() && self.check_val() {
+                    if self.check_function_call() && self.check_val(false) {
                         break;
                     }
                 }
@@ -685,16 +690,20 @@ impl ParserInfo {
                     expr.push_back(SYMBOL(String::from("[")));
                     expr.push_back(EXPR(qexpr));
                     expr.push_back(SYMBOL(String::from("]")));
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break;
                     }
                 }
                 ROUND_BRACKET_OPEN | MULTILINE_STRING | STRING | CURLY_BRACKET_OPEN => {
                     self.current -= 2;
-                    println!("call");
-                    expr.push_back(self.build_call()?);
+                    let (func, more) = self.build_call()?;
+                    expr.push_back(func);
+                    for _ in 0..more {
+                        let (func, _) = self.build_call()?;
+                        expr.push_back(func);
+                    }
 
-                    if self.check_val() {
+                    if self.check_val(false) {
                         break;
                     }
                 }
