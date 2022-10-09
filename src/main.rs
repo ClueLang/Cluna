@@ -178,14 +178,8 @@ fn main() -> Result<(), String> {
     }
     Ok(())
 }
-
 #[cfg(test)]
 mod test {
-    use crate::compile_folder;
-    use std::path::Path;
-
-    #[test]
-    fn compile() {
-        compile_folder(Path::new("tests/"), String::new()).unwrap();
-    }
+    use tests_proc_macro::gen_tests;
+    gen_tests!("tests");
 }
