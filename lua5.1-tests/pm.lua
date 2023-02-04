@@ -184,14 +184,14 @@ assert(string.gsub("x and x and x", "x", function() t.n = t.n + 1; return t[t.n]
 
 t = { n = 0 }
 string.gsub("first second word", "%w%w*", function(w) t.n = t.n + 1;
-t[t.n] = w
+  t[t.n] = w
 end)
 assert(t[1] == "first" and t[2] == "second" and t[3] == "word" and t.n == 3)
 
 t = { n = 0 }
 assert(string.gsub("first second word", "%w+",
   function(w) t.n = t.n + 1;
-  t[t.n] = w
+    t[t.n] = w
   end, 2) == "first second word")
 assert(t[1] == "first" and t[2] == "second" and t[3] == nil)
 
