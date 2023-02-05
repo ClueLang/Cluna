@@ -1,10 +1,4 @@
-// list of keywords in lua
-const KEYWORDS: &[&str] = &[
-    "and", "break", "do", "else", "elseif", "end", "false", "for", "function", "if", "in", "local",
-    "nil", "not", "or", "repeat", "return", "then", "true", "until", "while",
-];
-
-#[derive(Debug)]
+#[derive(Debug,Clone, Copy,PartialEq)]
 #[rustfmt::skip]
 pub enum TokenType {
     // tokens
@@ -24,20 +18,27 @@ pub enum TokenType {
     Eof
 }
 
-#[derive(Debug)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Token {
-    pub token_type: TokenType,
-    pub lexeme: String,
-    pub line: usize,
+    kind: TokenType,
+    lexeme: String,
+    line: usize,
 }
 
 impl Token {
-    pub fn new(token_type: TokenType, lexeme: String, line: usize) -> Self {
-        Self {
-            token_type,
-            lexeme,
-            line,
-        }
+    pub fn new(kind: TokenType, lexeme: String, line: usize) -> Self {
+        Self { kind, lexeme, line }
+    }
+    pub fn kind(&self) -> TokenType {
+        self.kind
+    }
+
+    pub fn lexeme(&self) -> &str {
+        &self.lexeme
+    }
+
+    pub fn line(&self) -> usize {
+        self.line
     }
 }
 
@@ -183,14 +184,7 @@ impl Lexer {
         let start = self.current;
         let mut equals_count = 0;
 
-        if !matches!(self.peek(), Some('[' | '=')) {
-            return Err(format!(
-                "Error: Invalid multiline string at {}:{}",
-                self.line, self.column
-            ));
-        }
         while let Some(c) = self.advance() {
-            dbg!(c);
             if self.done() {
                 return Err(format!(
                     "Error: Unterminated multiline string at {}:{}",
@@ -440,14 +434,7 @@ impl Lexer {
     fn read_multiline_comment(&mut self) -> Result<(), String> {
         let mut equals_count = 0;
 
-        if !matches!(self.peek(), Some('[' | '=')) {
-            return Err(format!(
-                "Error: Invalid block comment at {}:{}",
-                self.line, self.column
-            ));
-        }
         while let Some(c) = self.advance() {
-            dbg!(c);
             if self.done() {
                 return Err(format!(
                     "Error: Unterminated block comment at {}:{}",
@@ -472,20 +459,23 @@ impl Lexer {
                 ));
             }
 
-            if c == ']' {
-                let mut equals_encountered = 0;
-                while let Some(c) = self.peek() {
-                    if c == '=' {
-                        equals_encountered += 1;
-                        self.advance();
-                    } else {
-                        break;
-                    }
-                }
+            if c == '-' && self.peek() == Some('-') && self.peek_at(2) == Some(']') {
+                self.advance_to(2);
+            }
 
-                if equals_encountered == equals_count && self.peek() == Some(']') {
+            let mut equals_encountered = 0;
+            while let Some(c) = self.peek() {
+                if c == '=' {
+                    equals_encountered += 1;
+                    self.advance();
+                } else {
                     break;
                 }
+            }
+
+            if equals_encountered == equals_count && self.peek() == Some(']') {
+                self.advance();
+                break;
             }
         }
 
@@ -496,104 +486,108 @@ impl Lexer {
 
 pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
     let mut lexer = Lexer::new(code);
-    while !lexer.done() {
-        if let Some(c) = lexer.advance() {
-            match c {
-                ' ' | '\r' | '\t' | '\n' => {}
-                '(' => lexer.add_token(TokenType::LeftParen, 1),
-                ')' => lexer.add_token(TokenType::RightParen, 1),
-                '{' => lexer.add_token(TokenType::LeftBrace, 1),
-                '}' => lexer.add_token(TokenType::RightBrace, 1),
-                '[' => {
-                    if lexer.peek().map_or(false, |c| c == '[' || c == '=') {
-                        lexer.read_multiline_string()?;
-                        continue;
-                    }
-                    lexer.add_token(TokenType::LeftBracket, 1)
+    while let Some(c) = lexer.advance() {
+        match c {
+            ' ' | '\r' | '\t' | '\n' => {}
+            '(' => lexer.add_token(TokenType::LeftParen, 1),
+            ')' => lexer.add_token(TokenType::RightParen, 1),
+            '{' => lexer.add_token(TokenType::LeftBrace, 1),
+            '}' => lexer.add_token(TokenType::RightBrace, 1),
+            '[' => {
+                if lexer.peek().map_or(false, |c| c == '[' || c == '=') {
+                    lexer.read_multiline_string()?;
+                    continue;
                 }
-                ']' => lexer.add_token(TokenType::RightBracket, 1),
-                '+' => lexer.add_token(TokenType::Plus, 1),
-                '-' => match (lexer.peek(), lexer.peek_at(2)) {
-                    (Some('-'), Some('[')) => {
+                lexer.add_token(TokenType::LeftBracket, 1)
+            }
+            ']' => lexer.add_token(TokenType::RightBracket, 1),
+            '+' => lexer.add_token(TokenType::Plus, 1),
+            '-' => match (lexer.peek(), lexer.peek_at(2)) {
+                (Some('-'), Some('[')) => {
+                    if matches!(lexer.peek_at(3), Some('[' | '=')) {
                         lexer.advance_to(2);
                         lexer.read_multiline_comment()?;
                         continue;
-                    }
-                    (Some('-'), _) => {
-                        lexer.advance();
+                    } else {
+                        lexer.advance_to(2);
                         while let Some(c) = lexer.advance() {
                             if c == '\n' {
                                 break;
                             }
                         }
-                        continue;
-                    }
-                    _ => lexer.add_token(TokenType::Minus, 1),
-                },
-                '#' => lexer.add_token(TokenType::Hash, 1),
-                '*' => lexer.add_token(TokenType::Star, 1),
-                '/' => lexer.add_token(TokenType::Slash, 1),
-                '%' => lexer.add_token(TokenType::Percent, 1),
-                '^' => lexer.add_token(TokenType::Caret, 1),
-                '=' => {
-                    if lexer.peek().map_or(false, |c| c == '=') {
-                        lexer.add_token(TokenType::DoubleEquals, 2);
-                    } else {
-                        lexer.add_token(TokenType::Equals, 1);
                     }
                 }
-                '~' => {
-                    if lexer.peek().map_or(false, |c| c == '=') {
-                        lexer.add_token(TokenType::NotEquals, 2);
-                    } else {
-                        lexer.add_token(TokenType::Not, 1);
+                (Some('-'), _) => {
+                    lexer.advance();
+                    while let Some(c) = lexer.advance() {
+                        if c == '\n' {
+                            break;
+                        }
                     }
                 }
-                '<' => {
-                    if lexer.peek().map_or(false, |c| c == '=') {
-                        lexer.add_token(TokenType::LessThanOrEqual, 2);
-                    } else {
-                        lexer.add_token(TokenType::LessThan, 1);
-                    }
-                }
-                '>' => {
-                    if lexer.peek().map_or(false, |c| c == '=') {
-                        lexer.add_token(TokenType::GreaterThanOrEqual, 2);
-                    } else {
-                        lexer.add_token(TokenType::GreaterThan, 1);
-                    }
-                }
-                '.' => match (lexer.peek(), lexer.peek_at(2)) {
-                    (Some('.'), Some('.')) => lexer.add_token_front(TokenType::TripleDot, 3),
-                    (Some('1'..='9'), _) => {
-                        lexer.current -= 1;
-                        lexer.read_number()?
-                    }
-                    (Some('.'), _) => lexer.add_token_front(TokenType::DoubleDot, 2),
-                    _ => lexer.add_token(TokenType::Dot, 1),
-                },
-                ':' => lexer.add_token(TokenType::Colon, 1),
-                ';' => lexer.add_token(TokenType::Semicolon, 1),
-                ',' => lexer.add_token(TokenType::Comma, 1),
-                '"' | '\'' => {
-                    lexer.read_string(c)?;
-                }
-                _ => {
-                    lexer.current -= 1;
-                    if c.is_ascii_digit() {
-                        lexer.read_number()?;
-                    } else if c.is_ascii_alphabetic() || c == '_' {
-                        lexer.read_token()?;
-                    } else {
-                        panic!(
-                            "Error: Unexpected character {c} at {}:{}",
-                            lexer.line, lexer.column
-                        );
-                    }
+                _ => lexer.add_token(TokenType::Minus, 1),
+            },
+            '#' => lexer.add_token(TokenType::Hash, 1),
+            '*' => lexer.add_token(TokenType::Star, 1),
+            '/' => lexer.add_token(TokenType::Slash, 1),
+            '%' => lexer.add_token(TokenType::Percent, 1),
+            '^' => lexer.add_token(TokenType::Caret, 1),
+            '=' => {
+                if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.add_token(TokenType::DoubleEquals, 2);
+                } else {
+                    lexer.add_token(TokenType::Equals, 1);
                 }
             }
-        } else {
-            break;
+            '~' => {
+                if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.add_token(TokenType::NotEquals, 2);
+                } else {
+                    lexer.add_token(TokenType::Not, 1);
+                }
+            }
+            '<' => {
+                if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.add_token(TokenType::LessThanOrEqual, 2);
+                } else {
+                    lexer.add_token(TokenType::LessThan, 1);
+                }
+            }
+            '>' => {
+                if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.add_token(TokenType::GreaterThanOrEqual, 2);
+                } else {
+                    lexer.add_token(TokenType::GreaterThan, 1);
+                }
+            }
+            '.' => match (lexer.peek(), lexer.peek_at(2)) {
+                (Some('.'), Some('.')) => lexer.add_token_front(TokenType::TripleDot, 3),
+                (Some('1'..='9'), _) => {
+                    lexer.current -= 1;
+                    lexer.read_number()?
+                }
+                (Some('.'), _) => lexer.add_token_front(TokenType::DoubleDot, 2),
+                _ => lexer.add_token(TokenType::Dot, 1),
+            },
+            ':' => lexer.add_token(TokenType::Colon, 1),
+            ';' => lexer.add_token(TokenType::Semicolon, 1),
+            ',' => lexer.add_token(TokenType::Comma, 1),
+            '"' | '\'' => {
+                lexer.read_string(c)?;
+            }
+            _ => {
+                lexer.current -= 1;
+                if c.is_ascii_digit() {
+                    lexer.read_number()?;
+                } else if c.is_ascii_alphabetic() || c == '_' {
+                    lexer.read_token()?;
+                } else {
+                    panic!(
+                        "Error: Unexpected character {c} at {}:{}",
+                        lexer.line, lexer.column
+                    );
+                }
+            }
         }
     }
     Ok(lexer.tokens)
