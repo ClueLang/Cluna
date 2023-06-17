@@ -1,4 +1,4 @@
-use probe::lexer::scan_code;
+use probe::{lexer::scan_code, parser::parse_tokens};
 use std::path::Path;
 
 fn main() {
@@ -10,6 +10,8 @@ fn scan<P: AsRef<Path> + Copy>(path: P) -> Result<(), String> {
     let scanned = scan_code(code)?;
     let path = path.as_ref().ancestors().next().unwrap().to_string_lossy() + ".scanned";
     std::fs::write(&*path, format!("{scanned:#?}")).unwrap();
+    let parsed = parse_tokens(&scanned)?;
+    dbg!(parsed);
 
     Ok(())
 }

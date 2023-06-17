@@ -9,7 +9,7 @@ macro_rules! vec_deque {
 }
 
 pub type Expression = VecDeque<ComplexToken>;
-pub type FunctionArgs = Vec<(String, Option<(Expression, usize)>)>;
+pub type FunctionArgs = Vec<String>;
 type OptionalEnd = Option<(TokenType, &'static str)>;
 
 #[derive(Debug, Clone, PartialEq)]
@@ -166,6 +166,21 @@ impl<'a> Parser<'a> {
         }
     }
 
+    fn assert_compare(&self, expected: TokenType, error: &str) -> Result<(), String> {
+        if let Some(t) = self.peek() {
+            if t.kind() != expected {
+                return Err(format!(
+                    "Expected: {} got {} at line {}",
+                    error,
+                    &t.lexeme(),
+                    t.line()
+                ));
+            }
+        }
+
+        Ok(())
+    }
+
     fn assert_end<T>(&mut self, tocheck: &Token, end: OptionalEnd, iftrue: T) -> Result<T, String> {
         if let Some((kind, lexeme)) = end {
             if tocheck.kind() != kind {
@@ -177,6 +192,7 @@ impl<'a> Parser<'a> {
                 ));
             }
         }
+
         Ok(iftrue)
     }
 
@@ -246,14 +262,27 @@ impl<'a> Parser<'a> {
         (self.current > 2).then(|| &self.tokens[self.current - 2])
     }
 
+    fn is_statement(&self) -> bool {
+        use TokenType::*;
+        matches!(
+            self.peek().map(|t| t.kind()),
+            Some(Identifier | Function | Local | If | While | For | Repeat | Do | Return | Break)
+        )
+    }
+
     fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, String> {
         let mut exprs = vec![];
         loop {
             let expr = self.parse_expression(None)?;
             let t = self.current().clone();
+
             exprs.push(expr);
             if t.kind() != TokenType::Comma {
-                return self.assert_end(&t, end, exprs);
+                let exprs = self.assert_end(&t, end, exprs);
+                if self.is_statement() {
+                    self.go_back();
+                }
+                break exprs;
             }
         }
     }
@@ -354,9 +383,9 @@ impl<'a> Parser<'a> {
 
     fn check_val(&mut self) -> bool {
         use TokenType::*;
-        match self.peek().unwrap().kind(){
+        match self.peek().map(|t|t.kind()){
             //literals
-            Number
+            Some(Number
                 | String
                 | MultilineString
                 | Nil
@@ -370,7 +399,7 @@ impl<'a> Parser<'a> {
             // unary operators
                 | Minus
                 | Hash
-                | Not=>{
+                | Not)=>{
                     self.advance();
                     true
                 }
@@ -386,7 +415,7 @@ impl<'a> Parser<'a> {
 
     fn parse_code_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
-        let mut scope = 1;
+        let mut scope = 0;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
@@ -398,7 +427,9 @@ impl<'a> Parser<'a> {
                 End => {
                     if scope == 0 {
                         return Ok(CodeBlock {
-                            code: parse_tokens(&self.tokens[start..self.current])?,
+                            code: parse_tokens(
+                                &self.tokens[start..self.current.saturating_sub(1)],
+                            )?,
                             start,
                             end: self.current,
                         });
@@ -462,40 +493,43 @@ impl<'a> Parser<'a> {
 
         let last = loop {
             use TokenType::*;
-            let t = self.advance().unwrap().clone();
-            match t.kind() {
-                Identifier => {
-                    self.go_back();
-                    let ident = self.parse_identifier()?;
-                    expr.push_back(ident);
+            if let Some(t) = self.advance().cloned() {
+                match t.kind() {
+                    Identifier => {
+                        self.go_back();
+                        let ident = self.parse_identifier()?;
+                        expr.push_back(ident);
 
-                    self.go_back();
-                    if self.check_val() {
-                        break t;
+                        self.go_back();
+                        if self.check_val() {
+                            break t;
+                        }
                     }
-                }
-                TripleDot | Number | True | False | String | MultilineString | Nil => {
-                    expr.push_back(ComplexToken::Symbol(t.lexeme()));
-                    if self.check_val() {
-                        break t;
+                    TripleDot | Number | True | False | String | MultilineString | Nil => {
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if self.check_val() {
+                            break t;
+                        }
                     }
-                }
-                Minus => {
-                    if self
-                        .look_back()
-                        .map(|t| t.kind() == TokenType::Number)
-                        .unwrap_or(false)
-                    {
-                        // this is a binary operator
-                        todo!()
-                    } else {
-                        // this is a unary operator
+                    Minus => {
+                        if self
+                            .look_back()
+                            .map(|t| t.kind() == TokenType::Number)
+                            .unwrap_or(false)
+                        {
+                            // this is a binary operator
+                            todo!()
+                        } else {
+                            // this is a unary operator
 
-                        todo!()
+                            todo!()
+                        }
                     }
-                }
 
-                _ => break t,
+                    _ => break t,
+                }
+            } else {
+                break self.current().clone();
             }
         };
 
@@ -553,30 +587,109 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_function(&mut self, named: bool, local: bool) -> Result<(), String> {
-        todo!()
-    }
+    fn parse_function_args(&mut self) -> Result<FunctionArgs, String> {
+        let mut args = FunctionArgs::new();
+        loop {
+            use TokenType::*;
+            let name = {
+                let t = self.advance().unwrap().clone();
+                match t.kind() {
+                    TokenType::Identifier => t,
+                    TokenType::TripleDot => {
+                        self.assert_compare(TokenType::RightParen, ")")?;
+                        t
+                    }
+                    TokenType::RightParen => {
+                        break;
+                    }
+                    _ => {
+                        return Err(format!(
+                            "Expected identifier got {} at line {}",
+                            t.lexeme(),
+                            t.line()
+                        ));
+                    }
+                }
+            };
 
-    fn parse_local(&mut self) -> Result<(), String> {
-        match self.peek().map(|t| t.kind()) {
-            Some(TokenType::Function) => {
-                self.advance();
-                todo!("Local function")
-            }
-            Some(TokenType::Identifier) => {
-                self.advance();
-                let variable = self.parse_variable(true)?;
-                self.expr.push_back(variable);
-            }
-            _ => {
+            if let Some(t) = self.advance() {
+                match t.kind() {
+                    Comma => args.push(name.lexeme()),
+                    RightParen => {
+                        args.push(name.lexeme());
+                        break;
+                    }
+                    _ => return Err(format!("Expected ',' or ')' got {}", t.lexeme())),
+                }
+            } else {
                 return Err(format!(
-                    "Expected 'function' or identifier got {} at line {}",
-                    self.peek().unwrap().lexeme(),
-                    self.peek().unwrap().line()
-                ))
+                    "Unexpected end of file at line {}. Expected '<args>'",
+                    self.line
+                ));
             }
         }
-        Ok(())
+
+        Ok(args)
+    }
+
+    fn parse_function(&mut self, local: bool) -> Result<ComplexToken, String> {
+        let name = {
+            use TokenType::*;
+
+            let mut expr = Expression::new();
+            loop {
+                let t = self.advance().ok_or("Unexpected end of file")?.clone();
+
+                match t.kind() {
+                    Identifier => {
+                        let nt = self.peek().ok_or("Unexpected end of file")?;
+                        if nt.kind() == Identifier {
+                            return Err(format!(
+                                "Unexpected {} at line {}",
+                                nt.lexeme(),
+                                nt.line()
+                            ));
+                        }
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                    }
+                    Dot | Colon => {
+                        if self
+                            .peek()
+                            .map_or(false, |t| t.kind() == TokenType::Identifier)
+                        {
+                            expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        } else {
+                            return Err(format!(
+                                "{} should only be used when indexing at line {}",
+                                t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    LeftParen => break,
+                    _ => {
+                        return Err(format!(
+                            "Expected identifier, ':' or '.' got {} at line {}",
+                            t.lexeme(),
+                            t.line()
+                        ))
+                    }
+                }
+            }
+            expr
+        };
+
+        let args = self.parse_function_args()?;
+        let body = self.parse_code_block()?;
+
+        Ok(ComplexToken::Function {
+            local,
+            name,
+            args,
+            body,
+            line: self.line,
+            column: self.column,
+        })
     }
 }
 
@@ -585,25 +698,55 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
 
     while let Some(token) = parser.advance() {
         use TokenType::*;
+
         match token.kind() {
-            Local => parser.parse_local()?,
-            Identifier => {}
-            Function => {
-                if parser.peek().map_or(false, |t| t.kind() != Identifier) {
-                    // lambda function
-                    todo!()
-                } else {
-                    // named function
-                    todo!()
+            Local => match parser.peek().map(|t| t.kind()) {
+                Some(TokenType::Function) => {
+                    parser.advance();
+                    let function = parser.parse_function(true)?;
+                    parser.expr.push_back(function);
                 }
+                Some(TokenType::Identifier) => {
+                    parser.advance();
+                    let variable = parser.parse_variable(true)?;
+                    parser.expr.push_back(variable);
+                }
+                _ => {
+                    return Err(format!(
+                        "Expected 'function' or identifier got {} at line {}",
+                        parser.peek().unwrap().lexeme(),
+                        parser.peek().unwrap().line()
+                    ))
+                }
+            },
+            Identifier => {
+                todo!()
             }
-            If => {}
-            While => {}
-            For => {}
-            Repeat => {}
-            Break => {}
-            Do => {}
-            Return => {}
+            Function => {
+                let function = parser.parse_function(false)?;
+                parser.expr.push_back(function);
+            }
+            If => {
+                todo!()
+            }
+            While => {
+                todo!()
+            }
+            For => {
+                todo!()
+            }
+            Repeat => {
+                todo!()
+            }
+            Break => {
+                todo!()
+            }
+            Do => {
+                todo!()
+            }
+            Return => {
+                todo!()
+            }
             _ => Err(format!(
                 "Unexpected token {} at line {}",
                 token.lexeme(),
