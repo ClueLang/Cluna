@@ -33,8 +33,8 @@ impl Token {
         self.kind
     }
 
-    pub fn lexeme(&self) -> &str {
-        &self.lexeme
+    pub fn lexeme(&self) -> String {
+        self.lexeme.clone()
     }
 
     pub fn line(&self) -> usize {
