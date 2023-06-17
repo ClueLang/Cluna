@@ -34,7 +34,7 @@ pub fn gen_tests(input: TokenStream) -> TokenStream {
                     .to_string_lossy()
                     .strip_suffix(".lua")
                     .unwrap();
-            let name = Ident::new_raw(&name, Span::call_site());
+            let name = Ident::new_raw(&format!("{name}_{func}"), Span::call_site());
             let path = Literal::string(&filename);
 
             if let Some(_) = iter.next() {
@@ -44,7 +44,7 @@ pub fn gen_tests(input: TokenStream) -> TokenStream {
             let test = quote! {
                 #[test]
                 fn #name(){
-                    crate::#func(::std::path::Path::new(#path)).unwrap();
+                    #func(::std::path::PathBuf::from(#path)).unwrap();
                 }
             };
             out = quote! {
