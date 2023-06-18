@@ -1,6 +1,6 @@
 [package]
-authors = ["Maiori", "MarkosTh09"]
-description = "Tool to convert Lua code into Clue code\nMade by MarkosTh09 and Maiori"
+authors = ["MarkosTh09"]
+description = "Tool to convert Lua code into Clue code\nMade by MarkosTh09"
 repository = "https://github.com/ClueLang/Probe"
 edition = "2021"
 name = "probe"
@@ -13,5 +13,11 @@ winres = "0.1"
 clap = { version = "4.0.8", features = ["derive"] }
 
 [dev-dependencies]
-insta = { version = "1.29.0" }
+insta = "1.29.0"
 tests_proc_macro = { path = "tests_proc_macro" }
+
+[profile.dev.package.insta]
+opt-level = 3
+
+[profile.dev.package.similar]
+opt-level = 3
