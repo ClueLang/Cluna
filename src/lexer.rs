@@ -3,16 +3,16 @@
 pub enum TokenType {
     // tokens
     Plus, Minus, Star, Slash, Percent, Caret, Hash, Tilde,
-    Equals, DoubleEquals, NotEquals, LessThan, LessThanOrEqual, 
+    Equals, DoubleEquals, NotEquals, LessThan, LessThanOrEqual,
     GreaterThan, GreaterThanOrEqual, Dot, Colon, Semicolon, Comma,
-    LeftParen, RightParen, LeftBrace, RightBrace, LeftBracket, RightBracket, 
+    LeftParen, RightParen, LeftBrace, RightBrace, LeftBracket, RightBracket,
     DoubleDot, TripleDot,
 
     // literals
     Number, String, MultilineString,Identifier,
 
     // keywords
-    And, Break, Do, If, Else, ElseIf, End, True, False, Function, 
+    And, Break, Do, If, Else, ElseIf, End, True, False, Function,
     In, Local, Nil, Not, Or, Repeat, Return, Then, Until, While, For,
 
     Eof
@@ -534,6 +534,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             '^' => lexer.add_token(TokenType::Caret, 1),
             '=' => {
                 if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.advance();
                     lexer.add_token(TokenType::DoubleEquals, 2);
                 } else {
                     lexer.add_token(TokenType::Equals, 1);

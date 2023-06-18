@@ -38,6 +38,7 @@ mod test {
             settings.set_input_file(path.to_string_lossy().to_string());
             settings.set_snapshot_suffix(name);
             settings.set_prepend_module_to_snapshot(false);
+
             settings
         }};
     }
