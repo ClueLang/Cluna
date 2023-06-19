@@ -1,14 +1,11 @@
 use probe::{lexer::scan_code, parser::parse_tokens};
 use std::path::Path;
 
-fn main() {
-    scan("main.lua").unwrap();
-}
-
-fn scan<P: AsRef<Path> + Copy>(path: P) -> Result<(), String> {
+fn main() -> Result<(), String> {
+    let path = Path::new("main.lua");
     let code = std::fs::read_to_string(path).unwrap();
     let scanned = scan_code(code)?;
-    let path = path.as_ref().ancestors().next().unwrap().to_string_lossy() + ".scanned";
+    let path = path.ancestors().next().unwrap().to_string_lossy() + ".scanned";
     std::fs::write(&*path, format!("{scanned:#?}")).unwrap();
     let parsed = parse_tokens(&scanned)?;
     dbg!(parsed);
@@ -55,5 +52,19 @@ mod test {
         Ok(())
     }
 
+    fn parse(path: PathBuf) -> Result<(), String> {
+        let code = std::fs::read_to_string(&path).unwrap();
+        let scanned = scan_code(code)?;
+        let parsed = parse_tokens(&scanned)?;
+        let settings = settings!("parser", path);
+
+        settings.bind(|| {
+            insta::assert_debug_snapshot!(parsed);
+        });
+
+        Ok(())
+    }
+
     gen_tests!("test-data/lua5.1-tests", scan);
+    gen_tests!("test-data/lua5.1-tests", parse);
 }

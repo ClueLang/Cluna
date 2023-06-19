@@ -512,18 +512,7 @@ impl<'a> Parser<'a> {
                         }
                     }
                     Minus => {
-                        if self
-                            .look_back()
-                            .map(|t| t.kind() == TokenType::Number)
-                            .unwrap_or(false)
-                        {
-                            // this is a binary operator
-                            todo!()
-                        } else {
-                            // this is a unary operator
-
-                            todo!()
-                        }
+                        todo!();
                     }
 
                     _ => break t,
@@ -730,7 +719,14 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 todo!()
             }
             While => {
-                todo!()
+                let condition = parser.parse_expression(Some((Do, "do")))?;
+                let body = parser.parse_code_block()?;
+                parser.expr.push_back(ComplexToken::WhileLoop {
+                    condition,
+                    body,
+                    line: parser.line,
+                    column: parser.column,
+                });
             }
             For => {
                 todo!()
@@ -745,7 +741,22 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 todo!()
             }
             Return => {
-                todo!()
+                let exprs = if parser
+                    .peek()
+                    .map_or(false, |t| t.kind() != TokenType::Semicolon)
+                {
+                    Some(parser.find_expressions(None)?)
+                } else {
+                    None
+                };
+                parser.advance_if(TokenType::Semicolon);
+                if !parser.done() {
+                    return Err(format!(
+                        "Return must be the last statement in a block at line {}",
+                        parser.line
+                    ));
+                }
+                parser.expr.push_back(ComplexToken::Return(exprs));
             }
             _ => Err(format!(
                 "Unexpected token {} at line {}",
