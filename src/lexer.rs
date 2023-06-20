@@ -542,6 +542,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             }
             '~' => {
                 if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.advance();
                     lexer.add_token(TokenType::NotEquals, 2);
                 } else {
                     lexer.add_token(TokenType::Not, 1);
@@ -549,6 +550,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             }
             '<' => {
                 if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.advance();
                     lexer.add_token(TokenType::LessThanOrEqual, 2);
                 } else {
                     lexer.add_token(TokenType::LessThan, 1);
@@ -556,6 +558,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             }
             '>' => {
                 if lexer.peek().map_or(false, |c| c == '=') {
+                    lexer.advance();
                     lexer.add_token(TokenType::GreaterThanOrEqual, 2);
                 } else {
                     lexer.add_token(TokenType::GreaterThan, 1);

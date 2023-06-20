@@ -185,7 +185,7 @@ impl<'a> Parser<'a> {
         if let Some((kind, lexeme)) = end {
             if tocheck.kind() != kind {
                 return Err(format!(
-                    "Error: Expected '{}' got '{} at line {}'",
+                    "Error: Expected '{}' got '{}' at line {}",
                     lexeme,
                     &tocheck.lexeme(),
                     tocheck.line(),
@@ -270,6 +270,7 @@ impl<'a> Parser<'a> {
         )
     }
 
+    // FIXME: sometimes advances to the end token
     fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, String> {
         let mut exprs = vec![];
         loop {
@@ -397,10 +398,8 @@ impl<'a> Parser<'a> {
                 | LeftBracket
                 | TripleDot
             // unary operators
-                | Minus
                 | Hash
                 | Not)=>{
-                    self.advance();
                     true
                 }
             _=>{
@@ -453,7 +452,7 @@ impl<'a> Parser<'a> {
 
     fn parse_repeat_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
-        let mut scope = 1;
+        let mut scope = 0;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
@@ -472,7 +471,9 @@ impl<'a> Parser<'a> {
                 Until => {
                     if scope == 0 {
                         return Ok(CodeBlock {
-                            code: parse_tokens(&self.tokens[start..self.current])?,
+                            code: parse_tokens(
+                                &self.tokens[start..self.current.saturating_sub(1)],
+                            )?,
                             start,
                             end: self.current,
                         });
@@ -484,7 +485,7 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Err(format!("Expected 'end' at line {}", self.line))
+        Err(format!("Expected 'until' at line {}", self.line))
     }
 
     fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, String> {
@@ -493,6 +494,7 @@ impl<'a> Parser<'a> {
 
         let last = loop {
             use TokenType::*;
+
             if let Some(t) = self.advance().cloned() {
                 match t.kind() {
                     Identifier => {
@@ -502,17 +504,64 @@ impl<'a> Parser<'a> {
 
                         self.go_back();
                         if self.check_val() {
+                            self.advance();
                             break t;
                         }
                     }
                     TripleDot | Number | True | False | String | MultilineString | Nil => {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
                         if self.check_val() {
+                            self.advance();
                             break t;
                         }
                     }
+                    // unary ops
+                    Hash | Not => {
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if !self.check_val() {
+                            return Err(format!(
+                                "Expected expression after unary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    // binary ops
+                    Plus | Star | Slash | Caret | Percent | DoubleDot | LessThan
+                    | LessThanOrEqual | GreaterThan | GreaterThanOrEqual | DoubleEquals
+                    | NotEquals | And | Or => {
+                        if expr.is_empty() {
+                            return Err(format!(
+                                "Expected expression before binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+
+                        if !self.check_val() {
+                            return Err(format!(
+                                "Expected expression after binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
                     Minus => {
-                        todo!();
+                        if expr.is_empty() {
+                            expr.push_back(ComplexToken::Symbol("-".to_owned()));
+                            continue;
+                        } else {
+                            expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        }
+
+                        if !self.check_val() {
+                            return Err(format!(
+                                "Expected expression after binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
                     }
 
                     _ => break t,
@@ -534,7 +583,7 @@ impl<'a> Parser<'a> {
         self.assert_end(&current, end, expr)
     }
 
-    fn parse_variable(&mut self, local: bool) -> Result<ComplexToken, String> {
+    fn parse_local_variable(&mut self) -> Result<ComplexToken, String> {
         let mut names = vec![];
 
         self.go_back();
@@ -548,32 +597,17 @@ impl<'a> Parser<'a> {
         }
 
         let values = if self.advance_if(TokenType::Equals) {
-            if !local {
-                return Err(format!(
-                    "Expected '=' at line {}",
-                    self.peek().unwrap().lexeme(),
-                ));
-            }
             self.find_expressions(None)?
         } else {
             vec![]
         };
 
-        if local {
-            Ok(ComplexToken::Variable {
-                names,
-                values,
-                line: self.line,
-                column: self.column,
-            })
-        } else {
-            Ok(ComplexToken::Alter {
-                names,
-                values,
-                line: self.line,
-                column: self.column,
-            })
-        }
+        Ok(ComplexToken::Variable {
+            names,
+            values,
+            line: self.line,
+            column: self.column,
+        })
     }
 
     fn parse_function_args(&mut self) -> Result<FunctionArgs, String> {
@@ -697,7 +731,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 }
                 Some(TokenType::Identifier) => {
                     parser.advance();
-                    let variable = parser.parse_variable(true)?;
+                    let variable = parser.parse_local_variable()?;
                     parser.expr.push_back(variable);
                 }
                 _ => {
@@ -709,7 +743,8 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 }
             },
             Identifier => {
-                todo!()
+                let ident = parser.parse_identifier()?;
+                parser.expr.push_back(ident);
             }
             Function => {
                 let function = parser.parse_function(false)?;
@@ -720,6 +755,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
             }
             While => {
                 let condition = parser.parse_expression(Some((Do, "do")))?;
+
                 let body = parser.parse_code_block()?;
                 parser.expr.push_back(ComplexToken::WhileLoop {
                     condition,
@@ -732,13 +768,21 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 todo!()
             }
             Repeat => {
-                todo!()
+                let body = parser.parse_repeat_block()?;
+                let condition = parser.parse_expression(None)?;
+                parser.expr.push_back(ComplexToken::RepeatLoop {
+                    condition,
+                    body,
+                    line: parser.line,
+                    column: parser.column,
+                });
             }
             Break => {
-                todo!()
+                parser.expr.push_back(ComplexToken::Break);
             }
             Do => {
-                todo!()
+                let block = parser.parse_code_block()?;
+                parser.expr.push_back(ComplexToken::DoBlock(block));
             }
             Return => {
                 let exprs = if parser
