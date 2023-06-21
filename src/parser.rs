@@ -412,13 +412,24 @@ impl<'a> Parser<'a> {
     fn parse_code_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
         let mut scope = 0;
+        let mut in_while = false;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
 
             match t.kind() {
-                Function | While | For | Repeat | Do => {
+                Function | For | Repeat => {
                     scope += 1;
+                }
+                Do => {
+                    if !in_while {
+                        scope += 1;
+                    }
+                    in_while = false;
+                }
+                While => {
+                    scope += 1;
+                    in_while = true;
                 }
                 End => {
                     if scope == 0 {
@@ -455,7 +466,7 @@ impl<'a> Parser<'a> {
             use TokenType::*;
 
             match t.kind() {
-                Function | While | For | Repeat => {
+                Function | While | For | Repeat | Do => {
                     scope += 1;
                 }
                 End => {
@@ -600,6 +611,7 @@ impl<'a> Parser<'a> {
         } else {
             vec![]
         };
+        self.advance_if(TokenType::Semicolon);
 
         Ok(ComplexToken::Variable {
             names,
