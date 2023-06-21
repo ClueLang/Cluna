@@ -185,7 +185,7 @@ impl<'a> Parser<'a> {
         if let Some((kind, lexeme)) = end {
             if tocheck.kind() != kind {
                 return Err(format!(
-                    "Error: Expected '{}' got '{}' at line {}",
+                    "Expected '{}' got '{}' at line {}",
                     lexeme,
                     &tocheck.lexeme(),
                     tocheck.line(),
@@ -261,7 +261,7 @@ impl<'a> Parser<'a> {
     fn look_back(&self) -> Option<&Token> {
         (self.current > 2).then(|| &self.tokens[self.current - 2])
     }
-
+    #[inline]
     fn is_statement(&self) -> bool {
         use TokenType::*;
         matches!(
@@ -270,19 +270,16 @@ impl<'a> Parser<'a> {
         )
     }
 
-    // FIXME: sometimes advances to the end token
     fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, String> {
         let mut exprs = vec![];
         loop {
             let expr = self.parse_expression(None)?;
+
             let t = self.current().clone();
 
             exprs.push(expr);
             if t.kind() != TokenType::Comma {
                 let exprs = self.assert_end(&t, end, exprs);
-                if self.is_statement() {
-                    self.go_back();
-                }
                 break exprs;
             }
         }
@@ -420,7 +417,7 @@ impl<'a> Parser<'a> {
             use TokenType::*;
 
             match t.kind() {
-                Function | While | For | Repeat => {
+                Function | While | For | Repeat | Do => {
                     scope += 1;
                 }
                 End => {
@@ -564,7 +561,10 @@ impl<'a> Parser<'a> {
                         }
                     }
 
-                    _ => break t,
+                    _ => {
+                        self.go_back();
+                        break t;
+                    }
                 }
             } else {
                 break self.current().clone();
@@ -578,9 +578,8 @@ impl<'a> Parser<'a> {
                 last.line()
             ));
         }
-        let current = self.current().clone();
 
-        self.assert_end(&current, end, expr)
+        self.assert_end(&last, end, expr)
     }
 
     fn parse_local_variable(&mut self) -> Result<ComplexToken, String> {
@@ -751,10 +750,11 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 parser.expr.push_back(function);
             }
             If => {
-                todo!()
+                todo!("if statement not yet implemented")
             }
             While => {
                 let condition = parser.parse_expression(Some((Do, "do")))?;
+                parser.advance();
 
                 let body = parser.parse_code_block()?;
                 parser.expr.push_back(ComplexToken::WhileLoop {

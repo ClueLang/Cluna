@@ -15,6 +15,8 @@ pub enum TokenType {
     And, Break, Do, If, Else, ElseIf, End, True, False, Function,
     In, Local, Nil, Not, Or, Repeat, Return, Then, Until, While, For,
 
+    // Unsupported: Goto, Labels
+
     Eof
 }
 
@@ -317,6 +319,12 @@ impl Lexer {
                 "while" => self
                     .tokens
                     .push(Token::new(TokenType::While, lexeme, self.line)),
+                "goto" => {
+                    return Err(format!(
+                        "Goto is unsupported in clue at {}:{}",
+                        self.line, self.column
+                    ))
+                }
                 _ => self
                     .tokens
                     .push(Token::new(TokenType::Identifier, lexeme, self.line)),
@@ -573,7 +581,15 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                 (Some('.'), _) => lexer.add_token_front(TokenType::DoubleDot, 2),
                 _ => lexer.add_token(TokenType::Dot, 1),
             },
-            ':' => lexer.add_token(TokenType::Colon, 1),
+            ':' => {
+                if lexer.peek().map_or(false, |c| c == ':') {
+                    return Err(format!(
+                        "Labels are not supported at {}:{}",
+                        lexer.line, lexer.column
+                    ));
+                }
+                lexer.add_token(TokenType::Colon, 1)
+            }
             ';' => lexer.add_token(TokenType::Semicolon, 1),
             ',' => lexer.add_token(TokenType::Comma, 1),
             '"' | '\'' => {
