@@ -274,13 +274,12 @@ impl<'a> Parser<'a> {
         let mut exprs = vec![];
         loop {
             let expr = self.parse_expression(None)?;
-
+            self.advance_if(TokenType::Comma);
             let t = self.current().clone();
-
             exprs.push(expr);
+
             if t.kind() != TokenType::Comma {
-                let exprs = self.assert_end(&t, end, exprs);
-                break exprs;
+                return self.assert_end(&t, end, exprs);
             }
         }
     }
@@ -725,6 +724,10 @@ impl<'a> Parser<'a> {
             column: self.column,
         })
     }
+
+    fn parse_if_else_chain(&mut self) -> Result<ComplexToken, String> {
+        todo!()
+    }
 }
 
 pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
@@ -762,7 +765,8 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 parser.expr.push_back(function);
             }
             If => {
-                todo!("if statement not yet implemented")
+                let ifs = parser.parse_if_else_chain()?;
+                parser.expr.push_back(ifs);
             }
             While => {
                 let condition = parser.parse_expression(Some((Do, "do")))?;
@@ -806,6 +810,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                     None
                 };
                 parser.advance_if(TokenType::Semicolon);
+
                 if !parser.done() {
                     return Err(format!(
                         "Return must be the last statement in a block at line {}",

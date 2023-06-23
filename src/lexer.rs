@@ -341,9 +341,11 @@ impl Lexer {
     fn read_number(&mut self) -> Result<(), String> {
         let start = self.current;
         let mut digit_encountered = false;
-        let mut e_encountered = false;
-        let mut hex_encountered = false;
+
+        let mut is_scientific = false;
+        let mut is_hex = false;
         let mut sign_encountered = false;
+        let mut partial = false;
 
         while let Some(c) = self.advance() {
             match c {
@@ -351,24 +353,52 @@ impl Lexer {
                     digit_encountered = true;
                 }
                 '.' => {
-                    if !digit_encountered && !self.peek().map_or(false, |c| c.is_ascii_digit()) {
+                    if is_scientific {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",
                             self.line, self.column
                         ));
+                    }
+
+                    if is_hex
+                        && !digit_encountered
+                        && !self.peek().map_or(false, |c| c.is_ascii_hexdigit())
+                    {
+                        return Err(format!(
+                            "Error: Malformed number at {}:{}",
+                            self.line, self.column
+                        ));
+                    }
+
+                    if !digit_encountered {
+                        partial = true;
+
+                        if !self.peek().map_or(false, |c| c.is_ascii_digit()) {
+                            return Err(format!(
+                                "Error: Malformed number at {}:{}",
+                                self.line, self.column
+                            ));
+                        }
                     }
                 }
                 'x' | 'X' => {
-                    if !self.look_back().map_or(false, |c| c == '0') {
+                    if !self.look_back().map_or(false, |c| c == '0')
+                        || is_scientific
+                        || is_hex
+                        || !self
+                            .peek()
+                            .map_or(false, |c| c.is_ascii_hexdigit() || c == '.')
+                    {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",
                             self.line, self.column
                         ));
                     }
-                    hex_encountered = true;
+                    is_hex = true;
+                    digit_encountered = false;
                 }
                 'e' | 'E' => {
-                    if hex_encountered {
+                    if is_hex {
                         continue;
                     }
 
@@ -376,7 +406,7 @@ impl Lexer {
                         || !self
                             .peek()
                             .map_or(false, |c| c.is_ascii_digit() || c == '+' || c == '-')
-                        || e_encountered
+                        || is_scientific
                     {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",
@@ -386,10 +416,10 @@ impl Lexer {
                     if self.peek().map_or(false, |c| c == '+' || c == '-') {
                         self.advance();
                     }
-                    e_encountered = true;
+                    is_scientific = true;
                 }
                 'a'..='f' | 'A'..='F' => {
-                    if !hex_encountered {
+                    if !is_hex {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",
                             self.line, self.column
@@ -397,7 +427,7 @@ impl Lexer {
                     }
                 }
                 '+' | '-' => {
-                    if !e_encountered {
+                    if !is_scientific {
                         self.go_back();
                         break;
                     }
@@ -417,7 +447,7 @@ impl Lexer {
             }
         }
 
-        if e_encountered
+        if is_scientific
             && !(self.source[self.current - 1].is_ascii_digit()
                 || self.peek().map_or(false, |c| c.is_ascii_digit()))
         {
@@ -434,7 +464,17 @@ impl Lexer {
             ));
         }
 
-        self.add_token(TokenType::Number, self.current - start);
+        let len = self.current - start;
+        let mut lexeme: String = self.source[self.current - len..self.current]
+            .iter()
+            .collect();
+
+        if partial && !is_hex {
+            lexeme.insert(0, '0');
+        }
+
+        self.tokens
+            .push(Token::new(TokenType::Number, lexeme, self.line));
 
         Ok(())
     }
