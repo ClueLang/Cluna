@@ -111,6 +111,7 @@ struct Parser<'a> {
 }
 
 impl<'a> Parser<'a> {
+    #[inline]
     pub fn new(tokens: &'a [Token]) -> Self {
         Self {
             tokens,
@@ -121,6 +122,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    #[inline]
     fn done(&self) -> bool {
         self.current >= self.tokens.len()
     }
@@ -254,6 +256,7 @@ impl<'a> Parser<'a> {
         }
     }
 
+    #[inline]
     fn current(&self) -> &Token {
         &self.tokens[self.current.saturating_sub(1)]
     }
@@ -261,6 +264,7 @@ impl<'a> Parser<'a> {
     fn look_back(&self) -> Option<&Token> {
         (self.current > 2).then(|| &self.tokens[self.current - 2])
     }
+
     #[inline]
     fn is_statement(&self) -> bool {
         use TokenType::*;
@@ -295,7 +299,7 @@ impl<'a> Parser<'a> {
             .map(|t| t.kind() != TokenType::LeftParen)
             .unwrap_or(false);
         if is_implicit {
-            let mut expr = Expression::with_capacity(8);
+            let mut expr = Expression::new();
             if self.current().kind() == TokenType::RightBrace {
                 expr.push_back(self.parse_table()?);
             } else {
@@ -408,6 +412,29 @@ impl<'a> Parser<'a> {
         todo!()
     }
 
+    fn parse_code_block_common(scope: &mut usize, in_while: &mut bool, t: &Token) -> bool {
+        use TokenType::*;
+
+        match t.kind() {
+            Function | For | Repeat | If => {
+                *scope += 1;
+                true
+            }
+            Do => {
+                if !*in_while {
+                    *scope += 1;
+                }
+                *in_while = false;
+                true
+            }
+            While => {
+                *scope += 1;
+                *in_while = true;
+                true
+            }
+            _ => false,
+        }
+    }
     fn parse_code_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
         let mut scope = 0;
@@ -415,42 +442,30 @@ impl<'a> Parser<'a> {
 
         while let Some(t) = self.advance() {
             use TokenType::*;
-
-            match t.kind() {
-                Function | For | Repeat => {
-                    scope += 1;
-                }
-                Do => {
-                    if !in_while {
-                        scope += 1;
+            if !Self::parse_code_block_common(&mut scope, &mut in_while, t) {
+                match t.kind() {
+                    End => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        } else {
+                            scope -= 1;
+                        }
                     }
-                    in_while = false;
-                }
-                While => {
-                    scope += 1;
-                    in_while = true;
-                }
-                End => {
-                    if scope == 0 {
-                        return Ok(CodeBlock {
-                            code: parse_tokens(
-                                &self.tokens[start..self.current.saturating_sub(1)],
-                            )?,
-                            start,
-                            end: self.current,
-                        });
-                    } else {
-                        scope -= 1;
+                    Until => {
+                        if scope == 0 {
+                            return Err(format!("Error: Unexpected 'until' at line {}", self.line));
+                        } else {
+                            scope -= 1;
+                        }
                     }
+                    _ => {}
                 }
-                Until => {
-                    if scope == 0 {
-                        return Err(format!("Error: Unexpected 'until' at line {}", self.line));
-                    } else {
-                        scope -= 1;
-                    }
-                }
-                _ => {}
             }
         }
 
@@ -460,39 +475,75 @@ impl<'a> Parser<'a> {
     fn parse_repeat_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
         let mut scope = 0;
+        let mut in_while = false;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
-
-            match t.kind() {
-                Function | While | For | Repeat | Do => {
-                    scope += 1;
-                }
-                End => {
-                    if scope == 0 {
-                        return Err(format!("Error: Unterminated repeat at line {}", self.line));
-                    } else {
-                        scope -= 1;
+            if !Self::parse_code_block_common(&mut scope, &mut in_while, t) {
+                match t.kind() {
+                    End => {
+                        if scope == 0 {
+                            return Err(format!("Error: Unexpected 'end' at line {}", self.line));
+                        } else {
+                            scope -= 1;
+                        }
                     }
-                }
-                Until => {
-                    if scope == 0 {
-                        return Ok(CodeBlock {
-                            code: parse_tokens(
-                                &self.tokens[start..self.current.saturating_sub(1)],
-                            )?,
-                            start,
-                            end: self.current,
-                        });
-                    } else {
-                        scope -= 1;
+                    Until => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        } else {
+                            scope -= 1;
+                        }
                     }
+                    _ => {}
                 }
-                _ => {}
             }
         }
 
         Err(format!("Expected 'until' at line {}", self.line))
+    }
+
+    fn parse_if_block(&mut self) -> Result<CodeBlock, String> {
+        let start = self.current;
+        let mut scope = 0;
+        let mut in_while = false;
+
+        while let Some(t) = self.advance() {
+            use TokenType::*;
+            if !Self::parse_code_block_common(&mut scope, &mut in_while, t) {
+                match t.kind() {
+                    ElseIf | Else | End => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    Until => {
+                        if scope == 0 {
+                            return Err(format!("Error: Unexpected 'until' at line {}", self.line));
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        Err(format!("Expected 'end' at line {}", self.line))
     }
 
     fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, String> {
@@ -726,7 +777,39 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_if_else_chain(&mut self) -> Result<ComplexToken, String> {
-        todo!()
+        let condition = self.parse_expression(Some((TokenType::Then, "then")))?;
+        self.advance();
+        let body = self.parse_if_block()?;
+
+        let next = match self.current().kind() {
+            TokenType::Else => {
+                let body = self.parse_code_block()?;
+                Some(Box::new(ComplexToken::IfStatement {
+                    condition: Expression::new(),
+                    body,
+                    next: None,
+                    line: self.line,
+                    column: self.column,
+                }))
+            }
+            TokenType::ElseIf => Some(Box::new(self.parse_if_else_chain()?)),
+            TokenType::End => None,
+            _ => {
+                return Err(format!(
+                    "Expected 'else', 'elseif' or 'end' got {} at line {}",
+                    self.current().lexeme(),
+                    self.current().line()
+                ))
+            }
+        };
+
+        Ok(ComplexToken::IfStatement {
+            condition,
+            body,
+            next,
+            line: self.line,
+            column: self.column,
+        })
     }
 }
 
