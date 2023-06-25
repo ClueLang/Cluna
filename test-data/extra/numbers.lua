@@ -1,5 +1,6 @@
 local num = 0
 local num = 1.0
+local num = 1.
 local num = .1
 local num = 1.0e10
 local num = 1.0e+10
@@ -16,6 +17,9 @@ local num = 1E-10
 local num = .1e10
 local num = .1e+10
 local num = .1e-10
+local num = 1.e10
+local num = 1.e+10
+local num = 1.e-10
 local num = 0x12
 local num = 0x1.2
 local num = 0x1.2e2

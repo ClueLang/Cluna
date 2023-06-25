@@ -67,6 +67,6 @@ mod test {
 
     gen_tests!("test-data/lua5.1-tests", scan);
     gen_tests!("test-data/lua5.1-tests", parse);
-    gen_tests!("test-data/mytests", scan);
-    gen_tests!("test-data/mytests", parse);
+    gen_tests!("test-data/extra", scan);
+    gen_tests!("test-data/extra", parse);
 }

@@ -27,8 +27,7 @@ pub enum ComplexToken {
         column: usize,
     },
     Table {
-        names: Vec<String>,
-        values: Vec<(Option<Expression>, Expression)>,
+        data: Vec<(Option<Expression>, Expression)>,
         line: usize,
         column: usize,
     },
@@ -409,7 +408,50 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_table(&mut self) -> Result<ComplexToken, String> {
-        todo!()
+        let mut data = vec![];
+
+        while let Some(t) = self.advance().cloned() {
+            use TokenType::*;
+            match t.kind() {
+                Identifier => {
+                    if self.advance_if(TokenType::Equals) {
+                        data.push((
+                            Some(vec_deque![ComplexToken::Symbol(t.lexeme())]),
+                            self.parse_expression(None)?,
+                        ));
+                    } else {
+                        self.go_back();
+                        data.push((None, self.parse_expression(None)?));
+                    }
+                }
+                LeftBracket => {
+                    let expr = self.parse_expression(Some((RightBracket, "]")))?;
+                    self.assert(TokenType::RightBracket, "]")?;
+                    self.assert(TokenType::Equals, "=")?;
+
+                    let value = self.parse_expression(None)?;
+
+                    data.push((Some(expr), value));
+                }
+                RightBrace => {
+                    break;
+                }
+                Comma | Semicolon => {
+                    continue;
+                }
+                _ => {
+                    self.go_back();
+                    let value = self.parse_expression(None)?;
+                    data.push((None, value));
+                }
+            }
+        }
+
+        Ok(ComplexToken::Table {
+            data,
+            line: self.line,
+            column: self.column,
+        })
     }
 
     fn parse_code_block_common(scope: &mut usize, in_while: &mut bool, t: &Token) -> bool {
@@ -568,6 +610,14 @@ impl<'a> Parser<'a> {
                     }
                     TripleDot | Number | True | False | String | MultilineString | Nil => {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if self.check_val() {
+                            self.advance();
+                            break t;
+                        }
+                    }
+                    LeftBrace => {
+                        let table = self.parse_table()?;
+                        expr.push_back(table);
                         if self.check_val() {
                             self.advance();
                             break t;

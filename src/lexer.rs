@@ -341,7 +341,7 @@ impl Lexer {
     fn read_number(&mut self) -> Result<(), String> {
         let start = self.current;
         let mut digit_encountered = false;
-
+        let mut decimal_encountered = false;
         let mut is_scientific = false;
         let mut is_hex = false;
         let mut sign_encountered = false;
@@ -353,6 +353,14 @@ impl Lexer {
                     digit_encountered = true;
                 }
                 '.' => {
+                    if decimal_encountered {
+                        return Err(format!(
+                            "Error: Malformed number at {}:{}",
+                            self.line, self.column
+                        ));
+                    }
+
+                    decimal_encountered = true;
                     if is_scientific {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",

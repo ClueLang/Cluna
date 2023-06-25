@@ -1,7 +1,7 @@
 ---
 source: src/main.rs
 expression: scanned
-input_file: test-data/mytests/numbers.lua
+input_file: test-data/extra/numbers.lua
 ---
 [
     Token {
@@ -61,7 +61,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0.1",
+        lexeme: "1.",
         line: 3,
     },
     Token {
@@ -81,7 +81,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1.0e10",
+        lexeme: "0.1",
         line: 4,
     },
     Token {
@@ -101,7 +101,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1.0e+10",
+        lexeme: "1.0e10",
         line: 5,
     },
     Token {
@@ -121,7 +121,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1.0e-10",
+        lexeme: "1.0e+10",
         line: 6,
     },
     Token {
@@ -141,7 +141,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1.0E10",
+        lexeme: "1.0e-10",
         line: 7,
     },
     Token {
@@ -161,7 +161,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1.0E+10",
+        lexeme: "1.0E10",
         line: 8,
     },
     Token {
@@ -181,7 +181,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1.0E-10",
+        lexeme: "1.0E+10",
         line: 9,
     },
     Token {
@@ -201,7 +201,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1e10",
+        lexeme: "1.0E-10",
         line: 10,
     },
     Token {
@@ -221,7 +221,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1e+10",
+        lexeme: "1e10",
         line: 11,
     },
     Token {
@@ -241,7 +241,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1e-10",
+        lexeme: "1e+10",
         line: 12,
     },
     Token {
@@ -261,7 +261,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1E10",
+        lexeme: "1e-10",
         line: 13,
     },
     Token {
@@ -281,7 +281,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1E+10",
+        lexeme: "1E10",
         line: 14,
     },
     Token {
@@ -301,7 +301,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "1E-10",
+        lexeme: "1E+10",
         line: 15,
     },
     Token {
@@ -321,7 +321,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0.1e10",
+        lexeme: "1E-10",
         line: 16,
     },
     Token {
@@ -341,7 +341,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0.1e+10",
+        lexeme: "0.1e10",
         line: 17,
     },
     Token {
@@ -361,7 +361,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0.1e-10",
+        lexeme: "0.1e+10",
         line: 18,
     },
     Token {
@@ -381,7 +381,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0x12",
+        lexeme: "0.1e-10",
         line: 19,
     },
     Token {
@@ -401,7 +401,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2",
+        lexeme: "1.e10",
         line: 20,
     },
     Token {
@@ -421,7 +421,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2e2",
+        lexeme: "1.e+10",
         line: 21,
     },
     Token {
@@ -441,7 +441,7 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0x1.",
+        lexeme: "1.e-10",
         line: 22,
     },
     Token {
@@ -461,7 +461,87 @@ input_file: test-data/mytests/numbers.lua
     },
     Token {
         kind: Number,
-        lexeme: "0x.1",
+        lexeme: "0x12",
         line: 23,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 24,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "num",
+        line: 24,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 24,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0x1.2",
+        line: 24,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 25,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "num",
+        line: 25,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 25,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0x1.2e2",
+        line: 25,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 26,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "num",
+        line: 26,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 26,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0x1.",
+        line: 26,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 27,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "num",
+        line: 27,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 27,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0x.1",
+        line: 27,
     },
 ]
