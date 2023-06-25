@@ -65,19 +65,17 @@ pub enum ComplexToken {
         column: usize,
     },
     ForLoop {
-        iterator: String,
+        iter: String,
         start: Expression,
         end: Expression,
-        alter: Expression,
+        step: Option<Expression>,
         code: CodeBlock,
         line: usize,
         column: usize,
     },
     ForFuncLoop {
-        iterator: String,
-        start: Expression,
-        end: Expression,
-        alter: Expression,
+        iters: Vec<String>,
+        expr: Expression,
         code: CodeBlock,
         line: usize,
         column: usize,
@@ -454,24 +452,24 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn parse_code_block_common(scope: &mut usize, in_while: &mut bool, t: &Token) -> bool {
+    fn parse_code_block_common(scope: &mut usize, in_special_do: &mut bool, t: &Token) -> bool {
         use TokenType::*;
 
         match t.kind() {
-            Function | For | Repeat | If => {
+            Function | Repeat | If => {
                 *scope += 1;
                 true
             }
             Do => {
-                if !*in_while {
+                if !*in_special_do {
                     *scope += 1;
                 }
-                *in_while = false;
+                *in_special_do = false;
                 true
             }
-            While => {
+            While | For => {
                 *scope += 1;
-                *in_while = true;
+                *in_special_do = true;
                 true
             }
             _ => false,
@@ -480,11 +478,11 @@ impl<'a> Parser<'a> {
     fn parse_code_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
         let mut scope = 0;
-        let mut in_while = false;
+        let mut in_special_do = false;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
-            if !Self::parse_code_block_common(&mut scope, &mut in_while, t) {
+            if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
                 match t.kind() {
                     End => {
                         if scope == 0 {
@@ -517,11 +515,11 @@ impl<'a> Parser<'a> {
     fn parse_repeat_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
         let mut scope = 0;
-        let mut in_while = false;
+        let mut in_special_do = false;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
-            if !Self::parse_code_block_common(&mut scope, &mut in_while, t) {
+            if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
                 match t.kind() {
                     End => {
                         if scope == 0 {
@@ -554,11 +552,11 @@ impl<'a> Parser<'a> {
     fn parse_if_block(&mut self) -> Result<CodeBlock, String> {
         let start = self.current;
         let mut scope = 0;
-        let mut in_while = false;
+        let mut in_special_do = false;
 
         while let Some(t) = self.advance() {
             use TokenType::*;
-            if !Self::parse_code_block_common(&mut scope, &mut in_while, t) {
+            if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
                 match t.kind() {
                     ElseIf | Else | End => {
                         if scope == 0 {
@@ -861,6 +859,80 @@ impl<'a> Parser<'a> {
             column: self.column,
         })
     }
+
+    fn parse_for_loop(&mut self) -> Result<ComplexToken, String> {
+        let mut iters = vec![];
+        let mut for_func = false;
+
+        while let Some(t) = self.advance() {
+            match t.kind() {
+                TokenType::Identifier => {
+                    iters.push(t.lexeme());
+                }
+                TokenType::Comma => {
+                    continue;
+                }
+                TokenType::In => {
+                    for_func = true;
+                    break;
+                }
+                TokenType::Equals => {
+                    if iters.len() != 1 {
+                        return Err(format!(
+                            "Expected 1 in numeric for loop identifier got {} at line {}",
+                            iters.len(),
+                            t.line()
+                        ));
+                    }
+                    break;
+                }
+                _ => {
+                    return Err(format!(
+                        "Expected identifier, ',' or 'in' got {} at line {}",
+                        t.lexeme(),
+                        t.line()
+                    ))
+                }
+            }
+        }
+
+        if for_func {
+            let expr = self.parse_expression(None)?;
+            self.assert_advance(TokenType::Do, "do")?;
+
+            let code = self.parse_code_block()?;
+
+            Ok(ComplexToken::ForFuncLoop {
+                iters,
+                expr,
+                code,
+                line: self.line,
+                column: self.column,
+            })
+        } else {
+            let start = self.parse_expression(Some((TokenType::Comma, ",")))?;
+            self.assert_advance(TokenType::Comma, ",")?;
+            let end = self.parse_expression(None)?;
+            let step = if self.advance_if(TokenType::Comma) {
+                Some(self.parse_expression(Some((TokenType::Do, "do")))?)
+            } else {
+                None
+            };
+
+            self.assert_advance(TokenType::Do, "do")?;
+            let code = self.parse_code_block()?;
+
+            Ok(ComplexToken::ForLoop {
+                iter: iters.pop().unwrap(),
+                start,
+                end,
+                step,
+                code,
+                line: self.line,
+                column: self.column,
+            })
+        }
+    }
 }
 
 pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
@@ -914,7 +986,8 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 });
             }
             For => {
-                todo!()
+                let for_loop = parser.parse_for_loop()?;
+                parser.expr.push_back(for_loop);
             }
             Repeat => {
                 let body = parser.parse_repeat_block()?;
