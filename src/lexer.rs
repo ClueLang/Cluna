@@ -22,7 +22,7 @@ pub enum TokenType {
 
 #[derive(Debug, Clone, PartialEq)]
 pub struct Token {
-    kind: TokenType,
+    pub(crate) kind: TokenType,
     lexeme: String,
     line: usize,
 }
@@ -46,7 +46,7 @@ impl Token {
 
 pub struct Lexer {
     source: Vec<char>,
-    pub tokens: Vec<Token>,
+    tokens: Vec<Token>,
     column: usize,
     current: usize,
     line: usize,

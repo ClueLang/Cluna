@@ -1,6 +1,5 @@
-use std::collections::VecDeque;
-
 use crate::lexer::{Token, TokenType};
+use std::collections::VecDeque;
 
 macro_rules! vec_deque {
     ($($elem:expr),*) => {
@@ -21,7 +20,7 @@ pub enum ComplexToken {
         column: usize,
     },
     Alter {
-        names: Vec<String>,
+        names: Vec<ComplexToken>,
         values: Vec<Expression>,
         line: usize,
         column: usize,
@@ -169,7 +168,7 @@ impl<'a> Parser<'a> {
         if let Some(t) = self.peek() {
             if t.kind() != expected {
                 return Err(format!(
-                    "Expected: {} got {} at line {}",
+                    "Expected '{}' got '{}' at line {}",
                     error,
                     &t.lexeme(),
                     t.line()
@@ -199,7 +198,7 @@ impl<'a> Parser<'a> {
         if !self.advance_if(expected) {
             let t = self.peek().ok_or("Unexpected end of file")?;
             return Err(format!(
-                "Expected: {} got {} at line {}",
+                "Expected '{}' got '{}' at line {}",
                 error,
                 &t.lexeme(),
                 t.line()
@@ -212,7 +211,7 @@ impl<'a> Parser<'a> {
         if !self.advance_if(expected) {
             let t = self.peek().ok_or("Unexpected end of file")?;
             return Err(format!(
-                "Expected: {} got {} at line {}",
+                "Expected '{}' got '{}' at line {}",
                 error,
                 &t.lexeme(),
                 t.line()
@@ -280,7 +279,19 @@ impl<'a> Parser<'a> {
             exprs.push(expr);
 
             if t.kind() != TokenType::Comma {
-                return self.assert_end(&t, end, exprs);
+                if let Some((end_token, expected_end)) = end {
+                    if self.peek().map_or(false, |t| t.kind() != end_token) {
+                        self.advance();
+
+                        return Err(format!(
+                            "Expected '{}' got '{}' at line {}",
+                            expected_end,
+                            &t.lexeme(),
+                            t.line()
+                        ));
+                    }
+                }
+                return Ok(exprs);
             }
         }
     }
@@ -291,22 +302,12 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_call(&mut self) -> Result<Vec<Expression>, String> {
-        let is_implicit = self
-            .look_back()
-            .map(|t| t.kind() != TokenType::LeftParen)
-            .unwrap_or(false);
-        if is_implicit {
-            let mut expr = Expression::new();
-            if self.current().kind() == TokenType::RightBrace {
-                expr.push_back(self.parse_table()?);
-            } else {
-                expr.push_back(ComplexToken::Symbol(self.current().lexeme()));
-            }
-            Ok(vec![expr])
-        } else if self.advance_if(TokenType::RightParen) {
+        if self.advance_if(TokenType::RightParen) {
             Ok(vec![])
         } else {
-            self.find_expressions(Some((TokenType::RightParen, ")")))
+            let exprs = self.find_expressions(Some((TokenType::RightParen, ")")));
+            self.advance();
+            exprs
         }
     }
 
@@ -356,19 +357,28 @@ impl<'a> Parser<'a> {
                         expr.push_back(ComplexToken::Symbol(":".to_owned()));
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
                     }
-                    String | MultilineString | LeftBrace => {
-                        // implicit function calls in lua such require "os"
-                        // should be handled here
-                        if !self
-                            .look_back()
-                            .map_or(false, |t| t.kind() == TokenType::Identifier)
-                        {
-                            break;
-                        } else {
-                            self.parse_call()?;
-                        }
+                    LeftBracket => {
+                        let index = self.parse_expression(Some((RightBracket, "]")))?;
+                        self.assert(TokenType::RightBracket, "]")?;
+
+                        expr.push_back(ComplexToken::Symbol("[".to_owned()));
+                        expr.push_back(ComplexToken::Expr(index));
+                        expr.push_back(ComplexToken::Symbol("]".to_owned()));
                     }
+                    // String | MultilineString | LeftBrace => {
+                    //     // implicit function calls in lua such require "os"
+                    //     // should be handled here
+                    //     if !self
+                    //         .look_back()
+                    //         .map_or(false, |t| t.kind() == TokenType::Identifier)
+                    //     {
+                    //         break;
+                    //     } else {
+                    //         self.parse_call()?;
+                    //     }
+                    // }
                     _ => {
+                        self.go_back();
                         break;
                     }
                 }
@@ -377,6 +387,58 @@ impl<'a> Parser<'a> {
             }
         }
         Ok(ComplexToken::Ident { expr, line })
+    }
+
+    fn parse_identifier_statement(&mut self) -> Result<ComplexToken, String> {
+        let ident = self.parse_identifier()?;
+        let ComplexToken::Ident { expr, .. } = &ident else {unreachable!()};
+
+        if let Some(ComplexToken::Call(_)) = expr.back() {
+            return Ok(ident);
+        }
+
+        if let Some(
+            t @ Token {
+                kind: TokenType::Equals | TokenType::Comma,
+                ..
+            },
+        ) = self.advance()
+        {
+            let mut names = vec![ident];
+
+            if t.kind() == TokenType::Comma {
+                while !self.done() {
+                    let ident = self.parse_identifier()?;
+                    names.push(ident);
+                    if !self.advance_if(TokenType::Comma) {
+                        break;
+                    }
+                }
+                self.assert(TokenType::Equals, "=")?;
+            } else if self.current().kind() != TokenType::Equals {
+                return Err(format!(
+                    "Expected '=' got {} at line {}",
+                    self.current().lexeme(),
+                    self.current().line()
+                ));
+            }
+
+            let values = self.find_expressions(None)?;
+            self.advance_if(TokenType::Semicolon);
+
+            return Ok(ComplexToken::Alter {
+                names,
+                values,
+                line: self.line,
+                column: self.column,
+            });
+        }
+
+        Err(format!(
+            "Expected assignment or function call got {} at line {}",
+            self.current().lexeme(),
+            self.current().line()
+        ))
     }
 
     fn check_val(&mut self) -> bool {
@@ -600,16 +662,13 @@ impl<'a> Parser<'a> {
                         let ident = self.parse_identifier()?;
                         expr.push_back(ident);
 
-                        self.go_back();
                         if self.check_val() {
-                            self.advance();
                             break t;
                         }
                     }
                     TripleDot | Number | True | False | String | MultilineString | Nil => {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
                         if self.check_val() {
-                            self.advance();
                             break t;
                         }
                     }
@@ -962,7 +1021,8 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 }
             },
             Identifier => {
-                let ident = parser.parse_identifier()?;
+                parser.go_back();
+                let ident = parser.parse_identifier_statement()?;
                 parser.expr.push_back(ident);
             }
             Function => {
