@@ -654,7 +654,6 @@ impl<'a> Parser<'a> {
 
         let last = loop {
             use TokenType::*;
-
             if let Some(t) = self.advance().cloned() {
                 match t.kind() {
                     Identifier => {
@@ -728,7 +727,31 @@ impl<'a> Parser<'a> {
                             ));
                         }
                     }
+                    Function
+                        if self
+                            .peek()
+                            .map_or(false, |t| t.kind() == TokenType::LeftParen) =>
+                    {
+                        self.assert(TokenType::LeftParen, "(")?;
+                        let args = self.parse_function_args()?;
+                        let body = self.parse_code_block()?;
 
+                        expr.push_back(ComplexToken::Lambda {
+                            args,
+                            body,
+                            line: self.line,
+                            column: self.column,
+                        });
+                    }
+                    LeftParen => {
+                        let exprs = self.parse_expression(Some((RightParen, ")")))?;
+                        expr.push_back(ComplexToken::Expr(exprs));
+                        self.assert(TokenType::RightParen, ")")?;
+
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
                     _ => {
                         self.go_back();
                         break t;
