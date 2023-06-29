@@ -314,17 +314,20 @@ impl<'a> Parser<'a> {
     fn parse_identifier(&mut self) -> Result<ComplexToken, String> {
         let line = self.current().line();
         let mut expr = Expression::with_capacity(8);
+
         loop {
             use TokenType::*;
             if let Some(t) = self.advance() {
                 match t.kind() {
-                    Identifier => expr.push_back(ComplexToken::Symbol(t.lexeme())),
+                    Identifier => {
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                    }
                     LeftParen => {
                         let call = self.parse_call()?;
                         expr.push_back(ComplexToken::Call(call));
                     }
                     Dot => {
-                        let t = self.advance().unwrap();
+                        let t = self.advance().ok_or("Expected identifier")?;
                         if t.kind() != Identifier {
                             return Err(format!(
                                 "Expected identifier got {} at line {}",
@@ -336,7 +339,7 @@ impl<'a> Parser<'a> {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
                     }
                     Colon => {
-                        let t = self.advance().unwrap().clone();
+                        let t = self.advance().ok_or("Expected identifier")?.clone();
                         if t.kind() != Identifier {
                             return Err(format!(
                                 "Expected identifier got {} at line {}",
@@ -382,10 +385,14 @@ impl<'a> Parser<'a> {
                         break;
                     }
                 }
+                if self.check_val() {
+                    break;
+                }
             } else {
                 break;
             }
         }
+
         Ok(ComplexToken::Ident { expr, line })
     }
 
@@ -442,6 +449,26 @@ impl<'a> Parser<'a> {
     }
 
     fn check_val(&mut self) -> bool {
+        use TokenType::*;
+        matches!(
+            self.peek().map(|t| t.kind()),
+            Some(
+                Number
+                    | String
+                    | MultilineString
+                    | Nil
+                    | Identifier
+                    | True
+                    | False
+                    | LeftBrace
+                    | TripleDot
+                    | Hash
+                    | Not,
+            )
+        )
+    }
+
+    fn check_op(&mut self) -> bool {
         use TokenType::*;
         match self.peek().map(|t|t.kind()){
             //literals
@@ -618,9 +645,10 @@ impl<'a> Parser<'a> {
 
         while let Some(t) = self.advance() {
             use TokenType::*;
+
             if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
                 match t.kind() {
-                    ElseIf | Else | End => {
+                    End => {
                         if scope == 0 {
                             return Ok(CodeBlock {
                                 code: parse_tokens(
@@ -633,6 +661,17 @@ impl<'a> Parser<'a> {
                             scope -= 1;
                         }
                     }
+                    ElseIf | Else => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        }
+                    }
                     Until => {
                         if scope == 0 {
                             return Err(format!("Error: Unexpected 'until' at line {}", self.line));
@@ -643,6 +682,7 @@ impl<'a> Parser<'a> {
                     _ => {}
                 }
             }
+            dbg!(scope);
         }
 
         Err(format!("Expected 'end' at line {}", self.line))
@@ -682,7 +722,7 @@ impl<'a> Parser<'a> {
                     // unary ops
                     Hash | Not => {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
-                        if !self.check_val() {
+                        if !self.check_op() {
                             return Err(format!(
                                 "Expected expression after unary op {} at line {}",
                                 &t.lexeme(),
@@ -703,7 +743,7 @@ impl<'a> Parser<'a> {
                         }
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
 
-                        if !self.check_val() {
+                        if !self.check_op() {
                             return Err(format!(
                                 "Expected expression after binary op {} at line {}",
                                 &t.lexeme(),
