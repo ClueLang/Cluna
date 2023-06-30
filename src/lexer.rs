@@ -583,7 +583,17 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                 }
                 _ => lexer.add_token(TokenType::Minus, 1),
             },
-            '#' => lexer.add_token(TokenType::Hash, 1),
+            '#' => {
+                if lexer.line == 1 && lexer.column == 1 {
+                    while let Some(c) = lexer.advance() {
+                        if c == '\n' {
+                            break;
+                        }
+                    }
+                    continue;
+                }
+                lexer.add_token(TokenType::Hash, 1)
+            }
             '*' => lexer.add_token(TokenType::Star, 1),
             '/' => lexer.add_token(TokenType::Slash, 1),
             '%' => lexer.add_token(TokenType::Percent, 1),
@@ -622,7 +632,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             }
             '.' => match (lexer.peek(), lexer.peek_at(2)) {
                 (Some('.'), Some('.')) => lexer.add_token_front(TokenType::TripleDot, 3),
-                (Some('1'..='9'), _) => {
+                (Some('0'..='9'), _) => {
                     lexer.current -= 1;
                     lexer.read_number()?
                 }
