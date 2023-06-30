@@ -368,24 +368,25 @@ impl<'a> Parser<'a> {
                         expr.push_back(ComplexToken::Expr(index));
                         expr.push_back(ComplexToken::Symbol("]".to_owned()));
                     }
-                    // String | MultilineString | LeftBrace => {
-                    //     // implicit function calls in lua such require "os"
-                    //     // should be handled here
-                    //     if !self
-                    //         .look_back()
-                    //         .map_or(false, |t| t.kind() == TokenType::Identifier)
-                    //     {
-                    //         break;
-                    //     } else {
-                    //         self.parse_call()?;
-                    //     }
-                    // }
+                    String | MultilineString => {
+                        expr.push_back(ComplexToken::Call(vec![vec_deque![ComplexToken::Symbol(
+                            t.lexeme()
+                        )]]));
+                    }
+                    LeftBrace => {
+                        let table = self.parse_table()?;
+                        expr.push_back(ComplexToken::Call(vec![vec_deque![table]]));
+                    }
                     _ => {
                         self.go_back();
                         break;
                     }
                 }
-                if self.check_val() {
+
+                if matches!(
+                    self.peek().map(|t| t.kind()),
+                    Some(Number | Nil | Identifier | True | False | TripleDot | Hash | Not)
+                ) {
                     break;
                 }
             } else {
@@ -470,28 +471,26 @@ impl<'a> Parser<'a> {
 
     fn check_op(&mut self) -> bool {
         use TokenType::*;
-        match self.peek().map(|t|t.kind()){
-            //literals
-            Some(Number
-                | String
-                | MultilineString
-                | Nil
-                | Identifier
-                | True
-                | False
-                | LeftBrace
-                | LeftParen
-                | LeftBracket
-                | TripleDot
-            // unary operators
-                | Hash
-                | Not)=>{
-                    true
-                }
-            _=>{
-                false
-            }
-        }
+        matches!(
+            self.peek().map(|t| t.kind()),
+            Some(
+                Number
+                    | String
+                    | MultilineString
+                    | Nil
+                    | Identifier
+                    | True
+                    | False
+                    | LeftBrace
+                    | LeftParen
+                    | LeftBracket
+                    | TripleDot
+                    | Hash
+                    | Not
+                    | Minus
+                    | Function,
+            )
+        )
     }
 
     fn parse_table(&mut self) -> Result<ComplexToken, String> {
@@ -597,7 +596,6 @@ impl<'a> Parser<'a> {
                 }
             }
         }
-
         Err(format!("Expected 'end' at line {}", self.line))
     }
 
@@ -757,7 +755,7 @@ impl<'a> Parser<'a> {
                             expr.push_back(ComplexToken::Symbol(t.lexeme()));
                         }
 
-                        if !self.check_val() {
+                        if !self.check_op() {
                             return Err(format!(
                                 "Expected expression after binary op {} at line {}",
                                 &t.lexeme(),
@@ -780,6 +778,10 @@ impl<'a> Parser<'a> {
                             line: self.line,
                             column: self.column,
                         });
+
+                        if self.check_val() {
+                            break t;
+                        }
                     }
                     LeftParen => {
                         let exprs = self.parse_expression(Some((RightParen, ")")))?;
@@ -1091,6 +1093,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 parser.go_back();
                 let ident = parser.parse_identifier_statement()?;
                 parser.expr.push_back(ident);
+                parser.advance_if(TokenType::Semicolon);
             }
             LeftParen => {
                 let expr = parser.parse_expression(Some((RightParen, ")")))?;
@@ -1185,6 +1188,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 token.line()
             ))?,
         }
+        parser.advance_if(TokenType::Semicolon);
     }
 
     Ok(parser.expr)
