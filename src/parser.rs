@@ -682,7 +682,6 @@ impl<'a> Parser<'a> {
                     _ => {}
                 }
             }
-            dbg!(scope);
         }
 
         Err(format!("Expected 'end' at line {}", self.line))
@@ -715,7 +714,6 @@ impl<'a> Parser<'a> {
                         let table = self.parse_table()?;
                         expr.push_back(table);
                         if self.check_val() {
-                            self.advance();
                             break t;
                         }
                     }
@@ -788,6 +786,12 @@ impl<'a> Parser<'a> {
                         expr.push_back(ComplexToken::Expr(exprs));
                         self.assert(TokenType::RightParen, ")")?;
 
+                        if self.check_val() {
+                            break t;
+                        }
+
+                        let index = self.parse_identifier()?;
+                        expr.push_back(index);
                         if self.check_val() {
                             break t;
                         }
@@ -1088,6 +1092,31 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 let ident = parser.parse_identifier_statement()?;
                 parser.expr.push_back(ident);
             }
+            LeftParen => {
+                let expr = parser.parse_expression(Some((RightParen, ")")))?;
+                parser.expr.push_back(ComplexToken::Expr(expr));
+                parser.advance();
+                let call = parser.parse_identifier()?;
+                let ComplexToken::Ident {expr, ..} = &call else {unreachable!()};
+
+                if let Some(ComplexToken::Call(_)) = expr.back() {
+                    parser.expr.push_back(call);
+                } else {
+                    let token = parser.peek().unwrap_or(Token::new(
+                        TokenType::Eof,
+                        "<eof>".to_owned(),
+                        parser.line,
+                    ));
+
+                    return Err(format!(
+                        "Expected function call got {} at line {}",
+                        token.lexeme(),
+                        token.line()
+                    ));
+                }
+
+                parser.advance_if(TokenType::Semicolon);
+            }
             Function => {
                 let function = parser.parse_function(false)?;
                 parser.expr.push_back(function);
@@ -1124,6 +1153,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
             }
             Break => {
                 parser.expr.push_back(ComplexToken::Break);
+                parser.advance_if(TokenType::Semicolon);
             }
             Do => {
                 let block = parser.parse_code_block()?;
@@ -1147,6 +1177,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                     ));
                 }
                 parser.expr.push_back(ComplexToken::Return(exprs));
+                parser.advance_if(TokenType::Semicolon);
             }
             _ => Err(format!(
                 "Unexpected token {} at line {}",
