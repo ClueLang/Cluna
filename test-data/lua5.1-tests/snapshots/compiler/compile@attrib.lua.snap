@@ -1,0 +1,321 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.1-tests/attrib.lua
+---
+{
+    print("testing require");
+    assert(require("string") == string);
+    assert(require("math") == math);
+    assert(require("table") == table);
+    assert(require("io") == io);
+    assert(require("os") == os);
+    assert(require("debug") == debug);
+    assert(require("coroutine") == coroutine);
+    assert(type(package.path) == "string");
+    assert(type(package.cpath) == "string");
+    assert(type(package.loaded) == "table");
+    assert(type(package.preload) == "table");
+    local DIR = "libs/"
+    local fn createfiles(files, preextras, posextras) {
+        for n, c with pairs(files) {
+            io.output(DIR .. n);
+            io.write(string.format(preextras, n));
+            io.write(c);
+            io.write(string.format(posextras, n));
+            io.close(io.output());
+        }
+    }
+    global fn removefiles(files) {
+        for n with pairs(files) {
+            os.remove(DIR .. n);
+        }
+    }
+    local files = {
+        "A.lua" = "", 
+        "B.lua" = "assert(...=='B');require 'A'", 
+        "A.lc" = "", 
+        "A" = "", 
+        "L" = "", 
+        "XXxX" = "", 
+        "C.lua" = "package.loaded[...] = 25; require'C'"
+    }
+    AA = nil
+    local extras = `
+NAME = '%s'
+REQUIRED = ...
+return AA`
+    createfiles(files, "", extras);
+    local oldpath = package.path
+    package.path = string.gsub("D/?.lua;D/?.lc;D/?;D/??x?;D/L", "D/", DIR)
+    local try = fn (p, n, r) {
+        NAME = nil
+        local rr = require(p)
+        assert(NAME == n);
+        assert(REQUIRED == p);
+        assert(rr == r);
+    }
+    assert(require("C") == 25);
+    assert(require("C") == 25);
+    AA = nil
+    try('B', 'B.lua', true);
+    assert(package.loaded.B);
+    assert(require("B") == true);
+    assert(package.loaded.A);
+    package.loaded.A = nil
+    try('B', nil, true);
+    try('A', 'A.lua', true);
+    package.loaded.A = nil
+    os.remove(DIR .. 'A.lua');
+    AA = {}
+    try('A', 'A.lc', AA);
+    assert(require("A") == AA);
+    AA = false
+    try('K', 'L', false);
+    try('K', 'L', false);
+    assert(rawget(_G, "_REQUIREDNAME") == nil);
+    AA = "x"
+    try("X", "XXxX", AA);
+    removefiles(files);
+    package.path = string.gsub("D/?.lua;D/?/init.lua", "D/", DIR)
+    files = {
+        "P1/init.lua" = "AA = 10", 
+        "P1/xuxu.lua" = "AA = 20"
+    }
+    createfiles(files, "module(..., package.seeall)\n", "");
+    AA = 0
+    local m = assert(require("P1"))
+    assert(m == P1 && m._NAME == "P1" && AA == 0 && m.AA == 10);
+    assert(require("P1") == P1 && P1 == m);
+    assert(require("P1") == P1);
+    assert(P1._PACKAGE == "");
+    local m = assert(require("P1.xuxu"))
+    assert(m == P1.xuxu && m._NAME == "P1.xuxu" && AA == 0 && m.AA == 20);
+    assert(require("P1.xuxu") == P1.xuxu && P1.xuxu == m);
+    assert(require("P1.xuxu") == P1.xuxu);
+    assert(require("P1") == P1);
+    assert(P1.xuxu._PACKAGE == "P1.");
+    assert(P1.AA == 10 && P1._PACKAGE == "");
+    assert(P1._G == _G && P1.xuxu._G == _G);
+    removefiles(files);
+    package.path = ""
+    assert(!pcall(require, "file_does_not_exist"));
+    package.path = "??\0?"
+    assert(!pcall(require, "file_does_not_exist1"));
+    package.path = oldpath
+    local fname = "file_does_not_exist2"
+    local m, err = pcall(require, fname)
+    for t with string.gmatch(package.path .. ";" .. package.cpath, "[^;]+") {
+        t = string.gsub(t, "?", fname)
+        assert(string.find(err, t, 1, true));
+    }
+    local fn import(...) {
+        local f = {
+            ...
+        }
+        return fn (m) {
+            for i = 1, #f {
+                m[(f[(i)])] = _G[(f[(i)])]
+            }
+        }
+    }
+    local assert, module, package = assert, module, package
+    X = nil
+    x = 0
+    assert(_G.x == 0);
+    module("X");
+    x = 1
+    assert(_M.x == 1);
+    module("X.a.b.c");
+    x = 2
+    assert(_M.x == 2);
+    module("X.a.b", package.seeall);
+    x = 3
+    assert(X._NAME == "X" && X.a.b.c._NAME == "X.a.b.c" && X.a.b._NAME == "X.a.b");
+    assert(X._M == X && X.a.b.c._M == X.a.b.c && X.a.b._M == X.a.b);
+    assert(X.x == 1 && X.a.b.c.x == 2 && X.a.b.x == 3);
+    assert(X._PACKAGE == "" && X.a.b.c._PACKAGE == "X.a.b." && X.a.b._PACKAGE == "X.a.");
+    assert(_PACKAGE .. "c" == "X.a.c");
+    assert(X.a._NAME == nil && X.a._M == nil);
+    module("X.a", import("X"));
+    x = 4
+    assert(X.a._NAME == "X.a" && X.a.x == 4 && X.a._M == X.a);
+    module("X.a.b", package.seeall);
+    assert(x == 3);
+    x = 5
+    assert(_NAME == "X.a.b" && X.a.b.x == 5);
+    assert(X._G == nil && X.a._G == nil && X.a.b._G == _G && X.a.b.c._G == nil);
+    setfenv(1, _G);
+    assert(x == 0);
+    assert(!pcall(module, "x"));
+    assert(!pcall(module, "math.sin"));
+    local p = ""
+    local f, err, when = package.loadlib("libs/lib1.so", p .. "luaopen_lib1")
+    if !f {
+        (Message || print)('\a\n >>> cannot load dynamic library <<<\n\a');
+        print(err, when);
+    } else {
+        f();
+        assert(require("lib1") == lib1);
+        collectgarbage();
+        assert(lib1.id("x") == "x");
+        f = assert(package.loadlib("libs/lib1.so", p .. "anotherfunc"))
+        assert(f(10, 20) == "1020\n");
+        f, err, when = package.loadlib("libs/lib1.so", p .. "xuxu")
+        assert(!f && type(err) == "string" && when == "init");
+        package.cpath = "libs/?.so"
+        require("lib2");
+        assert(lib2.id("x") == "x");
+        local fs = require("lib1.sub")
+        assert(fs == lib1.sub && next(lib1.sub) == nil);
+        module("lib2", package.seeall);
+        f = require("-lib2")
+        assert(f.id("x") == "x" && _M == f && _NAME == "lib2");
+        module("lib1.sub", package.seeall);
+        assert(_M == fs);
+        setfenv(1, _G);
+    }
+    f, err, when = package.loadlib("donotexist", p .. "xuxu")
+    assert(!f && type(err) == "string" && (when == "open" || when == "absent"));
+    {
+        local p = package
+        package = {}
+        p.preload.pl = fn (...) {
+            module(...);
+            global fn xuxu(x) {
+                return x + 20
+            }
+        }
+        require("pl");
+        assert(require("pl") == pl);
+        assert(pl.xuxu(10) == 30);
+        package = p
+        assert(type(package.path) == "string");
+    }
+}
+print('+');
+print("testing assignments, logical operators, and constructors");
+local res, res2 = 27
+a, b = 1, 2 + 3
+assert(a == 1 && b == 5);
+a = {}
+global fn f() {
+    return 10, 11, 12
+}
+a.x, b, a[(1)] = 1, 2, f()
+assert(a.x == 1 && b == 2 && a[(1)] == 10);
+a[(f())], b, a[(f() + 3)] = f(), a, 'x'
+assert(a[(10)] == 10 && b == a && a[(13)] == 'x');
+{
+    local f = fn (n) {
+        local x = {}
+        for i = 1, n {
+            x[(i)] = i
+        }
+        return unpack(x)
+    }
+    local a, b, c
+    a, b = 0, f(1)
+    assert(a == 0 && b == 1);
+    A, b = 0, f(1)
+    assert(A == 0 && b == 1);
+    a, b, c = 0, 5, f(4)
+    assert(a == 0 && b == 5 && c == 1);
+    a, b, c = 0, 5, f(0)
+    assert(a == 0 && b == 5 && c == nil);
+}
+a, b, c, d = 1 && nil, 1 || nil, (1 && (nil || 1)), 6
+assert(!a && b && c && d == 6);
+d = 20
+a, b, c, d = f()
+assert(a == 10 && b == 11 && c == 12 && d == nil);
+a, b = f(), 1, 2, 3, f()
+assert(a == 10 && b == 1);
+assert(a < b == false && a > b == true);
+assert((10 && 2) == 2);
+assert((10 || 2) == 10);
+assert((10 || assert(nil)) == 10);
+assert(!(nil && assert(nil)));
+assert((nil || "alo") == "alo");
+assert((nil && 10) == nil);
+assert((false && 10) == false);
+assert((true || 10) == true);
+assert((false || 10) == 10);
+assert(false ~= nil);
+assert(nil ~= false);
+assert(!nil == true);
+assert(!!nil == false);
+assert(!!1 == true);
+assert(!!a == true);
+assert(!!(6 || nil) == true);
+assert(!!(nil && 56) == false);
+assert(!!(nil && true) == false);
+print('+');
+a = {}
+a[(true)] = 20
+a[(false)] = 10
+assert(a[(1 < 2)] == 20 && a[(1 > 2)] == 10);
+global fn f(a) {
+    return a
+}
+local a = {}
+for i = 3000,  - 3000,  - 1 {
+    a[(i)] = i
+}
+a[(10e30)] = "alo"
+a[(true)] = 10
+a[(false)] = 20
+assert(a[(10e30)] == 'alo' && a[(!1)] == 20 && a[(10 < 20)] == 10);
+for i = 3000,  - 3000,  - 1 {
+    assert(a[(i)] == i);
+}
+a[(print)] = assert
+a[(f)] = print
+a[(a)] = a
+assert(a[(a)][(a)][(a)][(a)][(print)] == assert);
+a[(print)](a[(a[(f)])] == a[(print)]);
+a = nil
+a = {
+    10, 
+    9, 
+    8, 
+    7, 
+    6, 
+    5, 
+    4, 
+    3, 
+    2, 
+     - 3 = 'a', 
+    f = print, 
+    a = 'a', 
+    b = 'ab'
+}
+a, a.x, a.y = a, a[( - 3)]
+assert(a[(1)] == 10 && a[( - 3)] == a.a && a[(f)] == print && a.x == 'a' && !a.y);
+a[(1)], f(a)[(2)], b, c = {
+    'alo' = assert
+}, 10, a[(1)], a[(f)], 6, 10, 23, f(a), 2
+a[(1)].alo(a[(2)] == 10 && b == 10 && c == print);
+a[(2 ^ 31)] = 10
+a[(2 ^ 31 + 1)] = 11
+a[( - 2 ^ 31)] = 12
+a[(2 ^ 32)] = 13
+a[( - 2 ^ 32)] = 14
+a[(2 ^ 32 + 1)] = 15
+a[(10 ^ 33)] = 16
+assert(a[(2 ^ 31)] == 10 && a[(2 ^ 31 + 1)] == 11 && a[( - 2 ^ 31)] == 12 && a[(2 ^ 32)] == 13 && a[( - 2 ^ 32)] == 14 && a[(2 ^ 32 + 1)] == 15 && a[(10 ^ 33)] == 16);
+a = nil
+{
+    local a, i, j, b
+    a = {
+        'a', 
+        'b'
+    }
+    i = 1
+    j = 2
+    b = a
+    i, a[(i)], a, j, a[(j)], a[(i + j)] = j, i, i, b, j, i
+    assert(i == 2 && b[(1)] == 1 && a == 1 && j == b && b[(2)] == 2 && b[(3)] == 1);
+}
+print('OK');
+return res

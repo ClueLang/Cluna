@@ -3,13 +3,17 @@ use std::iter::Peekable;
 use crate::parser::{CodeBlock, ComplexToken, Expression};
 
 fn indent(scope: usize) -> String {
-    "   ".repeat(scope)
+    let mut result = String::new();
+    for _ in 0..scope {
+        result += "    ";
+    }
+    result
 }
 
 fn indent_if<T: Iterator>(ctokens: &mut Peekable<T>, scope: usize) -> String {
     match ctokens.peek() {
-        Some(_) => indent(scope),
-        None => String::new(),
+        Some(_) => String::from('\n') + &indent(scope),
+        None => String::with_capacity(4),
     }
 }
 
@@ -53,6 +57,25 @@ fn compile_expressions(scope: usize, exprs: Vec<Expression>) -> String {
     compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr))
 }
 
+fn is_binop(lexeme: &str) -> bool {
+    matches!(
+        lexeme,
+        "+" | "-" | "*" | "/" | "%" | "^" | "==" | "<" | ">" | "<=" | ">=" | "~=" | ".."
+    )
+}
+
+fn compile_symbol(lexeme: String) -> String {
+    match &*lexeme {
+        "and" => " && ".to_owned(),
+        "or" => " || ".to_owned(),
+        "not" => "!".to_owned(),
+        "!=" => " ~= ".to_owned(),
+        ":" => "::".to_owned(),
+        s if is_binop(s) => format!(" {} ", s),
+        _ => lexeme,
+    }
+}
+
 fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
     use crate::parser::ComplexToken::*;
 
@@ -61,8 +84,12 @@ fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
 
     for ctoken in expr {
         match ctoken {
-            Symbol(lexeme) => result += &lexeme,
-            Expr(expr) => result += &compile_expression(scope, expr),
+            Symbol(lexeme) => result += &compile_symbol(lexeme),
+            Expr(expr) => {
+                result.push('(');
+                result += &compile_expression(scope, expr);
+                result.push(')');
+            }
             Call(args) => {
                 result.push('(');
                 result += &compile_expressions(scope, args);
@@ -78,7 +105,7 @@ fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
 fn compile_code_block(body: CodeBlock, scope: usize) -> String {
     let code = compile_ast_helper(body.code, scope + 1);
 
-    String::from('\n') + &indent(scope + 1) + &code
+    String::from('\n') + &code + "\n" + &indent(scope)
 }
 
 fn compile_if_else_chain(
@@ -94,7 +121,7 @@ fn compile_if_else_chain(
     let body = compile_code_block(code, scope);
 
     let next = if let Some(next) = next {
-        String::from("else")
+        String::from(" else")
             + &match *next {
                 IfStatement {
                     condition,
@@ -103,12 +130,9 @@ fn compile_if_else_chain(
                     ..
                 } => {
                     if condition.is_empty() {
-                        compile_code_block(body, scope)
+                        format!(" {{{}}}", compile_code_block(body, scope))
                     } else {
-                        format!(
-                            "elseif {}",
-                            compile_if_else_chain(scope, condition, body, next)
-                        )
+                        format!("if {}", compile_if_else_chain(scope, condition, body, next))
                     }
                 }
                 _ => unreachable!(),
@@ -119,7 +143,7 @@ fn compile_if_else_chain(
 
     result += "if ";
     result += &condition;
-    result.push('{');
+    result += " {";
     result += &body;
     result.push('}');
     result += &next;
@@ -134,30 +158,36 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
 
     for ctoken in expr {
         match ctoken {
-            Symbol(lexeme) => result += &lexeme,
+            Symbol(lexeme) => result += &compile_symbol(lexeme),
             MultilineString(string) => result += &compile_multiline_string(string),
             Table { data, .. } => {
                 scope += 1;
+                let pre = indent(scope);
                 result.push('{');
-                result += &compile_list(data, ", ", &mut |(key, value)| {
-                    if let Some(key) = key {
-                        format!(
-                            "{} = {}",
-                            compile_expression(scope, key),
-                            compile_expression(scope, value)
-                        )
-                    } else {
-                        compile_expression(scope, value)
-                    }
-                });
+                if !data.is_empty() {
+                    result += &compile_list(data, ", ", &mut |(key, value)| {
+                        if let Some(key) = key {
+                            format!(
+                                "\n{}{} = {}",
+                                pre,
+                                compile_expression(scope, key),
+                                compile_expression(scope, value),
+                            )
+                        } else {
+                            String::from('\n') + &pre + &compile_expression(scope, value)
+                        }
+                    });
+                    result.push('\n');
+                    result += &indent(scope - 1);
+                }
                 result.push('}');
             }
             Lambda { args, body, .. } => {
                 result += "fn ";
                 result.push('(');
                 result += &compile_list(args, ", ", &mut |arg| arg);
-                result += ")\n";
-                result.push('{');
+                result += ") ";
+                result += "{";
                 result += &compile_code_block(body, scope);
                 result.push('}');
             }
@@ -169,7 +199,11 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
                 result += &compile_expressions(scope, args);
                 result.push(')');
             }
-            Expr(expr) => result += &compile_expression(scope, expr),
+            Expr(expr) => {
+                result.push('(');
+                result += &compile_expression(scope, expr);
+                result.push(')');
+            }
             _ => unreachable!(),
         }
     }
@@ -207,17 +241,24 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 body,
                 ..
             } => {
-                if local {
-                    result += "local ";
-                }
                 let end = indent_if(tree, scope);
 
-                result += "fn ";
+                if name.len() == 1 {
+                    if local {
+                        result += "local ";
+                    } else {
+                        result += "global ";
+                    }
+                    result += "fn ";
+                } else {
+                    result += "method ";
+                }
+
                 result += &compile_expression(scope, name);
                 result.push('(');
                 result += &compile_list(args, ", ", &mut |arg| arg);
-                result += ")\n";
-                result.push('{');
+                result += ") ";
+                result += "{";
                 result += &compile_code_block(body, scope);
                 result.push('}');
                 result += &end;
@@ -226,8 +267,8 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += "fn ";
                 result.push('(');
                 result += &compile_list(args, ", ", &mut |arg| arg);
-                result += ")\n";
-                result.push('{');
+                result += ") ";
+                result += "{";
                 result += &compile_code_block(body, scope);
                 result.push('}');
             }
@@ -249,7 +290,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
 
                 result += "while ";
                 result += &condition;
-                result.push('{');
+                result += " {";
                 result += &body;
                 result.push('}');
                 result += &indent_if(tree, scope);
@@ -264,12 +305,15 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
             } => {
                 result += "for ";
                 result += &iter;
+                result += " = ";
                 result += &compile_expression(scope, start);
+                result += ", ";
                 result += &compile_expression(scope, end);
                 if let Some(step) = step {
+                    result += ", ";
                     result += &compile_expression(scope, step);
                 }
-                result.push('{');
+                result += " {";
                 result += &compile_code_block(code, scope);
                 result.push('}');
                 result += &indent_if(tree, scope);
@@ -281,7 +325,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += &compile_list(iters, ", ", &mut |iter| iter);
                 result += " with ";
                 result += &compile_expression(scope, expr);
-                result.push('{');
+                result += " {";
                 result += &compile_code_block(code, scope);
                 result.push('}');
                 result += &indent_if(tree, scope);
@@ -293,10 +337,10 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 let body = compile_code_block(body, scope);
 
                 result += "loop ";
-                result.push('{');
+                result += " {";
                 result += &body;
                 result.push('}');
-                result += "until ";
+                result += " until ";
                 result += &condition;
                 result += &indent_if(tree, scope);
             }
@@ -305,16 +349,18 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result.push(';');
                 result += &indent_if(tree, scope);
             }
-            Symbol(lexeme) => {
-                result += &lexeme;
-            }
+            Symbol(lexeme) => result += &compile_symbol(lexeme),
             MultilineString(string) => result += &compile_multiline_string(string),
             Call(args) => {
                 result.push('(');
                 result += &compile_expressions(scope, args);
                 result.push(')');
             }
-            Expr(expr) => result += &compile_expression(scope, expr),
+            Expr(expr) => {
+                result.push('(');
+                result += &compile_expression(scope, expr);
+                result.push(')');
+            }
             DoBlock(body) => {
                 result += "{";
                 result += &compile_code_block(body, scope);
@@ -335,8 +381,6 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
 
             _ => unreachable!(),
         }
-
-        result += "\n";
     }
 
     result

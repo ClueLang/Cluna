@@ -1,0 +1,37 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/extra/tables.lua
+---
+local myTable = {
+    key1 = "value1", 
+    key2 = 42, 
+    key3 = true, 
+    "key with spaces" = "value with spaces", 
+    10 = "value with numeric key", 
+    a = "value with variable key", 
+    nestedTable = {
+        nestedKey = "nestedValue", 
+        anotherNestedTable = {
+            foo = "bar", 
+            hello = "world"
+        }
+    }, 
+    array = {
+        1, 
+        2, 
+        3, 
+        4, 
+        5
+    }, 
+    mixedTable = {
+        "string value", 
+        123, 
+        nested = {
+            true, 
+            false
+        }
+    }, 
+    key4 = "value4", 
+    key5 = "value5"
+}

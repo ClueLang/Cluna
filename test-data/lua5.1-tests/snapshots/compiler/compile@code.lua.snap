@@ -1,0 +1,156 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.1-tests/code.lua
+---
+if T == nil {
+    (Message || print)('\a\n >>> testC not active: skipping opcode tests <<<\n\a');
+    return 
+}
+print("testing code generation and optimizations");
+{
+    local fn f(a) {
+        for k, v, w with a {
+            
+        }
+    }
+}
+global fn check(f, ...) {
+    local c = T.listcode(f)
+    for i = 1, arg.n {
+        assert(string.find(c[(i)], '- ' .. arg[(i)] .. ' *%d'));
+    }
+    assert(c[(arg.n + 2)] == nil);
+}
+global fn checkequal(a, b) {
+    a = T.listcode(a)
+    b = T.listcode(b)
+    for i = 1, table.getn(a) {
+        a[(i)] = string.gsub(a[(i)], '%b()', '')
+        b[(i)] = string.gsub(b[(i)], '%b()', '')
+        assert(a[(i)] == b[(i)]);
+    }
+}
+check(fn () {
+    (fn () {
+        
+    })({
+        f()
+    });
+}, 'CLOSURE', 'NEWTABLE', 'GETGLOBAL', 'CALL', 'SETLIST', 'CALL', 'RETURN');
+check(fn () {
+    local a, b, c
+    local d
+    local e
+    a = nil
+    d = nil
+}, 'RETURN');
+check(fn (a, b, c) {
+    return a
+}, 'RETURN');
+check(fn () {
+    while true {
+        local a =  - 1
+    }
+}, 'LOADK', 'JMP', 'RETURN');
+check(fn () {
+    while 1 {
+        local a =  - 1
+    }
+}, 'LOADK', 'JMP', 'RETURN');
+check(fn () {
+    loop  {
+        local x = 1
+    } until false
+}, 'LOADK', 'JMP', 'RETURN');
+check(fn () {
+    loop  {
+        local x
+    } until nil
+}, 'LOADNIL', 'JMP', 'RETURN');
+check(fn () {
+    loop  {
+        local x = 1
+    } until true
+}, 'LOADK', 'RETURN');
+check(fn (a, b, c, d) {
+    return a .. b .. c .. d
+}, 'MOVE', 'MOVE', 'MOVE', 'MOVE', 'CONCAT', 'RETURN');
+check(fn () {
+    return !!nil
+}, 'LOADBOOL', 'RETURN');
+check(fn () {
+    return !!false
+}, 'LOADBOOL', 'RETURN');
+check(fn () {
+    return !!true
+}, 'LOADBOOL', 'RETURN');
+check(fn () {
+    return !!1
+}, 'LOADBOOL', 'RETURN');
+check(fn () {
+    local a, b, c, d
+    a = b * 2
+    c[(4)], a[(b)] =  - ((a + d /  - 20.5 - a[(b)]) ^ a.x), b
+}, 'MUL', 'DIV', 'ADD', 'GETTABLE', 'SUB', 'GETTABLE', 'POW', 'UNM', 'SETTABLE', 'SETTABLE', 'RETURN');
+check(fn () {
+    local a, b
+    a.x = 0
+    a.x = b
+    a[(b)] = 'y'
+    a = 1 - a
+    b = 1 / a
+    b = 5 + 4
+    a[(true)] = false
+}, 'SETTABLE', 'SETTABLE', 'SETTABLE', 'SUB', 'DIV', 'LOADK', 'SETTABLE', 'RETURN');
+local fn f() {
+    return  - ((2 ^ 8 +  - ( - 1)) % 8) / 2 * 4 - 3
+}
+check(f, 'LOADK', 'RETURN');
+assert(f() ==  - 5);
+check(fn () {
+    local a, b, c
+    b[(c)], a = c, b
+    b[(a)], a = c, b
+    a, b = c, a
+    a = a
+}, 'MOVE', 'MOVE', 'SETTABLE', 'MOVE', 'MOVE', 'MOVE', 'SETTABLE', 'MOVE', 'MOVE', 'MOVE', 'RETURN');
+checkequal(fn () {
+    if (a == nil) {
+        a = 1
+    }
+    if a ~= nil {
+        a = 1
+    }
+}, fn () {
+    if (a == 9) {
+        a = 1
+    }
+    if a ~= 9 {
+        a = 1
+    }
+});
+check(fn () {
+    if a == nil {
+        a = 1
+    }
+}, 'GETGLOBAL', 'EQ', 'JMP', 'LOADK', 'SETGLOBAL', 'RETURN');
+checkequal(fn () {
+    local a
+    if !(a || b) {
+        b = a
+    }
+}, fn () {
+    local a
+    if (!a && !b) {
+        b = a
+    }
+});
+checkequal(fn (l) {
+    local a
+    return 0 <= a && a <= l
+}, fn (l) {
+    local a
+    return !(!(a >= 0) || !(a <= l))
+});
+print('OK');

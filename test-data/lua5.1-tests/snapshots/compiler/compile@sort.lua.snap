@@ -1,0 +1,106 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.1-tests/sort.lua
+---
+print("testing sort");
+global fn check(a, f) {
+    f = f || fn (x, y) {
+        return x < y
+    }
+    for n = table.getn(a), 2,  - 1 {
+        assert(!f(a[(n)], a[(n - 1)]));
+    }
+}
+a = {
+    "Jan", 
+    "Feb", 
+    "Mar", 
+    "Apr", 
+    "May", 
+    "Jun", 
+    "Jul", 
+    "Aug", 
+    "Sep", 
+    "Oct", 
+    "Nov", 
+    "Dec"
+}
+table.sort(a);
+check(a);
+limit = 30000
+if rawget(_G, "_soft") {
+    limit = 5000
+}
+a = {}
+for i = 1, limit {
+    a[(i)] = math.random()
+}
+local x = os.clock()
+table.sort(a);
+print(string.format("Sorting %d elements in %.2f sec.", limit, os.clock() - x));
+check(a);
+x = os.clock()
+table.sort(a);
+print(string.format("Re-sorting %d elements in %.2f sec.", limit, os.clock() - x));
+check(a);
+a = {}
+for i = 1, limit {
+    a[(i)] = math.random()
+}
+x = os.clock()
+i = 0
+table.sort(a, fn (x, y) {
+    i = i + 1
+    return y < x
+});
+print(string.format("Invert-sorting other %d elements in %.2f sec., with %i comparisons", limit, os.clock() - x, i));
+check(a, fn (x, y) {
+    return y < x
+});
+table.sort({});
+for i = 1, limit {
+    a[(i)] = false
+}
+x = os.clock()
+table.sort(a, fn (x, y) {
+    return nil
+});
+print(string.format("Sorting %d equal elements in %.2f sec.", limit, os.clock() - x));
+check(a, fn (x, y) {
+    return nil
+});
+for i, v with pairs(a) {
+    assert(!v || i == 'n' && v == limit);
+}
+a = {
+    "�lo", 
+    "\0first :-)", 
+    "alo", 
+    "then this one", 
+    "45", 
+    "and a new"
+}
+table.sort(a);
+check(a);
+table.sort(a, fn (x, y) {
+    loadstring(string.format("a[%q] = ''", x))();
+    collectgarbage();
+    return x < y
+});
+tt = {
+    __lt = fn (a, b) {
+        return a.val < b.val
+    }
+}
+a = {}
+for i = 1, 10 {
+    a[(i)] = {
+        val = math.random(100)
+    }
+    setmetatable(a[(i)], tt);
+}
+table.sort(a);
+check(a, tt.__lt);
+check(a);
+print("OK");
