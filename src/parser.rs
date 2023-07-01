@@ -83,6 +83,7 @@ pub enum ComplexToken {
         expr: Expression,
         line: usize,
     },
+    MultilineString(String),
     Symbol(String),
     Call(Vec<Expression>),
     Expr(Expression),
@@ -134,21 +135,6 @@ impl<'a> Parser<'a> {
             let result = Some(&self.tokens[self.current]);
             self.current += 1;
             self.column += 1;
-            result
-        }
-    }
-
-    fn advance_to(&mut self, offset: usize) -> Option<&Token> {
-        if self.done() {
-            None
-        } else {
-            if self.tokens[self.current + offset - 1].line() != self.line {
-                self.line = self.tokens[self.current + offset - 1].line();
-                self.column = 0;
-            }
-            let result = Some(&self.tokens[self.current + offset - 1]);
-            self.current += offset;
-            self.column += offset;
             result
         }
     }
@@ -244,30 +230,9 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn peek_at(&self, offset: usize) -> Option<&Token> {
-        if self.done() {
-            None
-        } else {
-            self.tokens.get(self.current + offset - 1)
-        }
-    }
-
     #[inline]
     fn current(&self) -> &Token {
         &self.tokens[self.current.saturating_sub(1)]
-    }
-
-    fn look_back(&self) -> Option<&Token> {
-        (self.current > 2).then(|| &self.tokens[self.current - 2])
-    }
-
-    #[inline]
-    fn is_statement(&self) -> bool {
-        use TokenType::*;
-        matches!(
-            self.peek().map(|t| t.kind()),
-            Some(Identifier | Function | Local | If | While | For | Repeat | Do | Return | Break)
-        )
     }
 
     fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, String> {
@@ -687,7 +652,6 @@ impl<'a> Parser<'a> {
 
     fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, String> {
         let mut expr = Expression::with_capacity(16);
-        let start = self.current;
 
         let last = loop {
             use TokenType::*;
@@ -702,8 +666,14 @@ impl<'a> Parser<'a> {
                             break t;
                         }
                     }
-                    TripleDot | Number | True | False | String | MultilineString | Nil => {
+                    TripleDot | Number | True | False | String | Nil => {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
+                    MultilineString => {
+                        expr.push_back(ComplexToken::MultilineString(t.lexeme()));
                         if self.check_val() {
                             break t;
                         }

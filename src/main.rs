@@ -1,15 +1,14 @@
-use probe::{lexer::scan_code, parser::parse_tokens};
+use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
 use std::path::Path;
 
 fn main() -> Result<(), String> {
     let path = Path::new("main.lua");
     let code = std::fs::read_to_string(path).unwrap();
     let scanned = scan_code(code)?;
-    let path = path.ancestors().next().unwrap().to_string_lossy() + ".scanned";
-    std::fs::write(&*path, format!("{scanned:#?}")).unwrap();
     let parsed = parse_tokens(&scanned)?;
-    dbg!(parsed);
+    let compiled = compile_ast(parsed);
 
+    std::fs::write("main.clue", compiled).unwrap();
     Ok(())
 }
 
@@ -17,7 +16,7 @@ fn main() -> Result<(), String> {
 mod test {
     use std::path::PathBuf;
 
-    use probe::{lexer::scan_code, parser::parse_tokens};
+    use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
     use tests_proc_macro::gen_tests;
 
     macro_rules! settings {
@@ -65,8 +64,32 @@ mod test {
         Ok(())
     }
 
-    gen_tests!("test-data/lua5.1-tests", scan);
-    gen_tests!("test-data/lua5.1-tests", parse);
-    gen_tests!("test-data/extra", scan);
-    gen_tests!("test-data/extra", parse);
+    fn compile(path: PathBuf) -> Result<(), String> {
+        let code = std::fs::read_to_string(&path).unwrap();
+        let scanned = scan_code(code)?;
+        let parsed = parse_tokens(&scanned)?;
+        let compiled = compile_ast(parsed);
+        let settings = settings!("compiler", path);
+
+        settings.bind(|| {
+            insta::assert_display_snapshot!(compiled);
+        });
+
+        Ok(())
+    }
+
+    mod lua5_1 {
+        use super::*;
+
+        gen_tests!("test-data/lua5.1-tests", scan);
+        gen_tests!("test-data/lua5.1-tests", parse);
+        gen_tests!("test-data/lua5.1-tests", compile);
+    }
+
+    mod extra {
+        use super::*;
+        gen_tests!("test-data/extra", scan);
+        gen_tests!("test-data/extra", parse);
+        gen_tests!("test-data/extra", compile);
+    }
 }

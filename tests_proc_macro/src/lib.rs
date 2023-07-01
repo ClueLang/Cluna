@@ -21,6 +21,7 @@ pub fn gen_tests(input: TokenStream) -> TokenStream {
     let func = Ident::new(&func, Span::call_site());
 
     let mut out = quote!();
+    let func = Ident::new(&func.to_string(), Span::call_site());
     for entry in fs::read_dir(folder).unwrap() {
         let entry = entry.unwrap().path();
         let filename = entry.to_string_lossy();
@@ -54,5 +55,11 @@ pub fn gen_tests(input: TokenStream) -> TokenStream {
         }
     }
 
-    out.into()
+    quote! {
+        mod #func {
+            use super::*;
+            #out
+        }
+    }
+    .into()
 }

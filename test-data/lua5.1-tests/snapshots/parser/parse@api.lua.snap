@@ -2797,7 +2797,7 @@ input_file: test-data/lua5.1-tests/api.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[call 1 -1; pop 1; tostring -1; return 1]]",
                                                 ),
                                             ],
@@ -3703,7 +3703,7 @@ input_file: test-data/lua5.1-tests/api.lua
                     ],
                     values: [
                         [
-                            Symbol(
+                            MultilineString(
                                 "[[\n    isnumber %d;\n    isstring %d;\n    isfunction %d;\n    iscfunction %d;\n    istable %d;\n    isuserdata %d;\n    isnil %d;\n    isnull %d;\n    return 8\n  ]]",
                             ),
                         ],
@@ -5315,7 +5315,7 @@ input_file: test-data/lua5.1-tests/api.lua
                         Call(
                             [
                                 [
-                                    Symbol(
+                                    MultilineString(
                                         "[[\n  loadstring 2; call 0,1;\n  pushvalue 3; insert -2; call 1, 1;\n  call 0, 0;\n  return 1\n]]",
                                     ),
                                 ],
@@ -7601,7 +7601,7 @@ input_file: test-data/lua5.1-tests/api.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[pushvalue U0; pushvalue U1; pushvalue U2; return 3]]",
                                                 ),
                                             ],
@@ -7720,7 +7720,7 @@ input_file: test-data/lua5.1-tests/api.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[tostring U3; tonumber U4; return 2]]",
                                                 ),
                                             ],
@@ -7787,7 +7787,7 @@ input_file: test-data/lua5.1-tests/api.lua
                         Call(
                             [
                                 [
-                                    Symbol(
+                                    MultilineString(
                                         "[[pushnum 100; pushnum 200; replace U2; replace U1]]",
                                     ),
                                 ],
@@ -7825,7 +7825,7 @@ input_file: test-data/lua5.1-tests/api.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[pushvalue U1; pushvalue U2; return 2]]",
                                                 ),
                                             ],
@@ -7892,7 +7892,7 @@ input_file: test-data/lua5.1-tests/api.lua
                         Call(
                             [
                                 [
-                                    Symbol(
+                                    MultilineString(
                                         "[[replace U2; replace U1]]",
                                     ),
                                 ],
@@ -7974,7 +7974,7 @@ input_file: test-data/lua5.1-tests/api.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[pushvalue U1; pushvalue U2; return 2]]",
                                                 ),
                                             ],
@@ -17180,7 +17180,7 @@ input_file: test-data/lua5.1-tests/api.lua
                                     },
                                 ],
                                 [
-                                    Symbol(
+                                    MultilineString(
                                         "[[\n  a = strlibopen()\n  a = packageopen()\n  a = baselibopen(); assert(a == _G and require(\"_G\") == a)\n  a = iolibopen(); assert(type(a.read) == \"function\")\n  assert(require(\"io\") == a)\n  a = tablibopen(); assert(type(a.insert) == \"function\")\n  a = dblibopen(); assert(type(a.getlocal) == \"function\")\n  a = mathlibopen(); assert(type(a.sin) == \"function\")\n  return string.sub('okinama', 1, 2)\n]]",
                                     ),
                                 ],
@@ -17370,7 +17370,7 @@ input_file: test-data/lua5.1-tests/api.lua
                         },
                     ],
                     [
-                        Symbol(
+                        MultilineString(
                             "[[pushstring a; gettable G; pushstring x; pushnum 1;\n             settable -3]]",
                         ),
                     ],
@@ -18737,7 +18737,7 @@ input_file: test-data/lua5.1-tests/api.lua
         ],
         values: [
             [
-                Symbol(
+                MultilineString(
                     "[[\nlocal function foo () return end\nlocal t = {\"x\"}\na = \"aaa\"\nfor _, v in ipairs(t) do a=a..v end\nreturn true\n]]",
                 ),
             ],

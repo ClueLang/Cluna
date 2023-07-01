@@ -410,7 +410,7 @@ input_file: test-data/lua5.1-tests/errors.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[^%%[string \".*\"%%]:%d: .- near '%s'$]]",
                                                 ),
                                             ],
@@ -1104,7 +1104,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[\n  local a = {4\n\n]]",
                         ),
                     ],
@@ -1654,7 +1654,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[aaa=9\nrepeat until 3==3\nlocal x=math.sin(math.cos(3))\nif math.sin(1) == x then return math.sin(1) end   -- tail call\nlocal a,b = 1, {\n  {x='a'..'b'..'c', y='b', z=x},\n  {1,2,3,4,5} or 3+3<=3+3,\n  3+1>3+1,\n  {d = x and aaa[x or y]}}\n]]",
                         ),
                     ],
@@ -1676,7 +1676,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[\nlocal x,y = {},1\nif math.sin(1) == 0 then return 3 end    -- return\nx.a()]]",
                         ),
                     ],
@@ -1698,7 +1698,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[\nprefix = nil\ninsert = nil\nwhile 1 do  \n  local a\n  if nil then break end\n  insert(prefix, a)\nend]]",
                         ),
                     ],
@@ -1720,7 +1720,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[  -- tail call\n  return math.sin(\"a\")\n]]",
                         ),
                     ],
@@ -1742,7 +1742,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[collectgarbage(\"nooption\")]]",
                         ),
                     ],
@@ -1764,7 +1764,7 @@ input_file: test-data/lua5.1-tests/errors.lua
             Call(
                 [
                     [
-                        Symbol(
+                        MultilineString(
                             "[[x = print .. \"a\"]]",
                         ),
                     ],
@@ -2115,7 +2115,7 @@ input_file: test-data/lua5.1-tests/errors.lua
         ],
         values: [
             [
-                Symbol(
+                MultilineString(
                     "[[\nfunction g() f() end\nfunction f(x) error('a', X) end\ng()\n]]",
                 ),
             ],

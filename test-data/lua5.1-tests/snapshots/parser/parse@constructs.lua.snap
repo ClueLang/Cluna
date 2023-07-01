@@ -5004,7 +5004,7 @@ input_file: test-data/lua5.1-tests/constructs.lua
         ],
         values: [
             [
-                Symbol(
+                MultilineString(
                     "[[\nreturn function ( a , b , c , d , e )\n  local x = a >= b or c or ( d and e ) or nil\n  return x\nend , { a = 1 , b = 2 >= 1 , } or { 1 };\n]]",
                 ),
             ],
@@ -7834,7 +7834,7 @@ input_file: test-data/lua5.1-tests/constructs.lua
                                     Call(
                                         [
                                             [
-                                                Symbol(
+                                                MultilineString(
                                                     "[[\n      local a = %s\n      local b = not %s\n      K = b\n      local xxx; \n      if %s then X = a  else X = b end\n      if %s then NX = b  else NX = a end\n      while %s do WX1 = a; break end\n      while %s do WX2 = a; break end\n      repeat if (%s) then break end; assert(b)  until not(%s)\n  ]]",
                                                 ),
                                             ],

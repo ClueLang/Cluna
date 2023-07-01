@@ -231,6 +231,7 @@ impl Lexer {
         self.advance();
 
         let lexeme = self.source[start - 1..self.current].iter().collect();
+
         self.tokens
             .push(Token::new(TokenType::MultilineString, lexeme, self.line));
         Ok(())

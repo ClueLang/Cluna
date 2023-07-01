@@ -85,7 +85,7 @@ input_file: test-data/lua5.1-tests/verybig.lua
         ],
         values: [
             [
-                Symbol(
+                MultilineString(
                     "[[$\n\nlocal a,b\n\nb = {$1$\n  b30009 = 65534,\n  b30010 = 65535,\n  b30011 = 65536,\n  b30012 = 65537,\n  b30013 = 16777214,\n  b30014 = 16777215,\n  b30015 = 16777216,\n  b30016 = 16777217,\n  b30017 = 4294967294,\n  b30018 = 4294967295,\n  b30019 = 4294967296,\n  b30020 = 4294967297,\n  b30021 = -65534,\n  b30022 = -65535,\n  b30023 = -65536,\n  b30024 = -4294967297,\n  b30025 = 15012.5,\n  $2$\n};\n\nassert(b.a50008 == 25004 and b[\"a11\"] == 5.5)\nassert(b.a33007 == 16503.5 and b.a50009 == 25004.5)\nassert(b[\"b\"..30024] == -4294967297)\n\nfunction b:xxx (a,b) return a+b end\nassert(b:xxx(10, 12) == 22)   -- pushself with non-constant index\nb.xxx = nil\n\ns = 0; n=0\nfor a,b in pairs(b) do s=s+b; n=n+1 end\nassert(s==13977183656.5  and n==70001)\n\nrequire \"checktable\"\nstat(b)\n\na = nil; b = nil\nprint'+'\n\nfunction f(x) b=x end\n\na = f{$3$} or 10\n\nassert(a==10)\nassert(b[1] == \"a10\" and b[2] == 5 and b[table.getn(b)-1] == \"a50009\")\n\n\nfunction xxxx (x) return b[x] end\n\nassert(xxxx(3) == \"a11\")\n\na = nil; b=nil\nxxxx = nil\n\nreturn 10\n\n]]",
                 ),
             ],
