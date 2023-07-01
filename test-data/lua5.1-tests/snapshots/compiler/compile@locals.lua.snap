@@ -1,0 +1,140 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.1-tests/locals.lua
+---
+print('testing local variables plus some extra stuff');
+{
+    local i = 10
+    {
+        local i = 100
+        assert(i == 100);
+    }
+    {
+        local i = 1000
+        assert(i == 1000);
+    }
+    assert(i == 10);
+    if i ~= 10 {
+        local i = 20
+    } else {
+        local i = 30
+        assert(i == 30);
+    }
+}
+f = nil
+local f
+x = 1
+a = nil
+loadstring('local a = {}')();
+assert(type(a) ~= 'table');
+global fn f(a) {
+    local _1, _2, _3, _4, _5
+    local _6, _7, _8, _9, _10
+    local x = 3
+    local b = a
+    local c, d = a, b
+    if (d == b) {
+        local x = 'q'
+        x = b
+        assert(x == 2);
+    } else {
+        assert(nil);
+    }
+    assert(x == 3);
+    local f = 10
+}
+local b = 10
+local a
+loop  {
+    local b
+    a, b = 1, 2
+    assert(a + 1 == b);
+} until a + b == 3
+assert(x == 1);
+f(2);
+assert(type(f) == 'function');
+{
+    local f = {}
+    local _G = _G
+    for i = 1, 10 {
+        f[(i)] = fn (x) {
+            A = A + 1
+            return A, _G.getfenv(x)
+        }
+    }
+    A = 10
+    assert(f[(1)]() == 11);
+    for i = 1, 10 {
+        assert(setfenv(f[(i)], {
+            A = i
+        }) == f[(i)]);
+    }
+    assert(f[(3)]() == 4 && A == 11);
+    local a, b = f[(8)](1)
+    assert(b.A == 9);
+    a, b = f[(8)](0)
+    assert(b.A == 11);
+    local g
+    local fn f() {
+        assert(setfenv(2, {
+            a = '10'
+        }) == g);
+    }
+    g = fn () {
+        f();
+        _G.assert(_G.getfenv(1).a == '10');
+    }
+    g();
+    assert(getfenv(g).a == '10');
+}
+local fn foo(s) {
+    return loadstring(s)
+}
+assert(getfenv(foo("")) == _G);
+local a = {
+    loadstring = loadstring
+}
+setfenv(foo, a);
+assert(getfenv(foo("")) == _G);
+setfenv(0, a);
+assert(getfenv(foo("")) == a);
+setfenv(0, _G);
+local a
+local p = 4
+for i = 2, 31 {
+    for j =  - 3, 3 {
+        assert(loadstring(string.format(`local a=%s;a=a+
+                                            %s;
+                                      assert(a
+                                      ==2^%s)`, j, p - j, i)))();
+        assert(loadstring(string.format(`local a=%s;
+                                      a=a-%s;
+                                      assert(a==-2^%s)`,  - j, p - j, i)))();
+        assert(loadstring(string.format(`local a,b=0,%s;
+                                      a=b-%s;
+                                      assert(a==-2^%s)`,  - j, p - j, i)))();
+    }
+    p = 2 * p
+}
+print('+');
+if rawget(_G, "querytab") {
+    collectgarbage("stop");
+    local a = {
+        {} = 4, 
+        3 = 0, 
+        alo = 1, 
+        a1234567890123456789012345678901234567890 = 10
+    }
+    local t = querytab(a)
+    for k, _ with pairs(a) {
+        a[(k)] = nil
+    }
+    collectgarbage();
+    for i = 0, t - 1 {
+        local k = querytab(a, i)
+        assert(k == nil || type(k) == 'number' || k == 'alo');
+    }
+}
+print('OK');
+return 5, f

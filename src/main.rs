@@ -1,185 +1,136 @@
-#![allow(non_snake_case)]
-#![allow(non_upper_case_globals)]
-
-macro_rules! check {
-    ($tocheck: expr) => {
-        match $tocheck {
-            Ok(t) => t,
-            Err(e) => return Err(e.to_string()),
-        }
-    };
-}
-
-macro_rules! arg {
-    ($name: expr) => {
-        unsafe { $name }
-    };
-}
-
-// mod compiler;
-mod compiler;
-mod parser;
-mod scanner;
-
 use clap::Parser;
-use compiler::compile_tokens;
-use parser::*;
-use scanner::*;
-use std::{fs, fs::File, io::prelude::*, path::Path, time::Instant};
-
-pub static mut ENV_TOKENS: bool = false;
-pub static mut ENV_STRUCT: bool = false;
-pub static mut ENV_OUTPUT: bool = false;
-pub static mut ENV_DONTSAVE: bool = false;
-pub static mut ENV_PATHISCODE: bool = false;
-pub static mut ENV_NOMULTILINE: bool = false;
+use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
+use std::path::PathBuf;
 
 #[derive(Parser)]
-#[clap(about, version, long_about = None)]
 struct Cli {
-    /// The path to the directory where the *.lua files are located.
-    /// Every directory inside the given directory will be checked too.
-    /// If the path points to a single *.lua file, only that file will be compiled.
-    #[clap(required_unless_present = "license", value_parser)]
-    path: Option<String>,
-
-    /// The name the output file will have
-    #[clap(default_value = "main", value_name = "OUTPUT FILE NAME", value_parser)]
-    outputname: String,
-
-    /// Print license information
-    #[clap(short = 'L', long, display_order = 1000, value_parser)]
-    license: bool,
-
-    /// Print list of detected tokens in compiled files
-    #[clap(long, value_parser)]
-    tokens: bool,
-
-    /// Print syntax structure of the tokens of the compiled files
-    #[clap(long, value_parser)]
-    r#struct: bool,
-
-    /// Print output Clue code in the console
-    #[clap(short, long, value_parser)]
-    output: bool,
-
-    /// Don't save compiled code
-    #[clap(short = 'D', long, value_parser)]
-    dontsave: bool,
-
-    /// Treat PATH not as a path but as clue code
-    #[clap(short, long, value_parser)]
-    pathiscode: bool,
-
-    /// Don't use multiline strings in the output
-    #[clap(long, value_parser)]
-    nomultiline: bool,
+    path: PathBuf,
+    #[clap(short, long)]
+    output: Option<PathBuf>,
 }
 
-fn compile_code(code: String, name: String, scope: usize) -> Result<String, String> {
-    let time = Instant::now();
-    let (tokens, _comments) = scan_code(code, name.clone())?;
+fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
+    let code = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
+    let scanned = scan_code(code)?;
+    let parsed = parse_tokens(&scanned)?;
+    let compiled = compile_ast(parsed);
 
-    if arg!(ENV_TOKENS) {
-        println!("Scanned tokens of file \"{}\":\n{:#?}", name, tokens);
-    }
-    let ctokens = parse_tokens(tokens, name.clone())?;
-    if arg!(ENV_STRUCT) {
-        println!("Parsed structure of file \"{}\":\n{:#?}", name, ctokens);
-    }
+    let output = output.unwrap_or_else(|| path.with_extension("clue"));
 
-    let code = compile_tokens(scope, ctokens);
-    if arg!(ENV_OUTPUT) {
-        println!("Compiled Lua code of file \"{}\":\n{}", name, code);
-    }
-    println!(
-        "Compiled file \"{}\" in {} seconds!",
-        name,
-        time.elapsed().as_secs_f32()
-    );
-    Ok(code)
-}
-
-fn compile_file(path: &Path, name: String, scope: usize) -> Result<String, String> {
-    let mut code: String = String::new();
-    check!(check!(File::open(path)).read_to_string(&mut code));
-    Ok(compile_code(code, name, scope)?)
-}
-
-fn compile_folder(path: &Path, rpath: String) -> Result<(), String> {
-    for entry in check!(fs::read_dir(path)) {
-        let entry = check!(entry);
-        let name: String = entry
-            .path()
-            .file_name()
-            .unwrap()
-            .to_string_lossy()
-            .into_owned();
-        let filePathName: String = format!("{}/{}", path.display(), name);
-        let filepath: &Path = &Path::new(&filePathName);
-        let rname = rpath.clone() + &name;
-        if filepath.is_dir() {
-            compile_folder(filepath, rname + ".")?;
-        } else if filePathName.ends_with(".lua") {
-            let code = compile_file(filepath, name, 2)?;
-            let compiled_path = format!(
-                "{}{}",
-                filepath.display().to_string().strip_suffix(".lua").unwrap(),
-                ".clue"
-            );
-            if !arg!(ENV_DONTSAVE) {
-                check!(fs::write(compiled_path, code))
-            }
-        }
-    }
+    std::fs::write(output, compiled).map_err(|e| e.to_string())?;
     Ok(())
 }
 
 fn main() -> Result<(), String> {
-    let cli = Cli::parse();
-    if cli.license {
-        println!("{}", include_str!("../LICENSE"));
-        return Ok(());
-    }
-    unsafe {
-        ENV_TOKENS = cli.tokens;
-        ENV_STRUCT = cli.r#struct;
-        ENV_OUTPUT = cli.output;
-        ENV_DONTSAVE = cli.dontsave;
-        ENV_PATHISCODE = cli.pathiscode;
-        ENV_NOMULTILINE = cli.nomultiline;
-    }
-    let codepath = cli.path.unwrap();
-    if arg!(ENV_PATHISCODE) {
-        println!(
-            "{}",
-            compile_code(codepath.clone(), "(command line)".to_owned(), 0)?
-        );
-        return Ok(());
-    }
-    let path: &Path = Path::new(&codepath);
+    let args = Cli::parse();
+    let path = args.path;
 
-    if path.is_dir() {
-        compile_folder(path, String::new())?;
-    } else if path.is_file() {
-        let compiled_name =
-            String::from(path.display().to_string().strip_suffix(".lua").unwrap()) + ".clue";
-        let code = compile_file(
-            path,
-            path.file_name().unwrap().to_string_lossy().into_owned(),
-            0,
-        )?;
+    if !path.exists() {
+        return Err(format!("File {:?} does not exist", path));
+    }
 
-        if !arg!(ENV_DONTSAVE) {
-            check!(fs::write(compiled_name, code))
+    if path.is_file() {
+        return compile_file(&path, args.output);
+    } else if path.is_dir() {
+        if args.output.is_some() {
+            eprintln!("Warning: output flag is ignored when compiling a directory");
         }
-    } else {
-        return Err(String::from("The given path doesn't exist"));
+
+        let mut stack = vec![path];
+
+        while let Some(path) = stack.pop() {
+            if path.is_file() && path.extension().map_or(false, |ext| ext == "lua") {
+                compile_file(&path, None)?;
+            } else if path.is_dir() {
+                for entry in std::fs::read_dir(path).map_err(|e| e.to_string())? {
+                    let entry = entry.map_err(|e| e.to_string())?;
+                    stack.push(entry.path());
+                }
+            }
+        }
     }
+
     Ok(())
 }
+
 #[cfg(test)]
 mod test {
+    use std::path::PathBuf;
+
+    use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
     use tests_proc_macro::gen_tests;
-    gen_tests!("tests");
+
+    macro_rules! settings {
+        ($test:literal, $path:expr) => {{
+            let path = &$path;
+            let dir = {
+                let mut path = path.ancestors().nth(1).unwrap().to_path_buf();
+                path.push(concat!("snapshots/", $test));
+                PathBuf::from("../").join(path)
+            };
+            let name = path.file_name().unwrap().to_string_lossy().to_string();
+
+            let mut settings = insta::Settings::new();
+            settings.set_snapshot_path(dir);
+            settings.set_input_file(path.to_string_lossy().to_string());
+            settings.set_snapshot_suffix(name);
+            settings.set_prepend_module_to_snapshot(false);
+
+            settings
+        }};
+    }
+
+    fn scan(path: PathBuf) -> Result<(), String> {
+        let code = std::fs::read_to_string(&path).unwrap();
+        let scanned = scan_code(code)?;
+        let settings = settings!("lexer", path);
+
+        settings.bind(|| {
+            insta::assert_debug_snapshot!(scanned);
+        });
+
+        Ok(())
+    }
+
+    fn parse(path: PathBuf) -> Result<(), String> {
+        let code = std::fs::read_to_string(&path).unwrap();
+        let scanned = scan_code(code)?;
+        let parsed = parse_tokens(&scanned)?;
+        let settings = settings!("parser", path);
+
+        settings.bind(|| {
+            insta::assert_debug_snapshot!(parsed);
+        });
+
+        Ok(())
+    }
+
+    fn compile(path: PathBuf) -> Result<(), String> {
+        let code = std::fs::read_to_string(&path).unwrap();
+        let scanned = scan_code(code)?;
+        let parsed = parse_tokens(&scanned)?;
+        let compiled = compile_ast(parsed);
+        let settings = settings!("compiler", path);
+
+        settings.bind(|| {
+            insta::assert_display_snapshot!(compiled);
+        });
+
+        Ok(())
+    }
+
+    mod lua5_1 {
+        use super::*;
+
+        gen_tests!("test-data/lua5.1-tests", scan);
+        gen_tests!("test-data/lua5.1-tests", parse);
+        gen_tests!("test-data/lua5.1-tests", compile);
+    }
+
+    mod extra {
+        use super::*;
+        gen_tests!("test-data/extra", scan);
+        gen_tests!("test-data/extra", parse);
+        gen_tests!("test-data/extra", compile);
+    }
 }

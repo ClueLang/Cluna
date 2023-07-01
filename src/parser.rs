@@ -1,98 +1,95 @@
-#![allow(non_camel_case_types)]
+use crate::lexer::{Token, TokenType};
+use std::collections::VecDeque;
 
-use self::BlockType::*;
-use self::ComplexToken::*;
-use crate::scanner::{Token, TokenType, TokenType::*};
-use std::{cmp, collections::LinkedList};
-
-macro_rules! expression {
-	($($x: expr),*) => {
-		{
-			let mut expr = Expression::new();
-			$(expr.push_back($x);)*
-			expr
-		}
-	};
+macro_rules! vec_deque {
+    ($($elem:expr),*) => {
+      VecDeque::from([$(($elem)),*])
+    };
 }
 
-pub type Expression = LinkedList<ComplexToken>;
-pub type FunctionArgs = Vec<(String, Option<(Expression, usize)>)>;
+pub type Expression = VecDeque<ComplexToken>;
+pub type FunctionArgs = Vec<String>;
 type OptionalEnd = Option<(TokenType, &'static str)>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ComplexToken {
-    VARIABLE {
-        local: bool,
+    Variable {
         names: Vec<String>,
         values: Vec<Expression>,
         line: usize,
+        column: usize,
     },
-
-    ALTER {
-        names: Vec<Expression>,
+    Alter {
+        names: Vec<ComplexToken>,
         values: Vec<Expression>,
         line: usize,
+        column: usize,
     },
-
-    TABLE {
-        values: Vec<(Option<Expression>, Expression, usize)>,
-        metas: Vec<(String, Expression, usize)>,
+    Table {
+        data: Vec<(Option<Expression>, Expression)>,
+        line: usize,
+        column: usize,
     },
-
-    FUNCTION {
+    Function {
         local: bool,
         name: Expression,
         args: FunctionArgs,
-        code: CodeBlock,
+        body: CodeBlock,
+        line: usize,
+        column: usize,
     },
-
-    LAMBDA {
+    Lambda {
         args: FunctionArgs,
-        code: CodeBlock,
+        body: CodeBlock,
+        line: usize,
+        column: usize,
     },
-
-    IF_STATEMENT {
+    IfStatement {
         condition: Expression,
-        code: CodeBlock,
+        body: CodeBlock,
         next: Option<Box<ComplexToken>>,
+        line: usize,
+        column: usize,
     },
-
-    WHILE_LOOP {
+    WhileLoop {
         condition: Expression,
-        code: CodeBlock,
+        body: CodeBlock,
+        line: usize,
+        column: usize,
     },
-
-    REPEAT_UNTIL {
+    RepeatLoop {
         condition: Expression,
-        code: CodeBlock,
+        body: CodeBlock,
+        line: usize,
+        column: usize,
     },
-
-    FOR_LOOP {
-        iterator: String,
+    ForLoop {
+        iter: String,
         start: Expression,
         end: Expression,
-        alter: Expression,
+        step: Option<Expression>,
         code: CodeBlock,
+        line: usize,
+        column: usize,
     },
-
-    FOR_FUNC_LOOP {
-        iterators: Vec<String>,
+    ForFuncLoop {
+        iters: Vec<String>,
         expr: Expression,
         code: CodeBlock,
+        line: usize,
+        column: usize,
     },
-
-    IDENT {
+    Ident {
         expr: Expression,
         line: usize,
     },
-
-    SYMBOL(String),
-    CALL(Vec<Expression>),
-    EXPR(Expression),
-    DO_BLOCK(CodeBlock),
-    ELSE_BLOCK(CodeBlock),
-    RETURN_EXPR(Option<Vec<Expression>>),
-    BREAK_LOOP,
+    MultilineString(String),
+    Symbol(String),
+    Call(Vec<Expression>),
+    Expr(Expression),
+    DoBlock(CodeBlock),
+    Return(Option<Vec<Expression>>),
+    Break,
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -102,133 +99,81 @@ pub struct CodeBlock {
     pub end: usize,
 }
 
-#[derive(Clone, Debug, PartialEq)]
-pub enum BlockType {
-    THEN_TYPE,
-    DO_TYPE,
-    REPEAT_TYPE,
-    NONE_TYPE,
-}
-
-#[derive(Clone, Debug)]
-struct ParserInfo {
-    current: usize,
-    size: usize,
-    tokens: Vec<Token>,
-    filename: String,
+struct Parser<'a> {
+    tokens: &'a [Token],
     expr: Expression,
-    testing: Option<usize>,
+    current: usize,
+    line: usize,
+    column: usize,
 }
 
-impl ParserInfo {
-    fn new(tokens: Vec<Token>, filename: String) -> ParserInfo {
-        ParserInfo {
-            current: 0,
-            size: tokens.len() - 1,
+impl<'a> Parser<'a> {
+    #[inline]
+    pub fn new(tokens: &'a [Token]) -> Self {
+        Self {
             tokens,
-            filename,
-            expr: Expression::new(),
-            testing: None,
+            column: 0,
+            current: 0,
+            line: 1,
+            expr: Expression::with_capacity(16),
         }
     }
 
-    fn test<T>(&mut self, func: impl FnOnce(&mut ParserInfo) -> T) -> (T, usize) {
-        let start = self.current - 1;
-        self.testing = Some(0);
-        let result = func(self);
-        self.testing = match self.testing {
-            Some(line) if line > 0 => self.testing,
-            _ => None,
-        };
-        let reached = self.current;
-        self.current = start;
-        (result, reached)
+    #[inline]
+    fn done(&self) -> bool {
+        self.current >= self.tokens.len()
     }
 
-    fn error(&mut self, msg: impl Into<String>, line: usize) -> String {
-        if let Some(0) = self.testing {
-            self.testing = Some(line);
+    fn advance(&mut self) -> Option<&Token> {
+        if self.done() {
+            None
         } else {
-            println!("Error in file \"{}\" at line {}!", self.filename, line);
+            if self.tokens[self.current].line() != self.line {
+                self.line = self.tokens[self.current].line();
+                self.column = 0;
+            }
+            let result = Some(&self.tokens[self.current]);
+            self.current += 1;
+            self.column += 1;
+            result
         }
-        msg.into()
     }
 
-    fn expected(&mut self, expected: &str, got: &str, line: usize) -> String {
-        self.error(format!("Expected '{}', got '{}'", expected, got), line)
-    }
-
-    fn expected_before(&mut self, expected: &str, before: &str, line: usize) -> String {
-        self.error(format!("Expected '{}' before '{}'", expected, before), line)
-    }
-
-    fn unexpected(&mut self, str: &str, line: usize) -> String {
-        self.error(format!("Unexpected token '{}'", str), line)
-    }
-
-    fn ended(&self) -> bool {
-        self.current >= self.size
-    }
-
-    fn at(&self, pos: usize) -> Token {
-        self.tokens[cmp::min(pos, self.size)].to_owned()
-    }
-
-    fn advance(&mut self) -> Token {
-        self.current += 1;
-        self.look_back(0)
-    }
-    fn peek(&self, pos: usize) -> Token {
-        let pos: usize = self.current + pos;
-        self.at(pos)
-    }
-
-    fn look_back(&self, pos: usize) -> Token {
-        let pos: usize = self.current - pos - 1;
-        self.at(pos)
-    }
-
-    fn compare(&self, expected: TokenType) -> bool {
-        if self.ended() {
-            return false;
+    fn advance_if(&mut self, token: TokenType) -> bool {
+        if self.done() {
+            false
+        } else if self.tokens[self.current].kind() == token {
+            self.advance();
+            true
+        } else {
+            false
         }
-        if self.peek(0).kind != expected {
-            return false;
-        }
-        true
     }
 
-    fn advance_if(&mut self, expected: TokenType) -> bool {
-        if self.ended() {
-            return false;
+    fn assert_compare(&self, expected: TokenType, error: &str) -> Result<(), String> {
+        if let Some(t) = self.peek() {
+            if t.kind() != expected {
+                return Err(format!(
+                    "Expected '{}' got '{}' at line {}",
+                    error,
+                    &t.lexeme(),
+                    t.line()
+                ));
+            }
         }
-        if self.peek(0).kind != expected {
-            return false;
-        }
-        self.current += 1;
-        true
-    }
 
-    fn assert_advance(&mut self, expected: TokenType, error: &str) -> Result<Token, String> {
-        let t = self.advance();
-        if t.kind != expected {
-            return Err(self.expected(error, &t.lexeme, t.line));
-        }
-        Ok(t)
-    }
-
-    fn assert_compare(&mut self, expected: TokenType, error: &str) -> Result<(), String> {
-        if !self.compare(expected) {
-            let t = self.peek(0);
-            return Err(self.expected(error, &t.lexeme, t.line));
-        }
         Ok(())
     }
 
     fn assert_end<T>(&mut self, tocheck: &Token, end: OptionalEnd, iftrue: T) -> Result<T, String> {
         if let Some((kind, lexeme)) = end {
-            if tocheck.kind != kind {
-                return Err(self.expected(lexeme, &tocheck.lexeme, tocheck.line));
+            if tocheck.kind() != kind {
+                return Err(format!(
+                    "Expected '{}' got '{}' at line {}",
+                    lexeme,
+                    &tocheck.lexeme(),
+                    tocheck.line(),
+                ));
             }
         }
 
@@ -237,862 +182,984 @@ impl ParserInfo {
 
     fn assert(&mut self, expected: TokenType, error: &str) -> Result<(), String> {
         if !self.advance_if(expected) {
-            let t = self.peek(0);
-            return Err(self.expected(error, &t.lexeme, t.line));
+            let t = self.peek().ok_or("Unexpected end of file")?;
+            return Err(format!(
+                "Expected '{}' got '{}' at line {}",
+                error,
+                &t.lexeme(),
+                t.line()
+            ));
         }
         Ok(())
     }
 
-    fn build_call(&mut self) -> Result<(ComplexToken, usize), String> {
-        self.current += 2;
-        let t = self.look_back(0);
-        let has_round_brackets = t.kind == ROUND_BRACKET_OPEN;
-        if !has_round_brackets {
-            self.current -= 1;
+    fn assert_advance(&mut self, expected: TokenType, error: &str) -> Result<&Token, String> {
+        if !self.advance_if(expected) {
+            let t = self.peek().ok_or("Unexpected end of file")?;
+            return Err(format!(
+                "Expected '{}' got '{}' at line {}",
+                error,
+                &t.lexeme(),
+                t.line()
+            ));
         }
-        let mut more = 0;
-        let args: Vec<Expression> = if self.advance_if(ROUND_BRACKET_CLOSED) {
-            Vec::new()
-        } else if has_round_brackets {
-            self.find_expressions(Some(COMMA), Some((ROUND_BRACKET_CLOSED, ")")))?
-        } else {
-            let exprs = self.find_expressions(None, None)?;
-
-            if exprs.len() > 1 {
-                self.current -= exprs.len() + 1;
-                more += exprs.len() - 1;
-            }
-
-            exprs[0..=0].to_vec()
-        };
-
-        Ok((CALL(args), more))
+        Ok(self.current())
     }
 
-    fn find_expressions(
-        &mut self,
-        separator: Option<TokenType>,
-        end: OptionalEnd,
-    ) -> Result<Vec<Expression>, String> {
-        let mut exprs: Vec<Expression> = Vec::new();
+    fn go_back(&mut self) -> Option<&Token> {
+        if self.current == 0 {
+            None
+        } else {
+            if self.tokens[self.current - 1].line() != self.line {
+                self.line = self.tokens[self.current].line();
+                self.column = 0;
+            } else {
+                self.column -= 1;
+            }
+            self.current -= 1;
+
+            Some(&self.tokens[self.current])
+        }
+    }
+
+    fn peek(&self) -> Option<Token> {
+        if self.done() {
+            None
+        } else {
+            self.tokens.get(self.current).cloned()
+        }
+    }
+
+    #[inline]
+    fn current(&self) -> &Token {
+        &self.tokens[self.current.saturating_sub(1)]
+    }
+
+    fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, String> {
+        let mut exprs = vec![];
         loop {
-            let expr = self.build_expression(None)?;
+            let expr = self.parse_expression(None)?;
+            self.advance_if(TokenType::Comma);
+            let t = self.current().clone();
             exprs.push(expr);
-            let t = self.look_back(0);
-            match separator {
-                Some(separator) => {
-                    if t.kind != separator {
-                        return self.assert_end(&t, end, exprs);
+
+            if t.kind() != TokenType::Comma {
+                if let Some((end_token, expected_end)) = end {
+                    if self.peek().map_or(false, |t| t.kind() != end_token) {
+                        self.advance();
+
+                        return Err(format!(
+                            "Expected '{}' got '{}' at line {}",
+                            expected_end,
+                            &t.lexeme(),
+                            t.line()
+                        ));
                     }
                 }
-                _ => match t.kind {
-                    NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE
-                    | NIL | NOT | HASHTAG | CURLY_BRACKET_OPEN | THREEDOTS => {}
-                    _ => {
-                        return Ok(exprs);
-                    }
-                },
+                return Ok(exprs);
             }
         }
     }
 
-    fn build_table(&mut self) -> Result<ComplexToken, String> {
-        let mut values: Vec<(Option<Expression>, Expression, usize)> = Vec::new();
-        let mut metas: Vec<(String, Expression, usize)> = Vec::new();
+    fn is_arg(&self, kind: TokenType) -> bool {
+        use TokenType::*;
+        matches!(kind, String | MultilineString | LeftBrace)
+    }
+
+    fn parse_call(&mut self) -> Result<Vec<Expression>, String> {
+        if self.advance_if(TokenType::RightParen) {
+            Ok(vec![])
+        } else {
+            let exprs = self.find_expressions(Some((TokenType::RightParen, ")")));
+            self.advance();
+            exprs
+        }
+    }
+
+    fn parse_identifier(&mut self) -> Result<ComplexToken, String> {
+        let line = self.current().line();
+        let mut expr = Expression::with_capacity(8);
+
         loop {
-            if self.advance_if(CURLY_BRACKET_CLOSED) {
+            use TokenType::*;
+            if let Some(t) = self.advance() {
+                match t.kind() {
+                    Identifier => {
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                    }
+                    LeftParen => {
+                        let call = self.parse_call()?;
+                        expr.push_back(ComplexToken::Call(call));
+                    }
+                    Dot => {
+                        let t = self.advance().ok_or("Expected identifier")?;
+                        if t.kind() != Identifier {
+                            return Err(format!(
+                                "Expected identifier got {} at line {}",
+                                t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                        expr.push_back(ComplexToken::Symbol(".".to_owned()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                    }
+                    Colon => {
+                        let t = self.advance().ok_or("Expected identifier")?.clone();
+                        if t.kind() != Identifier {
+                            return Err(format!(
+                                "Expected identifier got {} at line {}",
+                                t.lexeme(),
+                                t.line()
+                            ));
+                        }
+
+                        if self.peek().unwrap().kind() != TokenType::LeftParen
+                            && !self.is_arg(self.peek().unwrap().kind())
+                        {
+                            return Err(format!(
+                                "Expected '(' or a single argument got {} at line {}",
+                                t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                        expr.push_back(ComplexToken::Symbol(":".to_owned()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                    }
+                    LeftBracket => {
+                        let index = self.parse_expression(Some((RightBracket, "]")))?;
+                        self.assert(TokenType::RightBracket, "]")?;
+
+                        expr.push_back(ComplexToken::Symbol("[".to_owned()));
+                        expr.push_back(ComplexToken::Expr(index));
+                        expr.push_back(ComplexToken::Symbol("]".to_owned()));
+                    }
+                    String | MultilineString => {
+                        expr.push_back(ComplexToken::Call(vec![vec_deque![ComplexToken::Symbol(
+                            t.lexeme()
+                        )]]));
+                    }
+                    LeftBrace => {
+                        let table = self.parse_table()?;
+                        expr.push_back(ComplexToken::Call(vec![vec_deque![table]]));
+                    }
+                    _ => {
+                        self.go_back();
+                        break;
+                    }
+                }
+
+                if matches!(
+                    self.peek().map(|t| t.kind()),
+                    Some(Number | Nil | Identifier | True | False | TripleDot | Hash | Not)
+                ) {
+                    break;
+                }
+            } else {
                 break;
             }
-            let start = self.current;
-            let mut qscope = 1u8;
-            let mut iskey = false;
-            while match self.peek(0).kind {
-                CURLY_BRACKET_OPEN => {
-                    qscope += 1;
-                    true
+        }
+
+        Ok(ComplexToken::Ident { expr, line })
+    }
+
+    fn parse_identifier_statement(&mut self) -> Result<ComplexToken, String> {
+        let ident = self.parse_identifier()?;
+        let ComplexToken::Ident { expr, .. } = &ident else {unreachable!()};
+
+        if let Some(ComplexToken::Call(_)) = expr.back() {
+            return Ok(ident);
+        }
+
+        if let Some(
+            t @ Token {
+                kind: TokenType::Equals | TokenType::Comma,
+                ..
+            },
+        ) = self.advance()
+        {
+            let mut names = vec![ident];
+
+            if t.kind() == TokenType::Comma {
+                while !self.done() {
+                    let ident = self.parse_identifier()?;
+                    names.push(ident);
+                    if !self.advance_if(TokenType::Comma) {
+                        break;
+                    }
                 }
-                CURLY_BRACKET_CLOSED => {
-                    qscope -= 1;
-                    qscope != 0
-                }
-                COMMA => qscope != 1,
-                DEFINE => {
-                    iskey = true;
-                    false
-                }
-                EOF => return Err(self.expected_before("}", "<end>", self.peek(0).line)),
-                _ => true,
-            } {
-                self.current += 1;
+                self.assert(TokenType::Equals, "=")?;
+            } else if self.current().kind() != TokenType::Equals {
+                return Err(format!(
+                    "Expected '=' got {} at line {}",
+                    self.current().lexeme(),
+                    self.current().line()
+                ));
             }
-            self.current = start;
-            if !iskey {
-                values.push((None, self.build_expression(None)?, self.at(start).line));
-                self.current -= 1;
-                self.advance_if(COMMA);
-                continue;
-            }
-            let name: Result<Expression, String>;
-            let pn = self.advance();
-            match pn.kind {
-                IDENTIFIER => {
-                    name = Ok(expression![SYMBOL(pn.lexeme.clone())]);
-                }
-                SQUARE_BRACKET_OPEN => {
-                    let mut qscope = 1u8;
-                    let start = self.current;
-                    while match self.advance().kind {
-                        SQUARE_BRACKET_OPEN => {
-                            qscope += 1;
-                            true
-                        }
-                        SQUARE_BRACKET_CLOSED => {
-                            qscope -= 1;
-                            match qscope {
-                                0 => false,
-                                _ => true,
-                            }
-                        }
-                        EOF => return Err(self.expected_before("]", "<end>", self.peek(0).line)),
-                        _ => true,
-                    } {}
-                    self.current = start;
-                    name = Ok(self.build_name()?);
-                    self.current -= 1;
-                }
-                _ => return Err(self.expected("<name>", &pn.lexeme, pn.line)),
-            }
-            if !self.advance_if(DEFINE) {
-                let t = self.peek(0);
-                return Err(self.expected("=", &t.lexeme, t.line));
-            }
-            let start = self.current;
-            let mut cscope = 0u8;
-            while match self.peek(0).kind {
-                COMMA | CURLY_BRACKET_CLOSED => {
-                    if cscope == 0 {
-                        false
+
+            let values = self.find_expressions(None)?;
+            self.advance_if(TokenType::Semicolon);
+
+            return Ok(ComplexToken::Alter {
+                names,
+                values,
+                line: self.line,
+                column: self.column,
+            });
+        }
+
+        Err(format!(
+            "Expected assignment or function call got {} at line {}",
+            self.current().lexeme(),
+            self.current().line()
+        ))
+    }
+
+    fn check_val(&mut self) -> bool {
+        use TokenType::*;
+        matches!(
+            self.peek().map(|t| t.kind()),
+            Some(
+                Number
+                    | String
+                    | MultilineString
+                    | Nil
+                    | Identifier
+                    | True
+                    | False
+                    | LeftBrace
+                    | TripleDot
+                    | Hash
+                    | Not,
+            )
+        )
+    }
+
+    fn check_op(&mut self) -> bool {
+        use TokenType::*;
+        matches!(
+            self.peek().map(|t| t.kind()),
+            Some(
+                Number
+                    | String
+                    | MultilineString
+                    | Nil
+                    | Identifier
+                    | True
+                    | False
+                    | LeftBrace
+                    | LeftParen
+                    | LeftBracket
+                    | TripleDot
+                    | Hash
+                    | Not
+                    | Minus
+                    | Function,
+            )
+        )
+    }
+
+    fn parse_table(&mut self) -> Result<ComplexToken, String> {
+        let mut data = vec![];
+
+        while let Some(t) = self.advance().cloned() {
+            use TokenType::*;
+            match t.kind() {
+                Identifier => {
+                    if self.advance_if(TokenType::Equals) {
+                        data.push((
+                            Some(vec_deque![ComplexToken::Symbol(t.lexeme())]),
+                            self.parse_expression(None)?,
+                        ));
                     } else {
-                        true
+                        self.go_back();
+                        data.push((None, self.parse_expression(None)?));
                     }
                 }
-                ROUND_BRACKET_OPEN => {
-                    cscope += 1;
-                    true
+                LeftBracket => {
+                    let expr = self.parse_expression(Some((RightBracket, "]")))?;
+                    self.assert(TokenType::RightBracket, "]")?;
+                    self.assert(TokenType::Equals, "=")?;
+
+                    let value = self.parse_expression(None)?;
+
+                    data.push((Some(expr), value));
                 }
-                ROUND_BRACKET_CLOSED => {
-                    if cscope == 0 {
-                        return Err(self.expected_before("(", ")", self.peek(0).line));
-                    }
-                    cscope -= 1;
-                    true
+                RightBrace => {
+                    break;
                 }
-                EOF => return Err(self.expected_before("}", "<end>", self.peek(0).line)),
-                _ => true,
-            } {
-                self.current += 1;
+                Comma | Semicolon => {
+                    continue;
+                }
+                _ => {
+                    self.go_back();
+                    let value = self.parse_expression(None)?;
+                    data.push((None, value));
+                }
             }
-            self.current = start;
-            match name {
-                Ok(n) => values.push((Some(n), self.build_expression(None)?, pn.line)),
-                Err(n) => metas.push((n, self.build_expression(None)?, pn.line)),
+        }
+
+        Ok(ComplexToken::Table {
+            data,
+            line: self.line,
+            column: self.column,
+        })
+    }
+
+    fn parse_code_block_common(scope: &mut usize, in_special_do: &mut bool, t: &Token) -> bool {
+        use TokenType::*;
+
+        match t.kind() {
+            Function | Repeat | If => {
+                *scope += 1;
+                true
             }
-            self.current -= 1;
-            self.advance_if(COMMA);
-        }
-        Ok(TABLE { values, metas })
-    }
-
-    fn check_operator(&mut self, t: &Token, checkback: bool) -> Result<(), String> {
-        if match self.peek(0).kind {
-            NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE | MINUS
-            | NIL | NOT | HASHTAG | ROUND_BRACKET_OPEN | THREEDOTS | TILDE => false,
-            _ => true,
-        } {
-            return Err(self.error(
-                format!("Operator '{}' has invalid right hand token", t.lexeme),
-                t.line,
-            ));
-        }
-        if checkback
-            && match self.look_back(1).kind {
-                NUMBER
-                | IDENTIFIER
-                | STRING
-                | MULTILINE_STRING
-                | DOLLAR
-                | TRUE
-                | FALSE
-                | NIL
-                | ROUND_BRACKET_CLOSED
-                | SQUARE_BRACKET_CLOSED
-                | THREEDOTS => false,
-                _ => true,
+            Do => {
+                if !*in_special_do {
+                    *scope += 1;
+                }
+                *in_special_do = false;
+                true
             }
-        {
-            return Err(self.error(
-                format!("Operator '{}' has invalid left hand token", t.lexeme),
-                t.line,
-            ));
-        }
-        Ok(())
-    }
-
-    fn build_bitwise_op(&mut self, t: Token, expr: &mut Expression) -> Result<(), String> {
-        self.check_operator(&t, true)?;
-        expr.push_back(SYMBOL(t.lexeme));
-
-        Ok(())
-    }
-
-    fn build_tilde_operator(&mut self, t: Token, expr: &mut Expression) -> Result<(), String> {
-        self.testing = Some(0);
-        let is_xor = self.check_operator(&t, true).is_ok();
-        if is_xor {
-            self.build_bitwise_op(t, expr)?;
-        } else {
-            self.check_operator(&t, false)?;
-            expr.push_back(SYMBOL(t.lexeme))
-        }
-
-        Ok(())
-    }
-
-    fn check_index(
-        &mut self,
-        t: &Token,
-        expr: &mut Expression,
-        lexeme: &str,
-    ) -> Result<(), String> {
-        if !self.compare(IDENTIFIER)
-            || match self.look_back(0).kind {
-                IDENTIFIER | SQUARE_BRACKET_CLOSED => true,
-                _ => false,
-            }
-        {
-            return Err(self.error(
-                format!("'{}' should be used only when indexing", t.lexeme),
-                self.peek(0).line,
-            ));
-        }
-        expr.push_back(SYMBOL(lexeme.to_string()));
-        Ok(())
-    }
-
-    fn check_val(&mut self, ignore_token: bool) -> bool {
-        match self.peek(0).kind {
-            NUMBER | IDENTIFIER | STRING | MULTILINE_STRING | DOLLAR | TRUE | FALSE | NIL | NOT
-            | HASHTAG | CURLY_BRACKET_OPEN | THREEDOTS => {
-                if ignore_token {
-                    self.current += 1
-                };
+            While | For => {
+                *scope += 1;
+                *in_special_do = true;
                 true
             }
             _ => false,
         }
     }
+    fn parse_code_block(&mut self) -> Result<CodeBlock, String> {
+        let start = self.current;
+        let mut scope = 0;
+        let mut in_special_do = false;
 
-    fn check_function_call(&mut self) -> bool {
-        let t = self.peek(0);
-        match t.kind {
-            STRING | MULTILINE_STRING | CURLY_BRACKET_OPEN => false,
-            _ => true,
-        }
-    }
-
-    fn build_expression(&mut self, end: OptionalEnd) -> Result<Expression, String> {
-        let mut expr = Expression::new();
-        let last = loop {
-            let t = self.advance();
-            match t.kind {
-                IDENTIFIER => {
-                    let fname = self.build_identifier()?;
-                    self.current -= 1;
-                    expr.push_back(fname);
-                    if self.check_val(false) {
-                        break t;
-                    }
-                }
-                CURLY_BRACKET_OPEN => {
-                    if let Some((kind, ..)) = end {
-                        if kind == CURLY_BRACKET_OPEN {
-                            break t;
-                        }
-                    }
-                    expr.push_back(self.build_table()?);
-                    if self.check_val(false) {
-                        break t;
-                    }
-                }
-                PLUS | STAR | SLASH | PERCENTUAL | CARET | TWODOTS | EQUAL | BIGGER
-                | BIGGER_EQUAL | SMALLER | SMALLER_EQUAL => {
-                    self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(t.lexeme))
-                }
-                BIT_AND => self.build_bitwise_op(t, &mut expr)?,
-                BIT_OR => self.build_bitwise_op(t, &mut expr)?,
-                TILDE => self.build_tilde_operator(t, &mut expr)?,
-                LEFT_SHIFT => self.build_bitwise_op(t, &mut expr)?,
-                RIGHT_SHIFT => self.build_bitwise_op(t, &mut expr)?,
-                MINUS => {
-                    self.check_operator(&t, false)?;
-                    expr.push_back(SYMBOL(if self.look_back(1).kind == MINUS {
-                        format!(" {}", t.lexeme)
-                    } else {
-                        t.lexeme
-                    }))
-                }
-                NOT_EQUAL => {
-                    self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(String::from("!=")))
-                }
-                HASHTAG => {
-                    if match self.peek(0).kind {
-                        IDENTIFIER | CURLY_BRACKET_OPEN | ROUND_BRACKET_OPEN => false,
-                        _ => true,
-                    } {
-                        let t = self.peek(0);
-                        return Err(self.expected("<table>", &t.lexeme, t.line));
-                    }
-                    expr.push_back(SYMBOL(String::from("#")))
-                }
-                AND => {
-                    self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(String::from(" && ")))
-                }
-                OR => {
-                    self.check_operator(&t, true)?;
-                    expr.push_back(SYMBOL(String::from(" || ")))
-                }
-                NOT => {
-                    self.check_operator(&t, false)?;
-                    expr.push_back(SYMBOL(String::from("!")))
-                }
-                THREEDOTS | NUMBER | TRUE | FALSE | NIL => {
-                    expr.push_back(SYMBOL(t.lexeme.clone()));
-                    if self.check_val(false) {
-                        break t;
-                    }
-                }
-                STRING => {
-                    expr.push_back(SYMBOL(format!("\"{}\"", t.lexeme)));
-                    if self.check_val(false) {
-                        break t;
-                    }
-                }
-                MULTILINE_STRING => {
-                    expr.push_back(SYMBOL(format!("[[{}]]", t.lexeme)));
-                    if self.check_val(false) {
-                        break t;
-                    }
-                }
-                ROUND_BRACKET_OPEN => {
-                    expr.push_back(EXPR(
-                        self.build_expression(Some((ROUND_BRACKET_CLOSED, ")")))?,
-                    ));
-                    self.current += 1;
-                    let fname = self.build_identifier()?;
-                    expr.push_back(fname);
-                    self.current -= 1;
-                }
-                FN => {
-                    if self.advance_if(IDENTIFIER) {
-                        expr.push_back(self.build_function(false)?)
-                    } else {
-                        let args: FunctionArgs = if self.advance_if(ROUND_BRACKET_OPEN)
-                            && !self.advance_if(ROUND_BRACKET_CLOSED)
-                        {
-                            self.build_function_args()?
+        while let Some(t) = self.advance() {
+            use TokenType::*;
+            if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
+                match t.kind() {
+                    End => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
                         } else {
-                            Vec::new()
-                        };
-                        let code = self.build_code_block(NONE_TYPE)?;
-                        expr.push_back(LAMBDA { args, code });
-                        if self.check_val(false) {
+                            scope -= 1;
+                        }
+                    }
+                    Until => {
+                        if scope == 0 {
+                            return Err(format!("Error: Unexpected 'until' at line {}", self.line));
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+        Err(format!("Expected 'end' at line {}", self.line))
+    }
+
+    fn parse_repeat_block(&mut self) -> Result<CodeBlock, String> {
+        let start = self.current;
+        let mut scope = 0;
+        let mut in_special_do = false;
+
+        while let Some(t) = self.advance() {
+            use TokenType::*;
+            if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
+                match t.kind() {
+                    End => {
+                        if scope == 0 {
+                            return Err(format!("Error: Unexpected 'end' at line {}", self.line));
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    Until => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        Err(format!("Expected 'until' at line {}", self.line))
+    }
+
+    fn parse_if_block(&mut self) -> Result<CodeBlock, String> {
+        let start = self.current;
+        let mut scope = 0;
+        let mut in_special_do = false;
+
+        while let Some(t) = self.advance() {
+            use TokenType::*;
+
+            if !Self::parse_code_block_common(&mut scope, &mut in_special_do, t) {
+                match t.kind() {
+                    End => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    ElseIf | Else => {
+                        if scope == 0 {
+                            return Ok(CodeBlock {
+                                code: parse_tokens(
+                                    &self.tokens[start..self.current.saturating_sub(1)],
+                                )?,
+                                start,
+                                end: self.current,
+                            });
+                        }
+                    }
+                    Until => {
+                        if scope == 0 {
+                            return Err(format!("Error: Unexpected 'until' at line {}", self.line));
+                        } else {
+                            scope -= 1;
+                        }
+                    }
+                    _ => {}
+                }
+            }
+        }
+
+        Err(format!("Expected 'end' at line {}", self.line))
+    }
+
+    fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, String> {
+        let mut expr = Expression::with_capacity(16);
+
+        let last = loop {
+            use TokenType::*;
+            if let Some(t) = self.advance().cloned() {
+                match t.kind() {
+                    Identifier => {
+                        self.go_back();
+                        let ident = self.parse_identifier()?;
+                        expr.push_back(ident);
+
+                        if self.check_val() {
                             break t;
                         }
                     }
-                }
-                SEMICOLON => {
-                    self.current += 1;
-                    break t;
-                }
-                UNTIL => {
-                    expr.push_back(EXPR(self.build_expression(None)?));
-                    break t;
-                }
-                _ => break t,
-            }
-        };
-
-        if expr.len() == 0 {
-            return Err(self.expected("<expr>", &last.lexeme, last.line));
-        }
-        self.assert_end(&self.look_back(0), end, expr)
-    }
-
-    fn build_name(&mut self) -> Result<Expression, String> {
-        let mut expr = Expression::new();
-        self.current -= 1;
-        loop {
-            let t = self.advance();
-
-            match t.kind {
-                IDENTIFIER => {
-                    expr.push_back(SYMBOL(t.lexeme));
-
-                    if self.check_function_call() && self.check_val(false) {
-                        break;
-                    }
-                }
-                DOT => self.check_index(&t, &mut expr, ".")?,
-                COLON => return Err(self.error("You can't call functions here", t.line)),
-                SQUARE_BRACKET_OPEN => {
-                    let qexpr = self.build_expression(Some((SQUARE_BRACKET_CLOSED, "]")))?;
-                    expr.push_back(SYMBOL(String::from("[")));
-                    expr.push_back(EXPR(qexpr));
-                    expr.push_back(SYMBOL(String::from("]")));
-                }
-                ROUND_BRACKET_OPEN | STRING | MULTILINE_STRING | CURLY_BRACKET_OPEN => {
-                    return Err(self.error("You can't call functions here", t.line))
-                }
-                _ => break,
-            }
-        }
-        Ok(expr)
-    }
-
-    fn build_identifier(&mut self) -> Result<ComplexToken, String> {
-        let mut expr = Expression::new();
-        let line = self.look_back(0).line;
-        self.current -= 1;
-        loop {
-            let t = self.advance();
-
-            match t.kind {
-                IDENTIFIER => {
-                    expr.push_back(SYMBOL(t.lexeme));
-
-                    if self.check_function_call() && self.check_val(false) {
-                        break;
-                    }
-                }
-                DOT => self.check_index(&t, &mut expr, ".")?,
-                COLON => {
-                    self.check_index(&t, &mut expr, ":")?;
-                    if self.peek(1).kind != ROUND_BRACKET_OPEN {
-                        let t = self.peek(1);
-                        return Err(self.expected("(", &t.lexeme, t.line));
-                    }
-                }
-                SQUARE_BRACKET_OPEN => {
-                    let qexpr = self.build_expression(Some((SQUARE_BRACKET_CLOSED, "]")))?;
-                    expr.push_back(SYMBOL(String::from("[")));
-                    expr.push_back(EXPR(qexpr));
-                    expr.push_back(SYMBOL(String::from("]")));
-                    if self.check_val(false) {
-                        break;
-                    }
-                }
-                ROUND_BRACKET_OPEN | MULTILINE_STRING | STRING | CURLY_BRACKET_OPEN => {
-                    self.current -= 2;
-                    let (func, more) = self.build_call()?;
-                    expr.push_back(func);
-                    for _ in 0..more {
-                        let (func, _) = self.build_call()?;
-                        expr.push_back(func);
-                    }
-
-                    if self.check_val(false) {
-                        break;
-                    }
-                }
-                _ => {
-                    break;
-                }
-            }
-        }
-        Ok(IDENT { expr, line })
-    }
-
-    fn get_code_block(&mut self, blocktype: BlockType) -> Result<(Vec<Token>, usize), String> {
-        let mut tokens: Vec<Token> = Vec::new();
-        let end: usize;
-        loop {
-            let t = self.advance();
-            match t.kind {
-                DO | IF => {
-                    tokens.push(t);
-                    tokens.append(&mut self.get_code_block(DO_TYPE)?.0);
-                    tokens.push(self.look_back(0));
-                    continue;
-                }
-                REPEAT => {
-                    tokens.push(t);
-                    tokens.append(&mut self.get_code_block(REPEAT_TYPE)?.0);
-                    tokens.push(self.look_back(0));
-                    continue;
-                }
-                END => {
-                    if blocktype != REPEAT_TYPE {
-                        end = t.line;
-                        break;
-                    }
-                }
-                ELSE | ELSEIF => {
-                    if blocktype == THEN_TYPE {
-                        end = t.line;
-                        break;
-                    }
-                }
-                UNTIL => {
-                    if blocktype == REPEAT_TYPE {
-                        end = t.line;
-                        break;
-                    }
-                }
-                EOF => return Err(self.expected_before("end", "<end>", t.line)),
-                _ => {}
-            }
-            tokens.push(t);
-        }
-        return Ok((tokens, end));
-    }
-
-    fn build_code_block(&mut self, blocktype: BlockType) -> Result<CodeBlock, String> {
-        let tokentype = match blocktype {
-            THEN_TYPE => THEN,
-            DO_TYPE => DO,
-            NONE_TYPE | REPEAT_TYPE => NONE_BLOCK,
-        };
-        let start = {
-            let t = self.advance();
-            if t.kind != tokentype && tokentype != NONE_BLOCK {
-                self.current -= 2;
-                let lexeme = self.peek(0).lexeme;
-                self.assert_advance(tokentype, &lexeme)?.line
-            } else if t.kind != tokentype && tokentype == NONE_BLOCK {
-                self.current -= 1;
-                t.line
-            } else {
-                t.line
-            }
-        };
-        let (mut tokens, end) = self.get_code_block(blocktype)?;
-        let code = if tokens.is_empty() {
-            Expression::new()
-        } else {
-            tokens.push(self.tokens.last().unwrap().clone());
-            parse_tokens(tokens, self.filename.clone())?
-        };
-        Ok(CodeBlock { start, code, end })
-    }
-
-    fn build_loop_block(&mut self) -> Result<CodeBlock, String> {
-        let code = self.build_code_block(DO_TYPE)?;
-        Ok(code)
-    }
-
-    fn build_identifier_list(&mut self) -> Result<Vec<String>, String> {
-        let mut idents: Vec<String> = Vec::new();
-        while {
-            let t = self.assert_advance(IDENTIFIER, "<name>")?;
-            idents.push(t.lexeme);
-            self.advance_if(COMMA)
-        } {}
-        Ok(idents)
-    }
-
-    fn build_function_args(&mut self) -> Result<FunctionArgs, String> {
-        let mut args = FunctionArgs::new();
-        while {
-            let name = {
-                let t = self.advance();
-                match t.kind {
-                    IDENTIFIER => t,
-                    THREEDOTS => {
-                        self.assert_compare(ROUND_BRACKET_CLOSED, ")")?;
-                        t
-                    }
-                    _ => return Err(self.expected("<name>", &t.lexeme, t.line)),
-                }
-            };
-            let t = self.advance();
-            match t.kind {
-                COMMA => {
-                    args.push((name.lexeme, None));
-                    true
-                }
-                DEFINE => {
-                    let default = self.build_expression(None)?;
-                    args.push((name.lexeme, Some((default, name.line))));
-                    let notended = self.peek(0).kind != THEN;
-                    if notended {
-                        match self.look_back(0).kind {
-                            COMMA => {}
-                            ROUND_BRACKET_CLOSED => self.current -= 1,
-                            _ => {
-                                let t = self.peek(0);
-
-                                return Err(self.expected(")", &t.lexeme, t.line));
-                            }
+                    TripleDot | Number | True | False | String | Nil => {
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if self.check_val() {
+                            break t;
                         }
                     }
-                    notended
-                }
-                ROUND_BRACKET_CLOSED => {
-                    args.push((name.lexeme, None));
-                    false
-                }
-                _ => {
-                    return Err(self.expected(")", &t.lexeme, t.line));
-                }
-            }
-        } {}
-        Ok(args)
-    }
-    fn build_else_if_chain(&mut self) -> Result<ComplexToken, String> {
-        let condition = self.build_expression(Some((THEN, "then")))?;
-        let code = self.build_code_block(THEN_TYPE)?;
-        Ok(IF_STATEMENT {
-            condition,
-            code,
-            next: {
-                let t = self.look_back(0);
-                let result = match t.kind {
-                    ELSEIF => Some(Box::new(self.build_else_if_chain()?)),
-                    ELSE => Some(Box::new(ELSE_BLOCK(self.build_code_block(NONE_TYPE)?))),
-                    _ => None,
-                };
+                    MultilineString => {
+                        expr.push_back(ComplexToken::MultilineString(t.lexeme()));
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
+                    LeftBrace => {
+                        let table = self.parse_table()?;
+                        expr.push_back(table);
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
+                    // unary ops
+                    Hash | Not => {
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if !self.check_op() {
+                            return Err(format!(
+                                "Expected expression after unary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    // binary ops
+                    Plus | Star | Slash | Caret | Percent | DoubleDot | LessThan
+                    | LessThanOrEqual | GreaterThan | GreaterThanOrEqual | DoubleEquals
+                    | NotEquals | And | Or => {
+                        if expr.is_empty() {
+                            return Err(format!(
+                                "Expected expression before binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
 
-                result
-            },
+                        if !self.check_op() {
+                            return Err(format!(
+                                "Expected expression after binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    Minus => {
+                        if expr.is_empty() {
+                            expr.push_back(ComplexToken::Symbol("-".to_owned()));
+                            continue;
+                        } else {
+                            expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        }
+
+                        if !self.check_op() {
+                            return Err(format!(
+                                "Expected expression after binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    Function
+                        if self
+                            .peek()
+                            .map_or(false, |t| t.kind() == TokenType::LeftParen) =>
+                    {
+                        self.assert(TokenType::LeftParen, "(")?;
+                        let args = self.parse_function_args()?;
+                        let body = self.parse_code_block()?;
+
+                        expr.push_back(ComplexToken::Lambda {
+                            args,
+                            body,
+                            line: self.line,
+                            column: self.column,
+                        });
+
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
+                    LeftParen => {
+                        let exprs = self.parse_expression(Some((RightParen, ")")))?;
+                        expr.push_back(ComplexToken::Expr(exprs));
+                        self.assert(TokenType::RightParen, ")")?;
+
+                        if self.check_val() {
+                            break t;
+                        }
+
+                        let index = self.parse_identifier()?;
+                        expr.push_back(index);
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
+                    _ => {
+                        self.go_back();
+                        break t;
+                    }
+                }
+            } else {
+                break self.current().clone();
+            }
+        };
+
+        if expr.is_empty() {
+            return Err(format!(
+                "Expected expression got {} at line {}",
+                &last.lexeme(),
+                last.line()
+            ));
+        }
+
+        self.assert_end(&last, end, expr)
+    }
+
+    fn parse_local_variable(&mut self) -> Result<ComplexToken, String> {
+        let mut names = vec![];
+
+        self.go_back();
+
+        loop {
+            let name = self.assert_advance(TokenType::Identifier, "<name>")?;
+            names.push(name.lexeme());
+            if !self.advance_if(TokenType::Comma) {
+                break;
+            }
+        }
+
+        let values = if self.advance_if(TokenType::Equals) {
+            self.find_expressions(None)?
+        } else {
+            vec![]
+        };
+        self.advance_if(TokenType::Semicolon);
+
+        Ok(ComplexToken::Variable {
+            names,
+            values,
+            line: self.line,
+            column: self.column,
         })
     }
 
-    fn build_function(&mut self, local: bool) -> Result<ComplexToken, String> {
-        if local {
-            self.current += 1;
+    fn parse_function_args(&mut self) -> Result<FunctionArgs, String> {
+        let mut args = FunctionArgs::new();
+        loop {
+            use TokenType::*;
+            let name = {
+                let t = self.advance().unwrap().clone();
+                match t.kind() {
+                    TokenType::Identifier => t,
+                    TokenType::TripleDot => {
+                        self.assert_compare(TokenType::RightParen, ")")?;
+                        t
+                    }
+                    TokenType::RightParen => {
+                        break;
+                    }
+                    _ => {
+                        return Err(format!(
+                            "Expected identifier got {} at line {}",
+                            t.lexeme(),
+                            t.line()
+                        ));
+                    }
+                }
+            };
+
+            if let Some(t) = self.advance() {
+                match t.kind() {
+                    Comma => args.push(name.lexeme()),
+                    RightParen => {
+                        args.push(name.lexeme());
+                        break;
+                    }
+                    _ => return Err(format!("Expected ',' or ')' got {}", t.lexeme())),
+                }
+            } else {
+                return Err(format!(
+                    "Unexpected end of file at line {}. Expected '<args>'",
+                    self.line
+                ));
+            }
         }
-        let name = expression![SYMBOL(self.assert_advance(IDENTIFIER, "<name>")?.lexeme)];
-        self.assert(ROUND_BRACKET_OPEN, "(")?;
-        let args = if !self.advance_if(ROUND_BRACKET_CLOSED) {
-            self.build_function_args()?
-        } else {
-            FunctionArgs::new()
+
+        Ok(args)
+    }
+
+    fn parse_function(&mut self, local: bool) -> Result<ComplexToken, String> {
+        let name = {
+            use TokenType::*;
+
+            let mut expr = Expression::new();
+            loop {
+                let t = self.advance().ok_or("Unexpected end of file")?.clone();
+
+                match t.kind() {
+                    Identifier => {
+                        let nt = self.peek().ok_or("Unexpected end of file")?;
+                        if nt.kind() == Identifier {
+                            return Err(format!(
+                                "Unexpected {} at line {}",
+                                nt.lexeme(),
+                                nt.line()
+                            ));
+                        }
+                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                    }
+                    Dot | Colon => {
+                        if self
+                            .peek()
+                            .map_or(false, |t| t.kind() == TokenType::Identifier)
+                        {
+                            expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        } else {
+                            return Err(format!(
+                                "{} should only be used when indexing at line {}",
+                                t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    LeftParen => break,
+                    _ => {
+                        return Err(format!(
+                            "Expected identifier, ':' or '.' got {} at line {}",
+                            t.lexeme(),
+                            t.line()
+                        ))
+                    }
+                }
+            }
+            expr
         };
-        let code = self.build_code_block(NONE_TYPE)?;
-        Ok(ComplexToken::FUNCTION {
+
+        let args = self.parse_function_args()?;
+        let body = self.parse_code_block()?;
+
+        Ok(ComplexToken::Function {
             local,
             name,
             args,
-            code,
+            body,
+            line: self.line,
+            column: self.column,
         })
     }
 
-    fn build_variables(&mut self, local: bool, line: usize) -> Result<ComplexToken, String> {
-        let mut names: Vec<String> = Vec::new();
-        loop {
-            let pname = self.assert_advance(IDENTIFIER, "<name>")?;
-            names.push(pname.lexeme);
-            if !self.compare(COMMA) {
-                self.advance_if(SEMICOLON);
-                break;
+    fn parse_if_else_chain(&mut self) -> Result<ComplexToken, String> {
+        let condition = self.parse_expression(Some((TokenType::Then, "then")))?;
+        self.advance();
+        let body = self.parse_if_block()?;
+
+        let next = match self.current().kind() {
+            TokenType::Else => {
+                let body = self.parse_code_block()?;
+                Some(Box::new(ComplexToken::IfStatement {
+                    condition: Expression::new(),
+                    body,
+                    next: None,
+                    line: self.line,
+                    column: self.column,
+                }))
             }
-            self.current += 1;
-        }
-        let check = self.advance();
-        let areinit = check.kind == DEFINE;
-        let values: Vec<Expression> = if !areinit {
-            Vec::new()
-        } else {
-            self.find_expressions(Some(COMMA), None)?
+            TokenType::ElseIf => Some(Box::new(self.parse_if_else_chain()?)),
+            TokenType::End => None,
+            _ => {
+                return Err(format!(
+                    "Expected 'else', 'elseif' or 'end' got {} at line {}",
+                    self.current().lexeme(),
+                    self.current().line()
+                ))
+            }
         };
-        self.current -= 1;
-        Ok(VARIABLE {
-            local,
-            names,
-            values,
-            line,
+
+        Ok(ComplexToken::IfStatement {
+            condition,
+            body,
+            next,
+            line: self.line,
+            column: self.column,
         })
+    }
+
+    fn parse_for_loop(&mut self) -> Result<ComplexToken, String> {
+        let mut iters = vec![];
+        let mut for_func = false;
+
+        while let Some(t) = self.advance() {
+            match t.kind() {
+                TokenType::Identifier => {
+                    iters.push(t.lexeme());
+                }
+                TokenType::Comma => {
+                    continue;
+                }
+                TokenType::In => {
+                    for_func = true;
+                    break;
+                }
+                TokenType::Equals => {
+                    if iters.len() != 1 {
+                        return Err(format!(
+                            "Expected 1 in numeric for loop identifier got {} at line {}",
+                            iters.len(),
+                            t.line()
+                        ));
+                    }
+                    break;
+                }
+                _ => {
+                    return Err(format!(
+                        "Expected identifier, ',' or 'in' got {} at line {}",
+                        t.lexeme(),
+                        t.line()
+                    ))
+                }
+            }
+        }
+
+        if for_func {
+            let expr = self.parse_expression(None)?;
+            self.assert_advance(TokenType::Do, "do")?;
+
+            let code = self.parse_code_block()?;
+
+            Ok(ComplexToken::ForFuncLoop {
+                iters,
+                expr,
+                code,
+                line: self.line,
+                column: self.column,
+            })
+        } else {
+            let start = self.parse_expression(Some((TokenType::Comma, ",")))?;
+            self.assert_advance(TokenType::Comma, ",")?;
+            let end = self.parse_expression(None)?;
+            let step = if self.advance_if(TokenType::Comma) {
+                Some(self.parse_expression(Some((TokenType::Do, "do")))?)
+            } else {
+                None
+            };
+
+            self.assert_advance(TokenType::Do, "do")?;
+            let code = self.parse_code_block()?;
+
+            Ok(ComplexToken::ForLoop {
+                iter: iters.pop().unwrap(),
+                start,
+                end,
+                step,
+                code,
+                line: self.line,
+                column: self.column,
+            })
+        }
     }
 }
 
-pub fn parse_tokens(tokens: Vec<Token>, filename: String) -> Result<Expression, String> {
-    let mut i = ParserInfo::new(tokens, filename);
-    while !i.ended() {
-        let t = i.advance();
+pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
+    let mut parser = Parser::new(tokens);
 
-        match t.kind {
-            LOCAL => {
-                let local = t.kind == LOCAL;
-                let value: ComplexToken;
-                if i.peek(0).kind == FN && local {
-                    value = i.build_function(true)?;
-                } else {
-                    value = i.build_variables(local, t.line)?;
+    while let Some(token) = parser.advance() {
+        use TokenType::*;
+
+        match token.kind() {
+            Local => match parser.peek().map(|t| t.kind()) {
+                Some(TokenType::Function) => {
+                    parser.advance();
+                    let function = parser.parse_function(true)?;
+                    parser.expr.push_back(function);
                 }
-                i.expr.push_back(value);
+                Some(TokenType::Identifier) => {
+                    parser.advance();
+                    let variable = parser.parse_local_variable()?;
+                    parser.expr.push_back(variable);
+                }
+                _ => {
+                    return Err(format!(
+                        "Expected 'function' or identifier got {} at line {}",
+                        parser.peek().unwrap().lexeme(),
+                        parser.peek().unwrap().line()
+                    ))
+                }
+            },
+            Identifier => {
+                parser.go_back();
+                let ident = parser.parse_identifier_statement()?;
+                parser.expr.push_back(ident);
+                parser.advance_if(TokenType::Semicolon);
             }
-            METHOD => {
-                let name = {
-                    let mut expr = Expression::new();
-                    loop {
-                        let t = i.advance();
-                        match t.kind {
-                            IDENTIFIER => {
-                                let nt = i.peek(0);
-                                if nt.kind == IDENTIFIER {
-                                    return Err(i.unexpected(&nt.lexeme, nt.line));
-                                }
-                                expr.push_back(SYMBOL(t.lexeme))
-                            }
-                            DOT => i.check_index(&t, &mut expr, ".")?,
-                            COLON => {
-                                let t = i.peek(1);
-                                if t.kind != ROUND_BRACKET_OPEN {
-                                    return Err(i.expected("(", &t.lexeme, t.line));
-                                }
-                            }
-                            ROUND_BRACKET_OPEN => break,
-                            _ => return Err(i.expected("(", &t.lexeme, t.line)),
-                        }
-                    }
-                    expr
-                };
-                let args: FunctionArgs = if !i.advance_if(ROUND_BRACKET_CLOSED) {
-                    i.build_function_args()?
+            LeftParen => {
+                let expr = parser.parse_expression(Some((RightParen, ")")))?;
+                parser.expr.push_back(ComplexToken::Expr(expr));
+                parser.advance();
+                let call = parser.parse_identifier()?;
+                let ComplexToken::Ident {expr, ..} = &call else {unreachable!()};
+
+                if let Some(ComplexToken::Call(_)) = expr.back() {
+                    parser.expr.push_back(call);
                 } else {
-                    Vec::new()
-                };
-                let code = i.build_code_block(DO_TYPE)?;
-                i.expr.push_back(ComplexToken::FUNCTION {
-                    local: false,
-                    name,
-                    args,
-                    code,
+                    let token = parser.peek().unwrap_or(Token::new(
+                        TokenType::Eof,
+                        "<eof>".to_owned(),
+                        parser.line,
+                    ));
+
+                    return Err(format!(
+                        "Expected function call got {} at line {}",
+                        token.lexeme(),
+                        token.line()
+                    ));
+                }
+
+                parser.advance_if(TokenType::Semicolon);
+            }
+            Function => {
+                let function = parser.parse_function(false)?;
+                parser.expr.push_back(function);
+            }
+            If => {
+                let ifs = parser.parse_if_else_chain()?;
+                parser.expr.push_back(ifs);
+            }
+            While => {
+                let condition = parser.parse_expression(Some((Do, "do")))?;
+                parser.advance();
+
+                let body = parser.parse_code_block()?;
+                parser.expr.push_back(ComplexToken::WhileLoop {
+                    condition,
+                    body,
+                    line: parser.line,
+                    column: parser.column,
                 });
             }
-            IDENTIFIER => {
-                let testexpr = i.test(|i| i.build_name()).0;
-                if let Err(msg) = testexpr {
-                    match msg.as_str() {
-                        "You can't call functions here" => {
-                            let expr = &mut i.build_expression(None)?;
-                            i.expr.append(expr);
-                            i.current -= 1;
-                            continue;
-                        }
-                        _ => return Err(i.error(msg, i.testing.unwrap())),
-                    }
-                }
-                i.current += 1;
-                let mut names: Vec<Expression> = Vec::new();
-                while {
-                    names.push(i.build_name()?);
-                    i.current += 1;
-                    i.look_back(1).kind == COMMA
-                } {}
-                i.current -= 1;
-                let checkt = i.look_back(0);
-                let check = checkt.kind.clone() as u8;
-                if check != DEFINE as u8 {
-                    return Err(i.expected("=", &checkt.lexeme, checkt.line));
-                }
-                let values: Vec<Expression> = i.find_expressions(Some(COMMA), None)?;
-                i.expr.push_back(ALTER {
-                    line: t.line,
-                    names,
-                    values,
+            For => {
+                let for_loop = parser.parse_for_loop()?;
+                parser.expr.push_back(for_loop);
+            }
+            Repeat => {
+                let body = parser.parse_repeat_block()?;
+                let condition = parser.parse_expression(None)?;
+                parser.expr.push_back(ComplexToken::RepeatLoop {
+                    condition,
+                    body,
+                    line: parser.line,
+                    column: parser.column,
                 });
-                i.current -= 1;
             }
-            ROUND_BRACKET_OPEN => {
-                let expr = i.build_expression(Some((ROUND_BRACKET_CLOSED, ")")))?;
-                i.expr.push_back(EXPR(expr));
-                i.current += 1;
-                let call = i.build_identifier()?;
-                i.expr.push_back(call);
-                i.current += 1;
-                i.advance_if(SEMICOLON);
+            Break => {
+                parser.expr.push_back(ComplexToken::Break);
+                parser.advance_if(TokenType::Semicolon);
             }
-            DO => {
-                i.current -= 1;
-                let block = i.build_code_block(DO_TYPE)?;
-                i.expr.push_back(DO_BLOCK(block));
+            Do => {
+                let block = parser.parse_code_block()?;
+                parser.expr.push_back(ComplexToken::DoBlock(block));
             }
-            IF => {
-                let ctoken = i.build_else_if_chain()?;
-                i.expr.push_back(ctoken);
-            }
-            WHILE => {
-                let condition = i.build_expression(Some((DO, "do")))?;
-                let code = i.build_loop_block()?;
-                i.expr.push_back(WHILE_LOOP { condition, code })
-            }
-            REPEAT => {
-                let code = i.build_code_block(REPEAT_TYPE)?;
-
-                let condition = i.build_expression(None)?;
-                i.expr.push_back(REPEAT_UNTIL { condition, code })
-            }
-            FOR => {
-                if i.peek(1).kind == DEFINE {
-                    let iterator = i.assert_advance(IDENTIFIER, "<name>")?.lexeme;
-                    i.current += 1;
-                    let start = i.build_expression(Some((COMMA, ",")))?;
-                    let end = i.build_expression(None)?;
-                    i.current -= 1;
-                    let t = i.advance();
-                    let alter = match t.kind {
-                        COMMA => i.build_expression(Some((DO, "do")))?,
-
-                        DO => {
-                            i.current -= 1;
-                            expression![SYMBOL(String::from("1"))]
-                        }
-
-                        _ => return Err(i.expected(",", &t.lexeme, t.line)),
-                    };
-                    let code = i.build_loop_block()?;
-                    i.expr.push_back(FOR_LOOP {
-                        iterator,
-                        start,
-                        end,
-                        alter,
-                        code,
-                    })
+            Return => {
+                let exprs = if parser
+                    .peek()
+                    .map_or(false, |t| t.kind() != TokenType::Semicolon)
+                {
+                    Some(parser.find_expressions(None)?)
                 } else {
-                    let iterators = i.build_identifier_list()?;
-                    i.advance();
-                    let expr = i.build_expression(Some((DO, "do")))?;
-                    let code = i.build_loop_block()?;
-                    i.expr.push_back(FOR_FUNC_LOOP {
-                        iterators,
-                        expr,
-                        code,
-                    });
-                }
-            }
-            BREAK => {
-                i.expr.push_back(BREAK_LOOP);
-                i.advance_if(SEMICOLON);
-            }
-            RETURN => {
-                let expr = if i.ended() || i.advance_if(SEMICOLON) {
                     None
-                } else {
-                    Some(i.find_expressions(Some(COMMA), None)?)
                 };
-                i.expr.push_back(RETURN_EXPR(expr));
+                parser.advance_if(TokenType::Semicolon);
+
+                if !parser.done() {
+                    return Err(format!(
+                        "Return must be the last statement in a block at line {}",
+                        parser.line
+                    ));
+                }
+                parser.expr.push_back(ComplexToken::Return(exprs));
+                parser.advance_if(TokenType::Semicolon);
             }
-            FN => {
-                let function = i.build_function(false)?;
-                i.expr.push_back(function);
-            }
-            EOF => break,
-            _ => return Err(i.expected("<end>", &t.lexeme, t.line)),
+            _ => Err(format!(
+                "Unexpected token {} at line {}",
+                token.lexeme(),
+                token.line()
+            ))?,
         }
+        parser.advance_if(TokenType::Semicolon);
     }
-    Ok(i.expr)
+
+    Ok(parser.expr)
 }

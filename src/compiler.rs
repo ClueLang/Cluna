@@ -1,22 +1,39 @@
-use crate::{
-    parser::{CodeBlock, ComplexToken, ComplexToken::*, Expression, FunctionArgs},
-    ENV_NOMULTILINE,
-};
-use std::iter::{Iterator, Peekable};
+use std::iter::Peekable;
+
+use crate::parser::{CodeBlock, ComplexToken, Expression};
 
 fn indent(scope: usize) -> String {
     let mut result = String::new();
     for _ in 0..scope {
-        result += "\t";
+        result += "    ";
     }
     result
 }
 
 fn indent_if<T: Iterator>(ctokens: &mut Peekable<T>, scope: usize) -> String {
     match ctokens.peek() {
-        Some(_) => format!("\n{}", indent(scope)),
-        None => String::new(),
+        Some(_) => String::from('\n') + &indent(scope),
+        None => String::with_capacity(4),
     }
+}
+
+fn compile_multiline_string(string: String) -> String {
+    let mut start = 1;
+    let mut equals_count = 0;
+    let chars = string.chars().skip(1);
+
+    for c in chars {
+        start += 1;
+        if c == '=' {
+            equals_count += 1;
+        } else {
+            break;
+        }
+    }
+
+    let end = string.len() - equals_count - 2;
+
+    String::from('`') + &string[start..end] + "`"
 }
 
 fn compile_list<T>(
@@ -25,348 +42,350 @@ fn compile_list<T>(
     tostring: &mut impl FnMut(T) -> String,
 ) -> String {
     let mut result = String::new();
-    let end = list.iter().count();
-    let mut start = 0usize;
-    for element in list {
+    let end = list.len().saturating_sub(1);
+
+    for (i, element) in list.into_iter().enumerate() {
         result += &(tostring(element));
-        start += 1;
-        if start < end {
+
+        if i != end {
             result += separator
         }
     }
     result
 }
-
-fn compile_identifiers(names: Vec<String>) -> String {
-    compile_list(names, ", ", &mut |name| name)
+fn compile_expressions(scope: usize, exprs: Vec<Expression>) -> String {
+    compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr))
 }
 
-fn compile_expressions(
-    scope: usize,
-    names: Option<&Vec<String>>,
-    values: Vec<Expression>,
-) -> String {
-    compile_list(values, ", ", &mut |expr| {
-        compile_expression(scope, names, expr)
-    })
+fn is_binop(lexeme: &str) -> bool {
+    matches!(
+        lexeme,
+        "+" | "-" | "*" | "/" | "%" | "^" | "==" | "<" | ">" | "<=" | ">=" | "~=" | ".."
+    )
 }
 
-fn compile_function(
-    scope: usize,
-    names: Option<&Vec<String>>,
-    args: FunctionArgs,
-    code: CodeBlock,
-) -> (String, String) {
-    let mut code = compile_code_block(scope, "", code);
-    let args = compile_list(args, ", ", &mut |(arg, default)| {
-        if let Some((default, _)) = default {
-            let default = compile_expression(scope + 2, names, default);
-            let pre = indent(scope + 1);
-            code = format!(
-                "\n{}if {} == nil then\n{}\t{} = {}\n{}}}{}",
-                pre, arg, pre, arg, default, pre, code
-            )
-        }
-        arg
-    });
-    (code, args)
-}
-
-fn compile_code_block(scope: usize, start: &str, block: CodeBlock) -> String {
-    let code = compile_tokens(scope + 1, block.code);
-    let pre = indent(scope);
-
-    format!("{}\n{}\n{}", start, code, pre)
-}
-
-fn compile_identifier(scope: usize, names: Option<&Vec<String>>, expr: Expression) -> String {
-    let result = String::new();
-    let mut checked = String::new();
-    let mut iter = expr.into_iter().peekable();
-    while let Some(t) = iter.next() {
-        match t.clone() {
-            SYMBOL(lexeme) => {
-                let lexeme = lexeme.as_str();
-                checked += lexeme
-            }
-            EXPR(expr) => {
-                let expr = compile_expression(scope, names, expr);
-                checked += &format!("({})]", expr);
-            }
-            CALL(args) => checked += &format!("({})", compile_expressions(scope, names, args)),
-            _ => {}
-        }
-    }
-
-    if result.is_empty() {
-        result + &checked
-    } else {
-        format!("({})", result + &checked)
+fn compile_symbol(lexeme: String) -> String {
+    match &*lexeme {
+        "and" => " && ".to_owned(),
+        "or" => " || ".to_owned(),
+        "not" => "!".to_owned(),
+        "!=" => " ~= ".to_owned(),
+        ":" => "::".to_owned(),
+        s if is_binop(s) => format!(" {} ", s),
+        _ => lexeme,
     }
 }
 
-fn compile_expression(mut scope: usize, names: Option<&Vec<String>>, expr: Expression) -> String {
+fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
+    use crate::parser::ComplexToken::*;
+
     let mut result = String::new();
-    for t in expr {
-        result += &match t {
-            SYMBOL(lexeme) => {
-                let len = lexeme.len();
+    let Ident {expr, ..} = ident else {unreachable!()};
 
-                if len > 4 && &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
-                    let text = &lexeme[2..lexeme.len() - 2];
-                    return if arg!(ENV_NOMULTILINE) {
-                        format!("{:?}", text)
-                    } else {
-                        format!("`{}`", text)
-                    };
-                }
-                lexeme
+    for ctoken in expr {
+        match ctoken {
+            Symbol(lexeme) => result += &compile_symbol(lexeme),
+            Expr(expr) => {
+                result.push('(');
+                result += &compile_expression(scope, expr);
+                result.push(')');
             }
-            TABLE { values, metas } => {
-                scope += 1;
-                let mut prevline = 0usize;
-                let pre1 = indent(scope);
-                let values = if values.is_empty() {
-                    String::new()
-                } else {
-                    compile_list(values, ", ", &mut |(name, value, line)| {
-                        let value = compile_expression(scope, names, value);
-
-                        prevline = line;
-                        if let Some(name) = name {
-                            let name = compile_expression(scope, names, name);
-                            format!("\n{}{} = {}", pre1, name, value)
-                        } else {
-                            format!("\n{}{}", pre1, value)
-                        }
-                    }) + "\n"
-                };
-                prevline = 0;
-                let pre2 = indent(scope - 1);
-                if metas.is_empty() {
-                    scope -= 1;
-
-                    format!("{{{}{}}}", values, pre2)
-                } else {
-                    let metas = compile_list(metas, ", ", &mut |(name, value, line)| {
-                        let value = compile_expression(scope, names, value);
-
-                        prevline = line;
-                        format!("\n{}{} = {}", pre1, name, value)
-                    });
-                    scope -= 1;
-                    format!(
-                        "setmetatable({{{}{}}}, {{{}\n{}}})",
-                        values, pre2, metas, pre2
-                    )
-                }
+            Call(args) => {
+                result.push('(');
+                result += &compile_expressions(scope, args);
+                result.push(')');
             }
-            LAMBDA { args, code } => {
-                let (code, args) = compile_function(scope, names, args, code);
-                format!("fn({}){{{}}}", args, code)
-            }
-            IDENT { expr, .. } => compile_identifier(scope, names, expr),
-            CALL(args) => format!("({})", compile_expressions(scope, names, args)),
-            EXPR(expr) => format!("({})", compile_expression(scope, names, expr)),
-            _ => {
-                panic!("Unexpected ComplexToken found")
-            }
+            _ => unreachable!(),
         }
     }
+
     result
 }
 
-fn compile_else_if_chain(
+fn compile_code_block(body: CodeBlock, scope: usize) -> String {
+    let code = compile_ast_helper(body.code, scope + 1);
+
+    String::from('\n') + &code + "\n" + &indent(scope)
+}
+
+fn compile_if_else_chain(
     scope: usize,
     condition: Expression,
     code: CodeBlock,
     next: Option<Box<ComplexToken>>,
 ) -> String {
-    let condition = compile_expression(scope, None, condition);
-    let code = compile_code_block(scope, "{", code);
-    let mut should_end = false;
+    use crate::parser::ComplexToken::*;
+    let mut result = String::new();
+
+    let condition = compile_expression(scope, condition);
+    let body = compile_code_block(code, scope);
+
     let next = if let Some(next) = next {
-        should_end = true;
-        String::from("else")
+        String::from(" else")
             + &match *next {
-                IF_STATEMENT {
+                IfStatement {
                     condition,
-                    code,
+                    body,
                     next,
-                } => compile_else_if_chain(scope, condition, code, next),
-                ELSE_BLOCK(code) => compile_code_block(scope, "{", code),
-                _ => {
-                    panic!("Unexpected ComplexToken found")
+                    ..
+                } => {
+                    if condition.is_empty() {
+                        format!(" {{{}}}", compile_code_block(body, scope))
+                    } else {
+                        format!("if {}", compile_if_else_chain(scope, condition, body, next))
+                    }
                 }
+                _ => unreachable!(),
             }
     } else {
         String::new()
     };
-    format!(
-        "if ({}) {}{}{}",
-        condition,
-        code,
-        if should_end { "}" } else { "" },
-        next
-    )
+
+    result += "if ";
+    result += &condition;
+    result += " {";
+    result += &body;
+    result.push('}');
+    result += &next;
+
+    result
 }
 
-pub fn compile_tokens(scope: usize, ctokens: Expression) -> String {
-    let mut result = String::new();
-    let ctokens = &mut ctokens.into_iter().peekable();
-    while let Some(t) = ctokens.next() {
-        result += &match t {
-            VARIABLE {
-                local,
-                names,
-                values,
-                line: _,
-            } => {
-                let end = indent_if(ctokens, scope);
-                let pre = if local { "local " } else { "" };
-                if local && values.is_empty() {
-                    format!("{}{}{}", pre, compile_identifiers(names), end)
-                } else {
-                    let values = compile_expressions(scope, Some(&names), values);
-                    let names = compile_identifiers(names);
-                    format!("{}{} = {}{}", pre, names, values, end)
-                }
-            }
-            ALTER {
-                names,
-                values,
-                line: _,
-            } => {
-                let iter = names.into_iter();
-                let mut names: Vec<String> = Vec::new();
-                for name in iter {
-                    names.push(compile_expression(scope, None, name))
-                }
-                let values = compile_list(values, ", ", &mut |expr| {
-                    compile_expression(scope, Some(&names), expr)
-                });
-                let names = compile_identifiers(names);
+fn compile_expression(mut scope: usize, expr: Expression) -> String {
+    use crate::parser::ComplexToken::*;
 
-                format!("{} = {}{}", names, values, indent_if(ctokens, scope))
+    let mut result = String::new();
+
+    for ctoken in expr {
+        match ctoken {
+            Symbol(lexeme) => result += &compile_symbol(lexeme),
+            MultilineString(string) => result += &compile_multiline_string(string),
+            Table { data, .. } => {
+                scope += 1;
+                let pre = indent(scope);
+                result.push('{');
+                if !data.is_empty() {
+                    result += &compile_list(data, ", ", &mut |(key, value)| {
+                        if let Some(key) = key {
+                            format!(
+                                "\n{}{} = {}",
+                                pre,
+                                compile_expression(scope, key),
+                                compile_expression(scope, value),
+                            )
+                        } else {
+                            String::from('\n') + &pre + &compile_expression(scope, value)
+                        }
+                    });
+                    result.push('\n');
+                    result += &indent(scope - 1);
+                }
+                result.push('}');
             }
-            FUNCTION {
+            Lambda { args, body, .. } => {
+                result += "fn ";
+                result.push('(');
+                result += &compile_list(args, ", ", &mut |arg| arg);
+                result += ") ";
+                result += "{";
+                result += &compile_code_block(body, scope);
+                result.push('}');
+            }
+            ident @ Ident { .. } => {
+                result += &compile_identifier(scope, ident);
+            }
+            Call(args) => {
+                result.push('(');
+                result += &compile_expressions(scope, args);
+                result.push(')');
+            }
+            Expr(expr) => {
+                result.push('(');
+                result += &compile_expression(scope, expr);
+                result.push(')');
+            }
+            _ => unreachable!(),
+        }
+    }
+
+    result
+}
+
+fn compile_ast_helper(tree: Expression, scope: usize) -> String {
+    use crate::parser::ComplexToken::*;
+
+    let mut result = indent(scope);
+    let tree = &mut tree.into_iter().peekable();
+
+    while let Some(ctoken) = tree.next() {
+        match ctoken {
+            Variable { names, values, .. } => {
+                result += "local ";
+                result += &compile_list(names, ", ", &mut |name| name);
+                if !values.is_empty() {
+                    result += " = ";
+                    result += &compile_expressions(scope, values);
+                }
+                result += &indent_if(tree, scope);
+            }
+            Alter { names, values, .. } => {
+                result += &compile_list(names, ", ", &mut |name| compile_identifier(scope, name));
+                result += " = ";
+                result += &compile_expressions(scope, values);
+                result += &indent_if(tree, scope);
+            }
+            Function {
                 local,
                 name,
                 args,
-                code,
+                body,
+                ..
             } => {
-                let pre = if local { "local " } else { "" };
-                let end = indent_if(ctokens, scope);
-                let name = compile_expression(scope, None, name);
-                let (code, args) = compile_function(scope, None, args, code);
-                format!("{}fn {}({}){{{}}}{}", pre, name, args, code, end)
+                let end = indent_if(tree, scope);
+
+                if name.len() == 1 {
+                    if local {
+                        result += "local ";
+                    } else {
+                        result += "global ";
+                    }
+                    result += "fn ";
+                } else {
+                    result += "method ";
+                }
+
+                result += &compile_expression(scope, name);
+                result.push('(');
+                result += &compile_list(args, ", ", &mut |arg| arg);
+                result += ") ";
+                result += "{";
+                result += &compile_code_block(body, scope);
+                result.push('}');
+                result += &end;
             }
-            LAMBDA { args, code } => {
-                let (code, args) = compile_function(scope, None, args, code);
-                format!("fn({}){{{}}}", args, code)
+            Lambda { args, body, .. } => {
+                result += "fn ";
+                result.push('(');
+                result += &compile_list(args, ", ", &mut |arg| arg);
+                result += ") ";
+                result += "{";
+                result += &compile_code_block(body, scope);
+                result.push('}');
             }
-            IF_STATEMENT {
+            IfStatement {
                 condition,
-                code,
+                body,
                 next,
+                ..
             } => {
-                let code = compile_else_if_chain(scope, condition, code, next);
-                format!("{}}}{}", code, indent_if(ctokens, scope))
+                let code = compile_if_else_chain(scope, condition, body, next);
+                result += &code;
+                result += &indent_if(tree, scope);
             }
-            WHILE_LOOP { condition, code } => {
-                let condition = compile_expression(scope, None, condition);
-                let code = compile_code_block(scope, "{", code);
-                format!(
-                    "while {} {}}}{}",
-                    condition,
-                    code,
-                    indent_if(ctokens, scope)
-                )
+            WhileLoop {
+                condition, body, ..
+            } => {
+                let condition = compile_expression(scope, condition);
+                let body = compile_code_block(body, scope);
+
+                result += "while ";
+                result += &condition;
+                result += " {";
+                result += &body;
+                result.push('}');
+                result += &indent_if(tree, scope);
             }
-            REPEAT_UNTIL { condition, code } => {
-                let condition = compile_expression(scope, None, condition);
-                let code = compile_code_block(scope, "", code);
-                format!(
-                    "loop {{{}}} until {}{}",
-                    code,
-                    condition,
-                    indent_if(ctokens, scope)
-                )
-            }
-            FOR_LOOP {
-                iterator,
+            ForLoop {
+                iter,
                 start,
                 end,
-                alter,
+                step,
                 code,
+                ..
             } => {
-                let start = compile_expression(scope, None, start);
-                let endexpr = compile_expression(scope, None, end);
-                let alter = compile_expression(scope, None, alter);
-                let code = compile_code_block(scope, "", code);
-                let end = indent_if(ctokens, scope);
-                format!(
-                    "for {} = {}, {}, {} {{{}}}{}",
-                    iterator, start, endexpr, alter, code, end
-                )
-            }
-            FOR_FUNC_LOOP {
-                iterators,
-                expr,
-                code,
-            } => {
-                let expr = compile_expression(scope, Some(&iterators), expr);
-                let iterators = compile_identifiers(iterators);
-                let code = compile_code_block(scope, "", code);
-                format!(
-                    "for {} with {}{{{}}}{}",
-                    iterators,
-                    expr,
-                    code,
-                    indent_if(ctokens, scope)
-                )
-            }
-            IDENT { expr, line: _ } => {
-                let expr = compile_identifier(scope, None, expr);
-                format!("{};{}", expr, indent_if(ctokens, scope))
-            }
-            SYMBOL(lexeme) => {
-                let len = lexeme.len();
-                if len > 4 && &lexeme[0..=1] == "[[" && &lexeme[len - 2..=len - 1] == "]]" {
-                    let text = &lexeme[2..lexeme.len() - 2];
-                    return if arg!(ENV_NOMULTILINE) {
-                        format!("{:?}", text)
-                    } else {
-                        format!("`{}`", text)
-                    };
+                result += "for ";
+                result += &iter;
+                result += " = ";
+                result += &compile_expression(scope, start);
+                result += ", ";
+                result += &compile_expression(scope, end);
+                if let Some(step) = step {
+                    result += ", ";
+                    result += &compile_expression(scope, step);
                 }
-                lexeme
+                result += " {";
+                result += &compile_code_block(code, scope);
+                result.push('}');
+                result += &indent_if(tree, scope);
             }
-            CALL(args) => {
-                format!(
-                    "({}){}",
-                    compile_expressions(scope, None, args),
-                    indent_if(ctokens, scope)
-                )
+            ForFuncLoop {
+                iters, expr, code, ..
+            } => {
+                result += "for ";
+                result += &compile_list(iters, ", ", &mut |iter| iter);
+                result += " with ";
+                result += &compile_expression(scope, expr);
+                result += " {";
+                result += &compile_code_block(code, scope);
+                result.push('}');
+                result += &indent_if(tree, scope);
             }
-            EXPR(expr) => format!("({})", compile_expression(scope, None, expr)),
-            DO_BLOCK(code) => format!(
-                "{}}}{}",
-                compile_code_block(scope, "{", code),
-                indent_if(ctokens, scope)
-            ),
-            RETURN_EXPR(exprs) => {
+            RepeatLoop {
+                condition, body, ..
+            } => {
+                let condition = compile_expression(scope, condition);
+                let body = compile_code_block(body, scope);
+
+                result += "loop ";
+                result += " {";
+                result += &body;
+                result.push('}');
+                result += " until ";
+                result += &condition;
+                result += &indent_if(tree, scope);
+            }
+            ctoken @ Ident { .. } => {
+                result += &compile_identifier(scope, ctoken);
+                result.push(';');
+                result += &indent_if(tree, scope);
+            }
+            Symbol(lexeme) => result += &compile_symbol(lexeme),
+            MultilineString(string) => result += &compile_multiline_string(string),
+            Call(args) => {
+                result.push('(');
+                result += &compile_expressions(scope, args);
+                result.push(')');
+            }
+            Expr(expr) => {
+                result.push('(');
+                result += &compile_expression(scope, expr);
+                result.push(')');
+            }
+            DoBlock(body) => {
+                result += "{";
+                result += &compile_code_block(body, scope);
+                result += "}";
+                result += &indent_if(tree, scope);
+            }
+            Return(exprs) => {
+                result += "return ";
                 if let Some(exprs) = exprs {
-                    format!("return {}", compile_expressions(scope, None, exprs))
-                } else {
-                    String::from("return")
+                    result +=
+                        &compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr));
                 }
             }
-            BREAK_LOOP => String::from("break") + &indent_if(ctokens, scope),
-            _ => {
-                panic!("Unexpected ComplexToken {:?} found", t)
+            Break => {
+                result += "break";
+                result += &indent_if(tree, scope);
             }
+
+            _ => unreachable!(),
         }
     }
+
     result
+}
+
+pub fn compile_ast(tree: Expression) -> String {
+    compile_ast_helper(tree, 0)
 }

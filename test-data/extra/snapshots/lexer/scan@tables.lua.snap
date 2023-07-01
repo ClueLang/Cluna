@@ -1,0 +1,492 @@
+---
+source: src/main.rs
+expression: scanned
+input_file: test-data/mytests/tables.lua
+---
+[
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 1,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "myTable",
+        line: 1,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 1,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 1,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "key1",
+        line: 3,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 3,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"value1\"",
+        line: 3,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 3,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "key2",
+        line: 4,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 4,
+    },
+    Token {
+        kind: Number,
+        lexeme: "42",
+        line: 4,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 4,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "key3",
+        line: 5,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 5,
+    },
+    Token {
+        kind: True,
+        lexeme: "true",
+        line: 5,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 5,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 6,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"key with spaces\"",
+        line: 6,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 6,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 6,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"value with spaces\"",
+        line: 6,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 6,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 7,
+    },
+    Token {
+        kind: Number,
+        lexeme: "10",
+        line: 7,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 7,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 7,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"value with numeric key\"",
+        line: 7,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 7,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 8,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 8,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 8,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 8,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"value with variable key\"",
+        line: 8,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 8,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "nestedTable",
+        line: 10,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 10,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 10,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "nestedKey",
+        line: 11,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 11,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"nestedValue\"",
+        line: 11,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 11,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "anotherNestedTable",
+        line: 12,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 12,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 12,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "foo",
+        line: 13,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 13,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"bar\"",
+        line: 13,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 13,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "hello",
+        line: 14,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 14,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"world\"",
+        line: 14,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 14,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 15,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 15,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 16,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 16,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "array",
+        line: 19,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 19,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 19,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 19,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 19,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 19,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 19,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 19,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 19,
+    },
+    Token {
+        kind: Number,
+        lexeme: "4",
+        line: 19,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 19,
+    },
+    Token {
+        kind: Number,
+        lexeme: "5",
+        line: 19,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 19,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 19,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "mixedTable",
+        line: 22,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 22,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 22,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"string value\"",
+        line: 23,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 23,
+    },
+    Token {
+        kind: Number,
+        lexeme: "123",
+        line: 24,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 24,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "nested",
+        line: 25,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 25,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 25,
+    },
+    Token {
+        kind: True,
+        lexeme: "true",
+        line: 26,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 26,
+    },
+    Token {
+        kind: False,
+        lexeme: "false",
+        line: 27,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 27,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 28,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 28,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 29,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 29,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "key4",
+        line: 32,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 32,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"value4\"",
+        line: 32,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 32,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "key5",
+        line: 33,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 33,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"value5\"",
+        line: 33,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 33,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 34,
+    },
+]

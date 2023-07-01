@@ -10,24 +10,32 @@ use std::fs;
 pub fn gen_tests(input: TokenStream) -> TokenStream {
     let mut iter = input.into_iter();
 
-    let arg = iter.next().expect("Expected 1 argument");
-    let arg = arg.to_string();
-    let arg = arg.trim_matches('"');
+    let folder = iter.next().expect("Expected 2 argument");
+    let folder = folder.to_string();
+    let folder = folder.trim_matches('"');
+    let version = folder.split("-").next().unwrap().replace(".", "");
+    assert!(iter.next().expect("Expected 2 arguments").to_string() == ",");
+
+    let func = iter.next().expect("Expected 2 arguments");
+    let func = func.to_string();
+    let func = Ident::new(&func, Span::call_site());
+
     let mut out = quote!();
-    for entry in fs::read_dir(arg).unwrap() {
+    let func = Ident::new(&func.to_string(), Span::call_site());
+    for entry in fs::read_dir(folder).unwrap() {
         let entry = entry.unwrap().path();
         let filename = entry.to_string_lossy();
 
         if let Some(_) = filename.strip_suffix(".lua") {
-            let name = Ident::new_raw(
-                &entry
+            let name = version.clone()
+                + "_"
+                + entry
                     .file_name()
                     .unwrap()
                     .to_string_lossy()
                     .strip_suffix(".lua")
-                    .unwrap(),
-                Span::call_site(),
-            );
+                    .unwrap();
+            let name = Ident::new_raw(&format!("{name}_{func}"), Span::call_site());
             let path = Literal::string(&filename);
 
             if let Some(_) = iter.next() {
@@ -37,7 +45,7 @@ pub fn gen_tests(input: TokenStream) -> TokenStream {
             let test = quote! {
                 #[test]
                 fn #name(){
-                    crate::compile_file(::std::path::Path::new(#path),String::new(),0).unwrap();
+                    #func(::std::path::PathBuf::from(#path)).unwrap();
                 }
             };
             out = quote! {
@@ -47,5 +55,11 @@ pub fn gen_tests(input: TokenStream) -> TokenStream {
         }
     }
 
-    out.into()
+    quote! {
+        mod #func {
+            use super::*;
+            #out
+        }
+    }
+    .into()
 }

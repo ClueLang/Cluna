@@ -1,0 +1,340 @@
+---
+source: src/main.rs
+expression: parsed
+input_file: test-data/mytests/tables.lua
+---
+[
+    Variable {
+        names: [
+            "myTable",
+        ],
+        values: [
+            [
+                Table {
+                    data: [
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "key1",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "\"value1\"",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "key2",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "42",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "key3",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "true",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "\"key with spaces\"",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "\"value with spaces\"",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "10",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "\"value with numeric key\"",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Ident {
+                                        expr: [
+                                            Symbol(
+                                                "a",
+                                            ),
+                                        ],
+                                        line: 8,
+                                    },
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "\"value with variable key\"",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "nestedTable",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Table {
+                                    data: [
+                                        (
+                                            Some(
+                                                [
+                                                    Symbol(
+                                                        "nestedKey",
+                                                    ),
+                                                ],
+                                            ),
+                                            [
+                                                Symbol(
+                                                    "\"nestedValue\"",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            Some(
+                                                [
+                                                    Symbol(
+                                                        "anotherNestedTable",
+                                                    ),
+                                                ],
+                                            ),
+                                            [
+                                                Table {
+                                                    data: [
+                                                        (
+                                                            Some(
+                                                                [
+                                                                    Symbol(
+                                                                        "foo",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                            [
+                                                                Symbol(
+                                                                    "\"bar\"",
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        (
+                                                            Some(
+                                                                [
+                                                                    Symbol(
+                                                                        "hello",
+                                                                    ),
+                                                                ],
+                                                            ),
+                                                            [
+                                                                Symbol(
+                                                                    "\"world\"",
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                    line: 15,
+                                                    column: 1,
+                                                },
+                                            ],
+                                        ),
+                                    ],
+                                    line: 16,
+                                    column: 1,
+                                },
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "array",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Table {
+                                    data: [
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "1",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "2",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "3",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "4",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "5",
+                                                ),
+                                            ],
+                                        ),
+                                    ],
+                                    line: 19,
+                                    column: 13,
+                                },
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "mixedTable",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Table {
+                                    data: [
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "\"string value\"",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            None,
+                                            [
+                                                Symbol(
+                                                    "123",
+                                                ),
+                                            ],
+                                        ),
+                                        (
+                                            Some(
+                                                [
+                                                    Symbol(
+                                                        "nested",
+                                                    ),
+                                                ],
+                                            ),
+                                            [
+                                                Table {
+                                                    data: [
+                                                        (
+                                                            None,
+                                                            [
+                                                                Symbol(
+                                                                    "true",
+                                                                ),
+                                                            ],
+                                                        ),
+                                                        (
+                                                            None,
+                                                            [
+                                                                Symbol(
+                                                                    "false",
+                                                                ),
+                                                            ],
+                                                        ),
+                                                    ],
+                                                    line: 28,
+                                                    column: 1,
+                                                },
+                                            ],
+                                        ),
+                                    ],
+                                    line: 29,
+                                    column: 1,
+                                },
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "key4",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "\"value4\"",
+                                ),
+                            ],
+                        ),
+                        (
+                            Some(
+                                [
+                                    Symbol(
+                                        "key5",
+                                    ),
+                                ],
+                            ),
+                            [
+                                Symbol(
+                                    "\"value5\"",
+                                ),
+                            ],
+                        ),
+                    ],
+                    line: 34,
+                    column: 1,
+                },
+            ],
+        ],
+        line: 34,
+        column: 1,
+    },
+]

@@ -1,0 +1,865 @@
+---
+source: src/main.rs
+expression: parsed
+input_file: test-data/lua5.1-tests/verybig.lua
+---
+[
+    IfStatement {
+        condition: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "rawget",
+                    ),
+                    Call(
+                        [
+                            [
+                                Ident {
+                                    expr: [
+                                        Symbol(
+                                            "_G",
+                                        ),
+                                    ],
+                                    line: 1,
+                                },
+                            ],
+                            [
+                                Symbol(
+                                    "\"_soft\"",
+                                ),
+                            ],
+                        ],
+                    ),
+                ],
+                line: 1,
+            },
+        ],
+        body: CodeBlock {
+            start: 8,
+            code: [
+                Return(
+                    Some(
+                        [
+                            [
+                                Symbol(
+                                    "10",
+                                ),
+                            ],
+                        ],
+                    ),
+                ),
+            ],
+            end: 11,
+        },
+        next: None,
+        line: 1,
+        column: 11,
+    },
+    Ident {
+        expr: [
+            Symbol(
+                "print",
+            ),
+            Call(
+                [
+                    [
+                        Symbol(
+                            "\"testing large programs (>64k)\"",
+                        ),
+                    ],
+                ],
+            ),
+        ],
+        line: 1,
+    },
+    Alter {
+        names: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "prog",
+                    ),
+                ],
+                line: 3,
+            },
+        ],
+        values: [
+            [
+                MultilineString(
+                    "[[$\n\nlocal a,b\n\nb = {$1$\n  b30009 = 65534,\n  b30010 = 65535,\n  b30011 = 65536,\n  b30012 = 65537,\n  b30013 = 16777214,\n  b30014 = 16777215,\n  b30015 = 16777216,\n  b30016 = 16777217,\n  b30017 = 4294967294,\n  b30018 = 4294967295,\n  b30019 = 4294967296,\n  b30020 = 4294967297,\n  b30021 = -65534,\n  b30022 = -65535,\n  b30023 = -65536,\n  b30024 = -4294967297,\n  b30025 = 15012.5,\n  $2$\n};\n\nassert(b.a50008 == 25004 and b[\"a11\"] == 5.5)\nassert(b.a33007 == 16503.5 and b.a50009 == 25004.5)\nassert(b[\"b\"..30024] == -4294967297)\n\nfunction b:xxx (a,b) return a+b end\nassert(b:xxx(10, 12) == 22)   -- pushself with non-constant index\nb.xxx = nil\n\ns = 0; n=0\nfor a,b in pairs(b) do s=s+b; n=n+1 end\nassert(s==13977183656.5  and n==70001)\n\nrequire \"checktable\"\nstat(b)\n\na = nil; b = nil\nprint'+'\n\nfunction f(x) b=x end\n\na = f{$3$} or 10\n\nassert(a==10)\nassert(b[1] == \"a10\" and b[2] == 5 and b[table.getn(b)-1] == \"a50009\")\n\n\nfunction xxxx (x) return b[x] end\n\nassert(xxxx(3) == \"a11\")\n\na = nil; b=nil\nxxxx = nil\n\nreturn 10\n\n]]",
+                ),
+            ],
+        ],
+        line: 66,
+        column: 1,
+    },
+    Alter {
+        names: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "F",
+                    ),
+                ],
+                line: 66,
+            },
+        ],
+        values: [
+            [
+                Table {
+                    data: [
+                        (
+                            None,
+                            [
+                                Lambda {
+                                    args: [],
+                                    body: CodeBlock {
+                                        start: 22,
+                                        code: [
+                                            ForLoop {
+                                                iter: "i",
+                                                start: [
+                                                    Symbol(
+                                                        "10",
+                                                    ),
+                                                ],
+                                                end: [
+                                                    Symbol(
+                                                        "50009",
+                                                    ),
+                                                ],
+                                                step: None,
+                                                code: CodeBlock {
+                                                    start: 7,
+                                                    code: [
+                                                        Ident {
+                                                            expr: [
+                                                                Symbol(
+                                                                    "io",
+                                                                ),
+                                                                Symbol(
+                                                                    ".",
+                                                                ),
+                                                                Symbol(
+                                                                    "write",
+                                                                ),
+                                                                Call(
+                                                                    [
+                                                                        [
+                                                                            Symbol(
+                                                                                "'a'",
+                                                                            ),
+                                                                        ],
+                                                                        [
+                                                                            Ident {
+                                                                                expr: [
+                                                                                    Symbol(
+                                                                                        "i",
+                                                                                    ),
+                                                                                ],
+                                                                                line: 72,
+                                                                            },
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "' = '",
+                                                                            ),
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "5",
+                                                                            ),
+                                                                            Symbol(
+                                                                                "+",
+                                                                            ),
+                                                                            Expr(
+                                                                                [
+                                                                                    Expr(
+                                                                                        [
+                                                                                            Ident {
+                                                                                                expr: [
+                                                                                                    Symbol(
+                                                                                                        "i",
+                                                                                                    ),
+                                                                                                ],
+                                                                                                line: 72,
+                                                                                            },
+                                                                                            Symbol(
+                                                                                                "-",
+                                                                                            ),
+                                                                                            Symbol(
+                                                                                                "10",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                    Ident {
+                                                                                        expr: [],
+                                                                                        line: 72,
+                                                                                    },
+                                                                                    Symbol(
+                                                                                        "/",
+                                                                                    ),
+                                                                                    Symbol(
+                                                                                        "2",
+                                                                                    ),
+                                                                                ],
+                                                                            ),
+                                                                            Ident {
+                                                                                expr: [],
+                                                                                line: 72,
+                                                                            },
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "',\\n'",
+                                                                            ),
+                                                                        ],
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                            line: 72,
+                                                        },
+                                                    ],
+                                                    end: 32,
+                                                },
+                                                line: 73,
+                                                column: 1,
+                                            },
+                                        ],
+                                        end: 55,
+                                    },
+                                    line: 74,
+                                    column: 1,
+                                },
+                            ],
+                        ),
+                        (
+                            None,
+                            [
+                                Lambda {
+                                    args: [],
+                                    body: CodeBlock {
+                                        start: 59,
+                                        code: [
+                                            ForLoop {
+                                                iter: "i",
+                                                start: [
+                                                    Symbol(
+                                                        "30026",
+                                                    ),
+                                                ],
+                                                end: [
+                                                    Symbol(
+                                                        "50009",
+                                                    ),
+                                                ],
+                                                step: None,
+                                                code: CodeBlock {
+                                                    start: 7,
+                                                    code: [
+                                                        Ident {
+                                                            expr: [
+                                                                Symbol(
+                                                                    "io",
+                                                                ),
+                                                                Symbol(
+                                                                    ".",
+                                                                ),
+                                                                Symbol(
+                                                                    "write",
+                                                                ),
+                                                                Call(
+                                                                    [
+                                                                        [
+                                                                            Symbol(
+                                                                                "'b'",
+                                                                            ),
+                                                                        ],
+                                                                        [
+                                                                            Ident {
+                                                                                expr: [
+                                                                                    Symbol(
+                                                                                        "i",
+                                                                                    ),
+                                                                                ],
+                                                                                line: 78,
+                                                                            },
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "' = '",
+                                                                            ),
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "15013",
+                                                                            ),
+                                                                            Symbol(
+                                                                                "+",
+                                                                            ),
+                                                                            Expr(
+                                                                                [
+                                                                                    Expr(
+                                                                                        [
+                                                                                            Ident {
+                                                                                                expr: [
+                                                                                                    Symbol(
+                                                                                                        "i",
+                                                                                                    ),
+                                                                                                ],
+                                                                                                line: 78,
+                                                                                            },
+                                                                                            Symbol(
+                                                                                                "-",
+                                                                                            ),
+                                                                                            Symbol(
+                                                                                                "30026",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                    Ident {
+                                                                                        expr: [],
+                                                                                        line: 78,
+                                                                                    },
+                                                                                    Symbol(
+                                                                                        "/",
+                                                                                    ),
+                                                                                    Symbol(
+                                                                                        "2",
+                                                                                    ),
+                                                                                ],
+                                                                            ),
+                                                                            Ident {
+                                                                                expr: [],
+                                                                                line: 78,
+                                                                            },
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "',\\n'",
+                                                                            ),
+                                                                        ],
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                            line: 78,
+                                                        },
+                                                    ],
+                                                    end: 32,
+                                                },
+                                                line: 79,
+                                                column: 1,
+                                            },
+                                        ],
+                                        end: 92,
+                                    },
+                                    line: 80,
+                                    column: 1,
+                                },
+                            ],
+                        ),
+                        (
+                            None,
+                            [
+                                Lambda {
+                                    args: [],
+                                    body: CodeBlock {
+                                        start: 96,
+                                        code: [
+                                            ForLoop {
+                                                iter: "i",
+                                                start: [
+                                                    Symbol(
+                                                        "10",
+                                                    ),
+                                                ],
+                                                end: [
+                                                    Symbol(
+                                                        "50009",
+                                                    ),
+                                                ],
+                                                step: None,
+                                                code: CodeBlock {
+                                                    start: 7,
+                                                    code: [
+                                                        Ident {
+                                                            expr: [
+                                                                Symbol(
+                                                                    "io",
+                                                                ),
+                                                                Symbol(
+                                                                    ".",
+                                                                ),
+                                                                Symbol(
+                                                                    "write",
+                                                                ),
+                                                                Call(
+                                                                    [
+                                                                        [
+                                                                            Symbol(
+                                                                                "'\"a'",
+                                                                            ),
+                                                                        ],
+                                                                        [
+                                                                            Ident {
+                                                                                expr: [
+                                                                                    Symbol(
+                                                                                        "i",
+                                                                                    ),
+                                                                                ],
+                                                                                line: 84,
+                                                                            },
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "'\", '",
+                                                                            ),
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "5",
+                                                                            ),
+                                                                            Symbol(
+                                                                                "+",
+                                                                            ),
+                                                                            Expr(
+                                                                                [
+                                                                                    Expr(
+                                                                                        [
+                                                                                            Ident {
+                                                                                                expr: [
+                                                                                                    Symbol(
+                                                                                                        "i",
+                                                                                                    ),
+                                                                                                ],
+                                                                                                line: 84,
+                                                                                            },
+                                                                                            Symbol(
+                                                                                                "-",
+                                                                                            ),
+                                                                                            Symbol(
+                                                                                                "10",
+                                                                                            ),
+                                                                                        ],
+                                                                                    ),
+                                                                                    Ident {
+                                                                                        expr: [],
+                                                                                        line: 84,
+                                                                                    },
+                                                                                    Symbol(
+                                                                                        "/",
+                                                                                    ),
+                                                                                    Symbol(
+                                                                                        "2",
+                                                                                    ),
+                                                                                ],
+                                                                            ),
+                                                                            Ident {
+                                                                                expr: [],
+                                                                                line: 84,
+                                                                            },
+                                                                        ],
+                                                                        [
+                                                                            Symbol(
+                                                                                "',\\n'",
+                                                                            ),
+                                                                        ],
+                                                                    ],
+                                                                ),
+                                                            ],
+                                                            line: 84,
+                                                        },
+                                                    ],
+                                                    end: 32,
+                                                },
+                                                line: 85,
+                                                column: 1,
+                                            },
+                                        ],
+                                        end: 129,
+                                    },
+                                    line: 86,
+                                    column: 1,
+                                },
+                            ],
+                        ),
+                    ],
+                    line: 87,
+                    column: 1,
+                },
+            ],
+        ],
+        line: 87,
+        column: 1,
+    },
+    Alter {
+        names: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "file",
+                    ),
+                ],
+                line: 87,
+            },
+        ],
+        values: [
+            [
+                Ident {
+                    expr: [
+                        Symbol(
+                            "os",
+                        ),
+                        Symbol(
+                            ".",
+                        ),
+                        Symbol(
+                            "tmpname",
+                        ),
+                        Call(
+                            [],
+                        ),
+                    ],
+                    line: 89,
+                },
+            ],
+        ],
+        line: 89,
+        column: 7,
+    },
+    Ident {
+        expr: [
+            Symbol(
+                "io",
+            ),
+            Symbol(
+                ".",
+            ),
+            Symbol(
+                "output",
+            ),
+            Call(
+                [
+                    [
+                        Ident {
+                            expr: [
+                                Symbol(
+                                    "file",
+                                ),
+                            ],
+                            line: 90,
+                        },
+                    ],
+                ],
+            ),
+        ],
+        line: 89,
+    },
+    ForFuncLoop {
+        iters: [
+            "s",
+        ],
+        expr: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "string",
+                    ),
+                    Symbol(
+                        ".",
+                    ),
+                    Symbol(
+                        "gmatch",
+                    ),
+                    Call(
+                        [
+                            [
+                                Ident {
+                                    expr: [
+                                        Symbol(
+                                            "prog",
+                                        ),
+                                    ],
+                                    line: 91,
+                                },
+                            ],
+                            [
+                                Symbol(
+                                    "\"$([^$]+)\"",
+                                ),
+                            ],
+                        ],
+                    ),
+                ],
+                line: 91,
+            },
+        ],
+        code: CodeBlock {
+            start: 156,
+            code: [
+                Variable {
+                    names: [
+                        "n",
+                    ],
+                    values: [
+                        [
+                            Ident {
+                                expr: [
+                                    Symbol(
+                                        "tonumber",
+                                    ),
+                                    Call(
+                                        [
+                                            [
+                                                Ident {
+                                                    expr: [
+                                                        Symbol(
+                                                            "s",
+                                                        ),
+                                                    ],
+                                                    line: 92,
+                                                },
+                                            ],
+                                        ],
+                                    ),
+                                ],
+                                line: 92,
+                            },
+                        ],
+                    ],
+                    line: 93,
+                    column: 0,
+                },
+                IfStatement {
+                    condition: [
+                        Symbol(
+                            "not",
+                        ),
+                        Ident {
+                            expr: [
+                                Symbol(
+                                    "n",
+                                ),
+                            ],
+                            line: 93,
+                        },
+                    ],
+                    body: CodeBlock {
+                        start: 11,
+                        code: [
+                            Ident {
+                                expr: [
+                                    Symbol(
+                                        "io",
+                                    ),
+                                    Symbol(
+                                        ".",
+                                    ),
+                                    Symbol(
+                                        "write",
+                                    ),
+                                    Call(
+                                        [
+                                            [
+                                                Ident {
+                                                    expr: [
+                                                        Symbol(
+                                                            "s",
+                                                        ),
+                                                    ],
+                                                    line: 93,
+                                                },
+                                            ],
+                                        ],
+                                    ),
+                                ],
+                                line: 93,
+                            },
+                        ],
+                        end: 18,
+                    },
+                    next: Some(
+                        IfStatement {
+                            condition: [],
+                            body: CodeBlock {
+                                start: 18,
+                                code: [
+                                    Ident {
+                                        expr: [
+                                            Symbol(
+                                                "F",
+                                            ),
+                                            Symbol(
+                                                "[",
+                                            ),
+                                            Expr(
+                                                [
+                                                    Ident {
+                                                        expr: [
+                                                            Symbol(
+                                                                "n",
+                                                            ),
+                                                        ],
+                                                        line: 93,
+                                                    },
+                                                ],
+                                            ),
+                                            Symbol(
+                                                "]",
+                                            ),
+                                            Call(
+                                                [],
+                                            ),
+                                        ],
+                                        line: 93,
+                                    },
+                                ],
+                                end: 25,
+                            },
+                            next: None,
+                            line: 93,
+                            column: 18,
+                        },
+                    ),
+                    line: 93,
+                    column: 18,
+                },
+            ],
+            end: 182,
+        },
+        line: 94,
+        column: 1,
+    },
+    Ident {
+        expr: [
+            Symbol(
+                "io",
+            ),
+            Symbol(
+                ".",
+            ),
+            Symbol(
+                "close",
+            ),
+            Call(
+                [],
+            ),
+        ],
+        line: 94,
+    },
+    Alter {
+        names: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "result",
+                    ),
+                ],
+                line: 95,
+            },
+        ],
+        values: [
+            [
+                Ident {
+                    expr: [
+                        Symbol(
+                            "dofile",
+                        ),
+                        Call(
+                            [
+                                [
+                                    Ident {
+                                        expr: [
+                                            Symbol(
+                                                "file",
+                                            ),
+                                        ],
+                                        line: 96,
+                                    },
+                                ],
+                            ],
+                        ),
+                    ],
+                    line: 96,
+                },
+            ],
+        ],
+        line: 96,
+        column: 6,
+    },
+    Ident {
+        expr: [
+            Symbol(
+                "assert",
+            ),
+            Call(
+                [
+                    [
+                        Ident {
+                            expr: [
+                                Symbol(
+                                    "os",
+                                ),
+                                Symbol(
+                                    ".",
+                                ),
+                                Symbol(
+                                    "remove",
+                                ),
+                                Call(
+                                    [
+                                        [
+                                            Ident {
+                                                expr: [
+                                                    Symbol(
+                                                        "file",
+                                                    ),
+                                                ],
+                                                line: 97,
+                                            },
+                                        ],
+                                    ],
+                                ),
+                            ],
+                            line: 97,
+                        },
+                    ],
+                ],
+            ),
+        ],
+        line: 96,
+    },
+    Ident {
+        expr: [
+            Symbol(
+                "print",
+            ),
+            Call(
+                [
+                    [
+                        Symbol(
+                            "'OK'",
+                        ),
+                    ],
+                ],
+            ),
+        ],
+        line: 97,
+    },
+    Return(
+        Some(
+            [
+                [
+                    Ident {
+                        expr: [
+                            Symbol(
+                                "result",
+                            ),
+                        ],
+                        line: 99,
+                    },
+                ],
+            ],
+        ),
+    ),
+]
