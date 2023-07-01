@@ -1,14 +1,55 @@
+use clap::Parser;
 use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
-use std::path::Path;
+use std::path::PathBuf;
 
-fn main() -> Result<(), String> {
-    let path = Path::new("main.lua");
-    let code = std::fs::read_to_string(path).unwrap();
+#[derive(Parser)]
+struct Cli {
+    path: PathBuf,
+    #[clap(short, long)]
+    output: Option<PathBuf>,
+}
+
+fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
+    let code = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
     let scanned = scan_code(code)?;
     let parsed = parse_tokens(&scanned)?;
     let compiled = compile_ast(parsed);
 
-    std::fs::write("main.clue", compiled).unwrap();
+    let output = output.unwrap_or_else(|| path.with_extension("clue"));
+
+    std::fs::write(output, compiled).map_err(|e| e.to_string())?;
+    Ok(())
+}
+
+fn main() -> Result<(), String> {
+    let args = Cli::parse();
+    let path = args.path;
+
+    if !path.exists() {
+        return Err(format!("File {:?} does not exist", path));
+    }
+
+    if path.is_file() {
+        return compile_file(&path, args.output);
+    } else if path.is_dir() {
+        if args.output.is_some() {
+            eprintln!("Warning: output flag is ignored when compiling a directory");
+        }
+
+        let mut stack = vec![path];
+
+        while let Some(path) = stack.pop() {
+            if path.is_file() && path.extension().map_or(false, |ext| ext == "lua") {
+                compile_file(&path, None)?;
+            } else if path.is_dir() {
+                for entry in std::fs::read_dir(path).map_err(|e| e.to_string())? {
+                    let entry = entry.map_err(|e| e.to_string())?;
+                    stack.push(entry.path());
+                }
+            }
+        }
+    }
+
     Ok(())
 }
 
