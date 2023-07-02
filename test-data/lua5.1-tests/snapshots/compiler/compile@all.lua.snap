@@ -10,7 +10,7 @@ print("current path:\n  " .. string.gsub(package.path, ";", "\n  "));
 local msgs = {}
 global fn Message(m) {
     print(m);
-    msgs[(#msgs + 1)] = string.sub(m, 3,  - 3)
+    msgs[(#msgs + 1)] = string.sub(m, 3, -3)
 }
 local c = os.clock()
 assert(os.setlocale("C"));
@@ -29,7 +29,7 @@ local fn formatmem(m) {
     }
 }
 local showmem = fn () {
-    if !T {
+    if notT {
         print(format("    ---- total memory: %s ----\n", formatmem(gcinfo())));
     } else {
         T.checkmemory();

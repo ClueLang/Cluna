@@ -8,8 +8,8 @@ global fn check(a, f) {
     f = f || fn (x, y) {
         return x < y
     }
-    for n = table.getn(a), 2,  - 1 {
-        assert(!f(a[(n)], a[(n - 1)]));
+    for n = table.getn(a), 2, -1 {
+        assert(notf(a[(n)], a[(n - 1)]));
     }
 }
 a = {
@@ -71,7 +71,7 @@ check(a, fn (x, y) {
     return nil
 });
 for i, v with pairs(a) {
-    assert(!v || i == 'n' && v == limit);
+    assert(notv || i == 'n' && v == limit);
 }
 a = {
     "�lo", 

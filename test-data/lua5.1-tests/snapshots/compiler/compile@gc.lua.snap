@@ -220,7 +220,7 @@ for i = 1, lim {
     a[(t)] = t
 }
 collectgarbage();
-assert(next(a) ~= nil);
+assert(next(a) != nil);
 local i = 0
 for k, v with pairs(a) {
     assert((k == 1 && v == x) || (k == 2 && v == y) || (k == 3 && v == z) || k == v);
@@ -268,7 +268,7 @@ getmetatable(u).u = u
     }
 }
 a1, u = nil
-assert(next(a) ~= nil);
+assert(next(a) != nil);
 collectgarbage();
 assert(s == 11);
 collectgarbage();
@@ -306,8 +306,8 @@ getmetatable(u).__gc = fn () {
     error("!!!");
 }
 u = nil
-assert(!pcall(collectgarbage));
-if !rawget(_G, "_soft") {
+assert(notpcall(collectgarbage));
+if notrawget(_G, "_soft") {
     print("deep structures");
     local a = {}
     for i = 1, 200000 {

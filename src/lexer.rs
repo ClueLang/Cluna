@@ -10,6 +10,9 @@ pub enum TokenType {
     LeftParen, RightParen, LeftBrace, RightBrace, LeftBracket, RightBracket,
     DoubleDot, TripleDot,
 
+    // bitwise ops
+    BitAnd, BitOr, BitShiftLeft, BitShiftRight,
+
     // literals
     Number, String, MultilineString,Identifier,
 
@@ -371,7 +374,7 @@ impl Lexer {
         let number = Number::from_source(self)?;
         self.tokens.push(Token::new_number(
             TokenType::Number,
-            self.source[start - 1..self.current].iter().collect(),
+            self.source[start..self.current].iter().collect(),
             number.into_clue_number(),
             self.line,
         ));
@@ -502,25 +505,31 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                     lexer.advance();
                     lexer.add_token(TokenType::NotEquals, 2);
                 } else {
-                    lexer.add_token(TokenType::Not, 1);
+                    lexer.add_token(TokenType::Tilde, 1);
                 }
             }
-            '<' => {
-                if lexer.peek().map_or(false, |c| c == '=') {
+            '<' => match lexer.peek() {
+                Some('=') => {
                     lexer.advance();
                     lexer.add_token(TokenType::LessThanOrEqual, 2);
-                } else {
-                    lexer.add_token(TokenType::LessThan, 1);
                 }
-            }
-            '>' => {
-                if lexer.peek().map_or(false, |c| c == '=') {
+                Some('<') => {
+                    lexer.advance();
+                    lexer.add_token(TokenType::BitShiftLeft, 2);
+                }
+                _ => lexer.add_token(TokenType::LessThan, 1),
+            },
+            '>' => match lexer.peek() {
+                Some('=') => {
                     lexer.advance();
                     lexer.add_token(TokenType::GreaterThanOrEqual, 2);
-                } else {
-                    lexer.add_token(TokenType::GreaterThan, 1);
                 }
-            }
+                Some('>') => {
+                    lexer.advance();
+                    lexer.add_token(TokenType::BitShiftRight, 2);
+                }
+                _ => lexer.add_token(TokenType::GreaterThan, 1),
+            },
             '.' => match (lexer.peek(), lexer.peek_at(2)) {
                 (Some('.'), Some('.')) => lexer.add_token_front(TokenType::TripleDot, 3),
                 (Some('0'..='9'), _) => {
@@ -541,6 +550,8 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             }
             ';' => lexer.add_token(TokenType::Semicolon, 1),
             ',' => lexer.add_token(TokenType::Comma, 1),
+            '&' => lexer.add_token(TokenType::BitAnd, 1),
+            '|' => lexer.add_token(TokenType::BitOr, 1),
             '"' | '\'' => {
                 lexer.read_string(c)?;
             }

@@ -13,26 +13,26 @@ assert('alo\0' > 'alo');
 assert('\0' < '\1');
 assert('\0\0' < '\0\1');
 assert('\1\0a\0a' <= '\1\0a\0a');
-assert(!('\1\0a\0b' <= '\1\0a\0a'));
+assert(not('\1\0a\0b' <= '\1\0a\0a'));
 assert('\0\0\0' < '\0\0\0\0');
-assert(!('\0\0\0\0' < '\0\0\0'));
+assert(not('\0\0\0\0' < '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0\0');
-assert(!('\0\0\0\0' <= '\0\0\0'));
+assert(not('\0\0\0\0' <= '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0');
 assert('\0\0\0' >= '\0\0\0');
-assert(!('\0\0b' < '\0\0a\0'));
+assert(not('\0\0b' < '\0\0a\0'));
 print('+');
 assert(string.sub("123456789", 2, 4) == "234");
 assert(string.sub("123456789", 7) == "789");
 assert(string.sub("123456789", 7, 6) == "");
 assert(string.sub("123456789", 7, 7) == "7");
 assert(string.sub("123456789", 0, 0) == "");
-assert(string.sub("123456789",  - 10, 10) == "123456789");
+assert(string.sub("123456789", -10, 10) == "123456789");
 assert(string.sub("123456789", 1, 9) == "123456789");
-assert(string.sub("123456789",  - 10,  - 20) == "");
-assert(string.sub("123456789",  - 1) == "9");
-assert(string.sub("123456789",  - 4) == "6789");
-assert(string.sub("123456789",  - 6,  - 4) == "456");
+assert(string.sub("123456789", -10, -20) == "");
+assert(string.sub("123456789", -1) == "9");
+assert(string.sub("123456789", -4) == "6789");
+assert(string.sub("123456789", -6, -4) == "456");
 assert(string.sub("\000123456789", 3, 5) == "234");
 assert(("\000123456789")::sub(8) == "789");
 print('+');
@@ -42,7 +42,7 @@ assert(string.sub("123456789", a, b) == "345");
 assert(string.find("1234567890123456789", "345", 3) == 3);
 assert(string.find("1234567890123456789", "345", 4) == 13);
 assert(string.find("1234567890123456789", "346", 4) == nil);
-assert(string.find("1234567890123456789", ".45",  - 9) == 13);
+assert(string.find("1234567890123456789", ".45", -9) == 13);
 assert(string.find("abcdefg", "\0", 5, 1) == nil);
 assert(string.find("", "") == 1);
 assert(string.find('', 'aaa', 1) == nil);
@@ -59,21 +59,21 @@ assert(string.byte("�") > 127);
 assert(string.byte(string.char(255)) == 255);
 assert(string.byte(string.char(0)) == 0);
 assert(string.byte("\0") == 0);
-assert(string.byte("\0\0alo\0x",  - 1) == string.byte('x'));
+assert(string.byte("\0\0alo\0x", -1) == string.byte('x'));
 assert(string.byte("ba", 2) == 97);
-assert(string.byte("\n\n", 2,  - 1) == 10);
+assert(string.byte("\n\n", 2, -1) == 10);
 assert(string.byte("\n\n", 2, 2) == 10);
 assert(string.byte("") == nil);
-assert(string.byte("hi",  - 3) == nil);
+assert(string.byte("hi", -3) == nil);
 assert(string.byte("hi", 3) == nil);
 assert(string.byte("hi", 9, 10) == nil);
 assert(string.byte("hi", 2, 1) == nil);
 assert(string.char() == "");
 assert(string.char(0, 255, 0) == "\0\255\0");
 assert(string.char(0, string.byte("�"), 0) == "\0�\0");
-assert(string.char(string.byte("�l\0�u", 1,  - 1)) == "�l\0�u");
+assert(string.char(string.byte("�l\0�u", 1, -1)) == "�l\0�u");
 assert(string.char(string.byte("�l\0�u", 1, 0)) == "");
-assert(string.char(string.byte("�l\0�u",  - 10, 100)) == "�l\0�u");
+assert(string.char(string.byte("�l\0�u", -10, 100)) == "�l\0�u");
 print('+');
 assert(string.upper("ab\0c") == "AB\0C");
 assert(string.lower("\0ABCc%$") == "\0abcc%$");
@@ -110,7 +110,7 @@ assert(#x == 52);
 assert(string.sub(x, 1, 4) == '"a  ');
 assert(string.format("-%.20s.20s", string.rep("%", 2000)) == "-" .. string.rep("%", 20) .. ".20s");
 assert(string.format('"-%20s.20s"', string.rep("%", 2000)) == string.format("%q", "-" .. string.rep("%", 2000) .. ".20s"));
-assert(string.len(string.format('%99.99f',  - 1e308)) >= 100);
+assert(string.len(string.format('%99.99f', -1e308)) >= 100);
 assert(loadstring("return 1\n--coment�rio sem EOL no final")() == 1);
 assert(table.concat({}) == "");
 assert(table.concat({}, 'x') == "");
@@ -152,12 +152,12 @@ local fn trylocale(w) {
     }
     return false
 }
-if !trylocale("collate") {
+if nottrylocale("collate") {
     print("locale not supported");
 } else {
     assert("alo" < "�lo" && "�lo" < "amo");
 }
-if !trylocale("ctype") {
+if nottrylocale("ctype") {
     print("locale not supported");
 } else {
     assert(string.gsub("�����", "%a", "x") == "xxxxx");

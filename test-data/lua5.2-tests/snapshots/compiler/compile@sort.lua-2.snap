@@ -44,11 +44,11 @@ a, x = unpack({
     2
 }, 1, 1)
 assert(a == 1 && x == nil);
-if !_no32 {
-    assert(!pcall(unpack, {}, 0, 2 ^ 31 - 1));
-    assert(!pcall(unpack, {}, 1, 2 ^ 31 - 1));
-    assert(!pcall(unpack, {},  - (2 ^ 31), 2 ^ 31 - 1));
-    assert(!pcall(unpack, {},  - (2 ^ 31 - 1), 2 ^ 31 - 1));
+if not_no32 {
+    assert(notpcall(unpack, {}, 0, 2 ^ 31 - 1));
+    assert(notpcall(unpack, {}, 1, 2 ^ 31 - 1));
+    assert(notpcall(unpack, {}, -(2 ^ 31), 2 ^ 31 - 1));
+    assert(notpcall(unpack, {}, -(2 ^ 31 - 1), 2 ^ 31 - 1));
     assert(pcall(unpack, {}, 2 ^ 31 - 1, 0));
     assert(pcall(unpack, {}, 2 ^ 31 - 1, 1));
     pcall(unpack, {}, 1, 2 ^ 31);
@@ -75,7 +75,7 @@ local fn check(t) {
         return true
     }
     local s, e = pcall(table.sort, t, f)
-    assert(!s && e::find("invalid order function"));
+    assert(nots && e::find("invalid order function"));
 }
 check({
     1, 
@@ -102,8 +102,8 @@ global fn check(a, f) {
     f = f || fn (x, y) {
         return x < y
     }
-    for n = #a, 2,  - 1 {
-        assert(!f(a[(n)], a[(n - 1)]));
+    for n = #a, 2, -1 {
+        assert(notf(a[(n)], a[(n - 1)]));
     }
 }
 a = {
@@ -236,7 +236,7 @@ check(a, fn (x, y) {
     return nil
 });
 for i, v with pairs(a) {
-    assert(!v || i == 'n' && v == limit);
+    assert(notv || i == 'n' && v == limit);
 }
 A = {
     "álo", 

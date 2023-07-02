@@ -32,7 +32,7 @@ assert(f(10) == nil && select(2, f(20)) == nil);
         assert(i == 1000);
     }
     assert(i == 10);
-    if i ~= 10 {
+    if i != 10 {
         local i = 20
     } else {
         local i = 30
@@ -87,16 +87,16 @@ assert(c.a == 3);
     local i = 2
     local p = 4
     loop  {
-        for j =  - 3, 3 {
+        for j = -3, 3 {
             assert(load(string.format(`local a=%s;
                                         a=a+%s;
                                         assert(a ==2^%s)`, j, p - j, i), ''))();
             assert(load(string.format(`local a=%s;
                                         a=a-%s;
-                                        assert(a==-2^%s)`,  - j, p - j, i), ''))();
+                                        assert(a==-2^%s)`, -j, p - j, i), ''))();
             assert(load(string.format(`local a,b=0,%s;
                                         a=b-%s;
-                                        assert(a==-2^%s)`,  - j, p - j, i), ''))();
+                                        assert(a==-2^%s)`, -j, p - j, i), ''))();
         }
         p = 2 * p
         i = i + 1

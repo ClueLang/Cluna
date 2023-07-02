@@ -82,8 +82,11 @@ input_file: test-data/lua5.1-tests/all.lua
                         Symbol(
                             "\"current path:\\n  \"",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -198,8 +201,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                 ),
                                 Expr(
                                     [
-                                        Symbol(
-                                            "#",
+                                        Operator(
+                                            (
+                                                "#",
+                                                false,
+                                            ),
                                         ),
                                         Ident {
                                             expr: [
@@ -209,8 +215,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                             ],
                                             line: 21,
                                         },
-                                        Symbol(
-                                            "+",
+                                        Operator(
+                                            (
+                                                "+",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "1",
@@ -255,8 +264,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                                 ),
                                             ],
                                             [
-                                                Symbol(
-                                                    "-",
+                                                Operator(
+                                                    (
+                                                        "-",
+                                                        false,
+                                                    ),
                                                 ),
                                                 Symbol(
                                                     "3",
@@ -463,8 +475,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 32,
                         },
-                        Symbol(
-                            "<",
+                        Operator(
+                            (
+                                "<",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1024",
@@ -519,14 +534,20 @@ input_file: test-data/lua5.1-tests/all.lua
                                                     ],
                                                     line: 34,
                                                 },
-                                                Symbol(
-                                                    "/",
+                                                Operator(
+                                                    (
+                                                        "/",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Symbol(
                                                     "1024",
                                                 ),
-                                                Symbol(
-                                                    "-",
+                                                Operator(
+                                                    (
+                                                        "-",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Ident {
                                                     expr: [
@@ -536,14 +557,20 @@ input_file: test-data/lua5.1-tests/all.lua
                                                     ],
                                                     line: 34,
                                                 },
-                                                Symbol(
-                                                    "/",
+                                                Operator(
+                                                    (
+                                                        "/",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Symbol(
                                                     "1024",
                                                 ),
-                                                Symbol(
-                                                    "%",
+                                                Operator(
+                                                    (
+                                                        "%",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Symbol(
                                                     "1",
@@ -563,8 +590,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                                 ],
                                                 line: 35,
                                             },
-                                            Symbol(
-                                                "<",
+                                            Operator(
+                                                (
+                                                    "<",
+                                                    true,
+                                                ),
                                             ),
                                             Symbol(
                                                 "1024",
@@ -585,8 +615,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                                                     ],
                                                                     line: 35,
                                                                 },
-                                                                Symbol(
-                                                                    "..",
+                                                                Operator(
+                                                                    (
+                                                                        "..",
+                                                                        true,
+                                                                    ),
                                                                 ),
                                                                 Symbol(
                                                                     "\"K\"",
@@ -625,14 +658,20 @@ input_file: test-data/lua5.1-tests/all.lua
                                                                         ],
                                                                         line: 37,
                                                                     },
-                                                                    Symbol(
-                                                                        "/",
+                                                                    Operator(
+                                                                        (
+                                                                            "/",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Symbol(
                                                                         "1024",
                                                                     ),
-                                                                    Symbol(
-                                                                        "-",
+                                                                    Operator(
+                                                                        (
+                                                                            "-",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Ident {
                                                                         expr: [
@@ -642,14 +681,20 @@ input_file: test-data/lua5.1-tests/all.lua
                                                                         ],
                                                                         line: 37,
                                                                     },
-                                                                    Symbol(
-                                                                        "/",
+                                                                    Operator(
+                                                                        (
+                                                                            "/",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Symbol(
                                                                         "1024",
                                                                     ),
-                                                                    Symbol(
-                                                                        "%",
+                                                                    Operator(
+                                                                        (
+                                                                            "%",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Symbol(
                                                                         "1",
@@ -671,8 +716,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                                                             ],
                                                                             line: 38,
                                                                         },
-                                                                        Symbol(
-                                                                            "..",
+                                                                        Operator(
+                                                                            (
+                                                                                "..",
+                                                                                true,
+                                                                            ),
                                                                         ),
                                                                         Symbol(
                                                                             "\"M\"",
@@ -722,8 +770,11 @@ input_file: test-data/lua5.1-tests/all.lua
                         code: [
                             IfStatement {
                                 condition: [
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -1476,8 +1527,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 82,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1487,8 +1541,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 82,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1563,8 +1620,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 85,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "27",
@@ -1600,8 +1660,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 86,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "5",
@@ -1731,8 +1794,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                         ],
                                         line: 91,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "'b'",
@@ -1762,8 +1828,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                         ],
                                         line: 92,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "'a'",
@@ -1854,8 +1923,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 97,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "12",
@@ -1976,8 +2048,11 @@ input_file: test-data/lua5.1-tests/all.lua
                             ],
                             line: 103,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "10",
@@ -2018,8 +2093,11 @@ input_file: test-data/lua5.1-tests/all.lua
     },
     IfStatement {
         condition: [
-            Symbol(
-                "#",
+            Operator(
+                (
+                    "#",
+                    false,
+                ),
             ),
             Ident {
                 expr: [
@@ -2029,8 +2107,11 @@ input_file: test-data/lua5.1-tests/all.lua
                 ],
                 line: 107,
             },
-            Symbol(
-                ">",
+            Operator(
+                (
+                    ">",
+                    true,
+                ),
             ),
             Symbol(
                 "0",
@@ -2064,8 +2145,11 @@ input_file: test-data/lua5.1-tests/all.lua
                         ),
                     ],
                     end: [
-                        Symbol(
-                            "#",
+                        Operator(
+                            (
+                                "#",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2229,8 +2313,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                                             ],
                                                             line: 118,
                                                         },
-                                                        Symbol(
-                                                            "==",
+                                                        Operator(
+                                                            (
+                                                                "==",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Symbol(
                                                             "'string'",
@@ -2694,8 +2781,11 @@ input_file: test-data/lua5.1-tests/all.lua
                                                 ],
                                                 line: 138,
                                             },
-                                            Symbol(
-                                                "-",
+                                            Operator(
+                                                (
+                                                    "-",
+                                                    true,
+                                                ),
                                             ),
                                             Ident {
                                                 expr: [

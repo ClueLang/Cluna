@@ -27,17 +27,17 @@ global fn test(s, l, p) {
     assert(#l == 0);
 }
 {
-    assert(!pcall(debug.getinfo, print, "X"));
+    assert(notpcall(debug.getinfo, print, "X"));
     assert(debug.getinfo(1000) == nil);
-    assert(debug.getinfo( - 1) == nil);
+    assert(debug.getinfo(-1) == nil);
     local a = debug.getinfo(print)
     assert(a.what == "C" && a.short_src == "[C]");
     a = debug.getinfo(print, "L")
     assert(a.activelines == nil);
     local b = debug.getinfo(test, "SfL")
-    assert(b.name == nil && b.what == "Lua" && b.linedefined == 13 && b.lastlinedefined == b.linedefined + 10 && b.func == test && !string.find(b.short_src, "%["));
+    assert(b.name == nil && b.what == "Lua" && b.linedefined == 13 && b.lastlinedefined == b.linedefined + 10 && b.func == test && notstring.find(b.short_src, "%["));
     assert(b.activelines[(b.linedefined + 1)] && b.activelines[(b.lastlinedefined)]);
-    assert(!b.activelines[(b.linedefined)] && !b.activelines[(b.lastlinedefined + 1)]);
+    assert(notb.activelines[(b.linedefined)] && notb.activelines[(b.lastlinedefined + 1)]);
 }
 a = "function f () end"
 local fn dostring(s, x) {
@@ -76,11 +76,11 @@ loop  {
         }
     }
     local f = fn () {
-        return 1 + 1 && (!1 || g.x())
+        return 1 + 1 && (not1 || g.x())
     }
     assert(f() == 'xixi');
     g = debug.getinfo(f)
-    assert(g.what == "Lua" && g.func == f && g.namewhat == "" && !g.name);
+    assert(g.what == "Lua" && g.func == f && g.namewhat == "" && notg.name);
     global fn f(x, name) {
         name = name || 'f'
         local a = debug.getinfo(1)
@@ -124,7 +124,7 @@ loop  {
     f(g).x = f(2) && f(10) + f(9)
     assert(g.x == f(19));
     global fn g(x) {
-        if !x {
+        if notx {
             return 3
         }
         return (x('a', 'x'))
@@ -232,8 +232,8 @@ test(`for i=1,4 do a=1 end`, {
     1
 });
 print('+');
-assert(!pcall(debug.getlocal, 20, 1));
-assert(!pcall(debug.setlocal,  - 1, 1, 10));
+assert(notpcall(debug.getlocal, 20, 1));
+assert(notpcall(debug.setlocal, -1, 1, 10));
 local fn foo(a, b, ...) {
     local d, e
 }
@@ -248,15 +248,15 @@ assert(debug.getlocal(print, 1) == nil);
 local fn foo(a, ...) {
     local t = table.pack(...)
     for i = 1, t.n {
-        local n, v = debug.getlocal(1,  - i)
+        local n, v = debug.getlocal(1, -i)
         assert(n == "(*vararg)" && v == t[(i)]);
     }
-    assert(!debug.getlocal(1,  - (t.n + 1)));
-    assert(!debug.setlocal(1,  - (t.n + 1), 30));
+    assert(notdebug.getlocal(1, -(t.n + 1)));
+    assert(notdebug.setlocal(1, -(t.n + 1), 30));
     if t.n > 0 {
         (fn (x) {
-            assert(debug.setlocal(2,  - 1, x) == "(*vararg)");
-            assert(debug.setlocal(2,  - t.n, x) == "(*vararg)");
+            assert(debug.setlocal(2, -1, x) == "(*vararg)");
+            assert(debug.setlocal(2, -t.n, x) == "(*vararg)");
         })(430);
         assert(... == 430);
     }
@@ -271,7 +271,7 @@ for i = 1, 1000 {
 foo(table.unpack(a));
 a = nil
 local fn foo() {
-    return debug.getlocal(1,  - 1)
+    return debug.getlocal(1, -1)
 }
 assert(foo(10) == nil);
 a = {}
@@ -283,7 +283,7 @@ debug.sethook(fn (e, l) {
     local f, m, c = debug.gethook()
     assert(m == 'crl' && c == 0);
     if e == "line" {
-        if glob ~= oldglob {
+        if glob != oldglob {
             L = l - 1
             oldglob = glob
         }
@@ -336,16 +336,16 @@ global fn g(...) {
     }
 }
 g();
-assert(a[(f)] && a[(g)] && a[(assert)] && a[(debug.getlocal)] && !a[(print)]);
+assert(a[(f)] && a[(g)] && a[(assert)] && a[(debug.getlocal)] && nota[(print)]);
 local n, v = debug.getlocal(0, 1)
 assert(v == 0 && n == "(*temporary)");
 local n, v = debug.getlocal(0, 2)
 assert(v == 2 && n == "(*temporary)");
-assert(!debug.getlocal(0, 3));
-assert(!debug.getlocal(0, 0));
+assert(notdebug.getlocal(0, 3));
+assert(notdebug.getlocal(0, 0));
 global fn f() {
     assert(select(2, debug.getlocal(2, 3)) == 1);
-    assert(!debug.getlocal(2, 4));
+    assert(notdebug.getlocal(2, 4));
     debug.setlocal(2, 3, 10);
     return 20
 }
@@ -366,14 +366,14 @@ method a::f(a, b, ...) {
 debug.sethook(fn (e) {
     assert(e == "call");
     dostring("XX = 12");
-    assert(!pcall(load("a='joao'+1")));
+    assert(notpcall(load("a='joao'+1")));
     debug.sethook(fn (e, l) {
         assert(debug.getinfo(2, "l").currentline == l);
         local f, m, c = debug.gethook()
         assert(e == "line");
         assert(m == 'l' && c == 0);
         debug.sethook(nil);
-        assert(!X);
+        assert(notX);
         X = {}
         local i = 1
         local x, y
@@ -396,10 +396,10 @@ local fn getupvalues(f) {
     local i = 1
     while true {
         local name, value = debug.getupvalue(f, i)
-        if !name {
+        if notname {
             break
         }
-        assert(!t[(name)]);
+        assert(nott[(name)]);
         t[(name)] = value
         i = i + 1
     }
@@ -453,7 +453,7 @@ for i = 1, 1000 {
     
 }
 assert(a == 0);
-if !_no32 {
+if not_no32 {
     debug.sethook(print, "", 2 ^ 24 - 1);
     local f, m, c = debug.gethook()
     assert(({
@@ -551,7 +551,7 @@ assert(debug.traceback(print) == print);
 assert(debug.traceback(print, 4) == print);
 assert(string.find(debug.traceback("hi", 4), "^hi\n"));
 assert(string.find(debug.traceback("hi"), "^hi\n"));
-assert(!string.find(debug.traceback("hi"), "'traceback'"));
+assert(notstring.find(debug.traceback("hi"), "'traceback'"));
 assert(string.find(debug.traceback("hi", 0), "'traceback'"));
 assert(string.find(debug.traceback(), "^stack traceback:\n"));
 local t = debug.getinfo(print, "u")

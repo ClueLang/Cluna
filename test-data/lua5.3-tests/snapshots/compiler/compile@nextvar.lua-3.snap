@@ -6,7 +6,7 @@ input_file: test-data/lua5.3-tests/nextvar.lua
 print('testing tables, next, and for');
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(!s && string.find(err, msg));
+    assert(nots && string.find(err, msg));
 }
 local a = {}
 for i = 1, 100 {
@@ -44,12 +44,12 @@ for k, v with ipairs({
     false
 }) {
     i = i + 1
-    x = !x
+    x = notx
     assert(x == v);
 }
 assert(i == 4);
 assert(type(ipairs({})) == 'function' && ipairs({}) == ipairs({}));
-if !T {
+if notT {
     (Message || print)('\n >>> testC not active: skipping tests for table sizes <<<\n');
 } else {
     local fn log2(x) {
@@ -78,7 +78,7 @@ if !T {
     }
     local fn check(t, na, nh) {
         local a, h = T.querytab(t)
-        if a ~= na || h ~= nh {
+        if a != na || h != nh {
             print(na, nh, a, h);
             assert(nil);
         }
@@ -174,7 +174,7 @@ if !T {
     }
     for i = 1, lim {
         local a = {}
-        for i = i, 1,  - 1 {
+        for i = i, 1, -1 {
             a[(i)] = i
         }
         check(a, mp2(i), 0);
@@ -225,10 +225,10 @@ local fn find(name) {
     local n, v
     while 1 {
         n, v = next(_G, n)
-        if !n {
+        if notn {
             return nofind
         }
-        assert(v ~= nil);
+        assert(v != nil);
         if n == name {
             return v
         }
@@ -246,7 +246,7 @@ assert(print == find("print") && print == find1("print"));
 assert(_G[("print")] == find("print"));
 assert(assert == find1("assert"));
 assert(nofind == find("return"));
-assert(!find1("return"));
+assert(notfind1("return"));
 _G[("ret" .. "urn")] = nil
 assert(nofind == find("return"));
 _G[("xxx")] = 1
@@ -260,7 +260,7 @@ checkerror("bad argument", ipairs);
 print('+');
 a = {}
 for i = 0, 10000 {
-    if math.fmod(i, 10) ~= 0 {
+    if math.fmod(i, 10) != 0 {
         a[('x' .. i)] = i
     }
 }
@@ -279,7 +279,7 @@ a = nil
         a[(n)] = v
     }
     for n, v with pairs(a) {
-        if !package.loaded[(n)] && type(v) ~= "function" && !string.find(n, "^[%u_]") {
+        if notpackage.loaded[(n)] && type(v) != "function" && notstring.find(n, "^[%u_]") {
             _G[(n)] = nil
         }
         collectgarbage();
@@ -343,7 +343,7 @@ checknext({
 });
 assert(#{} == 0);
 assert(#{
-     - 1 = 2
+    -1 = 2
 } == 0);
 assert(#{
     1, 
@@ -409,17 +409,17 @@ for k, v with pairs(t) {
 }
 assert(n == 5);
 local fn test(a) {
-    assert(!pcall(table.insert, a, 2, 20));
+    assert(notpcall(table.insert, a, 2, 20));
     table.insert(a, 10);
     table.insert(a, 2, 20);
-    table.insert(a, 1,  - 1);
+    table.insert(a, 1, -1);
     table.insert(a, 40);
     table.insert(a, #a + 1, 50);
-    table.insert(a, 2,  - 2);
-    assert(!pcall(table.insert, a, 0, 20));
-    assert(!pcall(table.insert, a, #a + 2, 20));
-    assert(table.remove(a, 1) ==  - 1);
-    assert(table.remove(a, 1) ==  - 2);
+    table.insert(a, 2, -2);
+    assert(notpcall(table.insert, a, 0, 20));
+    assert(notpcall(table.insert, a, #a + 2, 20));
+    assert(table.remove(a, 1) == -1);
+    assert(table.remove(a, 1) == -2);
     assert(table.remove(a, 1) == 10);
     assert(table.remove(a, 1) == 20);
     assert(table.remove(a, 1) == 40);
@@ -430,30 +430,30 @@ local fn test(a) {
 }
 a = {
     n = 0, 
-     - 7 = "ban"
+    -7 = "ban"
 }
 test(a);
-assert(a.n == 0 && a[( - 7)] == "ban");
+assert(a.n == 0 && a[(-7)] == "ban");
 a = {
-     - 7 = "ban"
+    -7 = "ban"
 }
 test(a);
-assert(a.n == nil && #a == 0 && a[( - 7)] == "ban");
+assert(a.n == nil && #a == 0 && a[(-7)] == "ban");
 a = {
-     - 1 = "ban"
+    -1 = "ban"
 }
 test(a);
-assert(#a == 0 && table.remove(a) == nil && a[( - 1)] == "ban");
+assert(#a == 0 && table.remove(a) == nil && a[(-1)] == "ban");
 a = {
     0 = "ban"
 }
 assert(#a == 0 && table.remove(a) == "ban" && a[(0)] == nil);
 table.insert(a, 1, 10);
 table.insert(a, 1, 20);
-table.insert(a, 1,  - 1);
+table.insert(a, 1, -1);
 assert(table.remove(a) == 10);
 assert(table.remove(a) == 20);
-assert(table.remove(a) ==  - 1);
+assert(table.remove(a) == -1);
 assert(table.remove(a) == nil);
 a = {
     'c', 
@@ -474,7 +474,7 @@ a = {
     40
 }
 assert(table.remove(a, #a + 1) == nil);
-assert(!pcall(table.remove, a, 0));
+assert(notpcall(table.remove, a, 0));
 assert(a[(#a)] == 40);
 assert(table.remove(a, #a) == 40);
 assert(a[(#a)] == 30);
@@ -529,7 +529,7 @@ assert(a[(#a)] == 30 && #a == 2);
     })
     assert(table.concat(t, ";") == "2;3;4;5;6");
 }
-if !T {
+if notT {
     (Message || print)('\n >>> testC not active: skipping tests for table library on non-tables <<<\n');
 } else {
     local debug = require('debug')
@@ -586,18 +586,18 @@ for a, b with pairs({}) {
 for i = 1, 0 {
     error('not here');
 }
-for i = 0, 1,  - 1 {
+for i = 0, 1, -1 {
     error('not here');
 }
 a = nil
 for i = 1, 1 {
-    assert(!a);
+    assert(nota);
     a = 1
 }
 assert(a);
 a = nil
-for i = 1, 1,  - 1 {
-    assert(!a);
+for i = 1, 1, -1 {
+    assert(nota);
     a = 1
 }
 assert(a);
@@ -610,7 +610,7 @@ assert(a);
     }
     assert(a == 1);
     a = 0
-    for i = 10000, 1e4,  - 1 {
+    for i = 10000, 1e4, -1 {
         a = a + 1
     }
     assert(a == 1);
@@ -620,12 +620,12 @@ assert(a);
     }
     assert(a == 0);
     a = 0
-    for i = 9999, 1e4,  - 1 {
+    for i = 9999, 1e4, -1 {
         a = a + 1
     }
     assert(a == 0);
     a = 0
-    for i = 1, 0.99999,  - 1 {
+    for i = 1, 0.99999, -1 {
         a = a + 1
     }
     assert(a == 1);
@@ -640,12 +640,12 @@ assert(a);
     }
     assert(a == 1);
     a = 0
-    for i =  - 1.5,  - 1.5, 1 {
+    for i = -1.5, -1.5, 1 {
         a = a + 1
     }
     assert(a == 1);
     a = 0
-    for i = 1e6, 1e6,  - 1 {
+    for i = 1e6, 1e6, -1 {
         a = a + 1
     }
     assert(a == 1);
@@ -655,12 +655,12 @@ assert(a);
     }
     assert(a == 0);
     a = 0
-    for i = 99999, 1e5,  - 1.0 {
+    for i = 99999, 1e5, -1.0 {
         a = a + 1
     }
     assert(a == 0);
     a = 0
-    for i = 1.0, 0.99999,  - 1 {
+    for i = 1.0, 0.99999, -1 {
         a = a + 1
     }
     assert(a == 1);
@@ -682,7 +682,7 @@ assert(a == 5);
     }
     assert(c == 10);
     c = 0
-    for i =  - 1,  - 10,  - 1.0 {
+    for i = -1, -10, -1.0 {
         checkfloat(i);
     }
     assert(c == 10);
@@ -692,7 +692,7 @@ assert(a == 5);
     }
     local m = math.maxinteger
     c = 0
-    for i = m, m - 10,  - 1 {
+    for i = m, m - 10, -1 {
         checkint(i);
     }
     assert(c == 11);
@@ -702,7 +702,7 @@ assert(a == 5);
     }
     assert(c == 10);
     c = 0
-    for i = 10, 0.001,  - 1 {
+    for i = 10, 0.001, -1 {
         checkint(i);
     }
     assert(c == 10);
@@ -712,17 +712,17 @@ assert(a == 5);
     }
     assert(c == 10);
     c = 0
-    for i = 9, "3.4",  - 1 {
+    for i = 9, "3.4", -1 {
         checkint(i);
     }
     assert(c == 6);
     c = 0
-    for i = 0, " -3.4  ",  - 1 {
+    for i = 0, " -3.4  ", -1 {
         checkint(i);
     }
     assert(c == 4);
     c = 0
-    for i = 100, "96.3",  - 2 {
+    for i = 100, "96.3", -2 {
         checkint(i);
     }
     assert(c == 2);
@@ -735,17 +735,17 @@ assert(a == 5);
     }
     assert(c == 10);
     c = 0
-    for i =  - 1,  - math.huge,  - 1 {
-        if i <  - 10 {
+    for i = -1, -math.huge, -1 {
+        if i < -10 {
             break
         }
         checkint(i);
     }
     assert(c == 10);
-    for i = math.mininteger,  - 10e100 {
+    for i = math.mininteger, -10e100 {
         assert(false);
     }
-    for i = math.maxinteger, 10e100,  - 1 {
+    for i = math.maxinteger, 10e100, -1 {
         assert(false);
     }
 }

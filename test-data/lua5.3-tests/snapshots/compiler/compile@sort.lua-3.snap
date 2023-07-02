@@ -1,0 +1,513 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.3-tests/sort.lua
+---
+print("testing (parts of) table library");
+print("testing unpack");
+local unpack = table.unpack
+local maxI = math.maxinteger
+local minI = math.mininteger
+local fn checkerror(msg, f, ...) {
+    local s, err = pcall(f, ...)
+    assert(nots && string.find(err, msg));
+}
+checkerror("wrong number of arguments", table.insert, {}, 2, 3, 4);
+local x, y, z, a, n
+a = {}
+lim = _soft && 200 || 2000
+for i = 1, lim {
+    a[(i)] = i
+}
+assert(select(lim, unpack(a)) == lim && select('#', unpack(a)) == lim);
+x = unpack(a)
+assert(x == 1);
+x = {
+    unpack(a)
+}
+assert(#x == lim && x[(1)] == 1 && x[(lim)] == lim);
+x = {
+    unpack(a, lim - 2)
+}
+assert(#x == 3 && x[(1)] == lim - 2 && x[(3)] == lim);
+x = {
+    unpack(a, 10, 6)
+}
+assert(next(x) == nil);
+x = {
+    unpack(a, 11, 10)
+}
+assert(next(x) == nil);
+x, y = unpack(a, 10, 10)
+assert(x == 10 && y == nil);
+x, y, z = unpack(a, 10, 11)
+assert(x == 10 && y == 11 && z == nil);
+a, x = unpack({
+    1
+})
+assert(a == 1 && x == nil);
+a, x = unpack({
+    1, 
+    2
+}, 1, 1)
+assert(a == 1 && x == nil);
+{
+    local maxi = (1 << 31) - 1
+    local mini = -(1 << 31)
+    checkerror("too many results", unpack, {}, 0, maxi);
+    checkerror("too many results", unpack, {}, 1, maxi);
+    checkerror("too many results", unpack, {}, 0, maxI);
+    checkerror("too many results", unpack, {}, 1, maxI);
+    checkerror("too many results", unpack, {}, mini, maxi);
+    checkerror("too many results", unpack, {}, -maxi, maxi);
+    checkerror("too many results", unpack, {}, minI, maxI);
+    unpack({}, maxi, 0);
+    unpack({}, maxi, 1);
+    unpack({}, maxI, minI);
+    pcall(unpack, {}, 1, maxi + 1);
+    local a, b = unpack({
+        maxi = 20
+    }, maxi, maxi)
+    assert(a == 20 && b == nil);
+    a, b = unpack({
+        maxi = 20
+    }, maxi - 1, maxi)
+    assert(a == nil && b == 20);
+    local t = {
+        maxI - 1 = 12, 
+        maxI = 23
+    }
+    a, b = unpack(t, maxI - 1, maxI)
+    assert(a == 12 && b == 23);
+    a, b = unpack(t, maxI, maxI)
+    assert(a == 23 && b == nil);
+    a, b = unpack(t, maxI, maxI - 1)
+    assert(a == nil && b == nil);
+    t = {
+        minI = 12.3, 
+        minI + 1 = 23.5
+    }
+    a, b = unpack(t, minI, minI + 1)
+    assert(a == 12.3 && b == 23.5);
+    a, b = unpack(t, minI, minI)
+    assert(a == 12.3 && b == nil);
+    a, b = unpack(t, minI + 1, minI)
+    assert(a == nil && b == nil);
+}
+{
+    local t = setmetatable({}, {
+        __len = fn () {
+            return 'abc'
+        }
+    })
+    assert(#t == 'abc');
+    checkerror("object length is not an integer", table.insert, t, 1);
+}
+print("testing pack");
+a = table.pack()
+assert(a[(1)] == nil && a.n == 0);
+a = table.pack(table)
+assert(a[(1)] == table && a.n == 1);
+a = table.pack(nil, nil, nil, nil)
+assert(a[(1)] == nil && a.n == 4);
+{
+    checkerror("table expected", table.move, 1, 2, 3, 4);
+    local fn eqT(a, b) {
+        for k, v with pairs(a) {
+            assert(b[(k)] == v);
+        }
+        for k, v with pairs(b) {
+            assert(a[(k)] == v);
+        }
+    }
+    local a = table.move({
+        10, 
+        20, 
+        30
+    }, 1, 3, 2)
+    eqT(a, {
+        10, 
+        10, 
+        20, 
+        30
+    });
+    a = table.move({
+        10, 
+        20, 
+        30
+    }, 1, 3, 3)
+    eqT(a, {
+        10, 
+        20, 
+        10, 
+        20, 
+        30
+    });
+    a = {
+        10, 
+        20, 
+        30, 
+        40
+    }
+    table.move(a, 1, 4, 2, a);
+    eqT(a, {
+        10, 
+        10, 
+        20, 
+        30, 
+        40
+    });
+    a = table.move({
+        10, 
+        20, 
+        30
+    }, 2, 3, 1)
+    eqT(a, {
+        20, 
+        30, 
+        30
+    });
+    a = {}
+    assert(table.move({
+        10, 
+        20, 
+        30
+    }, 1, 3, 1, a) == a);
+    eqT(a, {
+        10, 
+        20, 
+        30
+    });
+    a = {}
+    assert(table.move({
+        10, 
+        20, 
+        30
+    }, 1, 0, 3, a) == a);
+    eqT(a, {});
+    a = table.move({
+        10, 
+        20, 
+        30
+    }, 1, 10, 1)
+    eqT(a, {
+        10, 
+        20, 
+        30
+    });
+    a = table.move({
+        maxI - 2 = 1, 
+        maxI - 1 = 2, 
+        maxI = 3
+    }, maxI - 2, maxI, -10, {})
+    eqT(a, {
+        -10 = 1, 
+        -9 = 2, 
+        -8 = 3
+    });
+    a = table.move({
+        minI = 1, 
+        minI + 1 = 2, 
+        minI + 2 = 3
+    }, minI, minI + 2, -10, {})
+    eqT(a, {
+        -10 = 1, 
+        -9 = 2, 
+        -8 = 3
+    });
+    a = table.move({
+        45
+    }, 1, 1, maxI)
+    eqT(a, {
+        45, 
+        maxI = 45
+    });
+    a = table.move({
+        maxI = 100
+    }, maxI, maxI, minI)
+    eqT(a, {
+        minI = 100, 
+        maxI = 100
+    });
+    a = table.move({
+        minI = 100
+    }, minI, minI, maxI)
+    eqT(a, {
+        minI = 100, 
+        maxI = 100
+    });
+    a = setmetatable({}, {
+        __index = fn (_, k) {
+            return k * 10
+        }, 
+        __newindex = error
+    })
+    local b = table.move(a, 1, 10, 3, {})
+    eqT(a, {});
+    eqT(b, {
+        nil, 
+        nil, 
+        10, 
+        20, 
+        30, 
+        40, 
+        50, 
+        60, 
+        70, 
+        80, 
+        90, 
+        100
+    });
+    b = setmetatable({
+        ""
+    }, {
+        __index = error, 
+        __newindex = fn (t, k, v) {
+            t[(1)] = string.format("%s(%d,%d)", t[(1)], k, v)
+        }
+    })
+    table.move(a, 10, 13, 3, b);
+    assert(b[(1)] == "(3,100)(4,110)(5,120)(6,130)");
+    local stat, msg = pcall(table.move, b, 10, 13, 3, b)
+    assert(notstat && msg == b);
+}
+{
+    local fn checkmove(f, e, t, x, y) {
+        local pos1, pos2
+        local a = setmetatable({}, {
+            __index = fn (_, k) {
+                pos1 = k
+            }, 
+            __newindex = fn (_, k) {
+                pos2 = k
+                error();
+            }
+        })
+        local st, msg = pcall(table.move, a, f, e, t)
+        assert(notst && notmsg && pos1 == x && pos2 == y);
+    }
+    checkmove(1, maxI, 0, 1, 0);
+    checkmove(0, maxI - 1, 1, maxI - 1, maxI);
+    checkmove(minI, -2, -5, -2, maxI - 6);
+    checkmove(minI + 1, -1, -2, -1, maxI - 3);
+    checkmove(minI, -2, 0, minI, 0);
+    checkmove(minI + 1, -1, 1, minI + 1, 1);
+}
+checkerror("too many", table.move, {}, 0, maxI, 1);
+checkerror("too many", table.move, {}, -1, maxI - 1, 1);
+checkerror("too many", table.move, {}, minI, -1, 1);
+checkerror("too many", table.move, {}, minI, maxI, 1);
+checkerror("wrap around", table.move, {}, 1, maxI, 2);
+checkerror("wrap around", table.move, {}, 1, 2, maxI);
+checkerror("wrap around", table.move, {}, minI, -2, 2);
+print("testing sort");
+local a = setmetatable({}, {
+    __len = fn () {
+        return -1
+    }
+})
+assert(#a == -1);
+table.sort(a, error);
+a = setmetatable({}, {
+    __len = fn () {
+        return maxI
+    }
+})
+checkerror("too big", table.sort, a);
+local fn check(t) {
+    local fn f(a, b) {
+        assert(a && b);
+        return true
+    }
+    checkerror("invalid order function", table.sort, t, f);
+}
+check({
+    1, 
+    2, 
+    3, 
+    4
+});
+check({
+    1, 
+    2, 
+    3, 
+    4, 
+    5
+});
+check({
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6
+});
+global fn check(a, f) {
+    f = f || fn (x, y) {
+        return x < y
+    }
+    for n = #a, 2, -1 {
+        assert(notf(a[(n)], a[(n - 1)]));
+    }
+}
+a = {
+    "Jan", 
+    "Feb", 
+    "Mar", 
+    "Apr", 
+    "May", 
+    "Jun", 
+    "Jul", 
+    "Aug", 
+    "Sep", 
+    "Oct", 
+    "Nov", 
+    "Dec"
+}
+table.sort(a);
+check(a);
+global fn perm(s, n) {
+    n = n || #s
+    if n == 1 {
+        local t = {
+            unpack(s)
+        }
+        table.sort(t);
+        check(t);
+    } else {
+        for i = 1, n {
+            s[(i)], s[(n)] = s[(n)], s[(i)]
+            perm(s, n - 1);
+            s[(i)], s[(n)] = s[(n)], s[(i)]
+        }
+    }
+}
+perm({});
+perm({
+    1
+});
+perm({
+    1, 
+    2
+});
+perm({
+    1, 
+    2, 
+    3
+});
+perm({
+    1, 
+    2, 
+    3, 
+    4
+});
+perm({
+    2, 
+    2, 
+    3, 
+    4
+});
+perm({
+    1, 
+    2, 
+    3, 
+    4, 
+    5
+});
+perm({
+    1, 
+    2, 
+    3, 
+    3, 
+    5
+});
+perm({
+    1, 
+    2, 
+    3, 
+    4, 
+    5, 
+    6
+});
+perm({
+    2, 
+    2, 
+    3, 
+    3, 
+    5, 
+    6
+});
+global fn timesort(a, n, func, msg, pre) {
+    local x = os.clock()
+    table.sort(a, func);
+    x = (os.clock() - x) * 1000
+    pre = pre || ""
+    print(string.format("%ssorting %d %s elements in %.2f msec.", pre, n, msg, x));
+    check(a, func);
+}
+limit = 50000
+if _soft {
+    limit = 5000
+}
+a = {}
+for i = 1, limit {
+    a[(i)] = math.random()
+}
+timesort(a, limit, nil, "random");
+timesort(a, limit, nil, "sorted", "re-");
+a = {}
+for i = 1, limit {
+    a[(i)] = math.random()
+}
+x = os.clock()
+i = 0
+table.sort(a, fn (x, y) {
+    i = i + 1
+    return y < x
+});
+x = (os.clock() - x) * 1000
+print(string.format("Invert-sorting other %d elements in %.2f msec., with %i comparisons", limit, x, i));
+check(a, fn (x, y) {
+    return y < x
+});
+table.sort({});
+for i = 1, limit {
+    a[(i)] = false
+}
+timesort(a, limit, fn (x, y) {
+    return nil
+}, "equal");
+for i, v with pairs(a) {
+    assert(v == false);
+}
+A = {
+    "álo", 
+    "\0first :-)", 
+    "alo", 
+    "then this one", 
+    "45", 
+    "and a new"
+}
+table.sort(A);
+check(A);
+table.sort(A, fn (x, y) {
+    load(string.format("A[%q] = ''", x), "")();
+    collectgarbage();
+    return x < y
+});
+tt = {
+    __lt = fn (a, b) {
+        return a.val < b.val
+    }
+}
+a = {}
+for i = 1, 10 {
+    a[(i)] = {
+        val = math.random(100)
+    }
+    setmetatable(a[(i)], tt);
+}
+table.sort(a);
+check(a, tt.__lt);
+check(a);
+print("OK");

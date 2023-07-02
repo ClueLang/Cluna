@@ -54,15 +54,15 @@ getmetatable(env).__newindex = fn () {
     
 }
 local e, m = pcall(f)
-assert(!e && m::find("global 'X'"));
+assert(note && m::find("global 'X'"));
 getmetatable(env).__newindex = fn () {
     error("hi");
 }
 local e, m = xpcall(f, debug.traceback)
-assert(!e && m::find("'__newindex'"));
+assert(note && m::find("'__newindex'"));
 f, X = nil
 coroutine.yield('b');
-if !_no32 {
+if not_no32 {
     print("testing string length overflow");
     local repstrings = 192
     local ssize = math.ceil(2 ^ 32 / repstrings) + 1
@@ -70,7 +70,7 @@ if !_no32 {
     local longs = string.rep("\0", ssize)
     local rep = assert(load("local a = ...; return " .. string.rep("a", repstrings, "..")))
     local a, b = pcall(rep, longs)
-    assert(!a && string.find(b, "overflow"));
+    assert(nota && string.find(b, "overflow"));
 }
 print('OK');
 return 'a'

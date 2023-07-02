@@ -7,7 +7,7 @@ print("testing UTF-8 library");
 local utf8 = require('utf8')
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(!s && string.find(err, msg));
+    assert(nots && string.find(err, msg));
 }
 local fn len(s) {
     return #string.gsub(s, "[\x80-\xBF]", "")
@@ -25,7 +25,7 @@ local fn checksyntax(s, t) {
     assert(assert(load(ts))() == s);
 }
 assert(utf8.offset("alo", 5) == nil);
-assert(utf8.offset("alo",  - 4) == nil);
+assert(utf8.offset("alo", -4) == nil);
 local fn check(s, t) {
     local l = utf8.len(s)
     assert(#t == l && len(s) == l);
@@ -33,7 +33,7 @@ local fn check(s, t) {
     assert(utf8.offset(s, 0) == 1);
     checksyntax(s, t);
     local t1 = {
-        utf8.codepoint(s, 1,  - 1)
+        utf8.codepoint(s, 1, -1)
     }
     assert(#t == #t1);
     for i = 1, #t {
@@ -43,14 +43,14 @@ local fn check(s, t) {
         local pi = utf8.offset(s, i)
         local pi1 = utf8.offset(s, 2, pi)
         assert(string.find(string.sub(s, pi, pi1 - 1), justone));
-        assert(utf8.offset(s,  - 1, pi1) == pi);
+        assert(utf8.offset(s, -1, pi1) == pi);
         assert(utf8.offset(s, i - l - 1) == pi);
         assert(pi1 - pi == #utf8.char(utf8.codepoint(s, pi)));
         for j = pi, pi1 - 1 {
             assert(utf8.offset(s, 0, j) == pi);
         }
         for j = pi + 1, pi1 - 1 {
-            assert(!utf8.len(s, j));
+            assert(notutf8.len(s, j));
         }
         assert(utf8.len(s, pi, pi) == 1);
         assert(utf8.len(s, pi, pi1 - 1) == 1);
@@ -84,7 +84,7 @@ local fn check(s, t) {
 {
     local fn check(s, p) {
         local a, b = utf8.len(s)
-        assert(!a && b == p);
+        assert(nota && b == p);
     }
     check("abc\xE3def", 4);
     check("汉字\x80", #("汉字") + 1);
@@ -98,15 +98,15 @@ checkerror("invalid UTF%-8 code", fn () {
     }
 });
 checkerror("position out of range", utf8.offset, "abc", 1, 5);
-checkerror("position out of range", utf8.offset, "abc", 1,  - 4);
+checkerror("position out of range", utf8.offset, "abc", 1, -4);
 checkerror("position out of range", utf8.offset, "", 1, 2);
-checkerror("position out of range", utf8.offset, "", 1,  - 1);
+checkerror("position out of range", utf8.offset, "", 1, -1);
 checkerror("continuation byte", utf8.offset, "𦧺", 1, 2);
 checkerror("continuation byte", utf8.offset, "𦧺", 1, 2);
 checkerror("continuation byte", utf8.offset, "\x80", 1);
 local s = "hello World"
 local t = {
-    string.byte(s, 1,  - 1)
+    string.byte(s, 1, -1)
 }
 for i = 1, utf8.len(s) {
     assert(t[(i)] == string.byte(s, i));
@@ -131,7 +131,7 @@ check("汉字/漢字", {
         utf8.codepoint(s, 4, 3)
     }
     assert(#t == 0);
-    checkerror("out of range", utf8.codepoint, s,  - (#s + 1), 1);
+    checkerror("out of range", utf8.codepoint, s, -(#s + 1), 1);
     checkerror("out of range", utf8.codepoint, s, 1, #s + 1);
 }
 assert(utf8.char() == "");
@@ -140,7 +140,7 @@ assert(utf8.codepoint(utf8.char(0x10FFFF)) == 0x10FFFF);
 checkerror("value out of range", utf8.char, 0x10FFFF + 1);
 local fn invalid(s) {
     checkerror("invalid UTF%-8 code", utf8.codepoint, s);
-    assert(!utf8.len(s));
+    assert(notutf8.len(s));
 }
 invalid("\xF4\x9F\xBF\xBF");
 invalid("\xC0\x80");

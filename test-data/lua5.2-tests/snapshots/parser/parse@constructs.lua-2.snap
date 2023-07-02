@@ -97,8 +97,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 7,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "3",
@@ -124,34 +127,49 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "^",
+                                Operator(
+                                    (
+                                        "^",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -179,28 +197,40 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "*",
+                        Operator(
+                            (
+                                "*",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "4",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "2",
                                 ),
-                                Symbol(
-                                    "^",
+                                Operator(
+                                    (
+                                        "^",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
@@ -211,8 +241,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 14,
                         },
-                        Symbol(
-                            "*",
+                        Operator(
+                            (
+                                "*",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "4",
@@ -234,59 +267,98 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "/",
+                        Operator(
+                            (
+                                "/",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "4",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
-                        ),
-                        Symbol(
-                            "2",
-                        ),
-                        Symbol(
-                            "^",
-                        ),
-                        Symbol(
-                            "-",
-                        ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
+                        ),
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
+                        ),
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
-                            "-",
+                            "2",
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
+                        ),
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
+                        ),
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "4",
@@ -305,43 +377,64 @@ input_file: test-data/lua5.2-tests/constructs.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "nil",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "2",
                                 ),
-                                Symbol(
-                                    ">",
+                                Operator(
+                                    (
+                                        ">",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "<",
+                                Operator(
+                                    (
+                                        "<",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -366,38 +459,56 @@ input_file: test-data/lua5.2-tests/constructs.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "5",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
                         ),
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "9",
@@ -416,34 +527,52 @@ input_file: test-data/lua5.2-tests/constructs.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "4",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
-                                Symbol(
-                                    "-",
+                                Operator(
+                                    (
+                                        "-",
+                                        false,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -454,44 +583,65 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 18,
                         },
-                        Symbol(
-                            "^",
+                        Operator(
+                            (
+                                "^",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "4",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "*",
+                        Operator(
+                            (
+                                "*",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
@@ -513,56 +663,83 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "*",
+                        Operator(
+                            (
+                                "*",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "/",
+                        Operator(
+                            (
+                                "/",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "*",
+                        Operator(
+                            (
+                                "*",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"33\"",
@@ -581,28 +758,40 @@ input_file: test-data/lua5.2-tests/constructs.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "2",
                                 ),
-                                Symbol(
-                                    "+",
+                                Operator(
+                                    (
+                                        "+",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "1",
                                 ),
-                                Symbol(
-                                    ">",
+                                Operator(
+                                    (
+                                        ">",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "*",
+                                Operator(
+                                    (
+                                        "*",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "1",
@@ -613,20 +802,29 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 20,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"a\"",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"b\"",
                         ),
-                        Symbol(
-                            ">",
+                        Operator(
+                            (
+                                ">",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"a\"",
@@ -645,8 +843,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Expr(
                             [
@@ -655,8 +856,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         Symbol(
                                             "true",
                                         ),
-                                        Symbol(
-                                            "or",
+                                        Operator(
+                                            (
+                                                "or",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "false",
@@ -667,8 +871,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     expr: [],
                                     line: 22,
                                 },
-                                Symbol(
-                                    "and",
+                                Operator(
+                                    (
+                                        "and",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "nil",
@@ -696,14 +903,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "true",
                         ),
-                        Symbol(
-                            "or",
+                        Operator(
+                            (
+                                "or",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "false",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -731,8 +944,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                 Symbol(
                                                     "1",
                                                 ),
-                                                Symbol(
-                                                    "or",
+                                                Operator(
+                                                    (
+                                                        "or",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Symbol(
                                                     "false",
@@ -743,8 +959,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                             expr: [],
                                             line: 26,
                                         },
-                                        Symbol(
-                                            "and",
+                                        Operator(
+                                            (
+                                                "and",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "true",
@@ -755,8 +974,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     expr: [],
                                     line: 26,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "false",
@@ -767,8 +989,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 26,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
@@ -796,8 +1021,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                 Symbol(
                                                     "nil",
                                                 ),
-                                                Symbol(
-                                                    "and",
+                                                Operator(
+                                                    (
+                                                        "and",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Symbol(
                                                     "true",
@@ -808,8 +1036,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                             expr: [],
                                             line: 27,
                                         },
-                                        Symbol(
-                                            "or",
+                                        Operator(
+                                            (
+                                                "or",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "false",
@@ -820,8 +1051,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     expr: [],
                                     line: 27,
                                 },
-                                Symbol(
-                                    "and",
+                                Operator(
+                                    (
+                                        "and",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "true",
@@ -832,8 +1066,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 27,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "false",
@@ -872,16 +1109,22 @@ input_file: test-data/lua5.2-tests/constructs.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "1",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -892,25 +1135,37 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 30,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "1",
                                 ),
-                                Symbol(
-                                    "and",
+                                Operator(
+                                    (
+                                        "and",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -921,22 +1176,34 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 30,
                         },
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
-                                Symbol(
-                                    "-",
+                                Operator(
+                                    (
+                                        "-",
+                                        false,
+                                    ),
                                 ),
                                 Symbol(
                                     "1.25",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
-                                Symbol(
-                                    "-",
+                                Operator(
+                                    (
+                                        "-",
+                                        false,
+                                    ),
                                 ),
                                 Symbol(
                                     "4",
@@ -947,8 +1214,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 30,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0.75",
@@ -984,8 +1254,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 31,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -1001,28 +1274,40 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 31,
                         },
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "10",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -1038,14 +1323,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 31,
                         },
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "11",
@@ -1105,8 +1396,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         Symbol(
                                             "2",
                                         ),
-                                        Symbol(
-                                            "<",
+                                        Operator(
+                                            (
+                                                "<",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "3",
@@ -1117,8 +1411,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     expr: [],
                                     line: 32,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "1",
@@ -1129,28 +1426,40 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 32,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
                                 Symbol(
                                     "2",
                                 ),
-                                Symbol(
-                                    "<",
+                                Operator(
+                                    (
+                                        "<",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "and",
+                                Operator(
+                                    (
+                                        "and",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "4",
@@ -1161,8 +1470,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 32,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "4",
@@ -1252,8 +1564,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 35,
                                 },
-                                Symbol(
-                                    ">",
+                                Operator(
+                                    (
+                                        ">",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -1269,8 +1584,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 35,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1280,8 +1598,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 35,
                         },
-                        Symbol(
-                            "or",
+                        Operator(
+                            (
+                                "or",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1291,8 +1612,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 35,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
@@ -1355,8 +1679,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 37,
                                 },
-                                Symbol(
-                                    ">",
+                                Operator(
+                                    (
+                                        ">",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -1372,8 +1699,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 37,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1383,8 +1713,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 37,
                         },
-                        Symbol(
-                            "or",
+                        Operator(
+                            (
+                                "or",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1394,8 +1727,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 37,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
@@ -1417,8 +1753,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "1234567890",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1437,20 +1776,29 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 39,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1234567890",
                         ),
-                        Symbol(
-                            "+",
+                        Operator(
+                            (
+                                "+",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1234567891",
@@ -1703,8 +2051,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 51,
                         },
-                        Symbol(
-                            "~=",
+                        Operator(
+                            (
+                                "~=",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'number'",
@@ -1751,8 +2102,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 52,
                         },
-                        Symbol(
-                            ">",
+                        Operator(
+                            (
+                                ">",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
@@ -1791,8 +2145,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                     ],
                                                                     line: 52,
                                                                 },
-                                                                Symbol(
-                                                                    "-",
+                                                                Operator(
+                                                                    (
+                                                                        "-",
+                                                                        true,
+                                                                    ),
                                                                 ),
                                                                 Symbol(
                                                                     "1",
@@ -1939,14 +2296,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 56,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1969,14 +2332,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 56,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "5",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -1999,14 +2368,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 56,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "10",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2029,14 +2404,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 56,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "9",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2059,8 +2440,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 56,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -2100,8 +2484,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 57,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -2217,14 +2604,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 59,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'alo'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2247,14 +2640,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 59,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'xixi'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2277,8 +2676,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 59,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -2324,8 +2726,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 60,
                                 },
-                                Symbol(
-                                    "..",
+                                Operator(
+                                    (
+                                        "..",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "'xixi'",
@@ -2370,8 +2775,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 61,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'aloxixi'",
@@ -2459,14 +2867,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 63,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'jojo'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2503,8 +2917,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 63,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'table'",
@@ -2538,8 +2955,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 67,
                                     },
-                                    Symbol(
-                                        "<",
+                                    Operator(
+                                        (
+                                            "<",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "10",
@@ -2573,8 +2993,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                 ],
                                                 line: 68,
                                             },
-                                            Symbol(
-                                                "<",
+                                            Operator(
+                                                (
+                                                    "<",
+                                                    true,
+                                                ),
                                             ),
                                             Symbol(
                                                 "20",
@@ -2608,8 +3031,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 69,
                                                     },
-                                                    Symbol(
-                                                        "<",
+                                                    Operator(
+                                                        (
+                                                            "<",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "30",
@@ -2680,14 +3106,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 73,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2706,14 +3138,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 73,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'b'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2732,14 +3170,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 73,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'c'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2758,8 +3202,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 73,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -2881,8 +3328,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
     },
     WhileLoop {
         condition: [
-            Symbol(
-                "not",
+            Operator(
+                (
+                    "not",
+                    false,
+                ),
             ),
             Ident {
                 expr: [
@@ -2957,8 +3407,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 step: Some(
                                     [
-                                        Symbol(
-                                            "-",
+                                        Operator(
+                                            (
+                                                "-",
+                                                false,
+                                            ),
                                         ),
                                         Symbol(
                                             "1",
@@ -2989,8 +3442,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 81,
                                                     },
-                                                    Symbol(
-                                                        "+",
+                                                    Operator(
+                                                        (
+                                                            "+",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "1",
@@ -3073,8 +3529,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 83,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3084,8 +3543,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 83,
                         },
-                        Symbol(
-                            "*",
+                        Operator(
+                            (
+                                "*",
+                                true,
+                            ),
                         ),
                         Expr(
                             [
@@ -3097,8 +3559,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 83,
                                 },
-                                Symbol(
-                                    "+",
+                                Operator(
+                                    (
+                                        "+",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "1",
@@ -3109,14 +3574,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             expr: [],
                             line: 83,
                         },
-                        Symbol(
-                            "/",
+                        Operator(
+                            (
+                                "/",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3126,8 +3597,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 83,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
@@ -3167,8 +3641,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 84,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3196,11 +3673,17 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 84,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3223,11 +3706,17 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 84,
                         },
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3247,8 +3736,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                             ],
                                             line: 84,
                                         },
-                                        Symbol(
-                                            "+",
+                                        Operator(
+                                            (
+                                                "+",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "1",
@@ -3304,8 +3796,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 95,
                         },
-                        Symbol(
-                            ">=",
+                        Operator(
+                            (
+                                ">=",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "12",
@@ -3332,8 +3827,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 90,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "1",
@@ -3392,8 +3890,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                 ],
                                                 line: 91,
                                             },
-                                            Symbol(
-                                                "==",
+                                            Operator(
+                                                (
+                                                    "==",
+                                                    true,
+                                                ),
                                             ),
                                             Symbol(
                                                 "2",
@@ -3438,8 +3939,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 92,
                                                     },
-                                                    Symbol(
-                                                        "==",
+                                                    Operator(
+                                                        (
+                                                            "==",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "3",
@@ -3536,8 +4040,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                 ],
                                                                                 line: 93,
                                                                             },
-                                                                            Symbol(
-                                                                                "+",
+                                                                            Operator(
+                                                                                (
+                                                                                    "+",
+                                                                                    true,
+                                                                                ),
                                                                             ),
                                                                             Symbol(
                                                                                 "1",
@@ -3619,14 +4126,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 99,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "10",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3645,14 +4158,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 99,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "20",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3671,14 +4190,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 99,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "30",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3697,8 +4222,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 99,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "12",
@@ -3732,8 +4260,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 103,
                                     },
-                                    Symbol(
-                                        "<",
+                                    Operator(
+                                        (
+                                            "<",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "10",
@@ -3767,8 +4298,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                 ],
                                                 line: 104,
                                             },
-                                            Symbol(
-                                                "<",
+                                            Operator(
+                                                (
+                                                    "<",
+                                                    true,
+                                                ),
                                             ),
                                             Symbol(
                                                 "20",
@@ -3802,8 +4336,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 105,
                                                     },
-                                                    Symbol(
-                                                        "<",
+                                                    Operator(
+                                                        (
+                                                            "<",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "30",
@@ -3898,14 +4435,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 110,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3924,14 +4467,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 110,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'b'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3950,14 +4499,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 110,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'c'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -3976,8 +4531,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 110,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "8",
@@ -4043,20 +4601,29 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 113,
                                 },
-                                Symbol(
-                                    "*",
+                                Operator(
+                                    (
+                                        "*",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
                                 ),
-                                Symbol(
-                                    "+",
+                                Operator(
+                                    (
+                                        "+",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -4079,8 +4646,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 113,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -4090,8 +4660,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 113,
                                 },
-                                Symbol(
-                                    "+",
+                                Operator(
+                                    (
+                                        "+",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -4136,14 +4709,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 114,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "19",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4166,8 +4745,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 114,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "25",
@@ -4205,14 +4787,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 Symbol(
                                     "2",
                                 ),
-                                Symbol(
-                                    "+",
+                                Operator(
+                                    (
+                                        "+",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "3",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -4241,8 +4829,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 115,
                                 },
-                                Symbol(
-                                    "+",
+                                Operator(
+                                    (
+                                        "+",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "2",
@@ -4280,14 +4871,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 116,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "5",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4303,8 +4900,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 116,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "25",
@@ -4425,8 +5025,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 120,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -4469,8 +5072,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 124,
                                     },
-                                    Symbol(
-                                        ">",
+                                    Operator(
+                                        (
+                                            ">",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "0",
@@ -4500,8 +5106,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 124,
                                                     },
-                                                    Symbol(
-                                                        "-",
+                                                    Operator(
+                                                        (
+                                                            "-",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "1",
@@ -4578,8 +5187,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 131,
                                     },
-                                    Symbol(
-                                        ">",
+                                    Operator(
+                                        (
+                                            ">",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "0",
@@ -4609,8 +5221,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 131,
                                                     },
-                                                    Symbol(
-                                                        "-",
+                                                    Operator(
+                                                        (
+                                                            "-",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "1",
@@ -4771,14 +5386,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 141,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "1",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -4788,14 +5409,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 141,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "2",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -4805,8 +5432,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 141,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "3",
@@ -4886,14 +5516,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 143,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "1",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -4903,14 +5539,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 143,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "nil",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -4920,8 +5562,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 143,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "nil",
@@ -4946,8 +5591,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                 Symbol(
                     "3",
                 ),
-                Symbol(
-                    "and",
+                Operator(
+                    (
+                        "and",
+                        true,
+                    ),
                 ),
                 Ident {
                     expr: [
@@ -4981,14 +5629,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 147,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4998,8 +5652,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 147,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -5060,8 +5717,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 150,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -5090,8 +5750,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 Symbol(
                                     "nil",
                                 ),
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5167,14 +5830,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 153,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -5184,8 +5853,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 153,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -5363,14 +6035,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 166,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -5411,8 +6089,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
             code: [
                 IfStatement {
                     condition: [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Expr(
                             [
@@ -5424,8 +6105,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 169,
                                 },
-                                Symbol(
-                                    ">=",
+                                Operator(
+                                    (
+                                        ">=",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5435,8 +6119,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 169,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5446,8 +6133,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 169,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5457,8 +6147,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 169,
                                 },
-                                Symbol(
-                                    "and",
+                                Operator(
+                                    (
+                                        "and",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5468,8 +6161,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 169,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "nil",
@@ -5561,8 +6257,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 173,
                                 },
-                                Symbol(
-                                    ">=",
+                                Operator(
+                                    (
+                                        ">=",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5572,8 +6271,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 173,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -5583,8 +6285,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     ],
                                     line: 173,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Expr(
                                     [
@@ -5596,8 +6301,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                             ],
                                             line: 173,
                                         },
-                                        Symbol(
-                                            "and",
+                                        Operator(
+                                            (
+                                                "and",
+                                                true,
+                                            ),
                                         ),
                                         Ident {
                                             expr: [
@@ -5613,8 +6321,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                     expr: [],
                                     line: 173,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Symbol(
                                     "nil",
@@ -5693,14 +6404,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 177,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -5724,14 +6441,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 177,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -5755,8 +6478,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 177,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -5802,14 +6528,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 178,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -5838,14 +6570,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 178,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -5874,8 +6612,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 178,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -5921,8 +6662,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 179,
                         },
-                        Symbol(
-                            "~=",
+                        Operator(
+                            (
+                                "~=",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -5973,14 +6717,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 182,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6009,14 +6759,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 182,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6045,8 +6801,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 182,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -6102,14 +6861,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 183,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'x'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6148,14 +6913,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 183,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6194,8 +6965,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 183,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -6251,14 +7025,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 185,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6297,14 +7077,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 185,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6343,8 +7129,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 185,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
@@ -6400,14 +7189,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 187,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6446,14 +7241,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 187,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -6492,8 +7293,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 187,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
@@ -6515,50 +7319,74 @@ input_file: test-data/lua5.2-tests/constructs.lua
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "<",
+                        Operator(
+                            (
+                                "<",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            "<",
+                        Operator(
+                            (
+                                "<",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
                         ),
-                        Symbol(
-                            "<",
+                        Operator(
+                            (
+                                "<",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'b'",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
@@ -6585,17 +7413,26 @@ input_file: test-data/lua5.2-tests/constructs.lua
                 Symbol(
                     "2",
                 ),
-                Symbol(
-                    "<",
+                Operator(
+                    (
+                        "<",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "3",
                 ),
-                Symbol(
-                    "and",
+                Operator(
+                    (
+                        "and",
+                        true,
+                    ),
                 ),
-                Symbol(
-                    "not",
+                Operator(
+                    (
+                        "not",
+                        false,
+                    ),
                 ),
                 Symbol(
                     "3",
@@ -6621,8 +7458,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 191,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "false",
@@ -6649,28 +7489,40 @@ input_file: test-data/lua5.2-tests/constructs.lua
                 Symbol(
                     "2",
                 ),
-                Symbol(
-                    "<",
+                Operator(
+                    (
+                        "<",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "1",
                 ),
-                Symbol(
-                    "or",
+                Operator(
+                    (
+                        "or",
+                        true,
+                    ),
                 ),
                 Expr(
                     [
                         Symbol(
                             "2",
                         ),
-                        Symbol(
-                            ">",
+                        Operator(
+                            (
+                                ">",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
@@ -6702,8 +7554,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 192,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a'",
@@ -6813,8 +7668,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 197,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "2",
@@ -6884,8 +7742,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 201,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "'F'",
@@ -6966,8 +7827,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                     ],
                     line: 205,
                 },
-                Symbol(
-                    "~=",
+                Operator(
+                    (
+                        "~=",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "nil",
@@ -6993,14 +7857,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 205,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -7010,8 +7880,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 205,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -7060,8 +7933,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                     ],
                     line: 206,
                 },
-                Symbol(
-                    "==",
+                Operator(
+                    (
+                        "==",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "nil",
@@ -7087,14 +7963,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 206,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "true",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -7104,8 +7986,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 206,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "nil",
@@ -7232,8 +8117,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                         ],
                                                                         line: 217,
                                                                     },
-                                                                    Symbol(
-                                                                        "/",
+                                                                    Operator(
+                                                                        (
+                                                                            "/",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Ident {
                                                                         expr: [
@@ -7265,8 +8153,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 217,
                             },
-                            Symbol(
-                                "+",
+                            Operator(
+                                (
+                                    "+",
+                                    true,
+                                ),
                             ),
                             Symbol(
                                 "1",
@@ -7297,8 +8188,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 218,
                             },
-                            Symbol(
-                                "*",
+                            Operator(
+                                (
+                                    "*",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7550,8 +8444,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                 ],
                 line: 250,
             },
-            Symbol(
-                "==",
+            Operator(
+                (
+                    "==",
+                    true,
+                ),
             ),
             Ident {
                 expr: [
@@ -7624,14 +8521,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 231,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Symbol(
                                 "'ID('",
                             ),
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7665,8 +8568,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 231,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7700,8 +8606,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 231,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7735,8 +8644,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 231,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7770,14 +8682,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 231,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Symbol(
                                 "'ID('",
                             ),
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7811,8 +8729,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 232,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7846,8 +8767,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 232,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7881,8 +8805,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 232,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Ident {
                                 expr: [
@@ -7916,8 +8843,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 232,
                             },
-                            Symbol(
-                                "..",
+                            Operator(
+                                (
+                                    "..",
+                                    true,
+                                ),
                             ),
                             Symbol(
                                 "'))'",
@@ -8215,11 +9145,17 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 247,
                                     },
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -8229,11 +9165,17 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 247,
                                     },
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -8243,8 +9185,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 247,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -8254,11 +9199,17 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 247,
                                     },
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -8268,8 +9219,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 247,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -8320,8 +9274,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 248,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
@@ -8375,8 +9332,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                 ],
                                 line: 249,
                             },
-                            Symbol(
-                                "+",
+                            Operator(
+                                (
+                                    "+",
+                                    true,
+                                ),
                             ),
                             Symbol(
                                 "1",
@@ -8693,8 +9653,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         code: [
                                                             IfStatement {
                                                                 condition: [
-                                                                    Symbol(
-                                                                        "not",
+                                                                    Operator(
+                                                                        (
+                                                                            "not",
+                                                                            false,
+                                                                        ),
                                                                     ),
                                                                     Ident {
                                                                         expr: [
@@ -9049,8 +10012,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                     ],
                                                                     line: 281,
                                                                 },
-                                                                Symbol(
-                                                                    "-",
+                                                                Operator(
+                                                                    (
+                                                                        "-",
+                                                                        true,
+                                                                    ),
                                                                 ),
                                                                 Symbol(
                                                                     "1",
@@ -9085,8 +10051,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Symbol(
-                                                        "#",
+                                                    Operator(
+                                                        (
+                                                            "#",
+                                                            false,
+                                                        ),
                                                     ),
                                                     Ident {
                                                         expr: [
@@ -9096,8 +10065,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                         ],
                                                         line: 282,
                                                     },
-                                                    Symbol(
-                                                        "+",
+                                                    Operator(
+                                                        (
+                                                            "+",
+                                                            true,
+                                                        ),
                                                     ),
                                                     Symbol(
                                                         "1",
@@ -9148,8 +10120,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                             ],
                             line: 284,
                         },
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -9237,8 +10212,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                             ],
                                                                                             line: 286,
                                                                                         },
-                                                                                        Symbol(
-                                                                                            "-",
+                                                                                        Operator(
+                                                                                            (
+                                                                                                "-",
+                                                                                                true,
+                                                                                            ),
                                                                                         ),
                                                                                         Ident {
                                                                                             expr: [
@@ -9312,8 +10290,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                 ),
                                                                                 Expr(
                                                                                     [
-                                                                                        Symbol(
-                                                                                            "#",
+                                                                                        Operator(
+                                                                                            (
+                                                                                                "#",
+                                                                                                false,
+                                                                                            ),
                                                                                         ),
                                                                                         Ident {
                                                                                             expr: [
@@ -9323,8 +10304,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                             ],
                                                                                             line: 288,
                                                                                         },
-                                                                                        Symbol(
-                                                                                            "+",
+                                                                                        Operator(
+                                                                                            (
+                                                                                                "+",
+                                                                                                true,
+                                                                                            ),
                                                                                         ),
                                                                                         Symbol(
                                                                                             "1",
@@ -9348,8 +10332,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                             Symbol(
                                                                                                 "\"(\"",
                                                                                             ),
-                                                                                            Symbol(
-                                                                                                "..",
+                                                                                            Operator(
+                                                                                                (
+                                                                                                    "..",
+                                                                                                    true,
+                                                                                                ),
                                                                                             ),
                                                                                             Ident {
                                                                                                 expr: [
@@ -9372,8 +10359,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                                 ],
                                                                                                 line: 289,
                                                                                             },
-                                                                                            Symbol(
-                                                                                                "..",
+                                                                                            Operator(
+                                                                                                (
+                                                                                                    "..",
+                                                                                                    true,
+                                                                                                ),
                                                                                             ),
                                                                                             Ident {
                                                                                                 expr: [
@@ -9396,8 +10386,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                                 ],
                                                                                                 line: 289,
                                                                                             },
-                                                                                            Symbol(
-                                                                                                "..",
+                                                                                            Operator(
+                                                                                                (
+                                                                                                    "..",
+                                                                                                    true,
+                                                                                                ),
                                                                                             ),
                                                                                             Ident {
                                                                                                 expr: [
@@ -9420,8 +10413,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                                                                 ],
                                                                                                 line: 289,
                                                                                             },
-                                                                                            Symbol(
-                                                                                                "..",
+                                                                                            Operator(
+                                                                                                (
+                                                                                                    "..",
+                                                                                                    true,
+                                                                                                ),
                                                                                             ),
                                                                                             Symbol(
                                                                                                 "\")\"",
@@ -9634,14 +10630,20 @@ input_file: test-data/lua5.2-tests/constructs.lua
                     ],
                     line: 302,
                 },
-                Symbol(
-                    "and",
+                Operator(
+                    (
+                        "and",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "3",
                 ),
-                Symbol(
-                    "or",
+                Operator(
+                    (
+                        "or",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "4",
@@ -9716,8 +10718,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                                 Symbol(
                                                     "\"return \"",
                                                 ),
-                                                Symbol(
-                                                    "..",
+                                                Operator(
+                                                    (
+                                                        "..",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Ident {
                                                     expr: [
@@ -9770,8 +10775,11 @@ input_file: test-data/lua5.2-tests/constructs.lua
                                         ],
                                         line: 306,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [

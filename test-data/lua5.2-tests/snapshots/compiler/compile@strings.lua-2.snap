@@ -13,30 +13,30 @@ assert('alo\0' > 'alo');
 assert('\0' < '\1');
 assert('\0\0' < '\0\1');
 assert('\1\0a\0a' <= '\1\0a\0a');
-assert(!('\1\0a\0b' <= '\1\0a\0a'));
+assert(not('\1\0a\0b' <= '\1\0a\0a'));
 assert('\0\0\0' < '\0\0\0\0');
-assert(!('\0\0\0\0' < '\0\0\0'));
+assert(not('\0\0\0\0' < '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0\0');
-assert(!('\0\0\0\0' <= '\0\0\0'));
+assert(not('\0\0\0\0' <= '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0');
 assert('\0\0\0' >= '\0\0\0');
-assert(!('\0\0b' < '\0\0a\0'));
+assert(not('\0\0b' < '\0\0a\0'));
 print('+');
 assert(string.sub("123456789", 2, 4) == "234");
 assert(string.sub("123456789", 7) == "789");
 assert(string.sub("123456789", 7, 6) == "");
 assert(string.sub("123456789", 7, 7) == "7");
 assert(string.sub("123456789", 0, 0) == "");
-assert(string.sub("123456789",  - 10, 10) == "123456789");
+assert(string.sub("123456789", -10, 10) == "123456789");
 assert(string.sub("123456789", 1, 9) == "123456789");
-assert(string.sub("123456789",  - 10,  - 20) == "");
-assert(string.sub("123456789",  - 1) == "9");
-assert(string.sub("123456789",  - 4) == "6789");
-assert(string.sub("123456789",  - 6,  - 4) == "456");
-if !_no32 {
-    assert(string.sub("123456789",  - 2 ^ 31,  - 4) == "123456");
-    assert(string.sub("123456789",  - 2 ^ 31, 2 ^ 31 - 1) == "123456789");
-    assert(string.sub("123456789",  - 2 ^ 31,  - 2 ^ 31) == "");
+assert(string.sub("123456789", -10, -20) == "");
+assert(string.sub("123456789", -1) == "9");
+assert(string.sub("123456789", -4) == "6789");
+assert(string.sub("123456789", -6, -4) == "456");
+if not_no32 {
+    assert(string.sub("123456789", -2 ^ 31, -4) == "123456");
+    assert(string.sub("123456789", -2 ^ 31, 2 ^ 31 - 1) == "123456789");
+    assert(string.sub("123456789", -2 ^ 31, -2 ^ 31) == "");
 }
 assert(string.sub("\000123456789", 3, 5) == "234");
 assert(("\000123456789")::sub(8) == "789");
@@ -47,11 +47,11 @@ assert(string.sub("123456789", a, b) == "345");
 assert(string.find("1234567890123456789", "345", 3) == 3);
 assert(string.find("1234567890123456789", "345", 4) == 13);
 assert(string.find("1234567890123456789", "346", 4) == nil);
-assert(string.find("1234567890123456789", ".45",  - 9) == 13);
+assert(string.find("1234567890123456789", ".45", -9) == 13);
 assert(string.find("abcdefg", "\0", 5, 1) == nil);
 assert(string.find("", "") == 1);
 assert(string.find("", "", 1) == 1);
-assert(!string.find("", "", 2));
+assert(notstring.find("", "", 2));
 assert(string.find('', 'aaa', 1) == nil);
 assert(('alo(.)alo')::find('(.)', 1, 1) == 4);
 print('+');
@@ -66,21 +66,21 @@ assert(string.byte("\xe4") > 127);
 assert(string.byte(string.char(255)) == 255);
 assert(string.byte(string.char(0)) == 0);
 assert(string.byte("\0") == 0);
-assert(string.byte("\0\0alo\0x",  - 1) == string.byte('x'));
+assert(string.byte("\0\0alo\0x", -1) == string.byte('x'));
 assert(string.byte("ba", 2) == 97);
-assert(string.byte("\n\n", 2,  - 1) == 10);
+assert(string.byte("\n\n", 2, -1) == 10);
 assert(string.byte("\n\n", 2, 2) == 10);
 assert(string.byte("") == nil);
-assert(string.byte("hi",  - 3) == nil);
+assert(string.byte("hi", -3) == nil);
 assert(string.byte("hi", 3) == nil);
 assert(string.byte("hi", 9, 10) == nil);
 assert(string.byte("hi", 2, 1) == nil);
 assert(string.char() == "");
 assert(string.char(0, 255, 0) == "\0\255\0");
 assert(string.char(0, string.byte("\xe4"), 0) == "\0\xe4\0");
-assert(string.char(string.byte("\xe4l\0óu", 1,  - 1)) == "\xe4l\0óu");
+assert(string.char(string.byte("\xe4l\0óu", 1, -1)) == "\xe4l\0óu");
 assert(string.char(string.byte("\xe4l\0óu", 1, 0)) == "");
-assert(string.char(string.byte("\xe4l\0óu",  - 10, 100)) == "\xe4l\0óu");
+assert(string.char(string.byte("\xe4l\0óu", -10, 100)) == "\xe4l\0óu");
 print('+');
 assert(string.upper("ab\0c") == "AB\0C");
 assert(string.lower("\0ABCc%$") == "\0abcc%$");
@@ -91,9 +91,9 @@ assert(string.rep('teste', 0, 'xuxu') == '');
 assert(string.rep('teste', 1, 'xuxu') == 'teste');
 assert(string.rep('\1\0\1', 2, '\0\0') == '\1\0\1\0\0\1\0\1');
 assert(string.rep('', 10, '.') == string.rep('.', 9));
-if !_no32 {
-    assert(!pcall(string.rep, "aa", 2 ^ 30));
-    assert(!pcall(string.rep, "", 2 ^ 30, "aa"));
+if not_no32 {
+    assert(notpcall(string.rep, "aa", 2 ^ 30));
+    assert(notpcall(string.rep, "", 2 ^ 30, "aa"));
 }
 assert(string.reverse("") == "");
 assert(string.reverse("\0\1\2\3") == "\3\2\1\0");
@@ -141,17 +141,17 @@ assert(string.format("%x", 0.3) == "0");
 assert(string.format("%02x", 0.1) == "00");
 assert(string.format("%08X", 2 ^ 32 - 1) == "FFFFFFFF");
 assert(string.format("%+08d", 2 ^ 31 - 1) == "+2147483647");
-assert(string.format("%+08d",  - 2 ^ 31) == "-2147483648");
-assert(string.len(string.format('%99.99f',  - 1e308)) >= 100);
-if !_nolonglong {
+assert(string.format("%+08d", -2 ^ 31) == "-2147483648");
+assert(string.len(string.format('%99.99f', -1e308)) >= 100);
+if not_nolonglong {
     print("testing large numbers for format");
     assert(string.format("%8x", 2 ^ 52 - 1) == "fffffffffffff");
-    assert(string.format("%d",  - 1) == "-1");
+    assert(string.format("%d", -1) == "-1");
     assert(tonumber(string.format("%u", 2 ^ 62)) == 2 ^ 62);
     assert(string.format("%8x", 0xffffffff) == "ffffffff");
     assert(string.format("%8x", 0x7fffffff) == "7fffffff");
     assert(string.format("%d", 2 ^ 53) == "9007199254740992");
-    assert(string.format("%d",  - 2 ^ 53) == "-9007199254740992");
+    assert(string.format("%d", -2 ^ 53) == "-9007199254740992");
     assert(string.format("0x%8X", 0x8f000003) == "0x8F000003");
     local x = 2 ^ 64 - 2 ^ (64 - 53)
     assert(x == 0xfffffffffffff800);
@@ -159,20 +159,20 @@ if !_nolonglong {
     assert(tonumber(string.format("0X%x", x)) == x);
     assert(string.format("%x", x) == "fffffffffffff800");
     assert(string.format("%d", x / 2) == "9223372036854774784");
-    assert(string.format("%d",  - x / 2) == "-9223372036854774784");
-    assert(string.format("%d",  - 2 ^ 63) == "-9223372036854775808");
+    assert(string.format("%d", -x / 2) == "-9223372036854774784");
+    assert(string.format("%d", -2 ^ 63) == "-9223372036854775808");
     assert(string.format("%x", 2 ^ 63) == "8000000000000000");
 }
-if !_noformatA {
+if not_noformatA {
     print("testing 'format %a %A'");
     assert(string.format("%.2a", 0.5) == "0x1.00p-1");
     assert(string.format("%A", 0x1fffffffffffff) == "0X1.FFFFFFFFFFFFFP+52");
-    assert(string.format("%.4a",  - 3) == "-0x1.8000p+1");
-    assert(tonumber(string.format("%a",  - 0.1)) ==  - 0.1);
+    assert(string.format("%.4a", -3) == "-0x1.8000p+1");
+    assert(tonumber(string.format("%a", -0.1)) == -0.1);
 }
 local fn check(fmt, msg) {
     local s, err = pcall(string.format, fmt, 10)
-    assert(!s && string.find(err, msg));
+    assert(nots && string.find(err, msg));
 }
 local aux = string.rep('0', 600)
 check("%100.3d", "too long");
@@ -182,10 +182,10 @@ check("%10.1" .. aux .. "004d", "too long");
 check("%t", "invalid option");
 check("%" .. aux .. "d", "repeated flags");
 check("%d %d", "no value");
-assert(!pcall(string.format, "%d", 2 ^ 63));
-assert(!pcall(string.format, "%x", 2 ^ 64));
-assert(!pcall(string.format, "%x",  - 2 ^ 64));
-assert(!pcall(string.format, "%x",  - 1));
+assert(notpcall(string.format, "%d", 2 ^ 63));
+assert(notpcall(string.format, "%x", 2 ^ 64));
+assert(notpcall(string.format, "%x", -2 ^ 64));
+assert(notpcall(string.format, "%x", -1));
 assert(load("return 1\n--comentário sem EOL no final")() == 1);
 assert(table.concat({}) == "");
 assert(table.concat({}, 'x') == "");
@@ -203,15 +203,15 @@ assert(table.concat(a, "b", 20, 20) == "xuxu");
 assert(table.concat(a, "", 20, 21) == "xuxuxuxu");
 assert(table.concat(a, "x", 22, 21) == "");
 assert(table.concat(a, "3", 2999) == "xuxu3xuxu");
-if !_no32 {
+if not_no32 {
     assert(table.concat({}, "x", 2 ^ 31 - 1, 2 ^ 31 - 2) == "");
-    assert(table.concat({}, "x",  - 2 ^ 31 + 1,  - 2 ^ 31) == "");
-    assert(table.concat({}, "x", 2 ^ 31 - 1,  - 2 ^ 31) == "");
+    assert(table.concat({}, "x", -2 ^ 31 + 1, -2 ^ 31) == "");
+    assert(table.concat({}, "x", 2 ^ 31 - 1, -2 ^ 31) == "");
     assert(table.concat({
         2 ^ 31 - 1 = "alo"
     }, "x", 2 ^ 31 - 1, 2 ^ 31 - 1) == "alo");
 }
-assert(!pcall(table.concat, {
+assert(notpcall(table.concat, {
     "a", 
     "b", 
     {}
@@ -227,7 +227,7 @@ assert(table.concat(a, ",", 1, 2) == "a,b");
 assert(table.concat(a, ",", 2) == "b,c");
 assert(table.concat(a, ",", 3) == "c");
 assert(table.concat(a, ",", 4) == "");
-if !_port {
+if not_port {
     local locales = {
         "ptb", 
         "ISO-8859-1", 
@@ -241,16 +241,16 @@ if !_port {
         }
         return false
     }
-    if !trylocale("collate") {
+    if nottrylocale("collate") {
         print("locale not supported");
     } else {
         assert("alo" < "álo" && "álo" < "amo");
     }
-    if !trylocale("ctype") {
+    if nottrylocale("ctype") {
         print("locale not supported");
     } else {
         assert(load("a = 3.4"));
-        assert(!load("á = 3.4"));
+        assert(notload("á = 3.4"));
         assert(string.gsub("áéíóú", "%a", "x") == "xxxxx");
         assert(string.gsub("áÁéÉ", "%l", "x") == "xÁxÉ");
         assert(string.gsub("áÁéÉ", "%u", "x") == "áxéx");

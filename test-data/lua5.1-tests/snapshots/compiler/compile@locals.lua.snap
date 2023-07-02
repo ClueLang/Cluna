@@ -15,7 +15,7 @@ print('testing local variables plus some extra stuff');
         assert(i == 1000);
     }
     assert(i == 10);
-    if i ~= 10 {
+    if i != 10 {
         local i = 20
     } else {
         local i = 30
@@ -27,7 +27,7 @@ local f
 x = 1
 a = nil
 loadstring('local a = {}')();
-assert(type(a) ~= 'table');
+assert(type(a) != 'table');
 global fn f(a) {
     local _1, _2, _3, _4, _5
     local _6, _7, _8, _9, _10
@@ -103,17 +103,17 @@ setfenv(0, _G);
 local a
 local p = 4
 for i = 2, 31 {
-    for j =  - 3, 3 {
+    for j = -3, 3 {
         assert(loadstring(string.format(`local a=%s;a=a+
                                             %s;
                                       assert(a
                                       ==2^%s)`, j, p - j, i)))();
         assert(loadstring(string.format(`local a=%s;
                                       a=a-%s;
-                                      assert(a==-2^%s)`,  - j, p - j, i)))();
+                                      assert(a==-2^%s)`, -j, p - j, i)))();
         assert(loadstring(string.format(`local a,b=0,%s;
                                       a=b-%s;
-                                      assert(a==-2^%s)`,  - j, p - j, i)))();
+                                      assert(a==-2^%s)`, -j, p - j, i)))();
     }
     p = 2 * p
 }

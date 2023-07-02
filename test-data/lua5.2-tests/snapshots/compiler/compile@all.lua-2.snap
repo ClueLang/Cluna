@@ -4,7 +4,7 @@ expression: compiled
 input_file: test-data/lua5.2-tests/all.lua
 ---
 local version = "Lua 5.2"
-if _VERSION ~= version {
+if _VERSION != version {
     io.stderr::write("\nThis test suite is for ", version, ", not for ", _VERSION, "\nExiting tests\n");
     return 
 }
@@ -39,9 +39,9 @@ local collectgarbage = collectgarbage
 {
     local msgs = {}
     global fn Message(m) {
-        if !_nomsg {
+        if not_nomsg {
             print(m);
-            msgs[(#msgs + 1)] = string.sub(m, 3,  - 3)
+            msgs[(#msgs + 1)] = string.sub(m, 3, -3)
         }
     }
     assert(os.setlocale("C"));
@@ -63,7 +63,7 @@ local collectgarbage = collectgarbage
         }
     }
     local showmem
-    if !T {
+    if notT {
         local max = 0
         showmem = fn () {
             local m = collectgarbage("count") * 1024
@@ -123,7 +123,7 @@ local collectgarbage = collectgarbage
     assert(dofile('locals.lua') == 5);
     dofile('constructs.lua');
     dofile('code.lua');
-    if !_G._soft {
+    if not_G._soft {
         report('big.lua');
         local f = coroutine.wrap(assert(loadfile('big.lua')))
         assert(f() == 'b');
@@ -161,7 +161,7 @@ local collectgarbage = collectgarbage
 local _G, showmem, print, format, clock, assert, open = _G, showmem, print, string.format, os.clock, assert, io.open
 local fname = T && "time-debug.txt" || "time.txt"
 local lasttime
-if !usertests {
+if notusertests {
     local f = io.open(fname)
     if f {
         lasttime = assert(tonumber(f::read('*a')))
@@ -172,7 +172,7 @@ if !usertests {
 }
 print('cleaning all!!!!');
 for n with pairs(_G) {
-    if !({
+    if not({
         ___Glob = 1, 
         tostring = 1
     })[(n)] {
@@ -188,10 +188,10 @@ collectgarbage();
 showmem();
 local time = clock() - c
 print(format("\n\ntotal time: %.2f\n", time));
-if !usertests {
+if notusertests {
     lasttime = lasttime || time
     local diff = (time - lasttime) / time
     local tolerance = 0.05
-    assert(diff < tolerance && diff >  - tolerance);
+    assert(diff < tolerance && diff > -tolerance);
     assert(open(fname, "w"))::write(time)::close();
 }

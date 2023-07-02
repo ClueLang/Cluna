@@ -65,7 +65,7 @@ for i = 1, 5 {
         return i + a + _ENV
     }
 }
-assert(a[(3)] ~= a[(4)] && a[(4)] ~= a[(5)]);
+assert(a[(3)] != a[(4)] && a[(4)] != a[(5)]);
 local fn f() {
     return fn (x) {
         return math.sin(_ENV[(x)])
@@ -144,7 +144,7 @@ local b
 global fn f(x) {
     local first = 1
     while 1 {
-        if x == 3 && !first {
+        if x == 3 && notfirst {
             return 
         }
         local a = 'xuxu'
@@ -162,7 +162,7 @@ global fn f(x) {
         } elseif if x == 2 {
             return 
         } else {
-            if x ~= 3 {
+            if x != 3 {
                 error();
             }
         }
@@ -199,7 +199,7 @@ loop  {
         i = x + 1
         return x
     }
-} until i > 10 || a[(i)]() ~= x
+} until i > 10 || a[(i)]() != x
 assert(i == 11 && a[(1)]() == 1 && a[(3)]() == 3 && i == 4);
 a = {}
 for i = 1, 10 {
@@ -240,7 +240,7 @@ local fn t() {
         assert(a == "test" && b == "OK");
     }
     local fn v(f, ...) {
-        c("test", f() ~= 1 && "FAILED" || "OK");
+        c("test", f() != 1 && "FAILED" || "OK");
     }
     local x = 1
     return v(fn () {
@@ -266,13 +266,13 @@ local debug = require('debug')
 }
 assert(debug.upvalueid(foo1, 1));
 assert(debug.upvalueid(foo1, 2));
-assert(!pcall(debug.upvalueid, foo1, 3));
+assert(notpcall(debug.upvalueid, foo1, 3));
 assert(debug.upvalueid(foo1, 1) == debug.upvalueid(foo2, 2));
 assert(debug.upvalueid(foo1, 2) == debug.upvalueid(foo2, 1));
 assert(debug.upvalueid(foo3, 1));
-assert(debug.upvalueid(foo1, 1) ~= debug.upvalueid(foo3, 1));
+assert(debug.upvalueid(foo1, 1) != debug.upvalueid(foo3, 1));
 assert(debug.upvalueid(foo1, 2) == debug.upvalueid(foo3, 2));
-assert(debug.upvalueid(string.gmatch("x", "x"), 1) ~= nil);
+assert(debug.upvalueid(string.gmatch("x", "x"), 1) != nil);
 assert(foo1() == 3 + 5 && foo2() == 5 + 3);
 debug.upvaluejoin(foo1, 2, foo2, 2);
 assert(foo1() == 3 + 3 && foo2() == 5 + 3);
@@ -281,10 +281,10 @@ debug.upvaluejoin(foo3, 2, foo2, 1);
 assert(foo3() == 10 + 5);
 debug.upvaluejoin(foo3, 2, foo2, 2);
 assert(foo3() == 10 + 3);
-assert(!pcall(debug.upvaluejoin, foo1, 3, foo2, 1));
-assert(!pcall(debug.upvaluejoin, foo1, 1, foo2, 3));
-assert(!pcall(debug.upvaluejoin, foo1, 0, foo2, 1));
-assert(!pcall(debug.upvaluejoin, print, 1, foo2, 1));
-assert(!pcall(debug.upvaluejoin, {}, 1, foo2, 1));
-assert(!pcall(debug.upvaluejoin, foo1, 1, print, 1));
+assert(notpcall(debug.upvaluejoin, foo1, 3, foo2, 1));
+assert(notpcall(debug.upvaluejoin, foo1, 1, foo2, 3));
+assert(notpcall(debug.upvaluejoin, foo1, 0, foo2, 1));
+assert(notpcall(debug.upvaluejoin, print, 1, foo2, 1));
+assert(notpcall(debug.upvaluejoin, {}, 1, foo2, 1));
+assert(notpcall(debug.upvaluejoin, foo1, 1, print, 1));
 print('OK');

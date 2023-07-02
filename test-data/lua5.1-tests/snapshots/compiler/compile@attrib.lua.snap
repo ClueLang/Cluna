@@ -99,9 +99,9 @@ return AA`
     assert(P1._G == _G && P1.xuxu._G == _G);
     removefiles(files);
     package.path = ""
-    assert(!pcall(require, "file_does_not_exist"));
+    assert(notpcall(require, "file_does_not_exist"));
     package.path = "??\0?"
-    assert(!pcall(require, "file_does_not_exist1"));
+    assert(notpcall(require, "file_does_not_exist1"));
     package.path = oldpath
     local fname = "file_does_not_exist2"
     local m, err = pcall(require, fname)
@@ -147,11 +147,11 @@ return AA`
     assert(X._G == nil && X.a._G == nil && X.a.b._G == _G && X.a.b.c._G == nil);
     setfenv(1, _G);
     assert(x == 0);
-    assert(!pcall(module, "x"));
-    assert(!pcall(module, "math.sin"));
+    assert(notpcall(module, "x"));
+    assert(notpcall(module, "math.sin"));
     local p = ""
     local f, err, when = package.loadlib("libs/lib1.so", p .. "luaopen_lib1")
-    if !f {
+    if notf {
         (Message || print)('\a\n >>> cannot load dynamic library <<<\n\a');
         print(err, when);
     } else {
@@ -162,7 +162,7 @@ return AA`
         f = assert(package.loadlib("libs/lib1.so", p .. "anotherfunc"))
         assert(f(10, 20) == "1020\n");
         f, err, when = package.loadlib("libs/lib1.so", p .. "xuxu")
-        assert(!f && type(err) == "string" && when == "init");
+        assert(notf && type(err) == "string" && when == "init");
         package.cpath = "libs/?.so"
         require("lib2");
         assert(lib2.id("x") == "x");
@@ -176,7 +176,7 @@ return AA`
         setfenv(1, _G);
     }
     f, err, when = package.loadlib("donotexist", p .. "xuxu")
-    assert(!f && type(err) == "string" && (when == "open" || when == "absent"));
+    assert(notf && type(err) == "string" && (when == "open" || when == "absent"));
     {
         local p = package
         package = {}
@@ -225,7 +225,7 @@ assert(a[(10)] == 10 && b == a && a[(13)] == 'x');
     assert(a == 0 && b == 5 && c == nil);
 }
 a, b, c, d = 1 && nil, 1 || nil, (1 && (nil || 1)), 6
-assert(!a && b && c && d == 6);
+assert(nota && b && c && d == 6);
 d = 20
 a, b, c, d = f()
 assert(a == 10 && b == 11 && c == 12 && d == nil);
@@ -235,21 +235,21 @@ assert(a < b == false && a > b == true);
 assert((10 && 2) == 2);
 assert((10 || 2) == 10);
 assert((10 || assert(nil)) == 10);
-assert(!(nil && assert(nil)));
+assert(not(nil && assert(nil)));
 assert((nil || "alo") == "alo");
 assert((nil && 10) == nil);
 assert((false && 10) == false);
 assert((true || 10) == true);
 assert((false || 10) == 10);
-assert(false ~= nil);
-assert(nil ~= false);
-assert(!nil == true);
-assert(!!nil == false);
-assert(!!1 == true);
-assert(!!a == true);
-assert(!!(6 || nil) == true);
-assert(!!(nil && 56) == false);
-assert(!!(nil && true) == false);
+assert(false != nil);
+assert(nil != false);
+assert(notnil == true);
+assert(notnotnil == false);
+assert(notnot1 == true);
+assert(notnota == true);
+assert(notnot(6 || nil) == true);
+assert(notnot(nil && 56) == false);
+assert(notnot(nil && true) == false);
 print('+');
 a = {}
 a[(true)] = 20
@@ -259,14 +259,14 @@ global fn f(a) {
     return a
 }
 local a = {}
-for i = 3000,  - 3000,  - 1 {
+for i = 3000, -3000, -1 {
     a[(i)] = i
 }
 a[(10e30)] = "alo"
 a[(true)] = 10
 a[(false)] = 20
-assert(a[(10e30)] == 'alo' && a[(!1)] == 20 && a[(10 < 20)] == 10);
-for i = 3000,  - 3000,  - 1 {
+assert(a[(10e30)] == 'alo' && a[(not1)] == 20 && a[(10 < 20)] == 10);
+for i = 3000, -3000, -1 {
     assert(a[(i)] == i);
 }
 a[(print)] = assert
@@ -285,25 +285,25 @@ a = {
     4, 
     3, 
     2, 
-     - 3 = 'a', 
+    -3 = 'a', 
     f = print, 
     a = 'a', 
     b = 'ab'
 }
-a, a.x, a.y = a, a[( - 3)]
-assert(a[(1)] == 10 && a[( - 3)] == a.a && a[(f)] == print && a.x == 'a' && !a.y);
+a, a.x, a.y = a, a[(-3)]
+assert(a[(1)] == 10 && a[(-3)] == a.a && a[(f)] == print && a.x == 'a' && nota.y);
 a[(1)], f(a)[(2)], b, c = {
     'alo' = assert
 }, 10, a[(1)], a[(f)], 6, 10, 23, f(a), 2
 a[(1)].alo(a[(2)] == 10 && b == 10 && c == print);
 a[(2 ^ 31)] = 10
 a[(2 ^ 31 + 1)] = 11
-a[( - 2 ^ 31)] = 12
+a[(-2 ^ 31)] = 12
 a[(2 ^ 32)] = 13
-a[( - 2 ^ 32)] = 14
+a[(-2 ^ 32)] = 14
 a[(2 ^ 32 + 1)] = 15
 a[(10 ^ 33)] = 16
-assert(a[(2 ^ 31)] == 10 && a[(2 ^ 31 + 1)] == 11 && a[( - 2 ^ 31)] == 12 && a[(2 ^ 32)] == 13 && a[( - 2 ^ 32)] == 14 && a[(2 ^ 32 + 1)] == 15 && a[(10 ^ 33)] == 16);
+assert(a[(2 ^ 31)] == 10 && a[(2 ^ 31 + 1)] == 11 && a[(-2 ^ 31)] == 12 && a[(2 ^ 32)] == 13 && a[(-2 ^ 32)] == 14 && a[(2 ^ 32 + 1)] == 15 && a[(10 ^ 33)] == 16);
 a = nil
 {
     local a, i, j, b

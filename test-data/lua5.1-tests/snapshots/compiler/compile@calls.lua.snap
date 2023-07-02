@@ -6,7 +6,7 @@ input_file: test-data/lua5.1-tests/calls.lua
 print("testing functions and calls");
 assert(type(1 < 2) == 'boolean');
 assert(type(true) == 'boolean' && type(false) == 'boolean');
-assert(type(nil) == 'nil' && type( - 3) == 'number' && type('x') == 'string' && type({}) == 'table' && type(type) == 'function');
+assert(type(nil) == 'nil' && type(-3) == 'number' && type('x') == 'string' && type({}) == 'table' && type(type) == 'function');
 assert(type(assert) == type(print));
 f = nil
 global fn f(x) {
@@ -38,12 +38,12 @@ method a.y(x) {
 }
 assert(a::x(1) + 10 == a.y(1));
 a.t = {
-    i =  - 100
+    i = -100
 }
 a[("t")].x = fn (self, a, b) {
     return self.i + a + b
 }
-assert(a.t::x(2, 3) ==  - 95);
+assert(a.t::x(2, 3) == -95);
 {
     local a = {
         x = 0
@@ -107,7 +107,7 @@ global fn err_on_n(n) {
 {
     global fn dummy(n) {
         if n > 0 {
-            assert(!pcall(err_on_n, n));
+            assert(notpcall(err_on_n, n));
             dummy(n - 1);
         }
     }
@@ -256,9 +256,9 @@ a = {
     assert
 }
 equaltab(pack(unlpack(a)), a);
-equaltab(pack(unlpack(a),  - 1), {
+equaltab(pack(unlpack(a), -1), {
     1, 
-     - 1
+    -1
 });
 a, b, c, d = ret2(f()), ret2(f())
 assert(a == 1 && b == 1 && c == 2 && d == nil);
@@ -318,11 +318,11 @@ a = assert(load(read1(x)))
 assert(a() == 1 && _G.x == 1);
 i = 0
 local a, b = load(read1("*a = 123"))
-assert(!a && type(b) == "string" && i == 2);
+assert(nota && type(b) == "string" && i == 2);
 a, b = load(fn () {
     error("hhi");
 })
-assert(!a && string.find(b, "hhi"));
+assert(nota && string.find(b, "hhi"));
 x = `
   return function (x)
     return function (y)
@@ -347,7 +347,7 @@ assert(x() == nil);
 assert(debug.setupvalue(x, 1, "hi") == "a");
 assert(x() == "hi");
 assert(debug.setupvalue(x, 2, 13) == "b");
-assert(!debug.setupvalue(x, 3, 10));
+assert(notdebug.setupvalue(x, 3, 10));
 x("set");
 assert(x() == 23);
 x("set");

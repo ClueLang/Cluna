@@ -153,14 +153,20 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 12,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'a\\0a'",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -190,8 +196,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 12,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "3",
@@ -213,8 +222,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "'\\n\\\"\\'\\\\'",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         MultilineString(
                             "[[\n\n\"'\\]]",
@@ -278,8 +290,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\09912\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'c12'",
@@ -301,8 +316,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\99ab\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'cab'",
@@ -324,8 +342,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\099\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'\\99'",
@@ -347,8 +368,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\099\\n\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'c\\10'",
@@ -370,20 +394,29 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "'\\0\\0\\0alo'",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'\\0'",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'\\0\\0'",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'alo'",
@@ -405,23 +438,35 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "010",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "020",
                         ),
-                        Symbol(
-                            "..",
+                        Operator(
+                            (
+                                "..",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "030",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"1020-30\"",
@@ -443,8 +488,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\x00\\x05\\x10\\x1f\\x3C\\xfF\\xe8\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"\\0\\5\\16\\31\\60\\255\\232\"",
@@ -495,8 +543,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                                     Symbol(
                                                                         "'return '",
                                                                     ),
-                                                                    Symbol(
-                                                                        "..",
+                                                                    Operator(
+                                                                        (
+                                                                            "..",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Ident {
                                                                         expr: [
@@ -506,8 +557,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                                         ],
                                                                         line: 34,
                                                                     },
-                                                                    Symbol(
-                                                                        "..",
+                                                                    Operator(
+                                                                        (
+                                                                            "..",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Symbol(
                                                                         "', require\"debug\".getinfo(1).currentline'",
@@ -573,8 +627,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 37,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -584,8 +641,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 37,
                                     },
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -595,8 +655,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 37,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -845,8 +908,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"abc\\z\n        def\\z\n        ghi\\z\n       \"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'abcdefghi'",
@@ -868,8 +934,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\u{0}\\u{00000000}\\x00\\0\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -926,8 +995,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\u{0}\\u{7F}\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"\\x00\\z\\x7F\"",
@@ -949,8 +1021,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\u{80}\\u{7FF}\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"\\xC2\\x80\\z\\xDF\\xBF\"",
@@ -972,8 +1047,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\u{800}\\u{FFFF}\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"\\xE0\\xA0\\x80\\z\\xEF\\xBF\\xBF\"",
@@ -995,8 +1073,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\u{10000}\\u{10FFFF}\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"\\xF0\\x90\\x80\\x80\\z\\xF4\\x8F\\xBF\\xBF\"",
@@ -1039,8 +1120,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                 Symbol(
                                                     "'return '",
                                                 ),
-                                                Symbol(
-                                                    "..",
+                                                Operator(
+                                                    (
+                                                        "..",
+                                                        true,
+                                                    ),
                                                 ),
                                                 Ident {
                                                     expr: [
@@ -1076,8 +1160,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 74,
                         },
-                        Symbol(
-                            "~=",
+                        Operator(
+                            (
+                                "~=",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "'<eof>'",
@@ -1107,8 +1194,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                             ],
                                             line: 74,
                                         },
-                                        Symbol(
-                                            "..",
+                                        Operator(
+                                            (
+                                                "..",
+                                                true,
+                                            ),
                                         ),
                                         Symbol(
                                             "\"'\"",
@@ -1133,8 +1223,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Call(
                             [
                                 [
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -1144,8 +1237,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 75,
                                     },
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -1174,8 +1270,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                         Symbol(
                                                             "\"near .-\"",
                                                         ),
-                                                        Symbol(
-                                                            "..",
+                                                        Operator(
+                                                            (
+                                                                "..",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Ident {
                                                             expr: [
@@ -1926,8 +2025,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Call(
                             [
                                 [
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -1962,11 +2064,17 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 117,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -1984,8 +2092,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                             ],
                                                             line: 117,
                                                         },
-                                                        Symbol(
-                                                            "..",
+                                                        Operator(
+                                                            (
+                                                                "..",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Symbol(
                                                             "\"=1\"",
@@ -2015,8 +2126,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Call(
                             [
                                 [
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -2051,11 +2165,17 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 118,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -2068,8 +2188,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                         Symbol(
                                                             "\"a\"",
                                                         ),
-                                                        Symbol(
-                                                            "..",
+                                                        Operator(
+                                                            (
+                                                                "..",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Ident {
                                                             expr: [
@@ -2079,8 +2202,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                             ],
                                                             line: 119,
                                                         },
-                                                        Symbol(
-                                                            "..",
+                                                        Operator(
+                                                            (
+                                                                "..",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Symbol(
                                                             "\"1 = 1\"",
@@ -2149,8 +2275,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                     ],
                     line: 125,
                 },
-                Symbol(
-                    "..",
+                Operator(
+                    (
+                        "..",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "'1'",
@@ -2201,8 +2330,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                     ],
                     line: 126,
                 },
-                Symbol(
-                    "..",
+                Operator(
+                    (
+                        "..",
+                        true,
+                    ),
                 ),
                 Symbol(
                     "'2'",
@@ -2370,14 +2502,20 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 133,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "5",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2405,14 +2543,20 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 133,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "6",
                         ),
-                        Symbol(
-                            "and",
+                        Operator(
+                            (
+                                "and",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -2425,11 +2569,17 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 133,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
-                        Symbol(
-                            "-",
+                        Operator(
+                            (
+                                "-",
+                                false,
+                            ),
                         ),
                         Symbol(
                             "1",
@@ -2505,8 +2655,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Symbol(
                             "\"\\n\\t\"",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         MultilineString(
                             "[[\n\n\t]]",
@@ -2528,8 +2681,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         MultilineString(
                             "[[\n\n $debug]]",
                         ),
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"\\n $debug\"",
@@ -2551,8 +2707,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         MultilineString(
                             "[[ [ ]]",
                         ),
-                        Symbol(
-                            "~=",
+                        Operator(
+                            (
+                                "~=",
+                                true,
+                            ),
                         ),
                         MultilineString(
                             "[[ ] ]]",
@@ -2620,8 +2779,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 147,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "960",
@@ -2968,8 +3130,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 221,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -3007,14 +3172,20 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 222,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "\"hi\\n\"",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -3030,8 +3201,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 222,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "\"\\nhello\\r\\n\\n\"",
@@ -3085,8 +3259,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 228,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"]=\"",
@@ -3134,8 +3311,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 231,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"[===[[=[]]=][====[]]===]===\"",
@@ -3183,8 +3363,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 234,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"[===[[=[]]=][====[]]===]===\"",
@@ -3232,8 +3415,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 237,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "\"]]]]]]]]\"",
@@ -3331,8 +3517,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 251,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Symbol(
                             "0",
@@ -3428,8 +3617,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                                         ],
                                                                         line: 254,
                                                                     },
-                                                                    Symbol(
-                                                                        "..",
+                                                                    Operator(
+                                                                        (
+                                                                            "..",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Ident {
                                                                         expr: [
@@ -3449,8 +3641,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                                         ],
                                                                         line: 254,
                                                                     },
-                                                                    Symbol(
-                                                                        "-",
+                                                                    Operator(
+                                                                        (
+                                                                            "-",
+                                                                            true,
+                                                                        ),
                                                                     ),
                                                                     Symbol(
                                                                         "1",
@@ -3569,8 +3764,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 260,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -3583,8 +3781,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                         Symbol(
                                                             "\"return [====[\\n\"",
                                                         ),
-                                                        Symbol(
-                                                            "..",
+                                                        Operator(
+                                                            (
+                                                                "..",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Ident {
                                                             expr: [
@@ -3594,8 +3795,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                                             ],
                                                             line: 260,
                                                         },
-                                                        Symbol(
-                                                            "..",
+                                                        Operator(
+                                                            (
+                                                                "..",
+                                                                true,
+                                                            ),
                                                         ),
                                                         Symbol(
                                                             "\"]====]\"",
@@ -3651,8 +3855,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                 ],
                 line: 265,
             },
-            Symbol(
-                "or",
+            Operator(
+                (
+                    "or",
+                    true,
+                ),
             ),
             Ident {
                 expr: [
@@ -3706,14 +3913,20 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 266,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "3.4",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -3732,8 +3945,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 266,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "3.4",
@@ -3769,11 +3985,17 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 267,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
-                                    Symbol(
-                                        "-",
+                                    Operator(
+                                        (
+                                            "-",
+                                            false,
+                                        ),
                                     ),
                                     Symbol(
                                         "0.4",
@@ -3809,8 +4031,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 268,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "0.25390625",
@@ -3829,8 +4054,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                         Call(
                             [
                                 [
-                                    Symbol(
-                                        "not",
+                                    Operator(
+                                        (
+                                            "not",
+                                            false,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -3897,8 +4125,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 270,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "3.4",
@@ -3951,8 +4182,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 271,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "0.4",
@@ -4005,8 +4239,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 272,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "4.0",
@@ -4059,8 +4296,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 273,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "4.5",
@@ -4082,20 +4322,29 @@ input_file: test-data/lua5.3-tests/literals.lua
                                     Symbol(
                                         "\" 0x.1 \"",
                                     ),
-                                    Symbol(
-                                        "+",
+                                    Operator(
+                                        (
+                                            "+",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "\" 0x,1\"",
                                     ),
-                                    Symbol(
-                                        "+",
+                                    Operator(
+                                        (
+                                            "+",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "\"-0X.1\\t\"",
                                     ),
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "0.0625",
@@ -4131,14 +4380,20 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 277,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "nil",
                                     ),
-                                    Symbol(
-                                        "and",
+                                    Operator(
+                                        (
+                                            "and",
+                                            true,
+                                        ),
                                     ),
                                     Ident {
                                         expr: [
@@ -4157,8 +4412,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 277,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "nil",
@@ -4236,8 +4494,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                         ],
                                         line: 279,
                                     },
-                                    Symbol(
-                                        "==",
+                                    Operator(
+                                        (
+                                            "==",
+                                            true,
+                                        ),
                                     ),
                                     Symbol(
                                         "4.51",
@@ -4380,8 +4641,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                                     ],
                                     line: 286,
                                 },
-                                Symbol(
-                                    "or",
+                                Operator(
+                                    (
+                                        "or",
+                                        true,
+                                    ),
                                 ),
                                 Ident {
                                     expr: [
@@ -4523,8 +4787,11 @@ input_file: test-data/lua5.3-tests/literals.lua
                             ],
                             line: 294,
                         },
-                        Symbol(
-                            "==",
+                        Operator(
+                            (
+                                "==",
+                                true,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4548,8 +4815,11 @@ input_file: test-data/lua5.3-tests/literals.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4582,8 +4852,11 @@ input_file: test-data/lua5.3-tests/literals.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4616,8 +4889,11 @@ input_file: test-data/lua5.3-tests/literals.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [
@@ -4650,8 +4926,11 @@ input_file: test-data/lua5.3-tests/literals.lua
             Call(
                 [
                     [
-                        Symbol(
-                            "not",
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
                         ),
                         Ident {
                             expr: [

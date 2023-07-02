@@ -24,7 +24,7 @@ global fn checktable(t) {
             local mp = T.hash(key, t)
             if l[(i)] {
                 assert(l[(i)] == mp);
-            } elseif if mp ~= i {
+            } elseif if mp != i {
                 l[(i)] = mp
             } else {
                 l[(mp)] = {
@@ -72,7 +72,7 @@ global fn stat(t) {
             local n = table.getn(t[(i)])
             nlist = nlist + 1
             nelem = nelem + n
-            if !maxlist[(n)] {
+            if notmaxlist[(n)] {
                 maxlist[(n)] = 0
             }
             maxlist[(n)] = maxlist[(n)] + 1

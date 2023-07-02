@@ -171,9 +171,9 @@ while 1 {
 }
 print("steps (2)");
 local fn dosteps(siz) {
-    assert(!collectgarbage("isrunning"));
+    assert(notcollectgarbage("isrunning"));
     collectgarbage();
-    assert(!collectgarbage("isrunning"));
+    assert(notcollectgarbage("isrunning"));
     local a = {}
     for i = 1, 100 {
         a[(i)] = {
@@ -190,22 +190,22 @@ local fn dosteps(siz) {
     return i
 }
 collectgarbage("stop");
-if !_port {
+if not_port {
     assert(dosteps(0) > 10);
     assert(dosteps(10) < dosteps(2));
 }
 assert(dosteps(100000) == 1);
 assert(collectgarbage("step", 1000000) == true);
 assert(collectgarbage("step", 1000000) == true);
-assert(!collectgarbage("isrunning"));
+assert(notcollectgarbage("isrunning"));
 collectgarbage("restart");
 assert(collectgarbage("isrunning"));
-if !_port {
+if not_port {
     collectgarbage();
     collectgarbage();
     local x = gcinfo()
     collectgarbage("stop");
-    assert(!collectgarbage("isrunning"));
+    assert(notcollectgarbage("isrunning"));
     loop  {
         local a = {}
     } until gcinfo() > 3 * x
@@ -309,7 +309,7 @@ for i = 1, lim {
     a[(t)] = t
 }
 collectgarbage();
-assert(next(a) ~= nil);
+assert(next(a) != nil);
 local i = 0
 for k, v with pairs(a) {
     assert((k == 1 && v == x) || (k == 2 && v == y) || (k == 3 && v == z) || k == v);
@@ -422,7 +422,7 @@ assert(next(a) == nil);
         __gc = fn (o) {
             local i = s[(o)]
             s[(i)] = true
-            assert(!s[(i - 1)]);
+            assert(nots[(i - 1)]);
             if i == 8 {
                 error("here");
             }
@@ -432,7 +432,7 @@ assert(next(a) == nil);
         local n = setmetatable({}, getmetatable(u))
         s[(n)] = i
     }
-    assert(!pcall(collectgarbage));
+    assert(notpcall(collectgarbage));
     for i = 8, 10 {
         assert(s[(i)]);
     }
@@ -451,7 +451,7 @@ assert(next(a) == nil);
         }
     });
     local a, b = pcall(collectgarbage)
-    assert(!a && type(b) == "string" && string.find(b, "error in __gc"));
+    assert(nota && type(b) == "string" && string.find(b, "error in __gc"));
 }
 print('+');
 if T == nil {
@@ -501,7 +501,7 @@ if T == nil {
         }
     }
     a1, u = nil
-    assert(next(a) ~= nil);
+    assert(next(a) != nil);
     collectgarbage();
     assert(s == 11);
     collectgarbage();
@@ -546,8 +546,8 @@ u = setmetatable({}, {
     }
 })
 u = nil
-assert(!pcall(collectgarbage));
-if !_soft {
+assert(notpcall(collectgarbage));
+if not_soft {
     print("deep structures");
     local a = {}
     for i = 1, 200000 {

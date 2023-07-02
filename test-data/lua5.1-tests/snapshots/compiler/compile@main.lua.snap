@@ -4,7 +4,7 @@ expression: compiled
 input_file: test-data/lua5.1-tests/main.lua
 ---
 print("testing lua.c options");
-assert(os.execute() ~= 0);
+assert(os.execute() != 0);
 prog = os.tmpname()
 otherprog = os.tmpname()
 out = os.tmpname()
@@ -27,7 +27,7 @@ global fn checkout(s) {
     local t = io.read("*a")
     io.input()::close();
     assert(os.remove(out));
-    if s ~= t {
+    if s != t {
         print(string.format("'%s' - '%s'\n", s, t));
     }
     assert(s == t);
@@ -43,7 +43,7 @@ global fn RUN(...) {
 }
 global fn NoRun(...) {
     print("\n(the next error is expected by the test)");
-    assert(auxrun(...) ~= 0);
+    assert(auxrun(...) != 0);
 }
 prepfile("print(1); a=2");
 prepfile("print(a)", otherprog);
@@ -127,7 +127,7 @@ RUN("lua %s", prog);
 checkout('alo');
 assert(os.remove(prog));
 assert(os.remove(otherprog));
-assert(!os.remove(out));
+assert(notos.remove(out));
 RUN("lua -v");
 NoRun("lua -h");
 NoRun("lua -e");

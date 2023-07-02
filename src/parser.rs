@@ -87,6 +87,7 @@ pub enum ComplexToken {
     },
     MultilineString(String),
     Symbol(String),
+    Operator((String, bool)),
     Call(Vec<Expression>),
     Expr(Expression),
     DoBlock(CodeBlock),
@@ -431,7 +432,7 @@ impl<'a> Parser<'a> {
                     | LeftBrace
                     | TripleDot
                     | Hash
-                    | Not,
+                    | Not
             )
         )
     }
@@ -454,6 +455,7 @@ impl<'a> Parser<'a> {
                     | TripleDot
                     | Hash
                     | Not
+                    | Tilde
                     | Minus
                     | Function,
             )
@@ -695,7 +697,7 @@ impl<'a> Parser<'a> {
                     }
                     // unary ops
                     Hash | Not => {
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Operator((t.lexeme(), false)));
                         if !self.check_op() {
                             return Err(format!(
                                 "Expected expression after unary op {} at line {}",
@@ -707,7 +709,7 @@ impl<'a> Parser<'a> {
                     // binary ops
                     Plus | Star | Slash | Caret | Percent | DoubleDot | LessThan
                     | LessThanOrEqual | GreaterThan | GreaterThanOrEqual | DoubleEquals
-                    | NotEquals | And | Or => {
+                    | NotEquals | And | Or | BitAnd | BitOr | BitShiftLeft | BitShiftRight => {
                         if expr.is_empty() {
                             return Err(format!(
                                 "Expected expression before binary op {} at line {}",
@@ -715,7 +717,7 @@ impl<'a> Parser<'a> {
                                 t.line()
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Operator((t.lexeme(), true)));
 
                         if !self.check_op() {
                             return Err(format!(
@@ -726,11 +728,35 @@ impl<'a> Parser<'a> {
                         }
                     }
                     Minus => {
-                        if expr.is_empty() {
-                            expr.push_back(ComplexToken::Symbol("-".to_owned()));
+                        if expr.is_empty()
+                            || expr.back().map_or(false, |back| {
+                                matches!(back, ComplexToken::Operator((_, true)))
+                            })
+                        {
+                            expr.push_back(ComplexToken::Operator((t.lexeme(), false)));
                             continue;
                         } else {
-                            expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                            expr.push_back(ComplexToken::Operator((t.lexeme(), true)));
+                        }
+
+                        if !self.check_op() {
+                            return Err(format!(
+                                "Expected expression after binary op {} at line {}",
+                                &t.lexeme(),
+                                t.line()
+                            ));
+                        }
+                    }
+                    Tilde => {
+                        if expr.is_empty()
+                            || expr.back().map_or(false, |back| {
+                                matches!(back, ComplexToken::Operator((_, true)))
+                            })
+                        {
+                            expr.push_back(ComplexToken::Operator((t.lexeme(), false)));
+                            continue;
+                        } else {
+                            expr.push_back(ComplexToken::Operator((t.lexeme(), true)));
                         }
 
                         if !self.check_op() {

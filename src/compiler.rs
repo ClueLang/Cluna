@@ -57,21 +57,20 @@ fn compile_expressions(scope: usize, exprs: Vec<Expression>) -> String {
     compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr))
 }
 
-fn is_binop(lexeme: &str) -> bool {
-    matches!(
-        lexeme,
-        "+" | "-" | "*" | "/" | "%" | "^" | "==" | "<" | ">" | "<=" | ">=" | "~=" | ".."
-    )
-}
-
 fn compile_symbol(lexeme: String) -> String {
     match &*lexeme {
-        "and" => " && ".to_owned(),
-        "or" => " || ".to_owned(),
-        "not" => "!".to_owned(),
-        "!=" => " ~= ".to_owned(),
         ":" => "::".to_owned(),
-        s if is_binop(s) => format!(" {} ", s),
+        _ => lexeme,
+    }
+}
+
+fn compile_operator(lexeme: String) -> String {
+    match &*lexeme {
+        "and" => "&&".to_owned(),
+        "or" => "||".to_owned(),
+        "not" => "!".to_owned(),
+        "~=" => "!=".to_owned(),
+        "~" => "^^".to_owned(),
         _ => lexeme,
     }
 }
@@ -159,6 +158,15 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
     for ctoken in expr {
         match ctoken {
             Symbol(lexeme) => result += &compile_symbol(lexeme),
+            Operator((op, is_binop)) => {
+                if is_binop {
+                    result += " ";
+                    result += &compile_operator(op);
+                    result += " ";
+                } else {
+                    result += &op;
+                }
+            }
             MultilineString(string) => result += &compile_multiline_string(string),
             Table { data, .. } => {
                 scope += 1;
@@ -401,8 +409,6 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result.push(';');
                 result += &indent_if(tree, scope);
             }
-            Symbol(lexeme) => result += &compile_symbol(lexeme),
-            MultilineString(string) => result += &compile_multiline_string(string),
             Call(args) => {
                 result.push('(');
                 result += &compile_expressions(scope, args);

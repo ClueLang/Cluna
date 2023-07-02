@@ -4,7 +4,7 @@ expression: compiled
 input_file: test-data/lua5.3-tests/all.lua
 ---
 local version = "Lua 5.3"
-if _VERSION ~= version {
+if _VERSION != version {
     io.stderr::write("\nThis test suite is for ", version, ", not for ", _VERSION, "\nExiting tests\n");
     return 
 }
@@ -33,9 +33,9 @@ local collectgarbage = collectgarbage
 {
     local msgs = {}
     global fn Message(m) {
-        if !_nomsg {
+        if not_nomsg {
             print(m);
-            msgs[(#msgs + 1)] = string.sub(m, 3,  - 3)
+            msgs[(#msgs + 1)] = string.sub(m, 3, -3)
         }
     }
     assert(os.setlocale("C"));
@@ -57,7 +57,7 @@ local collectgarbage = collectgarbage
         }
     }
     local showmem
-    if !T {
+    if notT {
         local max = 0
         showmem = fn () {
             local m = collectgarbage("count") * 1024
@@ -110,7 +110,7 @@ local collectgarbage = collectgarbage
     assert(dofile('locals.lua') == 5);
     dofile('constructs.lua');
     dofile('code.lua', true);
-    if !_G._soft {
+    if not_G._soft {
         report('big.lua');
         local f = coroutine.wrap(assert(loadfile('big.lua')))
         assert(f() == 'b');
@@ -150,7 +150,7 @@ local collectgarbage = collectgarbage
 local _G, showmem, print, format, clock, time, difftime, assert, open = _G, showmem, print, string.format, os.clock, os.time, os.difftime, assert, io.open
 local fname = T && "time-debug.txt" || "time.txt"
 local lasttime
-if !usertests {
+if notusertests {
     local f = io.open(fname)
     if f {
         lasttime = assert(tonumber(f::read('a')))
@@ -161,7 +161,7 @@ if !usertests {
 }
 print('cleaning all!!!!');
 for n with pairs(_G) {
-    if !({
+    if not({
         ___Glob = 1, 
         tostring = 1
     })[(n)] {
@@ -178,11 +178,11 @@ showmem();
 local clocktime = clock() - initclock
 walltime = difftime(time(), walltime)
 print(format("\n\ntotal time: %.2fs (wall time: %gs)\n", clocktime, walltime));
-if !usertests {
+if notusertests {
     lasttime = lasttime || clocktime
     local diff = (clocktime - lasttime) / lasttime
     local tolerance = 0.05
-    if (diff >= tolerance || diff <=  - tolerance) {
+    if (diff >= tolerance || diff <= -tolerance) {
         print(format("WARNING: time difference from previous test: %+.1f%%", diff * 100));
     }
     assert(open(fname, "w"))::write(clocktime)::close();
