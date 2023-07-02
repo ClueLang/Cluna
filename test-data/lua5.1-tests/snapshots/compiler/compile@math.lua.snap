@@ -43,7 +43,7 @@ assert(tonumber('10', 36) == 36);
 assert(tonumber('fFfa', 15) == nil);
 assert(tonumber(string.rep('1', 32), 2) + 1 == 2 ^ 32);
 assert(tonumber('ffffFFFF', 16) + 1 == 2 ^ 32);
-assert(1.1 == 1. + 0.1);
+assert(1.1 == 1.0 + 0.1);
 assert(100.0 == 1e2 && 0.01 == 1e-2);
 assert(1111111111111111 - 1111111111111110 == 1000.00e-03);
 assert(1.1 == '1.' + '.1');

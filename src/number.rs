@@ -24,8 +24,8 @@ pub struct Decimal {
 impl Decimal {
     fn new(before_decimal: String, after_decimal: String) -> Self {
         Decimal {
-            before_decimal,
-            after_decimal,
+            before_decimal: normalize_before_decimal(before_decimal),
+            after_decimal: normalize_after_decimal(after_decimal),
         }
     }
 }
@@ -45,11 +45,21 @@ pub enum Number {
     },
 }
 
+#[inline]
 fn normalize_before_decimal(before_decimal: String) -> String {
     if before_decimal.is_empty() {
         "0".to_string()
     } else {
         before_decimal
+    }
+}
+
+#[inline]
+fn normalize_after_decimal(after_decimal: String) -> String {
+    if after_decimal == "." {
+        ".0".to_string()
+    } else {
+        after_decimal
     }
 }
 
@@ -280,17 +290,20 @@ impl Number {
                 let number = number * 2f64.powf(exponent.parse::<f64>().unwrap());
                 number.to_string()
             }
-            Number::Decimal(d) => {
+            Number::Decimal(Decimal {
+                before_decimal,
+                after_decimal,
+            }) => {
                 let mut s = String::with_capacity(4);
 
-                s.push_str(&normalize_before_decimal(d.before_decimal));
-                s.push_str(&d.after_decimal);
+                s.push_str(&before_decimal);
+                s.push_str(&after_decimal);
                 s
             }
             Number::Scientific { mantissa, exponent } => {
                 let mut s = String::with_capacity(4);
 
-                s.push_str(&normalize_before_decimal(mantissa.before_decimal));
+                s.push_str(&mantissa.before_decimal);
                 s.push_str(&mantissa.after_decimal);
                 s.push('e');
                 s.push_str(&exponent);

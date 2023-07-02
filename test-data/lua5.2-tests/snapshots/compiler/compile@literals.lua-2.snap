@@ -198,7 +198,7 @@ if os.setlocale("pt_BR") || os.setlocale("ptb") {
     assert(tonumber("3,4") == 3.4 && tonumber("3.4") == nil);
     assert(assert(load("return 3.4"))() == 3.4);
     assert(assert(load("return .4,3"))() == 0.4);
-    assert(assert(load("return 4."))() == 4.);
+    assert(assert(load("return 4."))() == 4.0);
     assert(assert(load("return 4.+.5"))() == 4.5);
     local a, b = load("return 4.5.")
     assert(string.find(b, "'4%.5%.'"));
