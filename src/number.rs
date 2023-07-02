@@ -76,7 +76,6 @@ impl Number {
         let mut is_scientific = false;
         let mut is_hex = false;
         let mut sign_encountered = false;
-        let mut partial = false;
 
         let mut before_decimal = String::new();
         let mut after_decimal = String::new();
@@ -120,15 +119,11 @@ impl Number {
                         ));
                     }
 
-                    if !digit_encountered {
-                        partial = true;
-
-                        if !lexer.peek().map_or(false, |c| c.is_ascii_digit()) {
-                            return Err(format!(
-                                "Error: Malformed number at {}:{}",
-                                lexer.line, lexer.column
-                            ));
-                        }
+                    if !digit_encountered && !lexer.peek().map_or(false, |c| c.is_ascii_digit()) {
+                        return Err(format!(
+                            "Error: Malformed number at {}:{}",
+                            lexer.line, lexer.column
+                        ));
                     }
                     after_decimal.push(c);
                 }

@@ -1,0 +1,592 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.2-tests/files.lua
+---
+debug = require("debug")
+assert(type(os.getenv("PATH")) == "string");
+assert(io.input(io.stdin) == io.stdin);
+assert(!pcall(io.input, "non-existent-file"));
+assert(io.output(io.stdout) == io.stdout);
+assert(!io.close(io.stdin) && !io.stdout::close() && !io.stderr::close());
+assert(type(io.input()) == "userdata" && io.type(io.output()) == "file");
+assert(type(io.stdin) == "userdata" && io.type(io.stderr) == "file");
+assert(io.type(8) == nil);
+local a = {}
+setmetatable(a, {});
+assert(io.type(a) == nil);
+local a, b, c = io.open('xuxu_nao_existe')
+assert(!a && type(b) == "string" && type(c) == "number");
+a, b, c = io.open('/a/b/c/d', 'w')
+assert(!a && type(b) == "string" && type(c) == "number");
+local file = os.tmpname()
+local f, msg = io.open(file, "w")
+if !f {
+    (Message || print)("'os.tmpname' file cannot be open; skipping file tests");
+} else {
+    f::close();
+    print('testing i/o');
+    local otherfile = os.tmpname()
+    assert(!pcall(io.open, file, "rw"));
+    assert(!pcall(io.open, file, "rb+"));
+    assert(!pcall(io.open, file, "r+bk"));
+    assert(!pcall(io.open, file, ""));
+    assert(!pcall(io.open, file, "+"));
+    assert(!pcall(io.open, file, "b"));
+    assert(io.open(file, "r+b"))::close();
+    assert(io.open(file, "r+"))::close();
+    assert(io.open(file, "rb"))::close();
+    assert(os.setlocale('C', 'all'));
+    io.input(io.stdin);
+    io.output(io.stdout);
+    os.remove(file);
+    assert(loadfile(file) == nil);
+    assert(io.open(file) == nil);
+    io.output(file);
+    assert(io.output() ~= io.stdout);
+    assert(io.output()::seek() == 0);
+    assert(io.write("alo alo")::seek() == string.len("alo alo"));
+    assert(io.output()::seek("cur",  - 3) == string.len("alo alo") - 3);
+    assert(io.write("joao"));
+    assert(io.output()::seek("end") == string.len("alo joao"));
+    assert(io.output()::seek("set") == 0);
+    assert(io.write('"álo"', "{a}\n", "second line\n", "third line \n"));
+    assert(io.write('çfourth_line'));
+    io.output(io.stdout);
+    collectgarbage();
+    assert(io.input() == io.stdin && rawequal(io.output(), io.stdout));
+    print('+');
+    collectgarbage();
+    for i = 1, 120 {
+        for i = 1, 5 {
+            io.input(file);
+            assert(io.open(file, 'r'));
+            io.lines(file);
+        }
+        collectgarbage();
+    }
+    io.input()::close();
+    io.close();
+    assert(os.rename(file, otherfile));
+    assert(os.rename(file, otherfile) == nil);
+    io.output(io.open(otherfile, "ab"));
+    assert(io.write("\n\n\t\t  3450\n"));
+    io.close();
+    assert(!pcall(io.lines, "non-existent-file"));
+    assert(os.rename(otherfile, file));
+    io.output(otherfile);
+    local f = io.lines(file)
+    while f() {
+        
+    }
+    assert(!pcall(f));
+    assert(!pcall(f));
+    for l with io.lines(file) {
+        io.write(l, "\n");
+    }
+    io.close();
+    local f = assert(io.open(otherfile))
+    assert(io.type(f) == "file");
+    io.output(file);
+    assert(io.output()::read() == nil);
+    for l with f::lines() {
+        io.write(l, "\n");
+    }
+    assert(tostring(f)::sub(1, 5) == "file ");
+    assert(f::close());
+    io.close();
+    assert(!pcall(io.close, f));
+    assert(tostring(f) == "file (closed)");
+    assert(io.type(f) == "closed file");
+    io.input(file);
+    f = io.open(otherfile)::lines()
+    for l with io.lines() {
+        assert(l == f());
+    }
+    f = nil
+    collectgarbage();
+    assert(os.remove(otherfile));
+    io.input(file);
+    {
+        local a, b, c = io.input()::write("xuxu")
+        assert(!a && type(b) == "string" && type(c) == "number");
+    }
+    assert(io.read(0) == "");
+    assert(io.read(5, '*l') == '"álo"');
+    assert(io.read(0) == "");
+    assert(io.read() == "second line");
+    local x = io.input()::seek()
+    assert(io.read() == "third line ");
+    assert(io.input()::seek("set", x));
+    assert(io.read('*L') == "third line \n");
+    assert(io.read(1) == "ç");
+    assert(io.read(string.len("fourth_line")) == "fourth_line");
+    assert(io.input()::seek("cur",  - string.len("fourth_line")));
+    assert(io.read() == "fourth_line");
+    assert(io.read() == "");
+    assert(io.read('*n') == 3450);
+    assert(io.read(1) == '\n');
+    assert(io.read(0) == nil);
+    assert(io.read(1) == nil);
+    assert(io.read(30000) == nil);
+    assert(({
+        io.read(1)
+    })[(2)] == nil);
+    assert(io.read() == nil);
+    assert(({
+        io.read()
+    })[(2)] == nil);
+    assert(io.read('*n') == nil);
+    assert(({
+        io.read('*n')
+    })[(2)] == nil);
+    assert(io.read('*a') == '');
+    assert(io.read('*a') == '');
+    collectgarbage();
+    print('+');
+    io.close(io.input());
+    assert(!pcall(io.read));
+    assert(os.remove(file));
+    local t = '0123456789'
+    for i = 1, 12 {
+        t = t .. t
+    }
+    assert(string.len(t) == 10 * 2 ^ 12);
+    io.output(file);
+    io.write("alo")::write("\n");
+    io.close();
+    assert(!pcall(io.write));
+    local f = io.open(file, "a+b")
+    io.output(f);
+    collectgarbage();
+    assert(io.write(' ' .. t .. ' '));
+    assert(io.write(';', 'end of file\n'));
+    f::flush();
+    io.flush();
+    f::close();
+    print('+');
+    io.input(file);
+    assert(io.read() == "alo");
+    assert(io.read(1) == ' ');
+    assert(io.read(string.len(t)) == t);
+    assert(io.read(1) == ' ');
+    assert(io.read(0));
+    assert(io.read('*a') == ';end of file\n');
+    assert(io.read(0) == nil);
+    assert(io.close(io.input()));
+    {
+        local fn ismsg(m) {
+            return (type(m) == "string" && tonumber(m) == nil)
+        }
+        local f = io.open(file, "w")
+        local r, m, c = f::read()
+        assert(r == nil && ismsg(m) && type(c) == "number");
+        assert(f::close());
+        f = io.open(file, "r")
+        r, m, c = f::write("whatever")
+        assert(r == nil && ismsg(m) && type(c) == "number");
+        assert(f::close());
+        f = io.open(file, "w")
+        r, m = pcall(f::lines())
+        assert(r == false && ismsg(m));
+        assert(f::close());
+    }
+    assert(os.remove(file));
+    io.output(file);
+    io.write("\n\nline\nother")::close();
+    io.input(file);
+    assert(io.read("*L") == "\n");
+    assert(io.read("*L") == "\n");
+    assert(io.read("*L") == "line\n");
+    assert(io.read("*L") == "other");
+    assert(io.read("*L") == nil);
+    io.input()::close();
+    local f = assert(io.open(file))
+    local s = ""
+    for l with f::lines("*L") {
+        s = s .. l
+    }
+    assert(s == "\n\nline\nother");
+    f::close();
+    io.input(file);
+    s = ""
+    for l with io.lines(nil, "*L") {
+        s = s .. l
+    }
+    assert(s == "\n\nline\nother");
+    io.input()::close();
+    s = ""
+    for l with io.lines(file, "*L") {
+        s = s .. l
+    }
+    assert(s == "\n\nline\nother");
+    s = ""
+    for l with io.lines(file, "*l") {
+        s = s .. l
+    }
+    assert(s == "lineother");
+    io.output(file);
+    io.write("a = 10 + 34\na = 2*a\na = -a\n")::close();
+    local t = {}
+    load(io.lines(file, "*L"), nil, nil, t)();
+    assert(t.a ==  - ((10 + 34) * 2));
+    io.output(file);
+    io.write("0123456789\n")::close();
+    for a, b with io.lines(file, 1, 1) {
+        if a == "\n" {
+            assert(b == nil);
+        } else {
+            assert(tonumber(a) == b - 1);
+        }
+    }
+    for a, b, c with io.lines(file, 1, 2, "*a") {
+        assert(a == "0" && b == "12" && c == "3456789\n");
+    }
+    for a, b, c with io.lines(file, "*a", 0, 1) {
+        if a == "" {
+            break
+        }
+        assert(a == "0123456789\n" && b == nil && c == nil);
+    }
+    collectgarbage();
+    io.output(file);
+    io.write("00\n10\n20\n30\n40\n")::close();
+    for a, b with io.lines(file, "*n", "*n") {
+        if a == 40 {
+            assert(b == nil);
+        } else {
+            assert(a == b - 10);
+        }
+    }
+    io.output(file);
+    io.write([[
+local y
+= X
+X =
+X *
+2 +
+X;
+X =
+X
+-                                   y;
+]])::close();
+    _G.X = 1
+    assert(!load(io.lines(file)));
+    collectgarbage();
+    load(io.lines(file, "*L"))();
+    assert(_G.X == 2);
+    load(io.lines(file, 1))();
+    assert(_G.X == 4);
+    load(io.lines(file, 3))();
+    assert(_G.X == 8);
+    print('+');
+    local x1 = "string\n\n\\com \"\"''coisas [[estranhas]] ]]'"
+    io.output(file);
+    assert(io.write(string.format("x2 = %q\n-- comment without ending EOS", x1)));
+    io.close();
+    assert(loadfile(file))();
+    assert(x1 == x2);
+    print('+');
+    assert(os.remove(file));
+    assert(os.remove(file) == nil);
+    assert(os.remove(otherfile) == nil);
+    local fn testloadfile(s, expres) {
+        io.output(file);
+        if s {
+            io.write(s);
+        }
+        io.close();
+        local res = assert(loadfile(file))()
+        assert(os.remove(file));
+        assert(res == expres);
+    }
+    testloadfile(nil, nil);
+    testloadfile("# a non-ending comment", nil);
+    testloadfile("\xEF\xBB\xBF# some comment\nreturn 234", 234);
+    testloadfile("\xEF\xBB\xBFreturn 239", 239);
+    testloadfile("\xEF\xBB\xBF", nil);
+    testloadfile("# a comment\nreturn debug.getinfo(1).currentline", 2);
+    io.output(io.open(file, "wb"));
+    assert(io.write(string.dump(fn () {
+        return 10, '\0alo\255', 'hi'
+    })));
+    io.close();
+    a, b, c = assert(loadfile(file))()
+    assert(a == 10 && b == "\0alo\255" && c == "hi");
+    assert(os.remove(file));
+    {
+        io.output(io.open(file, "wb"));
+        assert(io.write(string.dump(fn () {
+            return 1
+        })));
+        io.close();
+        f = assert(loadfile(file, "b", {}))
+        assert(type(f) == "function" && f() == 1);
+        assert(os.remove(file));
+    }
+    io.output(io.open(file, "wb"));
+    assert(io.write("#this is a comment for a binary file\0\n", string.dump(fn () {
+        return 20, '\0\0\0'
+    })));
+    io.close();
+    a, b, c = assert(loadfile(file))()
+    assert(a == 20 && b == "\0\0\0" && c == nil);
+    assert(os.remove(file));
+    {
+        local f = io.open(file, 'w')
+        f::write([[
+    if (...) then a = 15; return b, c, d
+    else return _ENV
+    end
+  ]]);
+        f::close();
+        local t = {
+            b = 12, 
+            c = "xuxu", 
+            d = print
+        }
+        local f = assert(loadfile(file, 't', t))
+        local b, c, d = f(1)
+        assert(t.a == 15 && b == 12 && c == t.c && d == print);
+        assert(f() == t);
+        f = assert(loadfile(file, 't', nil))
+        assert(f() == nil);
+        f = assert(loadfile(file))
+        assert(f() == _G);
+        assert(os.remove(file));
+    }
+    {
+        io.open(file, 'w')::write("return 10")::close();
+        local s, m = loadfile(file, 'b')
+        assert(!s && string.find(m, "a text chunk"));
+        io.open(file, 'w')::write("\27 return 10")::close();
+        local s, m = loadfile(file, 't')
+        assert(!s && string.find(m, "a binary chunk"));
+        assert(os.remove(file));
+    }
+    io.output(file);
+    assert(io.write("qualquer coisa\n"));
+    assert(io.write("mais qualquer coisa"));
+    io.close();
+    assert(io.output(assert(io.open(otherfile, 'wb')))::write("outra coisa\0\1\3\0\0\0\0\255\0")::close());
+    local filehandle = assert(io.open(file, 'r+'))
+    local otherfilehandle = assert(io.open(otherfile, 'rb'))
+    assert(filehandle ~= otherfilehandle);
+    assert(type(filehandle) == "userdata");
+    assert(filehandle::read('*l') == "qualquer coisa");
+    io.input(otherfilehandle);
+    assert(io.read(string.len("outra coisa")) == "outra coisa");
+    assert(filehandle::read('*l') == "mais qualquer coisa");
+    filehandle::close();
+    assert(type(filehandle) == "userdata");
+    io.input(otherfilehandle);
+    assert(io.read(4) == "\0\1\3\0");
+    assert(io.read(3) == "\0\0\0");
+    assert(io.read(0) == "");
+    assert(io.read(1) == "\255");
+    assert(io.read('*a') == "\0");
+    assert(!io.read(0));
+    assert(otherfilehandle == io.input());
+    otherfilehandle::close();
+    assert(os.remove(file));
+    assert(os.remove(otherfile));
+    collectgarbage();
+    io.output(file)::write([[
+ 123.4	-56e-2  not a number
+second line
+third line
+
+and the rest of the file
+]])::close();
+    io.input(file);
+    local _, a, b, c, d, e, h, __ = io.read(1, '*n', '*n', '*l', '*l', '*l', '*a', 10)
+    assert(io.close(io.input()));
+    assert(_ == ' ' && __ == nil);
+    assert(type(a) == 'number' && a == 123.4 && b ==  - 56e-2);
+    assert(d == 'second line' && e == 'third line');
+    assert(h == `
+
+and the rest of the file
+`);
+    assert(os.remove(file));
+    collectgarbage();
+    {
+        local f = assert(io.open(file, "w"))
+        local fr = assert(io.open(file, "r"))
+        assert(f::setvbuf("full", 2000));
+        f::write("x");
+        assert(fr::read("*all") == "");
+        f::close();
+        fr::seek("set");
+        assert(fr::read("*all") == "x");
+        f = assert(io.open(file), "w")
+        assert(f::setvbuf("no"));
+        f::write("x");
+        fr::seek("set");
+        assert(fr::read("*all") == "x");
+        f::close();
+        f = assert(io.open(file, "a"))
+        assert(f::setvbuf("line"));
+        f::write("x");
+        fr::seek("set", 1);
+        assert(fr::read("*all") == "");
+        f::write("a\n")::seek("set", 1);
+        assert(fr::read("*all") == "xa\n");
+        f::close();
+        fr::close();
+        assert(os.remove(file));
+    }
+    if !_soft {
+        print("testing large files (> BUFSIZ)");
+        io.output(file);
+        for i = 1, 5001 {
+            io.write('0123456789123');
+        }
+        io.write('\n12346')::close();
+        io.input(file);
+        local x = io.read('*a')
+        io.input()::seek('set', 0);
+        local y = io.read(30001) .. io.read(1005) .. io.read(0) .. io.read(1) .. io.read(100003)
+        assert(x == y && string.len(x) == 5001 * 13 + 6);
+        io.input()::seek('set', 0);
+        y = io.read()
+        assert(x == y .. '\n' .. io.read());
+        assert(io.read() == nil);
+        io.close(io.input());
+        assert(os.remove(file));
+        x = nil
+        y = nil
+    }
+    if !_noposix {
+        print("testing popen/pclose and execute");
+        local tests = {
+            {
+                "ls > /dev/null", 
+                "ok"
+            }, 
+            {
+                "not-to-be-found-command", 
+                "exit"
+            }, 
+            {
+                "exit 3", 
+                "exit", 
+                3
+            }, 
+            {
+                "exit 129", 
+                "exit", 
+                129
+            }, 
+            {
+                "kill -s HUP $$", 
+                "signal", 
+                1
+            }, 
+            {
+                "kill -s KILL $$", 
+                "signal", 
+                9
+            }, 
+            {
+                "sh -c 'kill -s HUP $$'", 
+                "exit"
+            }, 
+            {
+                'lua -e "os.exit(20, true)"', 
+                "exit", 
+                20
+            }
+        }
+        print("\n(some error messages are expected now)");
+        for _, v with ipairs(tests) {
+            local x, y, z = io.popen(v[(1)])::close()
+            local x1, y1, z1 = os.execute(v[(1)])
+            assert(x == x1 && y == y1 && z == z1);
+            if v[(2)] == "ok" {
+                assert(x == true && y == 'exit' && z == 0);
+            } else {
+                assert(x == nil && y == v[(2)]);
+                assert((v[(3)] == nil && z > 0) || v[(3)] == z);
+            }
+        }
+    }
+    f = io.tmpfile()
+    assert(io.type(f) == "file");
+    f::write("alo");
+    f::seek("set");
+    assert(f::read("*a") == "alo");
+}
+print('+');
+assert(os.date("") == "");
+assert(os.date("!") == "");
+local x = string.rep("a", 10000)
+assert(os.date(x) == x);
+local t = os.time()
+D = os.date("*t", t)
+assert(os.date(string.rep("%d", 1000), t) == string.rep(os.date("%d", t), 1000));
+assert(os.date(string.rep("%", 200)) == string.rep("%", 100));
+local t = os.time()
+D = os.date("*t", t)
+load(os.date(`assert(D.year==%Y and D.month==%m and D.day==%d and
+  D.hour==%H and D.min==%M and D.sec==%S and
+  D.wday==%w+1 and D.yday==%j and type(D.isdst) == 'boolean')`, t))();
+assert(!pcall(os.date, "%9"));
+assert(!pcall(os.date, "%"));
+assert(!pcall(os.date, "%O"));
+assert(!pcall(os.date, "%E"));
+assert(!pcall(os.date, "%Ea"));
+if !_noposix {
+    assert(type(os.date("%Ex")) == 'string');
+    assert(type(os.date("%Oy")) == 'string');
+}
+assert(os.time(D) == t);
+assert(!pcall(os.time, {
+    hour = 12
+}));
+D = os.date("!*t", t)
+load(os.date(`!assert(D.year==%Y and D.month==%m and D.day==%d and
+  D.hour==%H and D.min==%M and D.sec==%S and
+  D.wday==%w+1 and D.yday==%j and type(D.isdst) == 'boolean')`, t))();
+{
+    local D = os.date("*t")
+    local t = os.time(D)
+    assert(type(D.isdst) == 'boolean');
+    D.isdst = nil
+    local t1 = os.time(D)
+    assert(t == t1);
+}
+t = os.time(D)
+D.year = D.year - 1
+local t1 = os.time(D)
+assert(math.abs(os.difftime(t, t1) / (24 * 3600) - 365) < 2);
+t = os.time()
+t1 = os.time(os.date("*t"))
+assert(os.difftime(t1, t) <= 2);
+local t1 = os.time({
+    year = 2000, 
+    month = 10, 
+    day = 1, 
+    hour = 23, 
+    min = 12
+})
+local t2 = os.time({
+    year = 2000, 
+    month = 10, 
+    day = 1, 
+    hour = 23, 
+    min = 10, 
+    sec = 19
+})
+assert(os.difftime(t1, t2) == 60 * 2 - 19);
+io.output(io.stdout);
+local d = os.date('%d')
+local m = os.date('%m')
+local a = os.date('%Y')
+local ds = os.date('%w') + 1
+local h = os.date('%H')
+local min = os.date('%M')
+local s = os.date('%S')
+io.write(string.format('test done on %2.2d/%2.2d/%d', d, m, a));
+io.write(string.format(', at %2.2d:%2.2d:%2.2d\n', h, min, s));
+io.write(string.format('%s\n', _VERSION));

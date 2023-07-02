@@ -151,7 +151,7 @@ mod test {
             let code = std::fs::read_to_string(path).unwrap();
             let scanned = scan_code(code)?;
             let parsed = parse_tokens(&scanned)?;
-            let compiled = compile_ast(parsed);
+            compile_ast(parsed);
 
             Ok(())
         }
