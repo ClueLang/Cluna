@@ -1,0 +1,142 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.2-tests/goto.lua
+---
+local fn errmsg(code, m) {
+    local st, msg = load(code)
+    assert(!st && string.find(msg, m));
+}
+errmsg(` goto l1; do ::l1:: end `, "label 'l1'");
+errmsg(` do ::l1:: end goto l1; `, "label 'l1'");
+errmsg(` ::l1:: ::l1:: `, "label 'l1'");
+errmsg(` goto l1; local aa ::l1:: ::l2:: print(3) `, "local 'aa'");
+errmsg(`
+do local bb, cc;  end
+local aa
+ print(3)
+`, "local 'aa'");
+errmsg(` do ::l1:: end goto l1 `, "label 'l1'");
+errmsg(` goto l1 do ::l1:: end `, "label 'l1'");
+errmsg(`
+  repeat
+    if x then  end
+    local xuxu = 10
+
+  until xuxu < x
+`, "local 'xuxu'");
+local x
+{
+    local y = 12
+    x = x + 1
+    x = y
+}
+assert(x == 13);
+{
+    local prog = `
+  do
+    local a = 1
+     a = a + 1
+    a = a + 10
+     a = a + 2
+    a = a + 20
+    return a
+  end
+  `
+    local label = string.rep("0123456789", 40)
+    prog = string.format(prog, label, label, label, label)
+    assert(assert(load(prog))() == 31);
+}
+{
+    
+}
+{
+    local a = 23
+    x = a
+}
+while true {
+    local x = 45
+}
+assert(x == 13);
+if print {
+    error("should not be here");
+    local x
+} else {
+    
+}
+local fn foo() {
+    local a = {}
+    a[(#a + 1)] = 1
+    a[(#a + 1)] = 2
+    a[(#a + 1)] = 3
+    a[(#a + 1)] = 4
+    a[(#a + 1)] = 5
+    assert(a[(1)] == 3 && a[(2)] == 1 && a[(3)] == 2 && a[(4)] == 5 && a[(5)] == 4);
+    if !a[(6)] {
+        a[(6)] = true
+    }
+}
+foo();
+local fn foo() {
+    local a = {}
+    {
+        local i = 1
+        local k = 0
+        a[(0)] = fn (y) {
+            k = y
+        }
+        {
+            local x
+            if i > 2 {
+                
+            }
+            a[(i)] = fn (y) {
+                if y {
+                    x = y
+                } else {
+                    return x + k
+                }
+            }
+            i = i + 1
+        }
+    }
+    return a
+}
+local a = foo()
+a[(1)](10);
+a[(2)](20);
+assert(a[(1)]() == 10 && a[(2)]() == 20 && a[(3)] == nil);
+a[(0)](13);
+assert(a[(1)]() == 23 && a[(2)]() == 33);
+local fn testG(a) {
+    if a == 1 {
+        error("should never be here!");
+    } elseif if a == 2 {
+        
+    } elseif if a == 3 {
+        
+    } elseif if a == 4 {
+        error("should never be here!");
+        a = a + 1
+    } else {
+        a = a * 2
+        error("should never be here!");
+        error("should never be here!");
+    }
+    {
+        return a
+    }
+    {
+        return "2"
+    }
+    {
+        return "3"
+    }
+    return "1"
+}
+assert(testG(1) == "1");
+assert(testG(2) == "2");
+assert(testG(3) == "3");
+assert(testG(4) == 5);
+assert(testG(5) == 10);
+print('OK');

@@ -119,7 +119,10 @@ impl Number {
                         ));
                     }
 
-                    if !digit_encountered && !lexer.peek().map_or(false, |c| c.is_ascii_digit()) {
+                    if !is_hex
+                        && !digit_encountered
+                        && !lexer.peek().map_or(false, |c| c.is_ascii_digit())
+                    {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",
                             lexer.line, lexer.column
@@ -144,7 +147,7 @@ impl Number {
                     digit_encountered = false;
                 }
                 'e' | 'E' => {
-                    if is_hex {
+                    if !is_scientific && is_hex {
                         continue;
                     }
 
@@ -158,8 +161,7 @@ impl Number {
                             "Error: Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
-                    }
-                    if lexer.peek().map_or(false, |c| c == '+' || c == '-') {
+                    } else {
                         exponent.push(lexer.advance().unwrap());
                     }
                     is_scientific = true;
@@ -171,10 +173,22 @@ impl Number {
                             lexer.line, lexer.column
                         ));
                     }
+
+                    if lexer
+                        .peek()
+                        .map_or(false, |c| c == '+' || c == '-' || c.is_ascii_digit())
+                    {
+                        exponent.push(lexer.advance().unwrap());
+                    } else {
+                        return Err(format!(
+                            "Error: Malformed number at {}:{}",
+                            lexer.line, lexer.column
+                        ));
+                    }
                     is_scientific = true;
                 }
                 'a'..='f' | 'A'..='F' => {
-                    if !is_hex {
+                    if !is_hex || is_scientific {
                         return Err(format!(
                             "Error: Malformed number at {}:{}",
                             lexer.line, lexer.column
@@ -185,6 +199,7 @@ impl Number {
                     } else {
                         before_decimal.push(c);
                     }
+                    digit_encountered = true;
                 }
                 '+' | '-' => {
                     if !is_scientific {

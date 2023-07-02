@@ -1173,6 +1173,9 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 parser.expr.push_back(ComplexToken::Return(exprs));
                 parser.advance_if(TokenType::Semicolon);
             }
+            Semicolon => {
+                continue;
+            }
             _ => Err(format!(
                 "Unexpected token {} at line {}",
                 token.lexeme(),
