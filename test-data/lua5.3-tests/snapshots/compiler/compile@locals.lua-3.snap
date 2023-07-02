@@ -1,0 +1,176 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.3-tests/locals.lua
+---
+print('testing local variables and environments');
+local debug = require("debug")
+local fn f(x) {
+    x = nil
+    return x
+}
+assert(f(10) == nil);
+local fn f() {
+    local x
+    return x
+}
+assert(f(10) == nil);
+local fn f(x) {
+    x = nil
+    local y
+    return x, y
+}
+assert(f(10) == nil && select(2, f(20)) == nil);
+{
+    local i = 10
+    {
+        local i = 100
+        assert(i == 100);
+    }
+    {
+        local i = 1000
+        assert(i == 1000);
+    }
+    assert(i == 10);
+    if i ~= 10 {
+        local i = 20
+    } else {
+        local i = 30
+        assert(i == 30);
+    }
+}
+f = nil
+local f
+x = 1
+a = nil
+load('local a = {}')();
+assert(a == nil);
+global fn f(a) {
+    local _1, _2, _3, _4, _5
+    local _6, _7, _8, _9, _10
+    local x = 3
+    local b = a
+    local c, d = a, b
+    if (d == b) {
+        local x = 'q'
+        x = b
+        assert(x == 2);
+    } else {
+        assert(nil);
+    }
+    assert(x == 3);
+    local f = 10
+}
+local b = 10
+local a
+loop  {
+    local b
+    a, b = 1, 2
+    assert(a + 1 == b);
+} until a + b == 3
+assert(x == 1);
+f(2);
+assert(type(f) == 'function');
+local fn getenv(f) {
+    local a, b = debug.getupvalue(f, 1)
+    assert(a == '_ENV');
+    return b
+}
+assert(getenv(load("a=3")) == _G);
+local c = {}
+local f = load("a = 3", nil, nil, c)
+assert(getenv(f) == c);
+assert(c.a == nil);
+f();
+assert(c.a == 3);
+{
+    local i = 2
+    local p = 4
+    loop  {
+        for j =  - 3, 3 {
+            assert(load(string.format(`local a=%s;
+                                        a=a+%s;
+                                        assert(a ==2^%s)`, j, p - j, i), ''))();
+            assert(load(string.format(`local a=%s;
+                                        a=a-%s;
+                                        assert(a==-2^%s)`,  - j, p - j, i), ''))();
+            assert(load(string.format(`local a,b=0,%s;
+                                        a=b-%s;
+                                        assert(a==-2^%s)`,  - j, p - j, i), ''))();
+        }
+        p = 2 * p
+        i = i + 1
+    } until p <= 0
+}
+print('+');
+if rawget(_G, "querytab") {
+    collectgarbage("stop");
+    local a = {
+        {} = 4, 
+        3 = 0, 
+        alo = 1, 
+        a1234567890123456789012345678901234567890 = 10
+    }
+    local t = querytab(a)
+    for k, _ with pairs(a) {
+        a[(k)] = nil
+    }
+    collectgarbage();
+    for i = 0, t - 1 {
+        local k = querytab(a, i)
+        assert(k == nil || type(k) == 'number' || k == 'alo');
+    }
+}
+assert(_ENV == _G);
+{
+    local dummy
+    local _ENV = (fn (...) {
+        return ...
+    })(_G, dummy)
+    {
+        local _ENV = {
+            assert = assert
+        }
+        assert(true);
+    }
+    mt = {
+        _G = _G
+    }
+    local foo, x
+    A = false
+    {
+        local _ENV = mt
+        global fn foo(x) {
+            A = x
+            {
+                local _ENV = _G
+                A = 1000
+            }
+            return fn (x) {
+                return A .. x
+            }
+        }
+    }
+    assert(getenv(foo) == mt);
+    x = foo('hi')
+    assert(mt.A == 'hi' && A == 1000);
+    assert(x('*') == mt.A .. '*');
+    {
+        local _ENV = {
+            assert = assert, 
+            A = 10
+        }
+        {
+            local _ENV = {
+                assert = assert, 
+                A = 20
+            }
+            assert(A == 20);
+            x = A
+        }
+        assert(A == 10 && x == 20);
+    }
+    assert(x == 20);
+    print('OK');
+    return 5, f
+}

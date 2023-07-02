@@ -1,0 +1,190 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.3-tests/all.lua
+---
+local version = "Lua 5.3"
+if _VERSION ~= version {
+    io.stderr::write("\nThis test suite is for ", version, ", not for ", _VERSION, "\nExiting tests\n");
+    return 
+}
+_G._ARG = arg
+_soft = rawget(_G, "_soft") || false
+_port = rawget(_G, "_port") || false
+_nomsg = rawget(_G, "_nomsg") || false
+local usertests = rawget(_G, "_U")
+if usertests {
+    _soft = true
+    _port = true
+    _nomsg = true
+}
+debug = nil
+if usertests {
+    T = nil
+} else {
+    T = rawget(_G, "T")
+}
+math.randomseed(0);
+print("current path:\n****" .. package.path .. "****\n");
+local initclock = os.clock()
+local lastclock = initclock
+local walltime = os.time()
+local collectgarbage = collectgarbage
+{
+    local msgs = {}
+    global fn Message(m) {
+        if !_nomsg {
+            print(m);
+            msgs[(#msgs + 1)] = string.sub(m, 3,  - 3)
+        }
+    }
+    assert(os.setlocale("C"));
+    local T, print, format, write, assert, type, unpack, floor = T, print, string.format, io.write, assert, type, table.unpack, math.floor
+    local fn F(m) {
+        local fn round(m) {
+            m = m + 0.04999
+            return format("%.1f", m)
+        }
+        if m < 1000 {
+            return m
+        } else {
+            m = m / 1000
+            if m < 1000 {
+                return round(m) .. "K"
+            } else {
+                return round(m / 1000) .. "M"
+            }
+        }
+    }
+    local showmem
+    if !T {
+        local max = 0
+        showmem = fn () {
+            local m = collectgarbage("count") * 1024
+            max = (m > max) && m || max
+            print(format("    ---- total memory: %s, max memory: %s ----\n", F(m), F(max)));
+        }
+    } else {
+        showmem = fn () {
+            T.checkmemory();
+            local total, numblocks, maxmem = T.totalmem()
+            local count = collectgarbage("count")
+            print(format("\n    ---- total memory: %s (%.0fK), max use: %s,  blocks: %d\n", F(total), count, F(maxmem), numblocks));
+            print(format("\t(strings:  %d, tables: %d, functions: %d, " .. "\n\tudata: %d, threads: %d)", T.totalmem("string"), T.totalmem("table"), T.totalmem("function"), T.totalmem("userdata"), T.totalmem("thread")));
+        }
+    }
+    local fn report(n) {
+        print("\n***** FILE '" .. n .. "'*****");
+    }
+    local olddofile = dofile
+    local dofile = fn (n, strip) {
+        showmem();
+        local c = os.clock()
+        print(string.format("time: %g (+%g)", c - initclock, c - lastclock));
+        lastclock = c
+        report(n);
+        local f = assert(loadfile(n))
+        local b = string.dump(f, strip)
+        f = assert(load(b))
+        return f()
+    }
+    dofile('main.lua');
+    {
+        local next, setmetatable, stderr = next, setmetatable, io.stderr
+        local mt = {}
+        mt.__gc = fn (o) {
+            stderr::write('.');
+            local n = setmetatable(o, mt)
+        }
+        local n = setmetatable({}, mt)
+    }
+    report("gc.lua");
+    local f = assert(loadfile('gc.lua'))
+    f();
+    dofile('db.lua');
+    assert(dofile('calls.lua') == deep && deep);
+    olddofile('strings.lua');
+    olddofile('literals.lua');
+    dofile('tpack.lua');
+    assert(dofile('attrib.lua') == 27);
+    assert(dofile('locals.lua') == 5);
+    dofile('constructs.lua');
+    dofile('code.lua', true);
+    if !_G._soft {
+        report('big.lua');
+        local f = coroutine.wrap(assert(loadfile('big.lua')))
+        assert(f() == 'b');
+        assert(f() == 'a');
+    }
+    dofile('nextvar.lua');
+    dofile('pm.lua');
+    dofile('utf8.lua');
+    dofile('api.lua');
+    assert(dofile('events.lua') == 12);
+    dofile('vararg.lua');
+    dofile('closure.lua');
+    dofile('coroutine.lua');
+    dofile('goto.lua', true);
+    dofile('errors.lua');
+    dofile('math.lua');
+    dofile('sort.lua', true);
+    dofile('bitwise.lua');
+    assert(dofile('verybig.lua', true) == 10);
+    collectgarbage();
+    dofile('files.lua');
+    if #msgs > 0 {
+        print("\ntests not performed:");
+        for i = 1, #msgs {
+            print(msgs[(i)]);
+        }
+        print();
+    }
+    assert(debug == nil);
+    local debug = require("debug")
+    print(string.format("%d-bit integers, %d-bit floats", string.packsize("j") * 8, string.packsize("n") * 8));
+    debug.sethook(fn (a) {
+        assert(type(a) == 'string');
+    }, "cr");
+    _G.showmem = showmem
+}
+local _G, showmem, print, format, clock, time, difftime, assert, open = _G, showmem, print, string.format, os.clock, os.time, os.difftime, assert, io.open
+local fname = T && "time-debug.txt" || "time.txt"
+local lasttime
+if !usertests {
+    local f = io.open(fname)
+    if f {
+        lasttime = assert(tonumber(f::read('a')))
+        f::close();
+    } else {
+        lasttime = nil
+    }
+}
+print('cleaning all!!!!');
+for n with pairs(_G) {
+    if !({
+        ___Glob = 1, 
+        tostring = 1
+    })[(n)] {
+        _G[(n)] = nil
+    }
+}
+collectgarbage();
+collectgarbage();
+collectgarbage();
+collectgarbage();
+collectgarbage();
+collectgarbage();
+showmem();
+local clocktime = clock() - initclock
+walltime = difftime(time(), walltime)
+print(format("\n\ntotal time: %.2fs (wall time: %gs)\n", clocktime, walltime));
+if !usertests {
+    lasttime = lasttime || clocktime
+    local diff = (clocktime - lasttime) / lasttime
+    local tolerance = 0.05
+    if (diff >= tolerance || diff <=  - tolerance) {
+        print(format("WARNING: time difference from previous test: %+.1f%%", diff * 100));
+    }
+    assert(open(fname, "w"))::write(clocktime)::close();
+}
+print("final OK !!!");
