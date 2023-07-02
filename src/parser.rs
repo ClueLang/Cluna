@@ -707,7 +707,7 @@ impl<'a> Parser<'a> {
                         }
                     }
                     // binary ops
-                    Plus | Star | Slash | Caret | Percent | DoubleDot | LessThan
+                    Plus | Star | Slash | FloorDiv | Caret | Percent | DoubleDot | LessThan
                     | LessThanOrEqual | GreaterThan | GreaterThanOrEqual | DoubleEquals
                     | NotEquals | And | Or | BitAnd | BitOr | BitShiftLeft | BitShiftRight => {
                         if expr.is_empty() {

@@ -4,7 +4,7 @@ use crate::number::Number;
 #[rustfmt::skip]
 pub enum TokenType {
     // tokens
-    Plus, Minus, Star, Slash, Percent, Caret, Hash, Tilde,
+    Plus, Minus, Star, Slash, FloorDiv, Percent, Caret, Hash, Tilde,
     Equals, DoubleEquals, NotEquals, LessThan, LessThanOrEqual,
     GreaterThan, GreaterThanOrEqual, Dot, Colon, Semicolon, Comma,
     LeftParen, RightParen, LeftBrace, RightBrace, LeftBracket, RightBracket,
@@ -489,11 +489,18 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                 lexer.add_token(TokenType::Hash, 1)
             }
             '*' => lexer.add_token(TokenType::Star, 1),
-            '/' => lexer.add_token(TokenType::Slash, 1),
+            '/' => {
+                if let Some('/') = lexer.peek() {
+                    lexer.advance();
+                    lexer.add_token(TokenType::FloorDiv, 2)
+                } else {
+                    lexer.add_token(TokenType::Slash, 1)
+                }
+            }
             '%' => lexer.add_token(TokenType::Percent, 1),
             '^' => lexer.add_token(TokenType::Caret, 1),
             '=' => {
-                if lexer.peek().map_or(false, |c| c == '=') {
+                if let Some('=') = lexer.peek() {
                     lexer.advance();
                     lexer.add_token(TokenType::DoubleEquals, 2);
                 } else {
@@ -501,7 +508,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                 }
             }
             '~' => {
-                if lexer.peek().map_or(false, |c| c == '=') {
+                if let Some('=') = lexer.peek() {
                     lexer.advance();
                     lexer.add_token(TokenType::NotEquals, 2);
                 } else {
@@ -540,7 +547,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                 _ => lexer.add_token(TokenType::Dot, 1),
             },
             ':' => {
-                if lexer.peek().map_or(false, |c| c == ':') {
+                if let Some(':') = lexer.peek() {
                     return Err(format!(
                         "Labels are not supported at {}:{}",
                         lexer.line, lexer.column

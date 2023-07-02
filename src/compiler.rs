@@ -71,6 +71,7 @@ fn compile_operator(lexeme: String) -> String {
         "not" => "!".to_owned(),
         "~=" => "!=".to_owned(),
         "~" => "^^".to_owned(),
+        "//" => "/_".to_owned(),
         _ => lexeme,
     }
 }
