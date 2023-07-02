@@ -4,9 +4,14 @@ use std::path::PathBuf;
 
 #[derive(Parser)]
 struct Cli {
+    /// Input file path.
     path: PathBuf,
+    /// Output file path. This flag is ignored when compiling a directory.
     #[clap(short, long)]
     output: Option<PathBuf>,
+    /// Output directory path.
+    #[clap(long)]
+    out_dir: Option<PathBuf>,
 }
 
 fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
@@ -16,7 +21,7 @@ fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
     let compiled = compile_ast(parsed);
 
     let output = output.unwrap_or_else(|| path.with_extension("clue"));
-
+    std::fs::create_dir_all(output.parent().unwrap()).map_err(|e| e.to_string())?;
     std::fs::write(output, compiled).map_err(|e| e.to_string())?;
     Ok(())
 }
@@ -26,16 +31,23 @@ fn main() -> Result<(), String> {
     let path = args.path;
 
     if !path.exists() {
-        return Err(format!("File {:?} does not exist", path));
+        return Err(format!("The path {:?} does not exist", path));
     }
 
     if path.is_file() {
-        return compile_file(&path, args.output);
+        let output = args.output.or_else(|| {
+            args.out_dir.clone().map(|mut out_dir| {
+                out_dir.push(path.file_name().unwrap());
+                out_dir.set_extension("clue");
+                out_dir
+            })
+        });
+        return compile_file(&path, output);
     } else if path.is_dir() {
         if args.output.is_some() {
             eprintln!("Warning: output flag is ignored when compiling a directory");
         }
-
+        let dir = path.clone();
         let mut stack = vec![path];
 
         while let Some(path) = stack.pop() {
@@ -46,7 +58,13 @@ fn main() -> Result<(), String> {
                 if path.is_dir() {
                     stack.push(path);
                 } else if path.is_file() && path.extension().map_or(false, |ext| ext == "lua") {
-                    compile_file(&path, None)?;
+                    let output = args.out_dir.as_ref().map(|out_dir| {
+                        let mut out = out_dir.clone();
+                        out.push(path.strip_prefix(&dir).unwrap());
+                        out.set_extension("clue");
+                        out
+                    });
+                    compile_file(&path, output)?;
                 }
             }
         }
