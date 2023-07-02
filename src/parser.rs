@@ -75,6 +75,8 @@ pub enum ComplexToken {
     ForFuncLoop {
         iters: Vec<String>,
         expr: Expression,
+        stop: Option<Expression>,
+        initial: Option<Expression>,
         code: CodeBlock,
         line: usize,
         column: usize,
@@ -1002,6 +1004,17 @@ impl<'a> Parser<'a> {
 
         if for_func {
             let expr = self.parse_expression(None)?;
+            let stop = if self.advance_if(TokenType::Comma) {
+                Some(self.parse_expression(None)?)
+            } else {
+                None
+            };
+            let initial = if self.advance_if(TokenType::Comma) {
+                Some(self.parse_expression(None)?)
+            } else {
+                None
+            };
+
             self.assert_advance(TokenType::Do, "do")?;
 
             let code = self.parse_code_block()?;
@@ -1009,6 +1022,8 @@ impl<'a> Parser<'a> {
             Ok(ComplexToken::ForFuncLoop {
                 iters,
                 expr,
+                stop,
+                initial,
                 code,
                 line: self.line,
                 column: self.column,

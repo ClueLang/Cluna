@@ -12,7 +12,6 @@ struct Cli {
 fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
     let code = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
     let scanned = scan_code(code)?;
-    dbg!(&scanned);
     let parsed = parse_tokens(&scanned)?;
     let compiled = compile_ast(parsed);
 

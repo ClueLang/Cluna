@@ -319,16 +319,68 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += &indent_if(tree, scope);
             }
             ForFuncLoop {
-                iters, expr, code, ..
+                iters,
+                expr,
+                stop,
+                initial,
+                code,
+                ..
             } => {
-                result += "for ";
-                result += &compile_list(iters, ", ", &mut |iter| iter);
-                result += " with ";
-                result += &compile_expression(scope, expr);
-                result += " {";
-                result += &compile_code_block(code, scope);
-                result.push('}');
-                result += &indent_if(tree, scope);
+                if stop.is_some() || initial.is_some() {
+                    let s = scope;
+                    let iters_compiled = &compile_list(iters.clone(), ", ", &mut |iter| iter);
+
+                    result += "{\n";
+                    let scope = scope + 1;
+                    result += &indent(scope);
+                    result += &format!(
+                        "local _internal_expr_{0}, _internal_stop_{0}, _internal_acc_{0} = ",
+                        s
+                    );
+                    result += &compile_expression(scope, expr);
+                    result += ", ";
+                    result += &compile_expression(scope, stop.unwrap());
+                    result += ", ";
+                    result += &initial.map_or("nil".to_owned(), |initial| {
+                        compile_expression(scope, initial)
+                    });
+                    result += ";\n";
+                    result += &indent(scope);
+                    result += "while true {\n";
+                    let scope = scope + 1;
+                    result += &indent(scope);
+                    result += "local ";
+                    result += iters_compiled;
+                    result += " = ";
+                    result += &format!(
+                        "_internal_expr_{0}(_internal_stop_{0}, _internal_acc_{0});\n",
+                        s
+                    );
+                    result += &indent(scope);
+                    result += &format!("_internal_acc_{s} = ");
+                    result += &iters[0];
+                    result += ";\n";
+                    result += &indent(scope);
+                    result += "if ";
+                    result += &format!("_internal_acc_{s}");
+                    result += " == nil";
+                    result += " { break; }";
+
+                    let scope = scope - 1;
+                    result += &compile_code_block(code, scope);
+                    result += "}\n";
+                    result += &indent(scope - 1);
+                    result += "}\n";
+                } else {
+                    result += "for ";
+                    result += &compile_list(iters, ", ", &mut |iter| iter);
+                    result += " with ";
+                    result += &compile_expression(scope, expr);
+                    result += " {";
+                    result += &compile_code_block(code, scope);
+                    result.push('}');
+                    result += &indent_if(tree, scope);
+                }
             }
             RepeatLoop {
                 condition, body, ..
