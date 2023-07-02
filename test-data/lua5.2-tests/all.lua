@@ -256,4 +256,3 @@ if not usertests then
   assert(diff < tolerance and diff > -tolerance)
   assert(open(fname, "w")):write(time):close()
 end
-

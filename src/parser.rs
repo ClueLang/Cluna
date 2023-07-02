@@ -666,8 +666,14 @@ impl<'a> Parser<'a> {
                             break t;
                         }
                     }
-                    TripleDot | Number | True | False | String | Nil => {
+                    TripleDot | True | False | String | Nil => {
                         expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        if self.check_val() {
+                            break t;
+                        }
+                    }
+                    Number => {
+                        expr.push_back(ComplexToken::Symbol(t.computed_lexeme().unwrap()));
                         if self.check_val() {
                             break t;
                         }

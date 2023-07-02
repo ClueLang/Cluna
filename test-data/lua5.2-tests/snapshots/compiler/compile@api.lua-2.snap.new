@@ -1,0 +1,997 @@
+---
+source: src/main.rs
+assertion_line: 118
+expression: compiled
+input_file: test-data/lua5.2-tests/api.lua
+---
+if T == nil {
+    (Message || print)('\a\n >>> testC not active: skipping API tests <<<\n\a');
+    return 
+}
+local debug = require("debug")
+local pack = table.pack
+global fn tcheck(t1, t2) {
+    assert(t1.n == (t2.n || #t2) + 1);
+    for i = 2, t1.n {
+        assert(t1[(i)] == t2[(i - 1)]);
+    }
+}
+print('testing C API');
+a = T.testC("pushvalue R; return 1")
+assert(a == debug.getregistry());
+assert(T.testC("settop 10; absindex -1; return 1") == 10);
+assert(T.testC("settop 5; absindex -5; return 1") == 1);
+assert(T.testC("settop 10; absindex 1; return 1") == 1);
+assert(T.testC("settop 10; absindex R; return 1") <  - 10);
+a = T.d2s(12458954321123)
+assert(string.len(a) == 8);
+assert(T.s2d(a) == 12458954321123);
+a, b, c = T.testC("pushnum 1; pushnum 2; pushnum 3; return 2")
+assert(a == 2 && b == 3 && !c);
+f = T.makeCfunc("pushnum 1; pushnum 2; pushnum 3; return 2")
+a, b, c = f()
+assert(a == 2 && b == 3 && !c);
+a, b, c = T.testC("pushbool 1; pushbool 2; pushbool 0; return 3")
+assert(a == b && a == true && c == false);
+a, b, c = T.testC("pushbool 0; pushbool 10; pushnil;\
+                      tobool -3; tobool -3; tobool -3; return 3")
+assert(a == false && b == true && c == false);
+a, b, c = T.testC("gettop; return 2", 10, 20, 30, 40)
+assert(a == 40 && b == 5 && !c);
+t = pack(T.testC("settop 5; gettop; return .", 2, 3))
+tcheck(t, {
+    n = 4, 
+    2, 
+    3
+});
+t = pack(T.testC("settop 0; settop 15; return 10", 3, 1, 23))
+assert(t.n == 10 && t[(1)] == nil && t[(10)] == nil);
+t = pack(T.testC("remove -2; gettop; return .", 2, 3, 4))
+tcheck(t, {
+    n = 2, 
+    2, 
+    4
+});
+t = pack(T.testC("insert -1; gettop; return .", 2, 3))
+tcheck(t, {
+    n = 2, 
+    2, 
+    3
+});
+t = pack(T.testC("insert 3; gettop; return .", 2, 3, 4, 5))
+tcheck(t, {
+    n = 4, 
+    2, 
+    5, 
+    3, 
+    4
+});
+t = pack(T.testC("replace 2; gettop; return .", 2, 3, 4, 5))
+tcheck(t, {
+    n = 3, 
+    5, 
+    3, 
+    4
+});
+t = pack(T.testC("replace -2; gettop; return .", 2, 3, 4, 5))
+tcheck(t, {
+    n = 3, 
+    2, 
+    3, 
+    5
+});
+t = pack(T.testC("remove 3; gettop; return .", 2, 3, 4, 5))
+tcheck(t, {
+    n = 3, 
+    2, 
+    4, 
+    5
+});
+t = pack(T.testC("copy 3 4; gettop; return .", 2, 3, 4, 5))
+tcheck(t, {
+    n = 4, 
+    2, 
+    3, 
+    3, 
+    5
+});
+t = pack(T.testC("copy -3 -1; gettop; return .", 2, 3, 4, 5))
+tcheck(t, {
+    n = 4, 
+    2, 
+    3, 
+    4, 
+    3
+});
+t = pack(T.testC("insert 3; pushvalue 3; remove 3; pushvalue 2; remove 2; \
+                  insert 2; pushvalue 1; remove 1; insert 1; \
+      insert -2; pushvalue -2; remove -3; gettop; return .", 2, 3, 4, 5, 10, 40, 90))
+tcheck(t, {
+    n = 7, 
+    2, 
+    3, 
+    4, 
+    5, 
+    10, 
+    40, 
+    90
+});
+t = pack(T.testC("concat 5; gettop; return .", "alo", 2, 3, "joao", 12))
+tcheck(t, {
+    n = 1, 
+    "alo23joao12"
+});
+t = pack(T.testC("call 2,-1; gettop; return .", fn (a, b) {
+    return 1, 2, 3, 4, a, b
+}, "alo", "joao"))
+tcheck(t, {
+    n = 6, 
+    1, 
+    2, 
+    3, 
+    4, 
+    "alo", 
+    "joao"
+});
+{
+    local a = {}
+    for i = 1, 1000 {
+        a[(i)] = true
+    }
+    a[(999)] = 10
+    local b = T.testC(`pcall 1 -1; pop 1; tostring -1; return 1`, table.unpack, a)
+    assert(b == "10");
+}
+_G.a = 14
+_G.b = "a31"
+local a = {
+    T.testC([[
+  getglobal a;
+  getglobal b;
+  getglobal b;
+  setglobal a;
+  gettop;
+  return .
+]])
+}
+assert(a[(2)] == 14 && a[(3)] == "a31" && a[(4)] == nil && _G.a == "a31");
+assert(T.testC("pushnum 10; pushnum 20; arith /; return 1") == 0.5);
+assert(T.testC("pushnum 10; pushnum 20; arith -; return 1") ==  - 10);
+assert(T.testC("pushnum 10; pushnum -20; arith *; return 1") ==  - 200);
+assert(T.testC("pushnum 10; pushnum 3; arith ^; return 1") == 1000);
+assert(T.testC("pushnum 10; pushstring 20; arith /; return 1") == 0.5);
+assert(T.testC("pushstring 10; pushnum 20; arith -; return 1") ==  - 10);
+assert(T.testC("pushstring 10; pushstring -20; arith *; return 1") ==  - 200);
+assert(T.testC("pushstring 10; pushstring 3; arith ^; return 1") == 1000);
+a, b, c = T.testC(`pushnum 1;
+                  pushstring 10; arith _;
+                  pushstring 5; return 3`)
+assert(a == 1 && b ==  - 10 && c == "5");
+mt = {
+    __add = fn (a, b) {
+        return setmetatable({
+            a[(1)] + b[(1)]
+        }, mt)
+    }, 
+    __mod = fn (a, b) {
+        return setmetatable({
+            a[(1)] % b[(1)]
+        }, mt)
+    }, 
+    __unm = fn (a) {
+        return setmetatable({
+            a[(1)] * 2
+        }, mt)
+    }
+}
+a, b, c = setmetatable({
+    4
+}, mt), setmetatable({
+    8
+}, mt), setmetatable({
+     - 3
+}, mt)
+x, y, z = T.testC("arith +; return 2", 10, a, b)
+assert(x == 10 && y[(1)] == 12 && z == nil);
+assert(T.testC("arith %; return 1", a, c)[(1)] == 4 %  - 3);
+assert(T.testC("arith _; arith +; arith %; return 1", b, a, c)[(1)] == 8 % (4 + ( - 3) * 2));
+assert(T.testC("compare 2 5 1, return 1", 3, 2, 2, 4, 2, 2));
+assert(T.testC("compare 2 5 2, return 1", 3, 2, 2, 4, 2, 2));
+assert(!T.testC("compare 3 4 1, return 1", 3, 2, 2, 4, 2, 2));
+assert(T.testC("compare 3 4 2, return 1", 3, 2, 2, 4, 2, 2));
+assert(T.testC("compare 5 2 1, return 1", 4, 2, 2, 3, 2, 2));
+assert(!T.testC("compare 2 -3 1, return 1", "4", "2", "2", "3", "2", "2"));
+assert(!T.testC("compare -3 2 1, return 1", "3", "2", "2", "4", "2", "2"));
+assert(!T.testC("compare 1 4 1, return 1"));
+assert(!T.testC("compare 9 1 2, return 1"));
+assert(!T.testC("compare 9 9 0, return 1"));
+local b = {
+    __lt = fn (a, b) {
+        return a[(1)] < b[(1)]
+    }
+}
+local a1, a3, a4 = setmetatable({
+    1
+}, b), setmetatable({
+    3
+}, b), setmetatable({
+    4
+}, b)
+assert(T.testC("compare 2 5 1, return 1", a3, 2, 2, a4, 2, 2));
+assert(T.testC("compare 2 5 2, return 1", a3, 2, 2, a4, 2, 2));
+assert(T.testC("compare 5 -6 1, return 1", a4, 2, 2, a3, 2, 2));
+a, b = T.testC("compare 5 -6 1, return 2", a1, 2, 2, a3, 2, 20)
+assert(a == 20 && b == false);
+a, b = T.testC("compare 5 -6 2, return 2", a1, 2, 2, a3, 2, 20)
+assert(a == 20 && b == false);
+a, b = T.testC("compare 5 -6 2, return 2", a1, 2, 2, a1, 2, 20)
+assert(a == 20 && b == true);
+local t = setmetatable({
+    x = 20
+}, {
+    __len = fn (t) {
+        return t.x
+    }
+})
+a, b, c = T.testC(`
+   len 2;
+   Llen 2;
+   objsize 2;
+   return 3
+`, t)
+assert(a == 20 && b == 20 && c == 0);
+t.x = "234"
+t[(1)] = 20
+a, b, c = T.testC(`
+   len 2;
+   Llen 2;
+   objsize 2;
+   return 3
+`, t)
+assert(a == "234" && b == 234 && c == 1);
+t.x = print
+t[(1)] = 20
+a, c = T.testC(`
+   len 2;
+   objsize 2;
+   return 2
+`, t)
+assert(a == print && c == 1);
+a = setmetatable({
+    x = "u"
+}, {
+    __concat = fn (a, b) {
+        return a.x .. '.' .. b.x
+    }
+})
+x, y = T.testC(`
+  pushnum 5
+  pushvalue 2;
+  pushvalue 2;
+  concat 2;
+  pushvalue -2;
+  return 2;
+`, a, a)
+assert(x == a .. a && y == 5);
+assert(T.testC("concat 0; return 1") == "");
+assert(T.testC("concat 1; return 1", "xuxu") == "xuxu");
+global fn B(x) {
+    return x && 1 || 0
+}
+global fn count(x, n) {
+    n = n || 2
+    local prog = `
+    isnumber %d;
+    isstring %d;
+    isfunction %d;
+    iscfunction %d;
+    istable %d;
+    isuserdata %d;
+    isnil %d;
+    isnull %d;
+    return 8
+  `
+    prog = string.format(prog, n, n, n, n, n, n, n, n)
+    local a, b, c, d, e, f, g, h = T.testC(prog, x)
+    return B(a) + B(b) + B(c) + B(d) + B(e) + B(f) + B(g) + (100 * B(h))
+}
+assert(count(3) == 2);
+assert(count('alo') == 1);
+assert(count('32') == 2);
+assert(count({}) == 1);
+assert(count(print) == 2);
+assert(count(fn () {
+    
+}) == 1);
+assert(count(nil) == 1);
+assert(count(io.stdin) == 1);
+assert(count(nil, 15) == 100);
+global fn to(s, x, n) {
+    n = n || 2
+    return T.testC(string.format("%s %d; return 1", s, n), x)
+}
+assert(to("tostring", {}) == nil);
+assert(to("tostring", "alo") == "alo");
+assert(to("tostring", 12) == "12");
+assert(to("tostring", 12, 3) == nil);
+assert(to("objsize", {}) == 0);
+assert(to("objsize", {
+    1, 
+    2, 
+    3
+}) == 3);
+assert(to("objsize", "alo\0\0a") == 6);
+assert(to("objsize", T.newuserdata(0)) == 0);
+assert(to("objsize", T.newuserdata(101)) == 101);
+assert(to("objsize", 124) == 0);
+assert(to("objsize", true) == 0);
+assert(to("tonumber", {}) == 0);
+assert(to("tonumber", "12") == 12);
+assert(to("tonumber", "s2") == 0);
+assert(to("tonumber", 1, 20) == 0);
+assert(to("topointer", 10) == 0);
+assert(to("topointer", true) == 0);
+assert(to("topointer", T.pushuserdata(20)) == 20);
+assert(to("topointer", io.read) ~= 0);
+assert(to("func2num", 20) == 0);
+assert(to("func2num", T.pushuserdata(10)) == 0);
+assert(to("func2num", io.read) ~= 0);
+a = to("tocfunction", math.deg)
+assert(a(3) == math.deg(3) && a == math.deg);
+{
+    collectgarbage("stop");
+    local s, msg = pcall(T.testC, "checkstack 1000023 XXXX")
+    assert(!s && string.find(msg, "XXXX"));
+    s = string.rep("pushnil;checkstack 1 XX;", 1000000)
+    s, msg = pcall(T.testC, s)
+    assert(!s && string.find(msg, "XX"));
+    collectgarbage("restart");
+}
+local prog = {
+    "checkstack 30000 msg", 
+    "newtable"
+}
+for i = 1, 12000 {
+    prog[(#prog + 1)] = "pushnum " .. i
+    prog[(#prog + 1)] = "pushnum " .. i * 10
+}
+prog[(#prog + 1)] = "rawgeti R 2"
+prog[(#prog + 1)] = "insert " ..  - (2 * 12000 + 2)
+for i = 1, 12000 {
+    prog[(#prog + 1)] = "settable " ..  - (2 * (12000 - i + 1) + 1)
+}
+prog[(#prog + 1)] = "return 2"
+prog = table.concat(prog, ";")
+local g, t = T.testC(prog)
+assert(g == _G);
+for i = 1, 12000 {
+    assert(t[(i)] == i * 10);
+    t[(i)] = nil
+}
+assert(next(t) == nil);
+prog, g, t = nil
+a = T.testC(`
+  loadstring 2; pcall 0,1;
+  pushvalue 3; insert -2; pcall 1, 1;
+  pcall 0, 0;
+  return 1
+`, "x=150", fn (a) {
+    assert(a == nil);
+    return 3
+})
+assert(type(a) == 'string' && x == 150);
+global fn check3(p, ...) {
+    local arg = {
+        ...
+    }
+    assert(#arg == 3);
+    assert(string.find(arg[(3)], p));
+}
+check3(":1:", T.testC("loadstring 2; gettop; return .", "x="));
+check3("cannot read", T.testC("loadfile 2; gettop; return .", "."));
+check3("cannot open xxxx", T.testC("loadfile 2; gettop; return .", "xxxx"));
+global fn checkerrnopro(code, msg) {
+    L = coroutine.create(fn () {
+        
+    })
+    local stt, err = pcall(T.testC, code)
+    assert(!stt && string.find(err, msg));
+}
+checkerrnopro("pushnum 3; call 0 0", "attempt to call");
+global fn f() {
+    f();
+}
+checkerrnopro("getglobal 'f'; call 0 0;", "stack overflow");
+a = {
+    x = 0, 
+    y = 12
+}
+x, y = T.testC("gettable 2; pushvalue 4; gettable 2; return 2", a, 3, "y", 4, "x")
+assert(x == 0 && y == 12);
+T.testC("settable -5", a, 3, 4, "x", 15);
+assert(a.x == 15);
+a[(a)] = print
+x = T.testC("gettable 2; return 1", a)
+assert(x == print);
+T.testC("settable 2", a, "x");
+assert(a[(a)] == "x");
+b = setmetatable({
+    p = a
+}, {})
+getmetatable(b).__index = fn (t, i) {
+    return t.p[(i)]
+}
+k, x = T.testC("gettable 3, return 2", 4, b, 20, 35, "x")
+assert(x == 15 && k == 35);
+getmetatable(b).__index = fn (t, i) {
+    return a[(i)]
+}
+getmetatable(b).__newindex = fn (t, i, v) {
+    a[(i)] = v
+}
+y = T.testC("insert 2; gettable -5; return 1", 2, 3, 4, "y", b)
+assert(y == 12);
+k = T.testC("settable -5, return 1", b, 3, 4, "x", 16)
+assert(a.x == 16 && k == 4);
+a[(b)] = 'xuxu'
+y = T.testC("gettable 2, return 1", b)
+assert(y == 'xuxu');
+T.testC("settable 2", b, 19);
+assert(a[(b)] == 19);
+a = {}
+t = pack(T.testC("next; gettop; return .", a, nil))
+tcheck(t, {
+    n = 1, 
+    a
+});
+a = {
+    a = 3
+}
+t = pack(T.testC("next; gettop; return .", a, nil))
+tcheck(t, {
+    n = 3, 
+    a, 
+    'a', 
+    3
+});
+t = pack(T.testC("next; pop 1; next; gettop; return .", a, nil))
+tcheck(t, {
+    n = 1, 
+    a
+});
+{
+    local A = T.testC([[ pushnum 10; pushnum 20; pushcclosure 2; return 1]])
+    t, b, c = A(`pushvalue U0; pushvalue U1; pushvalue U2; return 3`)
+    assert(b == 10 && c == 20 && type(t) == 'table');
+    a, b = A(`tostring U3; tonumber U4; return 2`)
+    assert(a == nil && b == 0);
+    A(`pushnum 100; pushnum 200; replace U2; replace U1`);
+    b, c = A(`pushvalue U1; pushvalue U2; return 2`)
+    assert(b == 100 && c == 200);
+    A(`replace U2; replace U1`, {
+        x = 1
+    }, {
+        x = 2
+    });
+    b, c = A(`pushvalue U1; pushvalue U2; return 2`)
+    assert(b.x == 1 && c.x == 2);
+    T.checkmemory();
+}
+assert(T.testC([[isnull U1; return 1]]) == true);
+assert(T.testC([[isnull U100; return 1]]) == true);
+assert(T.testC([[pushvalue U1; return 1]]) == nil);
+local f = T.testC([[ pushnum 10; pushnum 20; pushcclosure 2; return 1]])
+assert(T.upvalue(f, 1) == 10 && T.upvalue(f, 2) == 20 && T.upvalue(f, 3) == nil);
+T.upvalue(f, 2, "xuxu");
+assert(T.upvalue(f, 2) == "xuxu");
+{
+    local A = "checkstack 300 msg;" .. string.rep("pushnum 10;", 255) .. "pushcclosure 255; return 1"
+    A = T.testC(A)
+    for i = 1, 255 {
+        assert(A(("pushvalue U%d; return 1")::format(i)) == 10);
+    }
+    assert(A("isnull U256; return 1"));
+    assert(!A("isnil U256; return 1"));
+}
+assert(!pcall(debug.setuservalue, 3, {}));
+assert(!pcall(debug.setuservalue, nil, {}));
+assert(!pcall(debug.setuservalue, T.pushuserdata(1), {}));
+local b = T.newuserdata(0)
+local a = {}
+assert(debug.getuservalue(b) == nil);
+assert(debug.setuservalue(b, a));
+assert(debug.getuservalue(b) == a);
+assert(debug.setuservalue(b, nil));
+assert(debug.getuservalue(b) == nil);
+assert(debug.getuservalue(4) == nil);
+local i = T.ref({})
+T.unref(i);
+assert(T.ref({}) == i);
+Arr = {}
+Lim = 100
+for i = 1, Lim {
+    Arr[(i)] = T.ref({})
+}
+assert(T.ref(nil) ==  - 1 && T.getref( - 1) == nil);
+T.unref( - 1);
+T.unref( - 1);
+for i = 1, Lim {
+    T.unref(Arr[(i)]);
+}
+global fn printlocks() {
+    local f = T.makeCfunc("gettable R; return 1")
+    local n = f("n")
+    print("n", n);
+    for i = 0, n {
+        print(i, f(i));
+    }
+}
+for i = 1, Lim {
+    Arr[(i)] = T.ref({})
+}
+for i = 1, Lim, 2 {
+    T.unref(Arr[(i)]);
+}
+assert(type(T.getref(Arr[(2)])) == 'table');
+assert(T.getref( - 1) == nil);
+a = T.ref({})
+collectgarbage();
+assert(type(T.getref(a)) == 'table');
+tt = {}
+cl = {
+    n = 0
+}
+A = nil
+B = nil
+local F
+F = fn (x) {
+    local udval = T.udataval(x)
+    table.insert(cl, udval);
+    local d = T.newuserdata(100)
+    d = nil
+    assert(debug.getmetatable(x).__gc == F);
+    assert(load("table.insert({}, {})"))();
+    collectgarbage();
+    assert(debug.getmetatable(x).__gc == F);
+    local dummy = {}
+    if A ~= nil {
+        assert(type(A) == "userdata");
+        assert(T.udataval(A) == B);
+        debug.getmetatable(A);
+    }
+    A = x
+    B = udval
+    return 1, 2, 3
+}
+tt.__gc = F
+{
+    collectgarbage();
+    collectgarbage();
+    local x = collectgarbage("count")
+    local a = T.newuserdata(5001)
+    assert(T.testC("objsize 2; return 1", a) == 5001);
+    assert(collectgarbage("count") >= x + 4);
+    a = nil
+    collectgarbage();
+    assert(collectgarbage("count") <= x + 1);
+    x = collectgarbage("count")
+    collectgarbage("stop");
+    for i = 1, 1000 {
+        T.newuserdata(0);
+    }
+    assert(collectgarbage("count") > x + 10);
+    collectgarbage();
+    assert(collectgarbage("count") <= x + 1);
+    x = collectgarbage("count")
+    collectgarbage();
+    collectgarbage("stop");
+    a = {
+        __gc = fn () {
+            
+        }
+    }
+    for i = 1, 1000 {
+        debug.setmetatable(T.newuserdata(0), a);
+    }
+    assert(collectgarbage("count") >= x + 10);
+    collectgarbage();
+    assert(collectgarbage("count") >= x + 10);
+    collectgarbage();
+    assert(collectgarbage("count") <= x + 1);
+    collectgarbage("restart");
+}
+collectgarbage("stop");
+a = T.newuserdata(0)
+debug.setmetatable(a, tt);
+na = T.udataval(a)
+b = T.newuserdata(0)
+debug.setmetatable(b, tt);
+nb = T.udataval(b)
+c = T.newuserdata(0)
+debug.setmetatable(c, tt);
+nc = T.udataval(c)
+x = T.newuserdata(4)
+y = T.newuserdata(0)
+assert(!pcall(io.input, a));
+assert(!pcall(io.input, x));
+assert(debug.getmetatable(x) == nil && debug.getmetatable(y) == nil);
+d = T.ref(a)
+e = T.ref(b)
+f = T.ref(c)
+t = {
+    T.getref(d), 
+    T.getref(e), 
+    T.getref(f)
+}
+assert(t[(1)] == a && t[(2)] == b && t[(3)] == c);
+t = nil
+a = nil
+c = nil
+T.unref(e);
+T.unref(f);
+collectgarbage();
+assert(#cl == 1 && cl[(1)] == nc);
+x = T.getref(d)
+assert(type(x) == 'userdata' && debug.getmetatable(x) == tt);
+x = nil
+tt.b = b
+tt = nil
+A = nil
+b = nil
+T.unref(d);
+n5 = T.newuserdata(0)
+debug.setmetatable(n5, {
+    __gc = F
+});
+n5 = T.udataval(n5)
+collectgarbage();
+assert(#cl == 4);
+assert(cl[(2)] == n5 && cl[(3)] == nb && cl[(4)] == na);
+collectgarbage("restart");
+a, na = {}, {}
+for i = 30, 1,  - 1 {
+    a[(i)] = T.newuserdata(0)
+    debug.setmetatable(a[(i)], {
+        __gc = F
+    });
+    na[(i)] = T.udataval(a[(i)])
+}
+cl = {}
+a = nil
+collectgarbage();
+assert(#cl == 30);
+for i = 1, 30 {
+    assert(cl[(i)] == na[(i)]);
+}
+na = nil
+for i = 2, Lim, 2 {
+    T.unref(Arr[(i)]);
+}
+x = T.newuserdata(41)
+debug.setmetatable(x, {
+    __gc = F
+});
+assert(T.testC("objsize 2; return 1", x) == 41);
+cl = {}
+a = {
+    x = 1
+}
+x = T.udataval(x)
+collectgarbage();
+assert(#cl == 0);
+for n with pairs(a) {
+    a[(n)] = nil
+}
+collectgarbage();
+assert(#cl == 1 && cl[(1)] == x);
+assert(T.testC("compare 2 4 0; return 1", print, 1, print, 20));
+assert(T.testC("compare 3 2 0; return 1", 'alo', "alo"));
+assert(T.testC("compare 2 3 0; return 1", nil, nil));
+assert(!T.testC("compare 2 3 0; return 1", {}, {}));
+assert(!T.testC("compare 2 3 0; return 1"));
+assert(!T.testC("compare 2 3 0; return 1", 3));
+{
+    local map = {}
+    local t = {
+        __eq = fn (a, b) {
+            return map[(a)] == map[(b)]
+        }
+    }
+    local fn f(x) {
+        local u = T.newuserdata(0)
+        debug.setmetatable(u, t);
+        map[(u)] = x
+        return u
+    }
+    assert(f(10) == f(10));
+    assert(f(10) ~= f(11));
+    assert(T.testC("compare 2 3 0; return 1", f(10), f(10)));
+    assert(!T.testC("compare 2 3 0; return 1", f(10), f(20)));
+    t.__eq = nil
+    assert(f(10) ~= f(10));
+}
+print('+');
+_G.t = {}
+T.sethook(`
+  # set a line hook after 3 count hooks
+  sethook 4 0 '
+    getglobal t;
+    pushvalue -3; append -2
+    pushvalue -2; append -2
+  '`, "c", 3);
+local a = 1
+a = 1
+a = 1
+a = 1
+a = 1
+debug.sethook();
+t = _G.t
+assert(t[(1)] == "line");
+line = t[(2)]
+assert(t[(3)] == "line" && t[(4)] == line + 1);
+assert(t[(5)] == "line" && t[(6)] == line + 2);
+assert(t[(7)] == nil);
+{
+    local a = {}
+    for i = 1, 20 {
+        a[(i)] = T.newuserdata(i)
+    }
+    for i = 1, 20, 2 {
+        debug.setmetatable(a[(i)], {
+            __gc = fn (x) {
+                error("error inside gc");
+            }
+        });
+    }
+    for i = 2, 20, 2 {
+        debug.setmetatable(a[(i)], {
+            __gc = fn (x) {
+                load("A=A+1")();
+            }
+        });
+    }
+    _G.A = 0
+    a = 0
+    while 1 {
+        local stat, msg = pcall(collectgarbage)
+        if stat {
+            break
+        } else {
+            a = a + 1
+            assert(string.find(msg, "__gc"));
+        }
+    }
+    assert(a == 10);
+    assert(A == 10);
+}
+{
+    local a = {}
+    local lim = 30
+    for i = 0, lim {
+        a[(i)] = T.pushuserdata(i)
+    }
+    for i = 0, lim {
+        assert(T.udataval(a[(i)]) == i);
+    }
+    for i = 0, lim {
+        assert(T.pushuserdata(i) == a[(i)]);
+    }
+    for i = 0, lim {
+        a[(a[(i)])] = i
+    }
+    for i = 0, lim {
+        a[(T.pushuserdata(i))] = i
+    }
+    assert(type(tostring(a[(1)])) == "string");
+}
+T.closestate(T.newstate());
+L1 = T.newstate()
+assert(L1);
+assert(T.doremote(L1, "X='a'; return 'a'") == 'a');
+assert(#pack(T.doremote(L1, "function f () return 'alo', 3 end; f()")) == 0);
+a, b = T.doremote(L1, "return f()")
+assert(a == 'alo' && b == '3');
+T.doremote(L1, "_ERRORMESSAGE = nil");
+a, _, b = T.doremote(L1, "return sin(1)")
+assert(a == nil && b == 2);
+a, b, c = T.doremote(L1, "return a+")
+assert(a == nil && c == 3 && type(b) == "string");
+T.loadlib(L1);
+a, b, c = T.doremote(L1, `
+  string = require'string'
+  a = require'_G'; assert(a == _G and require("_G") == a)
+  io = require'io'; assert(type(io.read) == "function")
+  assert(require("io") == io)
+  a = require'table'; assert(type(a.insert) == "function")
+  a = require'debug'; assert(type(a.getlocal) == "function")
+  a = require'math'; assert(type(a.sin) == "function")
+  return string.sub('okinama', 1, 2)
+`)
+assert(a == "ok");
+T.closestate(L1);
+L1 = T.newstate()
+T.loadlib(L1);
+T.doremote(L1, "a = {}");
+T.testC(L1, `getglobal "a"; pushstring "x"; pushnum 1;
+             settable -3`);
+assert(T.doremote(L1, "return a.x") == "1");
+T.closestate(L1);
+L1 = nil
+print('+');
+assert(!pcall(T.newuserdata, 2 ^ 32 - 4));
+collectgarbage();
+T.totalmem(T.totalmem() + 5000);
+assert(!pcall(load("local a={}; for i=1,100000 do a[i]=i end")));
+T.totalmem(1000000000);
+global fn testamem(s, f) {
+    collectgarbage();
+    collectgarbage();
+    local M = T.totalmem()
+    local oldM = M
+    local a, b = nil
+    while 1 {
+        M = M + 7
+        T.totalmem(M);
+        a, b = pcall(f)
+        T.totalmem(1000000000);
+        if a && b {
+            break
+        }
+        collectgarbage();
+        if !a && !(string.find(b, "memory") || string.find(b, "overflow")) {
+            error(b, 0);
+        }
+    }
+    print("\nlimit for " .. s .. ": " .. M - oldM);
+    return b
+}
+b = testamem("state creation", T.newstate)
+T.closestate(b);
+mt = T.testC("rawgeti R 1; return 1")
+assert(type(mt) == "thread" && coroutine.running() == mt);
+global fn expand(n, s) {
+    if n == 0 {
+        return ""
+    }
+    local e = string.rep("=", n)
+    return string.format("T.doonnewstack([%s[ %s;\n collectgarbage(); %s]%s])\n", e, s, expand(n - 1, s), e)
+}
+G = 0
+collectgarbage();
+a = collectgarbage("count")
+load(expand(20, "G=G+1"))();
+assert(G == 20);
+collectgarbage();
+testamem("thread creation", fn () {
+    return T.doonnewstack("x=1") == 0
+});
+testamem("loadstring", fn () {
+    return load("x=1")
+});
+local testprog = `
+local function foo () return end
+local t = {"x"}
+a = "aaa"
+for i = 1, #t do a=a..t[i] end
+return true
+`
+_G.a = nil
+local t = os.tmpname()
+local f = assert(io.open(t, "w"))
+f::write(testprog);
+f::close();
+testamem("dofile", fn () {
+    local a = loadfile(t)
+    return a && a()
+});
+assert(os.remove(t));
+assert(_G.a == "aaax");
+testamem("string creation", fn () {
+    local a, b = string.gsub("alo alo", "(a)", fn (x) {
+        return x .. 'b'
+    })
+    return (a == 'ablo ablo')
+});
+testamem("dump/undump", fn () {
+    local a = load(testprog)
+    local b = a && string.dump(a)
+    a = b && load(b)
+    return a && a()
+});
+local t = os.tmpname()
+testamem("file creation", fn () {
+    local f = assert(io.open(t, 'w'))
+    assert(!io.open("nomenaoexistente"));
+    io.close(f);
+    return !loadfile('nomenaoexistente')
+});
+assert(os.remove(t));
+testamem("table creation", fn () {
+    local a, lim = {}, 10
+    for i = 1, lim {
+        a[(i)] = i
+        a[(i .. 'a')] = {}
+    }
+    return (type(a[(lim .. 'a')]) == 'table' && a[(lim)] == lim)
+});
+testamem("constructors", fn () {
+    local a = {
+        10, 
+        20, 
+        30, 
+        40, 
+        50, 
+        a = 1, 
+        b = 2, 
+        c = 3, 
+        d = 4, 
+        e = 5
+    }
+    return (type(a) == 'table' && a.e == 5)
+});
+local a = 1
+close = nil
+testamem("closure creation", fn () {
+    global fn close(b, c) {
+        return fn (x) {
+            return a + b + c + x
+        }
+    }
+    return (close(2, 3)(4) == 10)
+});
+testamem("coroutines", fn () {
+    local a = coroutine.wrap(fn () {
+        coroutine.yield(string.rep("a", 10));
+        return {}
+    })
+    assert(string.len(a()) == 10);
+    return a()
+});
+print('+');
+local fn gsub(a, b, c) {
+    a, b = T.testC("gsub 2 3 4; gettop; return 2", a, b, c)
+    assert(b == 5);
+    return a
+}
+assert(gsub("alo.alo.uhuh.", ".", "//") == "alo//alo//uhuh//");
+assert(gsub("alo.alo.uhuh.", "alo", "//") == "//.//.uhuh.");
+assert(gsub("", "alo", "//") == "");
+assert(gsub("...", ".", "/.") == "/././.");
+assert(gsub("...", "...", "") == "");
+local mt_xuxu, res, top = T.testC("newmetatable xuxu; gettop; return 3")
+assert(type(mt_xuxu) == "table" && res && top == 3);
+local d, res, top = T.testC("newmetatable xuxu; gettop; return 3")
+assert(mt_xuxu == d && !res && top == 3);
+d, res, top = T.testC("newmetatable xuxu1; gettop; return 3")
+assert(mt_xuxu ~= d && res && top == 3);
+x = T.newuserdata(0)
+y = T.newuserdata(0)
+T.testC("pushstring xuxu; gettable R; setmetatable 2", x);
+assert(getmetatable(x) == mt_xuxu);
+local res1, res2, top = T.testC(`testudata -1 xuxu
+   	 			  testudata 2 xuxu
+				  gettop
+				  return 3`, x)
+assert(res1 && res2 && top == 4);
+res1, res2, top = T.testC(`testudata -1 xuxu1
+			    testudata 2 xuxu1
+			    gettop
+			    return 3`, x)
+assert(!res1 && !res2 && top == 4);
+res1, res2, top = T.testC(`testudata -1 xuxu2
+			    testudata 2 xuxu2
+			    gettop
+			    return 3`, x)
+assert(!res1 && !res2 && top == 4);
+res1, res2, top = T.testC(`testudata -1 xuxu
+			    testudata 2 xuxu
+			    gettop
+			    return 3`, y)
+assert(!res1 && !res2 && top == 4);
+{
+    local r = debug.getregistry()
+    assert(r.xuxu == mt_xuxu && r.xuxu1 == d);
+    r.xuxu = nil
+    r.xuxu1 = nil
+}
+print('OK');

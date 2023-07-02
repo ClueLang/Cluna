@@ -1,0 +1,366 @@
+---
+source: src/main.rs
+assertion_line: 118
+expression: compiled
+input_file: test-data/lua5.2-tests/calls.lua
+---
+print("testing functions and calls");
+local debug = require("debug")
+assert(type(1 < 2) == 'boolean');
+assert(type(true) == 'boolean' && type(false) == 'boolean');
+assert(type(nil) == 'nil' && type( - 3) == 'number' && type('x') == 'string' && type({}) == 'table' && type(type) == 'function');
+assert(type(assert) == type(print));
+f = nil
+global fn f(x) {
+    return a::x(x)
+}
+assert(type(f) == 'function');
+fact = false
+{
+    local res = 1
+    local fn fact(n) {
+        if n == 0 {
+            return res
+        } else {
+            return n * fact(n - 1)
+        }
+    }
+    assert(fact(5) == 120);
+}
+assert(fact == false);
+a = {
+    i = 10
+}
+self = 20
+method a::x(x) {
+    return x + self.i
+}
+method a.y(x) {
+    return x + self
+}
+assert(a::x(1) + 10 == a.y(1));
+a.t = {
+    i =  - 100
+}
+a[("t")].x = fn (self, a, b) {
+    return self.i + a + b
+}
+assert(a.t::x(2, 3) ==  - 95);
+{
+    local a = {
+        x = 0
+    }
+    method a::add(x) {
+        self.x, a.y = self.x + x, 20
+        return self
+    }
+    assert(a::add(10)::add(20)::add(30).x == 60 && a.y == 20);
+}
+local a = {
+    b = {
+        c = {}
+    }
+}
+method a.b.c.f1(x) {
+    return x + 1
+}
+method a.b.c::f2(x, y) {
+    self[(x)] = y
+}
+assert(a.b.c.f1(4) == 5);
+a.b.c::f2('k', 12);
+assert(a.b.c.k == 12);
+print('+');
+t = nil
+global fn f(a, b, c) {
+    local d = 'a'
+    t = {
+        a, 
+        b, 
+        c, 
+        d
+    }
+}
+f(1, 2);
+assert(t[(1)] == 1 && t[(2)] == 2 && t[(3)] == nil && t[(4)] == 'a');
+f(1, 2, 3, 4);
+assert(t[(1)] == 1 && t[(2)] == 2 && t[(3)] == 3 && t[(4)] == 'a');
+global fn fat(x) {
+    if x <= 1 {
+        return 1
+    } else {
+        return x * load("return fat(" .. x - 1 .. ")")()
+    }
+}
+assert(load("load 'assert(fat(6)==720)' () "))();
+a = load('return fat(5), 3')
+a, b = a()
+assert(a == 120 && b == 3);
+print('+');
+global fn err_on_n(n) {
+    if n == 0 {
+        error();
+        exit(1);
+    } else {
+        err_on_n(n - 1);
+        exit(1);
+    }
+}
+{
+    global fn dummy(n) {
+        if n > 0 {
+            assert(!pcall(err_on_n, n));
+            dummy(n - 1);
+        }
+    }
+}
+dummy(10);
+global fn deep(n) {
+    if n > 0 {
+        deep(n - 1);
+    }
+}
+deep(10);
+deep(200);
+global fn deep(n) {
+    if n > 0 {
+        return deep(n - 1)
+    } else {
+        return 101
+    }
+}
+assert(deep(30000) == 101);
+a = {}
+method a::deep(n) {
+    if n > 0 {
+        return self::deep(n - 1)
+    } else {
+        return 101
+    }
+}
+assert(a::deep(30000) == 101);
+print('+');
+a = nil(fn (x) {
+    a = x
+})(23)
+assert(a == 23 && (fn (x) {
+    return x * 2
+})(20) == 40);
+Z = fn (le) {
+    local fn a(f) {
+        return le(fn (x) {
+            return f(f)(x)
+        })
+    }
+    return a(a)
+}
+F = fn (f) {
+    return fn (n) {
+        if n == 0 {
+            return 1
+        } else {
+            return n * f(n - 1)
+        }
+    }
+}
+fat = Z(F)
+assert(fat(0) == 1 && fat(4) == 24 && Z(F)(5) == 5 * Z(F)(4));
+local fn g(z) {
+    local fn f(a, b, c, d) {
+        return fn (x, y) {
+            return a + b + c + d + a + x + y + z
+        }
+    }
+    return f(z, z + 1, z + 2, z + 3)
+}
+f = g(10)
+assert(f(9, 16) == 10 + 11 + 12 + 13 + 10 + 9 + 16 + 10);
+Z, F, f = nil
+print('+');
+global fn unlpack(t, i) {
+    i = i || 1
+    if (i <= #t) {
+        return t[(i)], unlpack(t, i + 1)
+    }
+}
+global fn equaltab(t1, t2) {
+    assert(#t1 == #t2);
+    for i = 1, #t1 {
+        assert(t1[(i)] == t2[(i)]);
+    }
+}
+local pack = fn (...) {
+    return (table.pack(...))
+}
+global fn f() {
+    return 1, 2, 30, 4
+}
+global fn ret2(a, b) {
+    return a, b
+}
+local a, b, c, d = unlpack({
+    1, 
+    2, 
+    3
+})
+assert(a == 1 && b == 2 && c == 3 && d == nil);
+a = {
+    1, 
+    2, 
+    3, 
+    4, 
+    false, 
+    10, 
+    'alo', 
+    false, 
+    assert
+}
+equaltab(pack(unlpack(a)), a);
+equaltab(pack(unlpack(a),  - 1), {
+    1, 
+     - 1
+});
+a, b, c, d = ret2(f()), ret2(f())
+assert(a == 1 && b == 1 && c == 2 && d == nil);
+a, b, c, d = unlpack(pack(ret2(f()), ret2(f())))
+assert(a == 1 && b == 1 && c == 2 && d == nil);
+a, b, c, d = unlpack(pack(ret2(f()), (ret2(f()))))
+assert(a == 1 && b == 1 && c == nil && d == nil);
+a = ret2({
+    unlpack({
+        1, 
+        2, 
+        3
+    }), 
+    unlpack({
+        3, 
+        2, 
+        1
+    }), 
+    unlpack({
+        "a", 
+        "b"
+    })
+})
+assert(a[(1)] == 1 && a[(2)] == 3 && a[(3)] == "a" && a[(4)] == "b");
+rawget({}, "x", 1);
+rawset({}, "x", 1, 2);
+assert(math.sin(1, 2) == math.sin(1));
+table.sort({
+    10, 
+    9, 
+    8, 
+    4, 
+    19, 
+    23, 
+    0, 
+    0
+}, fn (a, b) {
+    return a < b
+}, "extra arg");
+local x = "-- a comment\0\0\0\n  x = 10 + \n23; \
+     local a = function () x = 'hi' end; \
+     return '\0'"
+global fn read1(x) {
+    local i = 0
+    return fn () {
+        collectgarbage();
+        i = i + 1
+        return string.sub(x, i, i)
+    }
+}
+global fn cannotload(msg, a, b) {
+    assert(!a && string.find(b, msg));
+}
+a = assert(load(read1(x), "modname", "t", _G))
+assert(a() == "\0" && _G.x == 33);
+assert(debug.getinfo(a).source == "modname");
+cannotload("attempt to load a text chunk", load(read1(x), "modname", "b", {}));
+cannotload("attempt to load a text chunk", load(x, "modname", "b"));
+a = assert(load(fn () {
+    return nil
+}))
+a();
+assert(!load(fn () {
+    return true
+}));
+local t = {
+    nil, 
+    "return ", 
+    "3"
+}
+f, msg = load(fn () {
+    return table.remove(t, 1)
+})
+assert(f() == nil);
+f = load(string.dump(fn () {
+    return 1
+}), nil, "b", {})
+assert(type(f) == "function" && f() == 1);
+x = string.dump(load("x = 1; return x"))
+a = assert(load(read1(x), nil, "b"))
+assert(a() == 1 && _G.x == 1);
+cannotload("attempt to load a binary chunk", load(read1(x), nil, "t"));
+cannotload("attempt to load a binary chunk", load(x, nil, "t"));
+assert(!pcall(string.dump, print));
+cannotload("unexpected symbol", load(read1("*a = 123")));
+cannotload("unexpected symbol", load("*a = 123"));
+cannotload("hhi", load(fn () {
+    error("hhi");
+}));
+assert(load("return _ENV", nil, nil, 123)() == 123);
+local x
+XX = 123
+local fn h() {
+    local y = x
+    return XX
+}
+local d = string.dump(h)
+x = load(d, "", "b")
+assert(debug.getupvalue(x, 2) == '_ENV');
+debug.setupvalue(x, 2, _G);
+assert(x() == 123);
+assert(assert(load("return XX + ...", nil, nil, {
+    XX = 13
+}))(4) == 17);
+x = `
+  return function (x)
+    return function (y)
+     return function (z)
+       return x+y+z
+     end
+   end
+  end
+`
+a = assert(load(read1(x)))
+assert(a()(2)(3)(10) == 15);
+local a, b = 20, 30
+x = load(string.dump(fn (x) {
+    if x == "set" {
+        a = 10 + b
+        b = b + 1
+    } else {
+        return a
+    }
+}))
+assert(x() == nil);
+assert(debug.setupvalue(x, 1, "hi") == "a");
+assert(x() == "hi");
+assert(debug.setupvalue(x, 2, 13) == "b");
+assert(!debug.setupvalue(x, 3, 10));
+x("set");
+assert(x() == 23);
+x("set");
+assert(x() == 24);
+assert((fn () {
+    return nil
+})(4) == nil);
+assert((fn () {
+    local a
+    return a
+})(4) == nil);
+assert((fn (a) {
+    return a
+})() == nil);
+print('OK');
+return deep

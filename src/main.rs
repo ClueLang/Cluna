@@ -12,6 +12,7 @@ struct Cli {
 fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
     let code = std::fs::read_to_string(path).map_err(|e| e.to_string())?;
     let scanned = scan_code(code)?;
+    dbg!(&scanned);
     let parsed = parse_tokens(&scanned)?;
     let compiled = compile_ast(parsed);
 
@@ -39,12 +40,14 @@ fn main() -> Result<(), String> {
         let mut stack = vec![path];
 
         while let Some(path) = stack.pop() {
-            if path.is_file() && path.extension().map_or(false, |ext| ext == "lua") {
-                compile_file(&path, None)?;
-            } else if path.is_dir() {
-                for entry in std::fs::read_dir(path).map_err(|e| e.to_string())? {
-                    let entry = entry.map_err(|e| e.to_string())?;
-                    stack.push(entry.path());
+            for entry in std::fs::read_dir(path).map_err(|e| e.to_string())? {
+                let entry = entry.map_err(|e| e.to_string())?;
+                let path = entry.path();
+
+                if path.is_dir() {
+                    stack.push(path);
+                } else if path.is_file() && path.extension().map_or(false, |ext| ext == "lua") {
+                    compile_file(&path, None)?;
                 }
             }
         }
@@ -127,10 +130,36 @@ mod test {
         gen_tests!("test-data/lua5.1-tests", compile);
     }
 
+    mod lua5_2 {
+        use super::*;
+
+        gen_tests!("test-data/lua5.2-tests", scan);
+        gen_tests!("test-data/lua5.2-tests", parse);
+        gen_tests!("test-data/lua5.2-tests", compile);
+    }
+
     mod extra {
         use super::*;
         gen_tests!("test-data/extra", scan);
         gen_tests!("test-data/extra", parse);
         gen_tests!("test-data/extra", compile);
+    }
+
+    mod negative {
+        use super::*;
+        fn compile(path: PathBuf) -> Result<(), String> {
+            let code = std::fs::read_to_string(path).unwrap();
+            let scanned = scan_code(code)?;
+            let parsed = parse_tokens(&scanned)?;
+            let compiled = compile_ast(parsed);
+
+            Ok(())
+        }
+
+        fn should_fail(path: PathBuf) -> Result<(), ()> {
+            compile(path).map_or(Ok(()), |_| Err(()))
+        }
+
+        gen_tests!("test-data/negative", should_fail);
     }
 }

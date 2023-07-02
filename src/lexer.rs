@@ -1,3 +1,5 @@
+use crate::number::Number;
+
 #[derive(Debug,Clone, Copy,PartialEq)]
 #[rustfmt::skip]
 pub enum TokenType {
@@ -24,13 +26,38 @@ pub enum TokenType {
 pub struct Token {
     pub(crate) kind: TokenType,
     lexeme: String,
+    computed_lexeme: Option<String>,
     line: usize,
 }
 
 impl Token {
     pub fn new(kind: TokenType, lexeme: String, line: usize) -> Self {
-        Self { kind, lexeme, line }
+        Self {
+            kind,
+            lexeme,
+            line,
+            computed_lexeme: None,
+        }
     }
+
+    pub fn new_number(
+        kind: TokenType,
+        lexeme: String,
+        computed_lexeme: String,
+        line: usize,
+    ) -> Self {
+        Self {
+            kind,
+            lexeme,
+            computed_lexeme: Some(computed_lexeme),
+            line,
+        }
+    }
+
+    pub fn computed_lexeme(&self) -> Option<String> {
+        self.computed_lexeme.clone()
+    }
+
     pub fn kind(&self) -> TokenType {
         self.kind
     }
@@ -45,11 +72,11 @@ impl Token {
 }
 
 pub struct Lexer {
-    source: Vec<char>,
+    pub(crate) source: Vec<char>,
     tokens: Vec<Token>,
-    column: usize,
-    current: usize,
-    line: usize,
+    pub(crate) column: usize,
+    pub(crate) current: usize,
+    pub(crate) line: usize,
 }
 
 impl Lexer {
@@ -67,7 +94,7 @@ impl Lexer {
         self.current >= self.source.len()
     }
 
-    fn advance(&mut self) -> Option<char> {
+    pub(crate) fn advance(&mut self) -> Option<char> {
         if self.done() {
             None
         } else {
@@ -97,7 +124,7 @@ impl Lexer {
         }
     }
 
-    fn go_back(&mut self) -> Option<char> {
+    pub(crate) fn go_back(&mut self) -> Option<char> {
         if self.current == 0 {
             None
         } else {
@@ -113,7 +140,7 @@ impl Lexer {
         }
     }
 
-    fn peek(&self) -> Option<char> {
+    pub(crate) fn peek(&self) -> Option<char> {
         if self.done() {
             None
         } else {
@@ -129,7 +156,7 @@ impl Lexer {
         }
     }
 
-    fn look_back(&self) -> Option<char> {
+    pub(crate) fn look_back(&self) -> Option<char> {
         (self.current != 0).then_some(self.source[self.current - 2])
     }
 
@@ -341,150 +368,13 @@ impl Lexer {
 
     fn read_number(&mut self) -> Result<(), String> {
         let start = self.current;
-        let mut digit_encountered = false;
-        let mut decimal_encountered = false;
-        let mut is_scientific = false;
-        let mut is_hex = false;
-        let mut sign_encountered = false;
-        let mut partial = false;
-
-        while let Some(c) = self.advance() {
-            match c {
-                '0'..='9' => {
-                    digit_encountered = true;
-                }
-                '.' => {
-                    if decimal_encountered {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-
-                    decimal_encountered = true;
-                    if is_scientific {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-
-                    if is_hex
-                        && !digit_encountered
-                        && !self.peek().map_or(false, |c| c.is_ascii_hexdigit())
-                    {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-
-                    if !digit_encountered {
-                        partial = true;
-
-                        if !self.peek().map_or(false, |c| c.is_ascii_digit()) {
-                            return Err(format!(
-                                "Error: Malformed number at {}:{}",
-                                self.line, self.column
-                            ));
-                        }
-                    }
-                }
-                'x' | 'X' => {
-                    if !self.look_back().map_or(false, |c| c == '0')
-                        || is_scientific
-                        || is_hex
-                        || !self
-                            .peek()
-                            .map_or(false, |c| c.is_ascii_hexdigit() || c == '.')
-                    {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-                    is_hex = true;
-                    digit_encountered = false;
-                }
-                'e' | 'E' => {
-                    if is_hex {
-                        continue;
-                    }
-
-                    if !digit_encountered
-                        || !self
-                            .peek()
-                            .map_or(false, |c| c.is_ascii_digit() || c == '+' || c == '-')
-                        || is_scientific
-                    {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-                    if self.peek().map_or(false, |c| c == '+' || c == '-') {
-                        self.advance();
-                    }
-                    is_scientific = true;
-                }
-                'a'..='f' | 'A'..='F' => {
-                    if !is_hex {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-                }
-                '+' | '-' => {
-                    if !is_scientific {
-                        self.go_back();
-                        break;
-                    }
-
-                    if sign_encountered {
-                        return Err(format!(
-                            "Error: Malformed number at {}:{}",
-                            self.line, self.column
-                        ));
-                    }
-                    sign_encountered = true;
-                }
-                _ => {
-                    self.go_back();
-                    break;
-                }
-            }
-        }
-
-        if is_scientific
-            && !(self.source[self.current - 1].is_ascii_digit()
-                || self.peek().map_or(false, |c| c.is_ascii_digit()))
-        {
-            return Err(format!(
-                "Error: Malformed number at {}:{}",
-                self.line, self.column
-            ));
-        }
-
-        if !digit_encountered {
-            return Err(format!(
-                "Error: Malformed number at {}:{}",
-                self.line, self.column
-            ));
-        }
-
-        let len = self.current - start;
-        let mut lexeme: String = self.source[self.current - len..self.current]
-            .iter()
-            .collect();
-
-        if partial && !is_hex {
-            lexeme.insert(0, '0');
-        }
-
-        self.tokens
-            .push(Token::new(TokenType::Number, lexeme, self.line));
-
+        let number = Number::from_source(self)?;
+        self.tokens.push(Token::new_number(
+            TokenType::Number,
+            self.source[start - 1..self.current].iter().collect(),
+            number.into_clue_number(),
+            self.line,
+        ));
         Ok(())
     }
 

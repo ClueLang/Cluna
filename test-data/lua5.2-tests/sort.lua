@@ -146,7 +146,7 @@ print(string.format("Sorting %d equal elements in %.2f sec.", limit, os.clock()-
 check(a, function(x,y) return nil end)
 for i,v in pairs(a) do assert(not v or i=='n' and v==limit) end
 
-A = {"álo", "\0first :-)", "alo", "then this one", "45", "and a new"}
+A = {"Ã¡lo", "\0first :-)", "alo", "then this one", "45", "and a new"}
 table.sort(A)
 check(A)
 

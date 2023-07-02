@@ -1,0 +1,2883 @@
+---
+source: src/main.rs
+assertion_line: 91
+expression: scanned
+input_file: test-data/lua5.2-tests/goto.lua
+---
+[
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 1,
+    },
+    Token {
+        kind: Function,
+        lexeme: "function",
+        line: 1,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 1,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 1,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "code",
+        line: 1,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 1,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "m",
+        line: 1,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 1,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 2,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "st",
+        line: 2,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 2,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "msg",
+        line: 2,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 2,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "load",
+        line: 2,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 2,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "code",
+        line: 2,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 2,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 3,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 3,
+    },
+    Token {
+        kind: Not,
+        lexeme: "not",
+        line: 3,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "st",
+        line: 3,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 3,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "string",
+        line: 3,
+    },
+    Token {
+        kind: Dot,
+        lexeme: ".",
+        line: 3,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "find",
+        line: 3,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 3,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "msg",
+        line: 3,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 3,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "m",
+        line: 3,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 3,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 3,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 4,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 7,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 7,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[ goto l1; do ::l1:: end ]]",
+        line: 7,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 7,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"label 'l1'\"",
+        line: 7,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 7,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 8,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 8,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[ do ::l1:: end goto l1; ]]",
+        line: 8,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 8,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"label 'l1'\"",
+        line: 8,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 8,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 11,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 11,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[ ::l1:: ::l1:: ]]",
+        line: 11,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 11,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"label 'l1'\"",
+        line: 11,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 11,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 15,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 15,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[ goto l1; local aa ::l1:: ::l2:: print(3) ]]",
+        line: 15,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 15,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"local 'aa'\"",
+        line: 15,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 15,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 18,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 18,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[\ndo local bb, cc;  end\nlocal aa\n print(3)\n]]",
+        line: 22,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 22,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"local 'aa'\"",
+        line: 22,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 22,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 25,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 25,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[ do ::l1:: end goto l1 ]]",
+        line: 25,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 25,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"label 'l1'\"",
+        line: 25,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 25,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 26,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 26,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[ goto l1 do ::l1:: end ]]",
+        line: 26,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 26,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"label 'l1'\"",
+        line: 26,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 26,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "errmsg",
+        line: 29,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 29,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[\n  repeat\n    if x then  end\n    local xuxu = 10\n\n  until xuxu < x\n]]",
+        line: 35,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 35,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"local 'xuxu'\"",
+        line: 35,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 35,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 38,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 38,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 39,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 40,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 40,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 40,
+    },
+    Token {
+        kind: Number,
+        lexeme: "12",
+        line: 40,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 43,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 43,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 43,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 43,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 43,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 43,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 45,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 45,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 45,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 45,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 46,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 49,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 49,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 49,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 49,
+    },
+    Token {
+        kind: Number,
+        lexeme: "13",
+        line: 49,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 49,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 53,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 54,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "prog",
+        line: 54,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 54,
+    },
+    Token {
+        kind: MultilineString,
+        lexeme: "[[\n  do\n    local a = 1\n     a = a + 1\n    a = a + 10\n     a = a + 2\n    a = a + 20\n    return a\n  end\n  ]]",
+        line: 63,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 64,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "label",
+        line: 64,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 64,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "string",
+        line: 64,
+    },
+    Token {
+        kind: Dot,
+        lexeme: ".",
+        line: 64,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "rep",
+        line: 64,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 64,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"0123456789\"",
+        line: 64,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 64,
+    },
+    Token {
+        kind: Number,
+        lexeme: "40",
+        line: 64,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 64,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "prog",
+        line: 65,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "string",
+        line: 65,
+    },
+    Token {
+        kind: Dot,
+        lexeme: ".",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "format",
+        line: 65,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "prog",
+        line: 65,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "label",
+        line: 65,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "label",
+        line: 65,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "label",
+        line: 65,
+    },
+    Token {
+        kind: Comma,
+        lexeme: ",",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "label",
+        line: 65,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 65,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 66,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 66,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 66,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 66,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "load",
+        line: 66,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 66,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "prog",
+        line: 66,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 66,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 66,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 66,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 66,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 66,
+    },
+    Token {
+        kind: Number,
+        lexeme: "31",
+        line: 66,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 66,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 67,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 70,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 72,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 75,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 76,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 76,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 76,
+    },
+    Token {
+        kind: Number,
+        lexeme: "23",
+        line: 76,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 77,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 77,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 77,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 79,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 80,
+    },
+    Token {
+        kind: While,
+        lexeme: "while",
+        line: 82,
+    },
+    Token {
+        kind: True,
+        lexeme: "true",
+        line: 82,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 82,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 85,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 85,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 85,
+    },
+    Token {
+        kind: Number,
+        lexeme: "45",
+        line: 85,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 87,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 87,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 87,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 88,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 90,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 90,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 90,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 90,
+    },
+    Token {
+        kind: Number,
+        lexeme: "13",
+        line: 90,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 90,
+    },
+    Token {
+        kind: If,
+        lexeme: "if",
+        line: 92,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "print",
+        line: 92,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 92,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "error",
+        line: 94,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 94,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"should not be here\"",
+        line: 94,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 94,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 96,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 96,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 98,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 99,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 99,
+    },
+    Token {
+        kind: Else,
+        lexeme: "else",
+        line: 100,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 101,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 104,
+    },
+    Token {
+        kind: Function,
+        lexeme: "function",
+        line: 104,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "foo",
+        line: 104,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 104,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 104,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 105,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 105,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 105,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 105,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 105,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 108,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 108,
+    },
+    Token {
+        kind: Hash,
+        lexeme: "#",
+        line: 108,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 108,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 108,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 108,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 108,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 108,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 108,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 108,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 110,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 110,
+    },
+    Token {
+        kind: Hash,
+        lexeme: "#",
+        line: 110,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 110,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 110,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 110,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 110,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 110,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 110,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 110,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 113,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 113,
+    },
+    Token {
+        kind: Hash,
+        lexeme: "#",
+        line: 113,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 113,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 113,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 113,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 113,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 113,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 113,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 113,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 115,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 115,
+    },
+    Token {
+        kind: Hash,
+        lexeme: "#",
+        line: 115,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 115,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 115,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 115,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 115,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 115,
+    },
+    Token {
+        kind: Number,
+        lexeme: "4",
+        line: 115,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 115,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 117,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 117,
+    },
+    Token {
+        kind: Hash,
+        lexeme: "#",
+        line: 117,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 117,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 117,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 117,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 117,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 117,
+    },
+    Token {
+        kind: Number,
+        lexeme: "5",
+        line: 117,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 117,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 119,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 119,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 119,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 119,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 119,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 119,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 119,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 119,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 119,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 119,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 119,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 119,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 119,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 119,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 119,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 119,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 119,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 119,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 119,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 119,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 119,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 119,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 119,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 120,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 120,
+    },
+    Token {
+        kind: Number,
+        lexeme: "4",
+        line: 120,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 120,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 120,
+    },
+    Token {
+        kind: Number,
+        lexeme: "5",
+        line: 120,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 120,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 120,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 120,
+    },
+    Token {
+        kind: Number,
+        lexeme: "5",
+        line: 120,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 120,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 120,
+    },
+    Token {
+        kind: Number,
+        lexeme: "4",
+        line: 120,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 120,
+    },
+    Token {
+        kind: If,
+        lexeme: "if",
+        line: 121,
+    },
+    Token {
+        kind: Not,
+        lexeme: "not",
+        line: 121,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 121,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 121,
+    },
+    Token {
+        kind: Number,
+        lexeme: "6",
+        line: 121,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 121,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 121,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 122,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 122,
+    },
+    Token {
+        kind: Number,
+        lexeme: "6",
+        line: 122,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 122,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 122,
+    },
+    Token {
+        kind: True,
+        lexeme: "true",
+        line: 122,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 122,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 123,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 124,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "foo",
+        line: 127,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 127,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 127,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 134,
+    },
+    Token {
+        kind: Function,
+        lexeme: "function",
+        line: 134,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "foo",
+        line: 134,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 134,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 134,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 135,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 135,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 135,
+    },
+    Token {
+        kind: LeftBrace,
+        lexeme: "{",
+        line: 135,
+    },
+    Token {
+        kind: RightBrace,
+        lexeme: "}",
+        line: 135,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 136,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 137,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "i",
+        line: 137,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 137,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 137,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 138,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "k",
+        line: 138,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 138,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0",
+        line: 138,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 139,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 139,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0",
+        line: 139,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 139,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 139,
+    },
+    Token {
+        kind: Function,
+        lexeme: "function",
+        line: 139,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 139,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 139,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 139,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "k",
+        line: 139,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 139,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 139,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 139,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 141,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 142,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 142,
+    },
+    Token {
+        kind: If,
+        lexeme: "if",
+        line: 143,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "i",
+        line: 143,
+    },
+    Token {
+        kind: GreaterThan,
+        lexeme: ">",
+        line: 143,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 143,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 143,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 143,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 144,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "i",
+        line: 144,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 144,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 144,
+    },
+    Token {
+        kind: Function,
+        lexeme: "function",
+        line: 144,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 144,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 144,
+    },
+    Token {
+        kind: If,
+        lexeme: "if",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 144,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 144,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "y",
+        line: 144,
+    },
+    Token {
+        kind: Else,
+        lexeme: "else",
+        line: 144,
+    },
+    Token {
+        kind: Return,
+        lexeme: "return",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "x",
+        line: 144,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "k",
+        line: 144,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 144,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 144,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "i",
+        line: 145,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 145,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "i",
+        line: 145,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 145,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 145,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 146,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 147,
+    },
+    Token {
+        kind: Return,
+        lexeme: "return",
+        line: 149,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 149,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 150,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 152,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 152,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 152,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "foo",
+        line: 152,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 152,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 152,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 153,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 153,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 153,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 153,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 153,
+    },
+    Token {
+        kind: Number,
+        lexeme: "10",
+        line: 153,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 153,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 153,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 153,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 153,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 153,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 153,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 153,
+    },
+    Token {
+        kind: Number,
+        lexeme: "20",
+        line: 153,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 153,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 154,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 154,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 154,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 154,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 154,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 154,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 154,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 154,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 154,
+    },
+    Token {
+        kind: Number,
+        lexeme: "10",
+        line: 154,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 154,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 154,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 154,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 154,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 154,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 154,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 154,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 154,
+    },
+    Token {
+        kind: Number,
+        lexeme: "20",
+        line: 154,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 154,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 154,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 154,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 154,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 154,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 154,
+    },
+    Token {
+        kind: Nil,
+        lexeme: "nil",
+        line: 154,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 154,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 155,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 155,
+    },
+    Token {
+        kind: Number,
+        lexeme: "0",
+        line: 155,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 155,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 155,
+    },
+    Token {
+        kind: Number,
+        lexeme: "13",
+        line: 155,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 155,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 156,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 156,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 156,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 156,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 156,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 156,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 156,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 156,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 156,
+    },
+    Token {
+        kind: Number,
+        lexeme: "23",
+        line: 156,
+    },
+    Token {
+        kind: And,
+        lexeme: "and",
+        line: 156,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 156,
+    },
+    Token {
+        kind: LeftBracket,
+        lexeme: "[",
+        line: 156,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 156,
+    },
+    Token {
+        kind: RightBracket,
+        lexeme: "]",
+        line: 156,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 156,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 156,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 156,
+    },
+    Token {
+        kind: Number,
+        lexeme: "33",
+        line: 156,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 156,
+    },
+    Token {
+        kind: Local,
+        lexeme: "local",
+        line: 161,
+    },
+    Token {
+        kind: Function,
+        lexeme: "function",
+        line: 161,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "testG",
+        line: 161,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 161,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 161,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 161,
+    },
+    Token {
+        kind: If,
+        lexeme: "if",
+        line: 162,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 162,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 162,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 162,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 162,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "error",
+        line: 163,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 163,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"should never be here!\"",
+        line: 163,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 163,
+    },
+    Token {
+        kind: ElseIf,
+        lexeme: "elseif",
+        line: 164,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 164,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 164,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 164,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 164,
+    },
+    Token {
+        kind: ElseIf,
+        lexeme: "elseif",
+        line: 166,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 166,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 166,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 166,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 166,
+    },
+    Token {
+        kind: ElseIf,
+        lexeme: "elseif",
+        line: 168,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 168,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 168,
+    },
+    Token {
+        kind: Number,
+        lexeme: "4",
+        line: 168,
+    },
+    Token {
+        kind: Then,
+        lexeme: "then",
+        line: 168,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "error",
+        line: 170,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 170,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"should never be here!\"",
+        line: 170,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 170,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 172,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 172,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 172,
+    },
+    Token {
+        kind: Plus,
+        lexeme: "+",
+        line: 172,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 172,
+    },
+    Token {
+        kind: Else,
+        lexeme: "else",
+        line: 173,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 174,
+    },
+    Token {
+        kind: Equals,
+        lexeme: "=",
+        line: 174,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 174,
+    },
+    Token {
+        kind: Star,
+        lexeme: "*",
+        line: 174,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 174,
+    },
+    Token {
+        kind: Semicolon,
+        lexeme: ";",
+        line: 174,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "error",
+        line: 175,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 175,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"should never be here!\"",
+        line: 175,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 175,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "error",
+        line: 178,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 178,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"should never be here!\"",
+        line: 178,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 178,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 179,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 180,
+    },
+    Token {
+        kind: Return,
+        lexeme: "return",
+        line: 180,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "a",
+        line: 180,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 180,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 182,
+    },
+    Token {
+        kind: Return,
+        lexeme: "return",
+        line: 182,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"2\"",
+        line: 182,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 182,
+    },
+    Token {
+        kind: Do,
+        lexeme: "do",
+        line: 184,
+    },
+    Token {
+        kind: Return,
+        lexeme: "return",
+        line: 184,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"3\"",
+        line: 184,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 184,
+    },
+    Token {
+        kind: Return,
+        lexeme: "return",
+        line: 186,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"1\"",
+        line: 186,
+    },
+    Token {
+        kind: End,
+        lexeme: "end",
+        line: 187,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 189,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 189,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "testG",
+        line: 189,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 189,
+    },
+    Token {
+        kind: Number,
+        lexeme: "1",
+        line: 189,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 189,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 189,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"1\"",
+        line: 189,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 189,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 190,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 190,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "testG",
+        line: 190,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 190,
+    },
+    Token {
+        kind: Number,
+        lexeme: "2",
+        line: 190,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 190,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 190,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"2\"",
+        line: 190,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 190,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 191,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 191,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "testG",
+        line: 191,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 191,
+    },
+    Token {
+        kind: Number,
+        lexeme: "3",
+        line: 191,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 191,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 191,
+    },
+    Token {
+        kind: String,
+        lexeme: "\"3\"",
+        line: 191,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 191,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 192,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 192,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "testG",
+        line: 192,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 192,
+    },
+    Token {
+        kind: Number,
+        lexeme: "4",
+        line: 192,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 192,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 192,
+    },
+    Token {
+        kind: Number,
+        lexeme: "5",
+        line: 192,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 192,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "assert",
+        line: 193,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 193,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "testG",
+        line: 193,
+    },
+    Token {
+        kind: LeftParen,
+        lexeme: "(",
+        line: 193,
+    },
+    Token {
+        kind: Number,
+        lexeme: "5",
+        line: 193,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 193,
+    },
+    Token {
+        kind: DoubleEquals,
+        lexeme: "==",
+        line: 193,
+    },
+    Token {
+        kind: Number,
+        lexeme: "10",
+        line: 193,
+    },
+    Token {
+        kind: RightParen,
+        lexeme: ")",
+        line: 193,
+    },
+    Token {
+        kind: Identifier,
+        lexeme: "print",
+        line: 197,
+    },
+    Token {
+        kind: String,
+        lexeme: "'OK'",
+        line: 197,
+    },
+]

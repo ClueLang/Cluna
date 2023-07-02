@@ -113,7 +113,7 @@ assert(string.len(b) == 960)
 prog = [=[
 print('+')
 
-a1 = [["isto e' um string com v·rias 'aspas'"]]
+a1 = [["isto e' um string com v√°rias 'aspas'"]]
 a2 = "'aspas'"
 
 assert(string.find(a1, a2) == 31)
@@ -228,7 +228,7 @@ end
 
 -- testing decimal point locale
 if os.setlocale("pt_BR") or os.setlocale("ptb") then
-  assert(not load("· = 3"))  -- parser still works with C locale
+  assert(not load("√° = 3"))  -- parser still works with C locale
   assert(not load("a = (3,4)"))
   assert(tonumber("3,4") == 3.4 and tonumber"3.4" == nil)
   assert(assert(load("return 3.4"))() == 3.4)
