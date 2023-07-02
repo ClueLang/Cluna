@@ -9,6 +9,7 @@ Use `probe --help` for help on flags
 Supported versions:
 - Lua 5.1
 - Lua 5.2
+- Lua 5.3
 
 Unsupported Lua features:
 - Goto and labels: Clue does not support goto statements and labels
