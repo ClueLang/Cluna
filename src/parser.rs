@@ -831,6 +831,18 @@ impl<'a> Parser<'a> {
         loop {
             let name = self.assert_advance(TokenType::Identifier, "<name>")?;
             names.push(name.lexeme());
+            let line = name.line();
+            if self
+                .peek()
+                .map_or(false, |t| t.kind() == TokenType::LessThan)
+            {
+                self.advance();
+                self.assert(TokenType::Identifier, "<specifier>")?;
+                self.assert(TokenType::GreaterThan, ">")?;
+
+                eprintln!("Warning: const and to-be-closed variables are not supported in clue, ignoring specifier at line {}", line);
+            }
+
             if !self.advance_if(TokenType::Comma) {
                 break;
             }
