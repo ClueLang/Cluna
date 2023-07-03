@@ -1,0 +1,834 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/events.lua
+---
+print('testing metatables');
+local debug = require('debug')
+X = 20
+B = 30
+_ENV = setmetatable({}, {
+    __index = _G
+})
+collectgarbage();
+X = X + 10
+assert(X == 30 && _G.X == 20);
+B = false
+assert(B == false);
+_ENV[("B")] = undef
+assert(B == 30);
+assert(getmetatable({}) == nil);
+assert(getmetatable(4) == nil);
+assert(getmetatable(nil) == nil);
+a = {
+    name = "NAME"
+}
+setmetatable(a, {
+    __metatable = "xuxu", 
+    __tostring = fn (x) {
+        return x.name
+    }
+});
+assert(getmetatable(a) == "xuxu");
+assert(tostring(a) == "NAME");
+assert(pcall(setmetatable, a, {}) == false);
+a.name = "gororoba"
+assert(tostring(a) == "gororoba");
+local a, t = {
+    10, 
+    20, 
+    30, 
+    x = "10", 
+    y = "20"
+}, {}
+assert(setmetatable(a, t) == a);
+assert(getmetatable(a) == t);
+assert(setmetatable(a, nil) == a);
+assert(getmetatable(a) == nil);
+assert(setmetatable(a, t) == a);
+global fn f(t, i, e) {
+    assert(note);
+    local p = rawget(t, "parent")
+    return (p && p[(i)] + 3), "dummy return"
+}
+t.__index = f
+a.parent = {
+    z = 25, 
+    x = 12, 
+    4 = 24
+}
+assert(a[(1)] == 10 && a.z == 28 && a[(4)] == 27 && a.x == "10");
+collectgarbage();
+a = setmetatable({}, t)
+global fn f(t, i, v) {
+    rawset(t, i, v - 3);
+}
+setmetatable(t, t);
+t.__newindex = f
+a[(1)] = 30
+a.x = "101"
+a[(5)] = 200
+assert(a[(1)] == 27 && a.x == 98 && a[(5)] == 197);
+{
+    local mt = {}
+    mt.__newindex = mt
+    local t = setmetatable({}, mt)
+    t[(1)] = 10
+    assert(mt[(1)] == 10);
+}
+local c = {}
+a = setmetatable({}, t)
+t.__newindex = c
+t.__index = c
+a[(1)] = 10
+a[(2)] = 20
+a[(3)] = 90
+for i = 4, 20 {
+    a[(i)] = i * 10
+}
+assert(a[(1)] == 10 && a[(2)] == 20 && a[(3)] == 90);
+for i = 4, 20 {
+    assert(a[(i)] == i * 10);
+}
+assert(next(a) == nil);
+{
+    local a
+    a = setmetatable({}, {
+        __index = setmetatable({}, {
+            __index = setmetatable({}, {
+                __index = fn (_, n) {
+                    return a[(n - 3)] + 4, "lixo"
+                }
+            })
+        })
+    })
+    a[(0)] = 20
+    for i = 0, 10 {
+        assert(a[(i * 3)] == 20 + i * 4);
+    }
+}
+{
+    local foi
+    local a = {}
+    for i = 1, 10 {
+        a[(i)] = 0
+        a[('a' .. i)] = 0
+    }
+    setmetatable(a, {
+        __newindex = fn (t, k, v) {
+            foi = true
+            rawset(t, k, v);
+        }
+    });
+    foi = false
+    a[(1)] = 0
+    assert(notfoi);
+    foi = false
+    a[('a1')] = 0
+    assert(notfoi);
+    foi = false
+    a[('a11')] = 0
+    assert(foi);
+    foi = false
+    a[(11)] = 0
+    assert(foi);
+    foi = false
+    a[(1)] = undef
+    assert(notfoi);
+    a[(1)] = undef
+    foi = false
+    a[(1)] = nil
+    assert(foi);
+}
+setmetatable(t, nil);
+global fn f(t, ...) {
+    return t, {
+        ...
+    }
+}
+t.__call = f
+{
+    local x, y = a(table.unpack({
+        'a', 
+        1
+    }))
+    assert(x == a && y[(1)] == 'a' && y[(2)] == 1 && y[(3)] == undef);
+    x, y = a()
+    assert(x == a && y[(1)] == undef);
+}
+local b = setmetatable({}, t)
+setmetatable(b, t);
+global fn f(op) {
+    return fn (...) {
+        cap = {
+            0 = op, 
+            ...
+        }
+        return (...)
+    }
+}
+t.__add = f("add")
+t.__sub = f("sub")
+t.__mul = f("mul")
+t.__div = f("div")
+t.__idiv = f("idiv")
+t.__mod = f("mod")
+t.__unm = f("unm")
+t.__pow = f("pow")
+t.__len = f("len")
+t.__band = f("band")
+t.__bor = f("bor")
+t.__bxor = f("bxor")
+t.__shl = f("shl")
+t.__shr = f("shr")
+t.__bnot = f("bnot")
+t.__lt = f("lt")
+t.__le = f("le")
+local fn checkcap(t) {
+    assert(#cap + 1 == #t);
+    for i = 1, #t {
+        assert(cap[(i - 1)] == t[(i)]);
+        assert(math.type(cap[(i - 1)]) == math.type(t[(i)]));
+    }
+}
+assert(b + 5 == b);
+checkcap({
+    "add", 
+    b, 
+    5
+});
+assert(5.2 + b == 5.2);
+checkcap({
+    "add", 
+    5.2, 
+    b
+});
+assert(b + '5' == b);
+checkcap({
+    "add", 
+    b, 
+    '5'
+});
+assert(5 + b == 5);
+checkcap({
+    "add", 
+    5, 
+    b
+});
+assert('5' + b == '5');
+checkcap({
+    "add", 
+    '5', 
+    b
+});
+b = b - 3
+assert(getmetatable(b) == t);
+checkcap({
+    "sub", 
+    b, 
+    3
+});
+assert(5 - a == 5);
+checkcap({
+    "sub", 
+    5, 
+    a
+});
+assert('5' - a == '5');
+checkcap({
+    "sub", 
+    '5', 
+    a
+});
+assert(a * a == a);
+checkcap({
+    "mul", 
+    a, 
+    a
+});
+assert(a / 0 == a);
+checkcap({
+    "div", 
+    a, 
+    0
+});
+assert(a / 0.0 == a);
+checkcap({
+    "div", 
+    a, 
+    0.0
+});
+assert(a % 2 == a);
+checkcap({
+    "mod", 
+    a, 
+    2
+});
+assert(a /_ (1 / 0) == a);
+checkcap({
+    "idiv", 
+    a, 
+    1 / 0
+});
+(fn () {
+    assert(a & "hi" == a);
+})();
+checkcap({
+    "band", 
+    a, 
+    "hi"
+});
+(fn () {
+    assert(10 & a == 10);
+})();
+checkcap({
+    "band", 
+    10, 
+    a
+});
+(fn () {
+    assert(a | 10 == a);
+})();
+checkcap({
+    "bor", 
+    a, 
+    10
+});
+assert(a | "hi" == a);
+checkcap({
+    "bor", 
+    a, 
+    "hi"
+});
+assert("hi" ^^ a == "hi");
+checkcap({
+    "bxor", 
+    "hi", 
+    a
+});
+(fn () {
+    assert(10 ^^ a == 10);
+})();
+checkcap({
+    "bxor", 
+    10, 
+    a
+});
+assert(-a == a);
+checkcap({
+    "unm", 
+    a, 
+    a
+});
+assert(a ^ 4.0 == a);
+checkcap({
+    "pow", 
+    a, 
+    4.0
+});
+assert(a ^ '4' == a);
+checkcap({
+    "pow", 
+    a, 
+    '4'
+});
+assert(4 ^ a == 4);
+checkcap({
+    "pow", 
+    4, 
+    a
+});
+assert('4' ^ a == '4');
+checkcap({
+    "pow", 
+    '4', 
+    a
+});
+assert(#a == a);
+checkcap({
+    "len", 
+    a, 
+    a
+});
+assert(~a == a);
+checkcap({
+    "bnot", 
+    a, 
+    a
+});
+assert(a << 3 == a);
+checkcap({
+    "shl", 
+    a, 
+    3
+});
+assert(1.5 >> a == 1.5);
+checkcap({
+    "shr", 
+    1.5, 
+    a
+});
+assert(5.0 > a);
+checkcap({
+    "lt", 
+    a, 
+    5.0
+});
+assert(a >= 10);
+checkcap({
+    "le", 
+    10, 
+    a
+});
+assert(a <= -10.0);
+checkcap({
+    "le", 
+    a, 
+    -10.0
+});
+assert(a < -10);
+checkcap({
+    "lt", 
+    a, 
+    -10
+});
+t = setmetatable({
+    1, 
+    2, 
+    3
+}, {
+    __len = fn () {
+        return 10
+    }
+})
+assert(#t == 10 && rawlen(t) == 3);
+assert(rawlen("abc") == 3);
+assert(notpcall(rawlen, io.stdin));
+assert(notpcall(rawlen, 34));
+assert(notpcall(rawlen));
+assert(rawlen(string.rep('a', 1000)) == 1000);
+t = {}
+t.__lt = fn (a, b, c) {
+    collectgarbage();
+    assert(c == nil);
+    if type(a) == 'table' {
+        a = a.x
+    }
+    if type(b) == 'table' {
+        b = b.x
+    }
+    return a < b, "dummy"
+}
+t.__le = fn (a, b, c) {
+    assert(c == nil);
+    if type(a) == 'table' {
+        a = a.x
+    }
+    if type(b) == 'table' {
+        b = b.x
+    }
+    return a <= b, "dummy"
+}
+t.__eq = fn (a, b, c) {
+    assert(c == nil);
+    if type(a) == 'table' {
+        a = a.x
+    }
+    if type(b) == 'table' {
+        b = b.x
+    }
+    return a == b, "dummy"
+}
+global fn Op(x) {
+    return setmetatable({
+        x = x
+    }, t)
+}
+local fn test(a, b, c) {
+    assert(not(Op(1) < Op(1)) && (Op(1) < Op(2)) && not(Op(2) < Op(1)));
+    assert(not(1 < Op(1)) && (Op(1) < 2) && not(2 < Op(1)));
+    assert(not(Op('a') < Op('a')) && (Op('a') < Op('b')) && not(Op('b') < Op('a')));
+    assert(not('a' < Op('a')) && (Op('a') < 'b') && not(Op('b') < Op('a')));
+    assert((Op(1) <= Op(1)) && (Op(1) <= Op(2)) && not(Op(2) <= Op(1)));
+    assert((Op('a') <= Op('a')) && (Op('a') <= Op('b')) && not(Op('b') <= Op('a')));
+    assert(not(Op(1) > Op(1)) && not(Op(1) > Op(2)) && (Op(2) > Op(1)));
+    assert(not(Op('a') > Op('a')) && not(Op('a') > Op('b')) && (Op('b') > Op('a')));
+    assert((Op(1) >= Op(1)) && not(Op(1) >= Op(2)) && (Op(2) >= Op(1)));
+    assert((1 >= Op(1)) && not(1 >= Op(2)) && (Op(2) >= 1));
+    assert((Op('a') >= Op('a')) && not(Op('a') >= Op('b')) && (Op('b') >= Op('a')));
+    assert(('a' >= Op('a')) && not(Op('a') >= 'b') && (Op('b') >= Op('a')));
+    assert(Op(1) == Op(1) && Op(1) != Op(2));
+    assert(Op('a') == Op('a') && Op('a') != Op('b'));
+    assert(a == a && a != b);
+    assert(Op(3) == c);
+}
+test(Op(1), Op(2), Op(3));
+local fn rawSet(x) {
+    local y = {}
+    for _, k with pairs(x) {
+        y[(k)] = 1
+    }
+    return y
+}
+local fn Set(x) {
+    return setmetatable(rawSet(x), t)
+}
+t.__lt = fn (a, b) {
+    for k with pairs(a) {
+        if notb[(k)] {
+            return false
+        }
+        b[(k)] = undef
+    }
+    return next(b) != nil
+}
+t.__le = fn (a, b) {
+    for k with pairs(a) {
+        if notb[(k)] {
+            return false
+        }
+    }
+    return true
+}
+assert(Set({
+    1, 
+    2, 
+    3
+}) < Set({
+    1, 
+    2, 
+    3, 
+    4
+}));
+assert(not(Set({
+    1, 
+    2, 
+    3, 
+    4
+}) < Set({
+    1, 
+    2, 
+    3, 
+    4
+})));
+assert((Set({
+    1, 
+    2, 
+    3, 
+    4
+}) <= Set({
+    1, 
+    2, 
+    3, 
+    4
+})));
+assert((Set({
+    1, 
+    2, 
+    3, 
+    4
+}) >= Set({
+    1, 
+    2, 
+    3, 
+    4
+})));
+assert(not(Set({
+    1, 
+    3
+}) <= Set({
+    3, 
+    5
+})));
+assert(not(Set({
+    1, 
+    3
+}) <= Set({
+    3, 
+    5
+})));
+assert(not(Set({
+    1, 
+    3
+}) >= Set({
+    3, 
+    5
+})));
+t.__eq = fn (a, b) {
+    for k with pairs(a) {
+        if notb[(k)] {
+            return false
+        }
+        b[(k)] = undef
+    }
+    return next(b) == nil
+}
+local s = Set({
+    1, 
+    3, 
+    5
+})
+assert(s == Set({
+    3, 
+    5, 
+    1
+}));
+assert(notrawequal(s, Set({
+    3, 
+    5, 
+    1
+})));
+assert(rawequal(s, s));
+assert(Set({
+    1, 
+    3, 
+    5, 
+    1
+}) == rawSet({
+    3, 
+    5, 
+    1
+}));
+assert(rawSet({
+    1, 
+    3, 
+    5, 
+    1
+}) == Set({
+    3, 
+    5, 
+    1
+}));
+assert(Set({
+    1, 
+    3, 
+    5
+}) != Set({
+    3, 
+    5, 
+    1, 
+    6
+}));
+t[(Set({
+    1, 
+    3, 
+    5
+}))] = 1
+assert(t[(Set({
+    1, 
+    3, 
+    5
+}))] == undef);
+{
+    local mt = {
+        __eq = true
+    }
+    local a = setmetatable({
+        10
+    }, mt)
+    local b = setmetatable({
+        10
+    }, mt)
+    mt.__eq = nil
+    assert(a != b);
+    mt.__eq = fn (x, y) {
+        return x[(1)] == y[(1)]
+    }
+    assert(a == b);
+}
+if notT {
+    (Message || print)('\n >>> testC not active: skipping tests for \z
+userdata <<<\n');
+} else {
+    local u1 = T.newuserdata(0, 1)
+    local u2 = T.newuserdata(0, 1)
+    local u3 = T.newuserdata(0, 1)
+    assert(u1 != u2 && u1 != u3);
+    debug.setuservalue(u1, 1);
+    debug.setuservalue(u2, 2);
+    debug.setuservalue(u3, 1);
+    debug.setmetatable(u1, {
+        __eq = fn (a, b) {
+            return debug.getuservalue(a) == debug.getuservalue(b)
+        }
+    });
+    debug.setmetatable(u2, {
+        __eq = fn (a, b) {
+            return true
+        }
+    });
+    assert(u1 == u3 && u3 == u1 && u1 != u2);
+    assert(u2 == u1 && u2 == u3 && u3 == u2);
+    assert(u2 != {});
+    assert(rawequal(u1, u1) && notrawequal(u1, u3));
+    local mirror = {}
+    debug.setmetatable(u3, {
+        __index = mirror, 
+        __newindex = mirror
+    });
+    for i = 1, 10 {
+        u3[(i)] = i
+    }
+    for i = 1, 10 {
+        assert(u3[(i)] == i);
+    }
+}
+t.__concat = fn (a, b, c) {
+    assert(c == nil);
+    if type(a) == 'table' {
+        a = a.val
+    }
+    if type(b) == 'table' {
+        b = b.val
+    }
+    if A {
+        return a .. b
+    } else {
+        return setmetatable({
+            val = a .. b
+        }, t)
+    }
+}
+c = {
+    val = "c"
+}
+setmetatable(c, t);
+d = {
+    val = "d"
+}
+setmetatable(d, t);
+A = true
+assert(c .. d == 'cd');
+assert(0 .. "a" .. "b" .. c .. d .. "e" .. "f" .. (5 + 3) .. "g" == "0abcdef8g");
+A = false
+assert((c .. d .. c .. d).val == 'cdcd');
+x = c .. d
+assert(getmetatable(x) == t && x.val == 'cd');
+x = 0 .. "a" .. "b" .. c .. d .. "e" .. "f" .. "g"
+assert(x.val == "0abcdefg");
+c = {}
+local x
+setmetatable(c, {
+    __concat = fn (a, b) {
+        assert(type(a) == "number" && b == c || type(b) == "number" && a == c);
+        return c
+    }
+});
+assert(c .. 5 == c && 5 .. c == c);
+assert(4 .. c .. 5 == c && 4 .. 5 .. 6 .. 7 .. c == c);
+local t1, t2, c, d
+t1 = {}
+c = {}
+setmetatable(c, t1);
+d = {}
+t1.__eq = fn () {
+    return true
+}
+t1.__lt = fn () {
+    return true
+}
+t1.__le = fn () {
+    return false
+}
+setmetatable(d, t1);
+assert(c == d && c < d && not(d <= c));
+t2 = {}
+t2.__eq = t1.__eq
+t2.__lt = t1.__lt
+setmetatable(d, t2);
+assert(c == d && c < d && not(d <= c));
+local i
+local tt = {
+    __call = fn (t, ...) {
+        i = i + 1
+        if t.f {
+            return t.f(...)
+        } else {
+            return {
+                ...
+            }
+        }
+    }
+}
+local a = setmetatable({}, tt)
+local b = setmetatable({
+    f = a
+}, tt)
+local c = setmetatable({
+    f = b
+}, tt)
+i = 0
+x = c(3, 4, 5)
+assert(i == 3 && x[(1)] == 3 && x[(3)] == 5);
+assert(_G.X == 20);
+print('+');
+local _g = _G
+_ENV = setmetatable({}, {
+    __index = fn (_, k) {
+        return _g[(k)]
+    }
+})
+a = {}
+rawset(a, "x", 1, 2, 3);
+assert(a.x == 1 && rawget(a, "x", 3) == 1);
+print('+');
+mt = {
+    __index = fn (a, b) {
+        return a + b
+    }, 
+    __len = fn (x) {
+        return math.floor(x)
+    }
+}
+debug.setmetatable(10, mt);
+assert(getmetatable(-2) == mt);
+assert((10)[(3)] == 13);
+assert((10)[("3")] == 13);
+assert(#3.45 == 3);
+debug.setmetatable(23, nil);
+assert(getmetatable(-2) == nil);
+debug.setmetatable(true, mt);
+assert(getmetatable(false) == mt);
+mt.__index = fn (a, b) {
+    return a || b
+}
+assert((true)[(false)] == true);
+assert((false)[(false)] == false);
+debug.setmetatable(false, nil);
+assert(getmetatable(true) == nil);
+debug.setmetatable(nil, mt);
+assert(getmetatable(nil) == mt);
+mt.__add = fn (a, b) {
+    return (a || 1) + (b || 2)
+}
+assert(10 + nil == 12);
+assert(nil + 23 == 24);
+assert(nil + nil == 3);
+debug.setmetatable(nil, nil);
+assert(getmetatable(nil) == nil);
+debug.setmetatable(nil, {});
+a = {}
+setmetatable(a, a);
+a.__index = a
+a.__newindex = a
+assert(notpcall(fn (a, b) {
+    return a[(b)]
+}, a, 10));
+assert(notpcall(fn (a, b, c) {
+    a[(b)] = c
+}, a, 10, true));
+T, K, V = nil
+grandparent = {}
+grandparent.__newindex = fn (t, k, v) {
+    T = t
+    K = k
+    V = v
+}
+parent = {}
+parent.__newindex = parent
+setmetatable(parent, grandparent);
+child = setmetatable({}, parent)
+child.foo = 10
+assert(T == parent && K == "foo" && V == 10);
+print('OK');
+return 12

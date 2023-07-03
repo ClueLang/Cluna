@@ -6,7 +6,7 @@ input_file: test-data/lua5.3-tests/all.lua
 local version = "Lua 5.3"
 if _VERSION != version {
     io.stderr::write("\nThis test suite is for ", version, ", not for ", _VERSION, "\nExiting tests\n");
-    return 
+    return
 }
 _G._ARG = arg
 _soft = rawget(_G, "_soft") || false

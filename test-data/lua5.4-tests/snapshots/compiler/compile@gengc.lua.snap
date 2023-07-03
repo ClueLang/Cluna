@@ -1,0 +1,139 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/gengc.lua
+---
+print('testing generational garbage collection');
+local debug = require("debug")
+assert(collectgarbage("isrunning"));
+collectgarbage();
+local oldmode = collectgarbage("generational")
+{
+    local U = {}
+    collectgarbage();
+    assert(notT || T.gcage(U) == "old");
+    U[(1)] = {
+        x = {
+            234
+        }
+    }
+    assert(notT || (T.gcage(U) == "touched1" && T.gcage(U[(1)]) == "new"));
+    collectgarbage("step", 0);
+    assert(notT || (T.gcage(U) == "touched2" && T.gcage(U[(1)]) == "survival"));
+    collectgarbage("step", 0);
+    assert(notT || (T.gcage(U) == "old" && T.gcage(U[(1)]) == "old1"));
+    assert(U[(1)].x[(1)] == 234);
+}
+{
+    local fn foo() {
+        
+    }
+    local old = {
+        10
+    }
+    collectgarbage();
+    assert(notT || T.gcage(old) == "old");
+    setmetatable(old, {});
+    assert(notT || T.gcage(getmetatable(old)) == "old0");
+    collectgarbage("step", 0);
+    assert(notT || T.gcage(getmetatable(old)) == "old1");
+    setmetatable(getmetatable(old), {
+        __gc = foo
+    });
+    collectgarbage("step", 0);
+}
+{
+    local A = {}
+    A[(1)] = false
+    local fn gcf(obj) {
+        A[(1)] = obj
+        assert(notT || T.gcage(obj) == "old1");
+        obj = nil
+        collectgarbage("step", 0);
+        print(getmetatable(A[(1)]).x);
+    }
+    collectgarbage();
+    local obj = {}
+    collectgarbage("step", 0);
+    assert(notT || T.gcage(obj) == "survival");
+    setmetatable(obj, {
+        __gc = gcf, 
+        x = "+"
+    });
+    assert(notT || T.gcage(getmetatable(obj)) == "new");
+    obj = nil
+    collectgarbage("step", 0);
+}
+{
+    local old = {
+        10
+    }
+    collectgarbage();
+    local co = coroutine.create(fn () {
+        local x = nil
+        local f = fn () {
+            return x[(1)]
+        }
+        x = coroutine.yield(f)
+        coroutine.yield();
+    })
+    local _, f = coroutine.resume(co)
+    collectgarbage("step", 0);
+    old[(1)] = {
+        "hello"
+    }
+    coroutine.resume(co, {
+        123
+    });
+    co = nil
+    collectgarbage("step", 0);
+    assert(f() == 123 && old[(1)][(1)] == "hello");
+    collectgarbage("step", 0);
+    assert(f() == 123 && old[(1)][(1)] == "hello");
+}
+{
+    local t = setmetatable({}, {
+        __mode = "kv"
+    })
+    collectgarbage();
+    assert(notT || T.gcage(t) == "old");
+    t[(1)] = {
+        10
+    }
+    assert(notT || (T.gcage(t) == "touched1" && T.gccolor(t) == "gray"));
+    collectgarbage("step", 0);
+    assert(notT || (T.gcage(t) == "touched2" && T.gccolor(t) == "black"));
+    collectgarbage("step", 0);
+    assert(notT || T.gcage(t) == "old");
+    t[(1)] = {
+        10
+    }
+    collectgarbage("step", 0);
+    assert(t[(1)] == nil);
+}
+if T == nil {
+    (Message || print)('\n >>> testC not active: \z
+                             skipping some generational tests <<<\n');
+    print('OK');
+    return
+}
+{
+    local U = T.newuserdata(0, 1)
+    collectgarbage();
+    assert(T.gcage(U) == "old");
+    debug.setuservalue(U, {
+        x = {
+            234
+        }
+    });
+    assert(T.gcage(U) == "touched1" && T.gcage(debug.getuservalue(U)) == "new");
+    collectgarbage("step", 0);
+    assert(T.gcage(U) == "touched2" && T.gcage(debug.getuservalue(U)) == "survival");
+    collectgarbage("step", 0);
+    assert(T.gcage(U) == "old" && T.gcage(debug.getuservalue(U)) == "old1");
+    assert(debug.getuservalue(U).x[(1)] == 234);
+}
+assert(collectgarbage('isrunning'));
+assert(collectgarbage('isrunning'));
+collectgarbage(oldmode);
+print('OK');

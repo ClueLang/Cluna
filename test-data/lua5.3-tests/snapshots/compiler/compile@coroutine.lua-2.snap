@@ -108,7 +108,7 @@ global fn filter(p, g) {
         while 1 {
             local n = g()
             if n == nil {
-                return 
+                return
             }
             if math.fmod(n, p) != 0 {
                 coroutine.yield(n);
@@ -808,7 +808,7 @@ return s
 }) == 10);
 if T == nil {
     (Message || print)('\n >>> testC not active: skipping coroutine API tests <<<\n');
-    return 
+    return
 }
 print('testing coroutine API');
 local fn apico(...) {

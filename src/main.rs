@@ -163,6 +163,14 @@ mod test {
         gen_tests!("test-data/lua5.3-tests", compile);
     }
 
+    mod lua5_4 {
+        use super::*;
+
+        gen_tests!("test-data/lua5.4-tests", scan);
+        gen_tests!("test-data/lua5.4-tests", parse);
+        gen_tests!("test-data/lua5.4-tests", compile);
+    }
+
     mod extra {
         use super::*;
         gen_tests!("test-data/extra", scan);

@@ -1,0 +1,205 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/goto.lua
+---
+collectgarbage();
+local fn errmsg(code, m) {
+    local st, msg = load(code)
+    assert(notst && string.find(msg, m));
+}
+errmsg(` goto l1; do ::l1:: end `, "label 'l1'");
+errmsg(` do ::l1:: end goto l1; `, "label 'l1'");
+errmsg(` ::l1:: ::l1:: `, "label 'l1'");
+errmsg(` ::l1:: do ::l1:: end`, "label 'l1'");
+errmsg(` goto l1; local aa ::l1:: ::l2:: print(3) `, "local 'aa'");
+errmsg(`
+do local bb, cc;  end
+local aa
+ print(3)
+`, "local 'aa'");
+errmsg(` do ::l1:: end goto l1 `, "label 'l1'");
+errmsg(` goto l1 do ::l1:: end `, "label 'l1'");
+errmsg(`
+  repeat
+    if x then  end
+    local xuxu = 10
+
+  until xuxu < x
+`, "local 'xuxu'");
+local x
+{
+    local y = 12
+    x = x + 1
+    x = y
+}
+assert(x == 13);
+{
+    local prog = `
+  do
+    local a = 1
+     a = a + 1
+    a = a + 10
+     a = a + 2
+    a = a + 20
+    return a
+  end
+  `
+    local label = string.rep("0123456789", 40)
+    prog = string.format(prog, label, label, label, label)
+    assert(assert(load(prog))() == 31);
+}
+{
+    local a = 23
+    x = a
+}
+while true {
+    local x = 45
+}
+assert(x == 13);
+if print {
+    error("should not be here");
+    local x
+} else {
+    
+}
+local fn foo() {
+    local a = {}
+    a[(#a + 1)] = 1
+    a[(#a + 1)] = 2
+    a[(#a + 1)] = 3
+    a[(#a + 1)] = 4
+    a[(#a + 1)] = 5
+    assert(a[(1)] == 3 && a[(2)] == 1 && a[(3)] == 2 && a[(4)] == 5 && a[(5)] == 4);
+    if nota[(6)] {
+        a[(6)] = true
+    }
+}
+foo();
+{
+    local x
+    local y
+    assert(y == nil);
+    y = true
+    if x == nil {
+        x = 1
+    } else {
+        x = x + 1
+    }
+    assert(x == 2 && y == true);
+}
+{
+    local first = true
+    local a = false
+    if true {
+        a = true
+        if first {
+            first = false
+        }
+    }
+    assert(a);
+}
+{
+    
+}
+local debug = require('debug')
+local fn foo() {
+    local t = {}
+    {
+        local i = 1
+        local a, b, c, d
+        t[(1)] = fn () {
+            return a, b, c, d
+        }
+        local b
+        {
+            local c
+            t[(#t + 1)] = fn () {
+                return a, b, c, d
+            }
+            if i > 2 {
+                
+            }
+            {
+                local d
+                t[(#t + 1)] = fn () {
+                    return a, b, c, d
+                }
+                i = i + 1
+                local a
+            }
+        }
+    }
+    return t
+}
+local a = foo()
+assert(#a == 6);
+for i = 2, 6 {
+    assert(debug.upvalueid(a[(1)], 1) == debug.upvalueid(a[(i)], 1));
+}
+for i = 2, 6 {
+    assert(debug.upvalueid(a[(1)], 2) != debug.upvalueid(a[(i)], 2));
+    assert(debug.upvalueid(a[(1)], 3) != debug.upvalueid(a[(i)], 3));
+}
+for i = 3, 5, 2 {
+    assert(debug.upvalueid(a[(i)], 2) == debug.upvalueid(a[(i - 1)], 2));
+    assert(debug.upvalueid(a[(i)], 3) == debug.upvalueid(a[(i - 1)], 3));
+    assert(debug.upvalueid(a[(i)], 2) != debug.upvalueid(a[(i + 1)], 2));
+    assert(debug.upvalueid(a[(i)], 3) != debug.upvalueid(a[(i + 1)], 3));
+}
+for i = 2, 6, 2 {
+    assert(debug.upvalueid(a[(1)], 4) == debug.upvalueid(a[(i)], 4));
+}
+for i = 3, 5, 2 {
+    for j = 1, 6 {
+        assert((debug.upvalueid(a[(i)], 4) == debug.upvalueid(a[(j)], 4)) == (i == j));
+    }
+}
+local fn testG(a) {
+    if a == 1 {
+        error("should never be here!");
+    } elseif if a == 2 {
+        
+    } elseif if a == 3 {
+        
+    } elseif if a == 4 {
+        error("should never be here!");
+        a = a + 1
+    } else {
+        a = a * 2
+        error("should never be here!");
+        error("should never be here!");
+    }
+    {
+        return a
+    }
+    {
+        return "2"
+    }
+    {
+        return "3"
+    }
+    return "1"
+}
+assert(testG(1) == "1");
+assert(testG(2) == "2");
+assert(testG(3) == "3");
+assert(testG(4) == 5);
+assert(testG(5) == 10);
+{
+    local X
+    {
+        local a = setmetatable({}, {
+            __close = fn () {
+                X = true
+            }
+        })
+        assert(X == nil);
+        if a {
+            
+        }
+        getmetatable(a).__close(a);
+    }
+    assert(X == true);
+}
+print('OK');

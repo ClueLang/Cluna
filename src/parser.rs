@@ -14,7 +14,7 @@ type OptionalEnd = Option<(TokenType, &'static str)>;
 #[derive(Debug, Clone, PartialEq)]
 pub enum ComplexToken {
     Variable {
-        names: Vec<String>,
+        names: Vec<(String, bool)>,
         values: Vec<Expression>,
         line: usize,
         column: usize,
@@ -830,17 +830,31 @@ impl<'a> Parser<'a> {
 
         loop {
             let name = self.assert_advance(TokenType::Identifier, "<name>")?;
-            names.push(name.lexeme());
             let line = name.line();
-            if self
-                .peek()
-                .map_or(false, |t| t.kind() == TokenType::LessThan)
-            {
+            let lexeme = name.lexeme();
+            let peek = self.peek().clone();
+
+            if peek.map_or(false, |t| t.kind() == TokenType::LessThan) {
                 self.advance();
-                self.assert(TokenType::Identifier, "<specifier>")?;
+                let kind = self
+                    .assert_advance(TokenType::Identifier, "<specifier>")?
+                    .lexeme();
                 self.assert(TokenType::GreaterThan, ">")?;
 
-                eprintln!("Warning: const and to-be-closed variables are not supported in clue, ignoring specifier at line {}", line);
+                if kind == "const" {
+                    names.push((lexeme, false));
+                    eprintln!("Warning: const variables are not supported in clue, ignoring const specifier at line {}", line);
+                } else if kind == "close" {
+                    names.push((lexeme, true));
+                    eprintln!("Warning: to-be-closed variables are not supported in clue, ignoring const specifier at line {}. Manual close calls will be added at the end of the scope", line);
+                } else {
+                    return Err(format!(
+                        "Expected 'const' or 'close' got {} at line {}",
+                        kind, line
+                    ));
+                }
+            } else {
+                names.push((lexeme, false));
             }
 
             if !self.advance_if(TokenType::Comma) {

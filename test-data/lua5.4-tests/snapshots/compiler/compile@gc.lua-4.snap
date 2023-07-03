@@ -1,0 +1,832 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/gc.lua
+---
+print('testing incremental garbage collection');
+local debug = require("debug")
+assert(collectgarbage("isrunning"));
+collectgarbage();
+local oldmode = collectgarbage("incremental")
+assert(collectgarbage("generational") == "incremental");
+assert(collectgarbage("generational") == "generational");
+assert(collectgarbage("incremental") == "generational");
+assert(collectgarbage("incremental") == "incremental");
+local fn nop() {
+    
+}
+local fn gcinfo() {
+    return collectgarbage("count") * 1024
+}
+{
+    local a = collectgarbage("setpause", 200)
+    local b = collectgarbage("setstepmul", 200)
+    local t = {
+        0, 
+        2, 
+        10, 
+        90, 
+        500, 
+        5000, 
+        30000, 
+        0x7ffffffe
+    }
+    for i = 1, #t {
+        local p = t[(i)]
+        for j = 1, #t {
+            local m = t[(j)]
+            collectgarbage("setpause", p);
+            collectgarbage("setstepmul", m);
+            collectgarbage("step", 0);
+            collectgarbage("step", 10000);
+        }
+    }
+    collectgarbage("setpause", a);
+    collectgarbage("setstepmul", b);
+    collectgarbage();
+}
+_G[("while")] = 234
+local fn GC1() {
+    local u
+    local b
+    local finish = false
+    u = setmetatable({}, {
+        __gc = fn () {
+            finish = true
+        }
+    })
+    b = {
+        34
+    }
+    loop  {
+        u = {}
+    } until finish
+    assert(b[(1)] == 34);
+    finish = false
+    local i = 1
+    u = setmetatable({}, {
+        __gc = fn () {
+            finish = true
+        }
+    })
+    loop  {
+        i = i + 1
+        u = tostring(i) .. tostring(i)
+    } until finish
+    assert(b[(1)] == 34);
+    finish = false
+    u = setmetatable({}, {
+        __gc = fn () {
+            finish = true
+        }
+    })
+    loop  {
+        local i
+        u = fn () {
+            return i
+        }
+    } until finish
+    assert(b[(1)] == 34);
+}
+local fn GC2() {
+    local u
+    local finish = false
+    u = {
+        setmetatable({}, {
+            __gc = fn () {
+                finish = true
+            }
+        })
+    }
+    local b = {
+        34
+    }
+    loop  {
+        u = {
+            {}
+        }
+    } until finish
+    assert(b[(1)] == 34);
+    finish = false
+    local i = 1
+    u = {
+        setmetatable({}, {
+            __gc = fn () {
+                finish = true
+            }
+        })
+    }
+    loop  {
+        i = i + 1
+        u = {
+            tostring(i) .. tostring(i)
+        }
+    } until finish
+    assert(b[(1)] == 34);
+    finish = false
+    u = {
+        setmetatable({}, {
+            __gc = fn () {
+                finish = true
+            }
+        })
+    }
+    loop  {
+        local i
+        u = {
+            fn () {
+                return i
+            }
+        }
+    } until finish
+    assert(b[(1)] == 34);
+}
+local fn GC() {
+    GC1();
+    GC2();
+}
+{
+    print("creating many objects");
+    local limit = 5000
+    for i = 1, limit {
+        local a = {}
+        a = nil
+    }
+    local a = "a"
+    for i = 1, limit {
+        a = i .. "b"
+        a = string.gsub(a, '(%d%d*)', "%1 %1")
+        a = "a"
+    }
+    a = {}
+    method a::test() {
+        for i = 1, limit {
+            load(string.format("function temp(a) return 'a%d' end", i), "")();
+            assert(temp() == string.format('a%d', i));
+        }
+    }
+    a::test();
+}
+{
+    local f = fn () {
+        
+    }
+}
+print("functions with errors");
+prog = `
+do
+  a = 10;
+  function foo(x,y)
+    a = sin(a+0.456-0.23e-12);
+    return function (z) return sin(%x+z) end
+  end
+  local x = function (w) a=a+w; end
+end
+`
+{
+    local step = 1
+    if _soft {
+        step = 13
+    }
+    for i = 1, string.len(prog), step {
+        for j = i, string.len(prog), step {
+            pcall(load(string.sub(prog, i, j), ""));
+        }
+    }
+}
+foo = nil
+print('long strings');
+x = "01234567890123456789012345678901234567890123456789012345678901234567890123456789"
+assert(string.len(x) == 80);
+s = ''
+k = math.min(300, (math.maxinteger /_ 80) /_ 2)
+for n = 1, k {
+    s = s .. x
+    j = tostring(n)
+}
+assert(string.len(s) == k * 80);
+s = string.sub(s, 1, 10000)
+s, i = string.gsub(s, '(%d%d%d%d)', '')
+assert(i == 10000 /_ 4);
+s = nil
+x = nil
+assert(_G[("while")] == 234);
+{
+    print("steps");
+    print("steps (2)");
+    local fn dosteps(siz) {
+        collectgarbage();
+        local a = {}
+        for i = 1, 100 {
+            a[(i)] = {
+                {}
+            }
+            local b = {}
+        }
+        local x = gcinfo()
+        local i = 0
+        loop  {
+            i = i + 1
+        } until collectgarbage("step", siz)
+        assert(gcinfo() < x);
+        return i
+    }
+    collectgarbage("stop");
+    if not_port {
+        assert(dosteps(10) < dosteps(2));
+    }
+    assert(dosteps(20000) == 1);
+    assert(collectgarbage("step", 20000) == true);
+    assert(collectgarbage("step", 20000) == true);
+    assert(notcollectgarbage("isrunning"));
+    collectgarbage("restart");
+    assert(collectgarbage("isrunning"));
+}
+if not_port {
+    collectgarbage();
+    collectgarbage();
+    local x = gcinfo()
+    collectgarbage("stop");
+    loop  {
+        local a = {}
+    } until gcinfo() > 3 * x
+    collectgarbage("restart");
+    assert(collectgarbage("isrunning"));
+    loop  {
+        local a = {}
+    } until gcinfo() <= x * 2
+}
+print("clearing tables");
+lim = 15
+a = {}
+for i = 1, lim {
+    a[({})] = i
+}
+b = {}
+for k, v with pairs(a) {
+    b[(k)] = v
+}
+for n with pairs(b) {
+    a[(n)] = undef
+    assert(type(n) == 'table' && next(n) == nil);
+    collectgarbage();
+}
+b = nil
+collectgarbage();
+for n with pairs(a) {
+    error('cannot be here');
+}
+for i = 1, lim {
+    a[(i)] = i
+}
+for i = 1, lim {
+    assert(a[(i)] == i);
+}
+print('weak tables');
+a = {}
+setmetatable(a, {
+    __mode = 'k'
+});
+for i = 1, lim {
+    a[({})] = i
+}
+for i = 1, lim {
+    a[(i)] = i
+}
+for i = 1, lim {
+    local s = string.rep('@', i)
+    a[(s)] = s .. '#'
+}
+collectgarbage();
+local i = 0
+for k, v with pairs(a) {
+    assert(k == v || k .. '#' == v);
+    i = i + 1
+}
+assert(i == 2 * lim);
+a = {}
+setmetatable(a, {
+    __mode = 'v'
+});
+a[(1)] = string.rep('b', 21)
+collectgarbage();
+assert(a[(1)]);
+a[(1)] = undef
+for i = 1, lim {
+    a[(i)] = {}
+}
+for i = 1, lim {
+    a[(i .. 'x')] = {}
+}
+for i = 1, lim {
+    local t = {}
+    a[(t)] = t
+}
+for i = 1, lim {
+    a[(i + lim)] = i .. 'x'
+}
+collectgarbage();
+local i = 0
+for k, v with pairs(a) {
+    assert(k == v || k - lim .. 'x' == v);
+    i = i + 1
+}
+assert(i == 2 * lim);
+a = {}
+setmetatable(a, {
+    __mode = 'kv'
+});
+local x, y, z = {}, {}, {}
+a[(1)], a[(2)], a[(3)] = x, y, z
+a[(string.rep('$', 11))] = string.rep('$', 11)
+for i = 4, lim {
+    a[(i)] = {}
+}
+for i = 1, lim {
+    a[({})] = i
+}
+for i = 1, lim {
+    local t = {}
+    a[(t)] = t
+}
+collectgarbage();
+assert(next(a) != nil);
+local i = 0
+for k, v with pairs(a) {
+    assert((k == 1 && v == x) || (k == 2 && v == y) || (k == 3 && v == z) || k == v);
+    i = i + 1
+}
+assert(i == 4);
+x, y, z = nil
+collectgarbage();
+assert(next(a) == string.rep('$', 11));
+a = {}
+local t = {
+    x = 10
+}
+local C = setmetatable({
+    key = t
+}, {
+    __mode = 'v'
+})
+local C1 = setmetatable({
+    t = 1
+}, {
+    __mode = 'k'
+})
+a.x = t
+setmetatable(a, {
+    __gc = fn (u) {
+        assert(C.key == nil);
+        assert(type(next(C1)) == 'table');
+    }
+});
+a, t = nil
+collectgarbage();
+collectgarbage();
+assert(next(C) == nil && next(C1) == nil);
+C, C1 = nil
+local mt = {
+    __mode = 'k'
+}
+a = {
+    {
+        10
+    }, 
+    {
+        20
+    }, 
+    {
+        30
+    }, 
+    {
+        40
+    }
+}
+setmetatable(a, mt);
+x = nil
+for i = 1, 100 {
+    local n = {}
+    a[(n)] = {
+        k = {
+            x
+        }
+    }
+    x = n
+}
+GC();
+local n = x
+local i = 0
+while n {
+    n = a[(n)].k[(1)]
+    i = i + 1
+}
+assert(i == 100);
+x = nil
+GC();
+for i = 1, 4 {
+    assert(a[(i)][(1)] == i * 10);
+    a[(i)] = undef
+}
+assert(next(a) == nil);
+local K = {}
+a[(K)] = {}
+for i = 1, 10 {
+    a[(K)][(i)] = {}
+    a[(a[(K)][(i)])] = setmetatable({}, mt)
+}
+x = nil
+local k = 1
+for j = 1, 100 {
+    local n = {}
+    local nk = k % 10 + 1
+    a[(a[(K)][(nk)])][(n)] = {
+        x, 
+        k = k
+    }
+    x = n
+    k = nk
+}
+GC();
+local n = x
+local i = 0
+while n {
+    local t = a[(a[(K)][(k)])][(n)]
+    n = t[(1)]
+    k = t.k
+    i = i + 1
+}
+assert(i == 100);
+K = nil
+GC();
+if T {
+    collectgarbage("stop");
+    local u = {}
+    local s = {}
+    setmetatable(s, {
+        __mode = 'k'
+    });
+    setmetatable(u, {
+        __gc = fn (o) {
+            local i = s[(o)]
+            s[(i)] = true
+            assert(nots[(i - 1)]);
+            if i == 8 {
+                error("@expected@");
+            }
+        }
+    });
+    for i = 6, 10 {
+        local n = setmetatable({}, getmetatable(u))
+        s[(n)] = i
+    }
+    warn("@on");
+    warn("@store");
+    collectgarbage();
+    assert(string.find(_WARN, "error in __gc"));
+    assert(string.match(_WARN, "@(.-)@") == "expected");
+    _WARN = false
+    for i = 8, 10 {
+        assert(s[(i)]);
+    }
+    for i = 1, 5 {
+        local n = setmetatable({}, getmetatable(u))
+        s[(n)] = i
+    }
+    collectgarbage();
+    for i = 1, 10 {
+        assert(s[(i)]);
+    }
+    getmetatable(u).__gc = nil
+    warn("@normal");
+}
+print('+');
+if T == nil {
+    (Message || print)('\n >>> testC not active: skipping userdata GC tests <<<\n');
+} else {
+    local fn newproxy(u) {
+        return debug.setmetatable(T.newuserdata(0), debug.getmetatable(u))
+    }
+    collectgarbage("stop");
+    local u = newproxy(nil)
+    debug.setmetatable(u, {
+        __gc = true
+    });
+    local s = 0
+    local a = {
+        u = 0
+    }
+    setmetatable(a, {
+        __mode = 'vk'
+    });
+    for i = 1, 10 {
+        a[(newproxy(u))] = i
+    }
+    for k with pairs(a) {
+        assert(getmetatable(k) == getmetatable(u));
+    }
+    local a1 = {}
+    for k, v with pairs(a) {
+        a1[(k)] = v
+    }
+    for k, v with pairs(a1) {
+        a[(v)] = k
+    }
+    for i = 1, 10 {
+        assert(a[(i)]);
+    }
+    getmetatable(u).a = a1
+    getmetatable(u).u = u
+    {
+        local u = u
+        getmetatable(u).__gc = fn (o) {
+            assert(a[(o)] == 10 - s);
+            assert(a[(10 - s)] == undef);
+            assert(getmetatable(o) == getmetatable(u));
+            assert(getmetatable(o).a[(o)] == 10 - s);
+            s = s + 1
+        }
+    }
+    a1, u = nil
+    assert(next(a) != nil);
+    collectgarbage();
+    assert(s == 11);
+    collectgarbage();
+    assert(next(a) == nil);
+}
+local u = setmetatable({}, {
+    __gc = true
+})
+setmetatable(getmetatable(u), {
+    __mode = "v"
+});
+getmetatable(u).__gc = fn (o) {
+    os.exit(1);
+}
+u = nil
+collectgarbage();
+local u = setmetatable({}, {
+    __gc = true
+})
+local m = getmetatable(u)
+m.x = {
+    {
+        0
+    } = 1, 
+    0 = {
+        1
+    }
+}
+setmetatable(m.x, {
+    __mode = "kv"
+});
+m.__gc = fn (o) {
+    assert(next(getmetatable(o).x) == nil);
+    m = 10
+}
+u, m = nil
+collectgarbage();
+assert(m == 10);
+{
+    collectgarbage();
+    collectgarbage();
+    local m = collectgarbage("count")
+    local a = setmetatable({}, {
+        __mode = "kv"
+    })
+    a[(string.rep("a", 2 ^ 22))] = 25
+    a[(string.rep("b", 2 ^ 22))] = {}
+    a[({})] = 14
+    assert(collectgarbage("count") > m + 2 ^ 13);
+    collectgarbage();
+    assert(collectgarbage("count") >= m + 2 ^ 12 && collectgarbage("count") < m + 2 ^ 13);
+    local k, v = next(a)
+    assert(k == string.rep("a", 2 ^ 22) && v == 25);
+    assert(next(a, k) == nil);
+    assert(a[(string.rep("b", 2 ^ 22))] == undef);
+    a[(k)] = undef
+    k = nil
+    collectgarbage();
+    assert(next(a) == nil);
+    assert(a[(string.rep("b", 100))] == undef);
+    assert(collectgarbage("count") <= m + 1);
+}
+if T {
+    warn("@store");
+    u = setmetatable({}, {
+        __gc = fn () {
+            error("@expected error");
+        }
+    })
+    u = nil
+    collectgarbage();
+    assert(string.find(_WARN, "@expected error"));
+    _WARN = false
+    warn("@normal");
+}
+if not_soft {
+    print("long list");
+    local a = {}
+    for i = 1, 200000 {
+        a = {
+            next = a
+        }
+    }
+    a = nil
+    collectgarbage();
+}
+print("self-referenced threads");
+local thread_id = 0
+local threads = {}
+local fn fn(thread) {
+    local x = {}
+    threads[(thread_id)] = fn () {
+        thread = x
+    }
+    coroutine.yield();
+}
+while thread_id < 1000 {
+    local thread = coroutine.create(fn)
+    coroutine.resume(thread, thread);
+    thread_id = thread_id + 1
+}
+{
+    local collected = false
+    collectgarbage();
+    collectgarbage("stop");
+    {
+        local fn f(param) {
+            (fn () {
+                assert(type(f) == 'function' && type(param) == 'thread');
+                param = {
+                    param, 
+                    f
+                }
+                setmetatable(param, {
+                    __gc = fn () {
+                        collected = true
+                    }
+                });
+                coroutine.yield(100);
+            })();
+        }
+        local co = coroutine.create(f)
+        assert(coroutine.resume(co, co));
+    }
+    collectgarbage();
+    assert(collected);
+    collectgarbage("restart");
+}
+{
+    collectgarbage();
+    collectgarbage("stop");
+    collectgarbage("step", 0);
+    local x = gcinfo()
+    loop  {
+        for i = 1, 1000 {
+            _ENV.a = {}
+        }
+    } until gcinfo() > 2 * x
+    collectgarbage("restart");
+}
+if T {
+    local fn foo() {
+        local a = {
+            x = 20
+        }
+        coroutine.yield(fn () {
+            return a.x
+        });
+        assert(a.x == 20);
+        a = {
+            x = 30
+        }
+        assert(T.gccolor(a) == "white");
+        coroutine.yield(100);
+    }
+    local t = setmetatable({}, {
+        __mode = "kv"
+    })
+    collectgarbage();
+    collectgarbage('stop');
+    t.co = coroutine.wrap(foo)
+    local f = t.co()
+    T.gcstate("atomic");
+    assert(T.gcstate() == "atomic");
+    assert(t.co() == 100);
+    assert(T.gccolor(t.co) == "white");
+    T.gcstate("pause");
+    assert(t.co == nil && f() == 30);
+    collectgarbage("restart");
+    local u = T.newuserdata(0, 1)
+    collectgarbage();
+    collectgarbage("stop");
+    local a = {}
+    T.gcstate("atomic");
+    T.gcstate("sweepallgc");
+    local x = {}
+    assert(T.gccolor(u) == "black");
+    assert(T.gccolor(x) == "white");
+    debug.setuservalue(u, x);
+    assert(T.gccolor(u) == "gray");
+    collectgarbage("restart");
+    print("+");
+}
+if T {
+    local debug = require("debug")
+    collectgarbage("stop");
+    local x = T.newuserdata(0)
+    local y = T.newuserdata(0)
+    debug.setmetatable(y, {
+        __gc = nop
+    });
+    debug.setmetatable(x, {
+        __gc = nop
+    });
+    assert(T.gccolor(y) == "white");
+    T.checkmemory();
+    collectgarbage("restart");
+}
+if T {
+    print("emergency collections");
+    collectgarbage();
+    collectgarbage();
+    T.totalmem(T.totalmem() + 200);
+    for i = 1, 200 {
+        local a = {}
+    }
+    T.totalmem(0);
+    collectgarbage();
+    local t = T.totalmem("table")
+    local a = {
+        {}, 
+        {}, 
+        {}
+    }
+    assert(T.totalmem("table") == t + 4);
+    t = T.totalmem("function")
+    a = fn () {
+        
+    }
+    assert(T.totalmem("function") == t + 1);
+    t = T.totalmem("thread")
+    a = coroutine.create(fn () {
+        
+    })
+    assert(T.totalmem("thread") == t + 1);
+}
+{
+    local setmetatable, assert, type, print, getmetatable = setmetatable, assert, type, print, getmetatable
+    local tt = {}
+    tt.__gc = fn (o) {
+        assert(getmetatable(o) == tt);
+        local a = 'xuxu' .. (10 + 3) .. 'joao', {}
+        ___Glob = o
+        setmetatable({}, tt);
+        print(">>> closing state " .. "<<<\n");
+    }
+    local u = setmetatable({}, tt)
+    ___Glob = {
+        u
+    }
+}
+if T {
+    local error, assert, find, warn = error, assert, string.find, warn
+    local n = 0
+    local lastmsg
+    local mt = {
+        __gc = fn (o) {
+            n = n + 1
+            assert(n == o[(1)]);
+            if n == 1 {
+                _WARN = false
+            } elseif if n == 2 {
+                assert(find(_WARN, "@expected warning"));
+                lastmsg = _WARN
+            } else {
+                assert(lastmsg == _WARN);
+            }
+            warn("@store");
+            _WARN = false
+            error("@expected warning");
+        }
+    }
+    for i = 10, 1, -1 {
+        table.insert(___Glob, setmetatable({
+            i
+        }, mt));
+    }
+}
+assert(collectgarbage('isrunning'));
+{
+    local res = true
+    setmetatable({}, {
+        __gc = fn () {
+            res = collectgarbage()
+        }
+    });
+    collectgarbage();
+    assert(notres);
+}
+collectgarbage(oldmode);
+print('OK');

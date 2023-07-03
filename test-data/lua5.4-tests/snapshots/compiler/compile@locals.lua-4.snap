@@ -1,0 +1,1100 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/locals.lua
+---
+print('testing local variables and environments');
+local debug = require("debug")
+local tracegc = require("tracegc")
+local fn f(x) {
+    x = nil
+    return x
+}
+assert(f(10) == nil);
+local fn f() {
+    local x
+    return x
+}
+assert(f(10) == nil);
+local fn f(x) {
+    x = nil
+    local y
+    return x, y
+}
+assert(f(10) == nil && select(2, f(20)) == nil);
+{
+    local i = 10
+    {
+        local i = 100
+        assert(i == 100);
+    }
+    {
+        local i = 1000
+        assert(i == 1000);
+    }
+    assert(i == 10);
+    if i != 10 {
+        local i = 20
+    } else {
+        local i = 30
+        assert(i == 30);
+    }
+}
+f = nil
+local f
+x = 1
+a = nil
+load('local a = {}')();
+assert(a == nil);
+global fn f(a) {
+    local _1, _2, _3, _4, _5
+    local _6, _7, _8, _9, _10
+    local x = 3
+    local b = a
+    local c, d = a, b
+    if (d == b) {
+        local x = 'q'
+        x = b
+        assert(x == 2);
+    } else {
+        assert(nil);
+    }
+    assert(x == 3);
+    local f = 10
+}
+local b = 10
+local a
+loop  {
+    local b
+    a, b = 1, 2
+    assert(a + 1 == b);
+} until a + b == 3
+assert(x == 1);
+f(2);
+assert(type(f) == 'function');
+local fn getenv(f) {
+    local a, b = debug.getupvalue(f, 1)
+    assert(a == '_ENV');
+    return b
+}
+assert(getenv(load("a=3")) == _G);
+local c = {}
+local f = load("a = 3", nil, nil, c)
+assert(getenv(f) == c);
+assert(c.a == nil);
+f();
+assert(c.a == 3);
+{
+    local i = 2
+    local p = 4
+    loop  {
+        for j = -3, 3 {
+            assert(load(string.format(`local a=%s;
+                                        a=a+%s;
+                                        assert(a ==2^%s)`, j, p - j, i), ''))();
+            assert(load(string.format(`local a=%s;
+                                        a=a-%s;
+                                        assert(a==-2^%s)`, -j, p - j, i), ''))();
+            assert(load(string.format(`local a,b=0,%s;
+                                        a=b-%s;
+                                        assert(a==-2^%s)`, -j, p - j, i), ''))();
+        }
+        p = 2 * p
+        i = i + 1
+    } until p <= 0
+}
+print('+');
+if rawget(_G, "T") {
+    collectgarbage("stop");
+    local a = {
+        {} = 4, 
+        3 = 0, 
+        alo = 1, 
+        a1234567890123456789012345678901234567890 = 10
+    }
+    local t = T.querytab(a)
+    for k, _ with pairs(a) {
+        a[(k)] = undef
+    }
+    collectgarbage();
+    for i = 0, t - 1 {
+        local k = querytab(a, i)
+        assert(k == nil || type(k) == 'number' || k == 'alo');
+    }
+    local a = {}
+    local fn additems() {
+        a.x = true
+        a.y = true
+        a.z = true
+        a[(1)] = true
+        a[(2)] = true
+    }
+    for i = 1, math.huge {
+        T.alloccount(i);
+        local st, msg = pcall(additems)
+        T.alloccount();
+        local count = 0
+        for k, v with pairs(a) {
+            assert(a[(k)] == v);
+            count = count + 1
+        }
+        if st {
+            assert(count == 5);
+            break
+        }
+    }
+}
+assert(_ENV == _G);
+{
+    local dummy
+    local _ENV = (fn (...) {
+        return ...
+    })(_G, dummy)
+    {
+        local _ENV = {
+            assert = assert
+        }
+        assert(true);
+    }
+    mt = {
+        _G = _G
+    }
+    local foo, x
+    A = false
+    {
+        local _ENV = mt
+        global fn foo(x) {
+            A = x
+            {
+                local _ENV = _G
+                A = 1000
+            }
+            return fn (x) {
+                return A .. x
+            }
+        }
+    }
+    assert(getenv(foo) == mt);
+    x = foo('hi')
+    assert(mt.A == 'hi' && A == 1000);
+    assert(x('*') == mt.A .. '*');
+    {
+        local _ENV = {
+            assert = assert, 
+            A = 10
+        }
+        {
+            local _ENV = {
+                assert = assert, 
+                A = 20
+            }
+            assert(A == 20);
+            x = A
+        }
+        assert(A == 10 && x == 20);
+    }
+    assert(x == 20);
+    {
+        local a, b, c = 10, 20, 30
+        b = a + c + b
+        assert(a == 10 && b == 60 && c == 30);
+        local fn checkro(name, code) {
+            local st, msg = load(code)
+            local gab = string.format("attempt to assign to const variable '%s'", name)
+            assert(notst && string.find(msg, gab));
+        }
+        checkro("y", "local x, y <const>, z = 10, 20, 30; x = 11; y = 12");
+        checkro("x", "local x <const>, y, z <const> = 10, 20, 30; x = 11");
+        checkro("z", "local x <const>, y, z <const> = 10, 20, 30; y = 10; z = 11");
+        checkro("foo", "local foo <const> = 10; function foo() end");
+        checkro("foo", "local foo <const> = {}; function foo() end");
+        checkro("z", `
+    local a, z <const>, b = 10;
+    function foo() a = 20; z = 32; end
+  `);
+        checkro("var1", `
+    local a, var1 <const> = 10;
+    function foo() a = 20; z = function () var1 = 12; end  end
+  `);
+    }
+    print("testing to-be-closed variables");
+    local fn stack(n) {
+        n = ((n == 0) || stack(n - 1))
+    }
+    local fn func2close(f, x, y) {
+        local obj = setmetatable({}, {
+            __close = f
+        })
+        if x {
+            return x, obj, y
+        } else {
+            return obj
+        }
+    }
+    {
+        local a = {}
+        {
+            local b = false
+            local x = setmetatable({
+                "x"
+            }, {
+                __close = fn (self) {
+                    a[(#a + 1)] = self[(1)]
+                }
+            })
+            local w, y, z = func2close(fn (self, err) {
+                assert(err == nil);
+                a[(#a + 1)] = "y"
+            }, 10, 20)
+            local c = nil
+            a[(#a + 1)] = "in"
+            assert(w == 10 && z == 20);
+            getmetatable(b).__close(b);
+            getmetatable(x).__close(x);
+            getmetatable(y).__close(y);
+            getmetatable(c).__close(c);
+        }
+        a[(#a + 1)] = "out"
+        assert(a[(1)] == "in" && a[(2)] == "y" && a[(3)] == "x" && a[(4)] == "out");
+    }
+    {
+        local X = false
+        local x, closescope = func2close(fn (_, msg) {
+            stack(10);
+            assert(msg == nil);
+            X = true
+        }, 100)
+        assert(x == 100);
+        x = 101
+        local fn foo(x) {
+            local _ = closescope
+            return x, X, 23
+            getmetatable(_).__close(_);
+        }
+        local a, b, c = foo(1.5)
+        assert(a == 1.5 && b == false && c == 23 && X == true);
+        X = false
+        foo = fn (x) {
+            local _ = func2close(fn (_, msg) {
+                assert(debug.getinfo(2).name == "foo");
+                assert(msg == nil);
+            })
+            local _ = closescope
+            local y = 15
+            return y
+            getmetatable(_).__close(_);
+            getmetatable(_).__close(_);
+        }
+        assert(foo() == 15 && X == true);
+        X = false
+        foo = fn () {
+            local x = closescope
+            return x
+            getmetatable(x).__close(x);
+        }
+        assert(foo() == closescope && X == true);
+    }
+    {
+        local flag = false
+        local x = setmetatable({}, {
+            __close = fn () {
+                assert(flag == false);
+                flag = true
+            }
+        })
+        local y = nil
+        local z = nil
+        {
+            local a = x
+            getmetatable(a).__close(a);
+        }
+        assert(flag);
+    }
+    {
+        local flag = false
+        local x = setmetatable({}, {
+            __close = fn () {
+                assert(flag == false);
+                flag = true
+            }
+        })
+        local fn a() {
+            return (fn () {
+                return nil
+            }), nil, nil, x
+        }
+        local v = 1
+        local w = 1
+        local x = 1
+        local y = 1
+        local z = 1
+        for k with a() {
+            a = k
+        }
+        assert(flag);
+    }
+    {
+        local X, Y
+        local fn foo() {
+            local _ = func2close(fn () {
+                Y = 10
+            })
+            assert(X == true && Y == nil);
+            return 1, 2, 3
+            getmetatable(_).__close(_);
+        }
+        local fn bar() {
+            local _ = func2close(fn () {
+                X = false
+            })
+            X = true
+            {
+                return foo()
+            }
+            getmetatable(_).__close(_);
+        }
+        local a, b, c, d = bar()
+        assert(a == 1 && b == 2 && c == 3 && X == false && Y == 10 && d == nil);
+    }
+    {
+        local closed = false
+        local fn foo() {
+            return fn () {
+                return true
+            }, 0, 0, func2close(fn () {
+                closed = true
+            })
+        }
+        local fn tail() {
+            return closed
+        }
+        local fn foo1() {
+            for k with foo() {
+                return tail()
+            }
+        }
+        assert(foo1() == false);
+        assert(closed == true);
+    }
+    {
+        print("testing errors in __close");
+        local fn foo() {
+            local x = func2close(fn (self, msg) {
+                assert(string.find(msg, "@y"));
+                error("@x");
+            })
+            local x1 = func2close(fn (self, msg) {
+                assert(string.find(msg, "@y"));
+            })
+            local gc = func2close(fn () {
+                collectgarbage();
+            })
+            local y = func2close(fn (self, msg) {
+                assert(string.find(msg, "@z"));
+                error("@y");
+            })
+            local z = func2close(fn (self, msg) {
+                assert(msg == nil);
+                error("@z");
+            })
+            return 200
+            getmetatable(x).__close(x);
+            getmetatable(x1).__close(x1);
+            getmetatable(gc).__close(gc);
+            getmetatable(y).__close(y);
+            getmetatable(z).__close(z);
+        }
+        local stat, msg = pcall(foo, false)
+        assert(string.find(msg, "@x"));
+        local fn foo() {
+            local x = func2close(fn (self, msg) {
+                assert(debug.getinfo(2).name == "pcall");
+                assert(string.find(msg, "@x1"));
+            })
+            local x1 = func2close(fn (self, msg) {
+                assert(debug.getinfo(2).name == "pcall");
+                assert(string.find(msg, "@y"));
+                error("@x1");
+            })
+            local gc = func2close(fn () {
+                collectgarbage();
+            })
+            local y = func2close(fn (self, msg) {
+                assert(debug.getinfo(2).name == "pcall");
+                assert(string.find(msg, "@z"));
+                error("@y");
+            })
+            local first = true
+            local z = func2close(fn (self, msg) {
+                assert(debug.getinfo(2).name == "pcall");
+                assert(first && msg == 4);
+                first = false
+                error("@z");
+            })
+            error(4);
+            getmetatable(x).__close(x);
+            getmetatable(x1).__close(x1);
+            getmetatable(gc).__close(gc);
+            getmetatable(y).__close(y);
+            getmetatable(z).__close(z);
+        }
+        local stat, msg = pcall(foo, true)
+        assert(string.find(msg, "@x1"));
+        local fn foo(...) {
+            {
+                local x1 = func2close(fn (self, msg) {
+                    assert(string.find(msg, "@X"));
+                    error("@Y");
+                })
+                local x123 = func2close(fn (_, msg) {
+                    assert(msg == nil);
+                    error("@X");
+                })
+                getmetatable(x1).__close(x1);
+                getmetatable(x123).__close(x123);
+            }
+            os.exit(false);
+        }
+        local st, msg = xpcall(foo, debug.traceback)
+        assert(string.match(msg, "^[^ ]* @Y"));
+        local fn foo(...) {
+            local x123 = func2close(fn () {
+                error("@x123");
+            })
+            getmetatable(x123).__close(x123);
+        }
+        local st, msg = xpcall(foo, debug.traceback)
+        assert(string.match(msg, "^[^ ]* @x123"));
+        assert(string.find(msg, "in metamethod 'close'"));
+    }
+    {
+        local fn foo() {
+            local x = {}
+            os.exit(false);
+            getmetatable(x).__close(x);
+        }
+        local stat, msg = pcall(foo)
+        assert(notstat && string.find(msg, "variable 'x' got a non%-closable value"));
+        local fn foo() {
+            local xyz = setmetatable({}, {
+                __close = print
+            })
+            getmetatable(xyz).__close = nil
+            getmetatable(xyz).__close(xyz);
+        }
+        local stat, msg = pcall(foo)
+        assert(notstat && string.find(msg, "metamethod 'close'"));
+        local fn foo() {
+            local a1 = func2close(fn (_, msg) {
+                assert(string.find(msg, "number value"));
+                error(12);
+            })
+            local a2 = setmetatable({}, {
+                __close = print
+            })
+            local a3 = func2close(fn (_, msg) {
+                assert(msg == nil);
+                error(123);
+            })
+            getmetatable(a2).__close = 4
+            getmetatable(a1).__close(a1);
+            getmetatable(a2).__close(a2);
+            getmetatable(a3).__close(a3);
+        }
+        local stat, msg = pcall(foo)
+        assert(notstat && msg == 12);
+    }
+    {
+        local track = {}
+        local fn foo() {
+            local x = func2close(fn () {
+                local xx = func2close(fn (_, msg) {
+                    assert(msg == nil);
+                    track[(#track + 1)] = "xx"
+                })
+                track[(#track + 1)] = "x"
+                getmetatable(xx).__close(xx);
+            })
+            track[(#track + 1)] = "foo"
+            return 20, 30, 40
+            getmetatable(x).__close(x);
+        }
+        local a, b, c, d = foo()
+        assert(a == 20 && b == 30 && c == 40 && d == nil);
+        assert(track[(1)] == "foo" && track[(2)] == "x" && track[(3)] == "xx");
+        local track = {}
+        local fn foo() {
+            local x0 = func2close(fn (_, msg) {
+                assert(msg == 202);
+                track[(#track + 1)] = "x0"
+            })
+            local x = func2close(fn () {
+                local xx = func2close(fn (_, msg) {
+                    assert(msg == 101);
+                    track[(#track + 1)] = "xx"
+                    error(202);
+                })
+                track[(#track + 1)] = "x"
+                error(101);
+                getmetatable(xx).__close(xx);
+            })
+            track[(#track + 1)] = "foo"
+            return 20, 30, 40
+            getmetatable(x0).__close(x0);
+            getmetatable(x).__close(x);
+        }
+        local st, msg = pcall(foo)
+        assert(notst && msg == 202);
+        assert(track[(1)] == "foo" && track[(2)] == "x" && track[(3)] == "xx" && track[(4)] == "x0");
+    }
+    local fn checktable(t1, t2) {
+        assert(#t1 == #t2);
+        for i = 1, #t1 {
+            assert(t1[(i)] == t2[(i)]);
+        }
+    }
+    {
+        local fn overflow(n) {
+            overflow(n + 1);
+        }
+        local fn errorh(m) {
+            assert(string.find(m, "stack overflow"));
+            local x = func2close(fn (o) {
+                o[(1)] = 10
+            })
+            return x
+            getmetatable(x).__close(x);
+        }
+        local flag
+        local st, obj
+        local co = coroutine.wrap(fn () {
+            local y = func2close(fn (obj, msg) {
+                assert(msg == nil);
+                obj[(1)] = 100
+                flag = obj
+            })
+            tracegc.stop();
+            st, obj = xpcall(overflow, errorh, 0)
+            tracegc.start();
+            getmetatable(y).__close(y);
+        })
+        co();
+        assert(notst && obj[(1)] == 10 && flag[(1)] == 100);
+    }
+    if rawget(_G, "T") {
+        local fn foo() {
+            local y = func2close(fn () {
+                T.alloccount();
+            })
+            local x = setmetatable({}, {
+                __close = fn () {
+                    T.alloccount(0);
+                    local x = {}
+                }
+            })
+            error(1000);
+            getmetatable(y).__close(y);
+            getmetatable(x).__close(x);
+        }
+        stack(5);
+        local _, msg = pcall(foo)
+        assert(msg == "not enough memory");
+        local closemsg
+        local close = func2close(fn (self, msg) {
+            T.alloccount();
+            closemsg = msg
+        })
+        local fn enter(count) {
+            stack(10);
+            T.alloccount(count);
+            closemsg = nil
+            return close
+        }
+        local fn test() {
+            local x = enter(0)
+            local y = {}
+            getmetatable(x).__close(x);
+        }
+        local _, msg = pcall(test)
+        assert(msg == "not enough memory" && closemsg == "not enough memory");
+        local fn test() {
+            local xxx = func2close(fn (self, msg) {
+                assert(msg == "not enough memory");
+                error(1000);
+            })
+            local xx = func2close(fn (self, msg) {
+                assert(msg == "not enough memory");
+            })
+            local x = enter(0)
+            local y = {}
+            getmetatable(xxx).__close(xxx);
+            getmetatable(xx).__close(xx);
+            getmetatable(x).__close(x);
+        }
+        local _, msg = pcall(test)
+        assert(msg == 1000 && closemsg == "not enough memory");
+        {
+            collectgarbage();
+            local s = string.rep('a', 10000)
+            local m = T.totalmem()
+            collectgarbage("stop");
+            s = string.upper(s)
+            assert(T.totalmem() - m <= 11000);
+            collectgarbage("restart");
+        }
+        {
+            local lim = 10000
+            local extra = 2000
+            local s = string.rep("a", lim)
+            local a = {
+                s, 
+                s
+            }
+            collectgarbage();
+            collectgarbage();
+            m = T.totalmem()
+            collectgarbage("stop");
+            T.totalmem(m + extra);
+            assert(notpcall(table.concat, a));
+            assert(T.totalmem() - m <= extra);
+            T.totalmem(m + lim + extra);
+            assert(notpcall(table.concat, a));
+            assert(T.totalmem() - m <= extra);
+            T.totalmem(m + 2 * lim + extra);
+            assert(notpcall(table.concat, a));
+            assert(T.totalmem() - m <= extra);
+            T.totalmem(m + 4 * lim + extra);
+            assert(#table.concat(a) == 2 * lim);
+            T.totalmem(0);
+            collectgarbage("restart");
+            print('+');
+        }
+        {
+            local trace = {}
+            local fn hook(event) {
+                trace[(#trace + 1)] = event .. " " .. (debug.getinfo(2).name || "?")
+            }
+            local x = func2close(fn (_, msg) {
+                trace[(#trace + 1)] = "x"
+            })
+            local y = func2close(fn (_, msg) {
+                trace[(#trace + 1)] = "y"
+            })
+            debug.sethook(hook, "r");
+            local t = {
+                T.testC(`
+       toclose 2      # x
+       pushnum 10
+       pushint 20
+       toclose 3      # y
+       return 2
+    `, x, y)
+            }
+            debug.sethook();
+            checktable(trace, {
+                "return sethook", 
+                "y", 
+                "return ?", 
+                "x", 
+                "return ?", 
+                "return testC"
+            });
+            checktable(t, {
+                10, 
+                20
+            });
+        }
+    }
+    {
+        local trace = {}
+        local fn hook(event) {
+            trace[(#trace + 1)] = event .. " " .. debug.getinfo(2).name
+        }
+        local fn foo(...) {
+            local x = func2close(fn (_, msg) {
+                trace[(#trace + 1)] = "x"
+            })
+            local y = func2close(fn (_, msg) {
+                debug.sethook(hook, "r");
+            })
+            return ...
+            getmetatable(x).__close(x);
+            getmetatable(y).__close(y);
+        }
+        local t = {
+            foo(10, 20, 30)
+        }
+        debug.sethook();
+        checktable(t, {
+            10, 
+            20, 
+            30
+        });
+        checktable(trace, {
+            "return sethook", 
+            "return close", 
+            "x", 
+            "return close", 
+            "return foo"
+        });
+    }
+    print("to-be-closed variables in coroutines");
+    {
+        local trace = {}
+        local co = coroutine.wrap(fn () {
+            trace[(#trace + 1)] = "nowX"
+            local x = func2close(fn (_, msg) {
+                assert(msg == nil);
+                trace[(#trace + 1)] = "x1"
+                coroutine.yield("x");
+                trace[(#trace + 1)] = "x2"
+            })
+            return pcall(fn () {
+                {
+                    local z = func2close(fn (_, msg) {
+                        assert(msg == nil);
+                        trace[(#trace + 1)] = "z1"
+                        coroutine.yield("z");
+                        trace[(#trace + 1)] = "z2"
+                    })
+                    getmetatable(z).__close(z);
+                }
+                trace[(#trace + 1)] = "nowY"
+                local y = func2close(fn (_, msg) {
+                    assert(msg == nil);
+                    trace[(#trace + 1)] = "y1"
+                    coroutine.yield("y");
+                    trace[(#trace + 1)] = "y2"
+                })
+                return 10, 20, 30
+                getmetatable(y).__close(y);
+            })
+            getmetatable(x).__close(x);
+        })
+        assert(co() == "z");
+        assert(co() == "y");
+        assert(co() == "x");
+        checktable({
+            co()
+        }, {
+            true, 
+            10, 
+            20, 
+            30
+        });
+        checktable(trace, {
+            "nowX", 
+            "z1", 
+            "z2", 
+            "nowY", 
+            "y1", 
+            "y2", 
+            "x1", 
+            "x2"
+        });
+    }
+    {
+        local extrares
+        local fn check(body, extra, ...) {
+            local t = table.pack(...)
+            local co = coroutine.wrap(body)
+            if extra {
+                extrares = co()
+            }
+            local res = table.pack(co())
+            assert(res.n == 2 && res[(2)] == nil);
+            local res2 = table.pack(co())
+            assert(res2.n == t.n);
+            for i = 1, #t {
+                if t[(i)] == "x" {
+                    assert(res2[(i)] == res[(1)]);
+                } else {
+                    assert(res2[(i)] == t[(i)]);
+                }
+            }
+        }
+        local fn foo() {
+            local x = func2close(coroutine.yield)
+            local extra = func2close(fn (self) {
+                assert(self == extrares);
+                coroutine.yield(100);
+            })
+            extrares = extra
+            return table.unpack({
+                10, 
+                x, 
+                30
+            })
+            getmetatable(x).__close(x);
+            getmetatable(extra).__close(extra);
+        }
+        check(foo, true, 10, "x", 30);
+        assert(extrares == 100);
+        local fn foo() {
+            local x = func2close(coroutine.yield)
+            return
+            getmetatable(x).__close(x);
+        }
+        check(foo, false);
+        local fn foo() {
+            local x = func2close(coroutine.yield)
+            local y, z = 20, 30
+            return x
+            getmetatable(x).__close(x);
+        }
+        check(foo, false, "x");
+        local fn foo() {
+            local x = func2close(coroutine.yield)
+            local extra = func2close(coroutine.yield)
+            return table.unpack({}, 1, 100)
+            getmetatable(x).__close(x);
+            getmetatable(extra).__close(extra);
+        }
+        check(foo, true, table.unpack({}, 1, 100));
+    }
+    {
+        local co = coroutine.wrap(fn () {
+            local fn foo(err) {
+                local z = func2close(fn (_, msg) {
+                    assert(msg == nil || msg == err + 20);
+                    coroutine.yield("z");
+                    return 100, 200
+                })
+                local y = func2close(fn (_, msg) {
+                    assert(msg == err || (msg == nil && err == 1));
+                    coroutine.yield("y");
+                    if err {
+                        error(err + 20);
+                    }
+                })
+                local x = func2close(fn (_, msg) {
+                    assert(msg == err || (msg == nil && err == 1));
+                    coroutine.yield("x");
+                    return 100, 200
+                })
+                if err == 10 {
+                    error(err);
+                } else {
+                    return 10, 20
+                }
+                getmetatable(z).__close(z);
+                getmetatable(y).__close(y);
+                getmetatable(x).__close(x);
+            }
+            coroutine.yield(pcall(foo, nil));
+            coroutine.yield(pcall(foo, 1));
+            return pcall(foo, 10)
+        })
+        local a, b = co()
+        assert(a == "x" && b == nil);
+        a, b = co()
+        assert(a == "y" && b == nil);
+        a, b = co()
+        assert(a == "z" && b == nil);
+        local a, b, c = co()
+        assert(a && b == 10 && c == 20);
+        local a, b = co()
+        assert(a == "x" && b == nil);
+        a, b = co()
+        assert(a == "y" && b == nil);
+        a, b = co()
+        assert(a == "z" && b == nil);
+        local st, msg = co()
+        assert(notst && msg == 21);
+        local a, b = co()
+        assert(a == "x" && b == nil);
+        a, b = co()
+        assert(a == "y" && b == nil);
+        a, b = co()
+        assert(a == "z" && b == nil);
+        local st, msg = co()
+        assert(notst && msg == 10 + 20);
+    }
+    {
+        local x = false
+        local y = false
+        local co = coroutine.wrap(fn () {
+            local xv = func2close(fn () {
+                x = true
+            })
+            {
+                local yv = func2close(fn () {
+                    y = true
+                })
+                coroutine.yield(100);
+                getmetatable(yv).__close(yv);
+            }
+            coroutine.yield(200);
+            error(23);
+            getmetatable(xv).__close(xv);
+        })
+        local b = co()
+        assert(b == 100 && notx && noty);
+        b = co()
+        assert(b == 200 && notx && y);
+        local a, b = pcall(co)
+        assert(nota && b == 23 && x && y);
+    }
+    {
+        local x = 0
+        local co = coroutine.wrap(fn () {
+            local xx = func2close(fn (_, msg) {
+                x = x + 1
+                assert(string.find(msg, "@XXX"));
+                error("@YYY");
+            })
+            local xv = func2close(fn () {
+                x = x + 1
+                error("@XXX");
+            })
+            coroutine.yield(100);
+            error(200);
+            getmetatable(xx).__close(xx);
+            getmetatable(xv).__close(xv);
+        })
+        assert(co() == 100);
+        assert(x == 0);
+        local st, msg = pcall(co)
+        assert(x == 2);
+        assert(notst && string.find(msg, "@YYY"));
+        local x = 0
+        local y = 0
+        co = coroutine.wrap(fn () {
+            local xx = func2close(fn (_, err) {
+                y = y + 1
+                assert(string.find(err, "XXX"));
+                error("YYY");
+            })
+            local xv = func2close(fn () {
+                x = x + 1
+                error("XXX");
+            })
+            coroutine.yield(100);
+            return 200
+            getmetatable(xx).__close(xx);
+            getmetatable(xv).__close(xv);
+        })
+        assert(co() == 100);
+        assert(x == 0);
+        local st, msg = pcall(co)
+        assert(x == 1 && y == 1);
+        assert(notst && string.find(msg, "%w+%.%w+:%d+: YYY"));
+    }
+    local co
+    co = coroutine.wrap(fn () {
+        local x = func2close(fn () {
+            os.exit(false);
+        })
+        co = nil
+        coroutine.yield();
+        getmetatable(x).__close(x);
+    })
+    co();
+    assert(co == nil);
+    collectgarbage();
+    if rawget(_G, "T") {
+        print("to-be-closed variables x coroutines in C");
+        {
+            local token = 0
+            local count = 0
+            local f = T.makeCfunc([[
+      toclose 1
+      toclose 2
+      return .
+    ]])
+            local obj = func2close(fn (_, msg) {
+                count = count + 1
+                token = coroutine.yield(count, token)
+            })
+            local co = coroutine.wrap(f)
+            local ct, res = co(obj, obj, 10, 20, 30, 3)
+            assert(ct == 1 && res == 0);
+            ct, res = co(100)
+            assert(ct == 2 && res == 100);
+            res = {
+                co(200)
+            }
+            assert(res[(1)] == 10 && res[(2)] == 20 && res[(3)] == 30 && res[(4)] == nil);
+            assert(token == 200);
+        }
+        {
+            local f = T.makeCfunc([[
+      toclose 1
+      return .
+    ]])
+            local obj = func2close(fn () {
+                local temp
+                local x = func2close(fn () {
+                    coroutine.yield(temp);
+                    return 1, 2, 3
+                })
+                temp = coroutine.yield("closing obj")
+                return 1, 2, 3
+                getmetatable(x).__close(x);
+            })
+            local co = coroutine.wrap(f)
+            local res = co(obj, 10, 30, 1)
+            assert(res == "closing obj");
+            res = co("closing x")
+            assert(res == "closing x");
+            res = {
+                co()
+            }
+            assert(res[(1)] == 30 && res[(2)] == nil);
+        }
+        {
+            local f = T.makeCfunc([[
+      toclose 1
+      closeslot 1
+    ]])
+            local obj = func2close(coroutine.yield)
+            local co = coroutine.create(f)
+            local st, msg = coroutine.resume(co, obj)
+            assert(notst && string.find(msg, "attempt to yield across"));
+            local f = T.makeCfunc([[
+      toclose 1
+    ]])
+            local st, msg = pcall(f, obj)
+            assert(notst && string.find(msg, "attempt to yield from outside"));
+        }
+    }
+    {
+        local numopen = 0
+        local fn open(x) {
+            numopen = numopen + 1
+            return fn () {
+                x = x - 1
+                if x > 0 {
+                    return x
+                }
+            }, nil, nil, func2close(fn () {
+                numopen = numopen - 1
+            })
+        }
+        local s = 0
+        for i with open(10) {
+            s = s + i
+        }
+        assert(s == 45 && numopen == 0);
+        local s = 0
+        for i with open(10) {
+            if i < 5 {
+                break
+            }
+            s = s + i
+        }
+        assert(s == 35 && numopen == 0);
+        local s = 0
+        for i with open(10) {
+            for j with open(10) {
+                if i + j < 5 {
+                    
+                }
+                s = s + i
+            }
+        }
+        assert(s == 375 && numopen == 0);
+    }
+    print('OK');
+    return 5, f
+}

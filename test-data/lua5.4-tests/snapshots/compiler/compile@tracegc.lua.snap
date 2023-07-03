@@ -1,0 +1,29 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/tracegc.lua
+---
+local M = {}
+local setmetatable, stderr, collectgarbage = setmetatable, io.stderr, collectgarbage
+_ENV = nil
+local active = false
+local mt = {}
+method mt.__gc(o) {
+    stderr::write('.');
+    if active {
+        setmetatable(o, mt);
+    }
+}
+method M.start() {
+    if notactive {
+        active = true
+        setmetatable({}, mt);
+    }
+}
+method M.stop() {
+    if active {
+        active = false
+        collectgarbage();
+    }
+}
+return M

@@ -1,0 +1,124 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/heavy.lua
+---
+local fn teststring() {
+    print("creating a string too long");
+    {
+        local a = "x"
+        local st, msg = pcall(fn () {
+            while true {
+                a = a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a .. a
+                print(string.format("string with %d bytes", #a));
+            }
+        })
+        assert(notst && (string.find(msg, "string length overflow") || string.find(msg, "not enough memory")));
+        print("string length overflow with " .. #a * 100);
+    }
+    print('+');
+}
+local fn loadrep(x, what) {
+    local p = 1 << 20
+    local s = string.rep(x, p)
+    local count = 0
+    local fn f() {
+        count = count + p
+        if count % (0x80 * p) == 0 {
+            io.stderr::write("(", count /_ 2 ^ 20, " M)");
+        }
+        return s
+    }
+    local st, msg = load(f, "=big")
+    print("\nmemory: ", collectgarbage('count') * 1024);
+    msg = string.match(msg, "^[^\n]+")
+    print(string.format("total: 0x%x %s ('%s')", count, what, msg));
+    return st, msg
+}
+global fn controlstruct() {
+    print("control structure too long");
+    local lim = ((1 << 24) - 2) /_ 3
+    local s = string.rep("a = a + 1\n", lim)
+    s = "while true do " .. s .. "end"
+    assert(load(s));
+    print("ok with " .. lim .. " lines");
+    lim = lim + 3
+    s = string.rep("a = a + 1\n", lim)
+    s = "while true do " .. s .. "end"
+    local st, msg = load(s)
+    assert(notst && string.find(msg, "too long"));
+    print(msg);
+}
+global fn manylines() {
+    print("loading chunk with too many lines");
+    local st, msg = loadrep("\n", "lines")
+    assert(notst && string.find(msg, "too many lines"));
+    print('+');
+}
+global fn hugeid() {
+    print("loading chunk with huge identifier");
+    local st, msg = loadrep("a", "chars")
+    assert(notst && (string.find(msg, "lexical element too long") || string.find(msg, "not enough memory")));
+    print('+');
+}
+global fn toomanyinst() {
+    print("loading chunk with too many instructions");
+    local st, msg = loadrep("a = 10; ", "instructions")
+    print('+');
+}
+local fn loadrepfunc(prefix, f) {
+    local count = -1
+    local fn aux() {
+        count = count + 1
+        if count == 0 {
+            return prefix
+        } else {
+            if count % (0x100000) == 0 {
+                io.stderr::write("(", count /_ 2 ^ 20, " M)");
+            }
+            return f(count)
+        }
+    }
+    local st, msg = load(aux, "k")
+    print("\nmemory: ", collectgarbage('count') * 1024);
+    msg = string.match(msg, "^[^\n]+")
+    print("expected error: ", msg);
+}
+global fn toomanyconst() {
+    print("loading function with too many constants");
+    loadrepfunc("function foo () return {0,", fn (n) {
+        return string.char(34, ((n /_ 128 ^ 0) & 127) + 128, ((n /_ 128 ^ 1) & 127) + 128, ((n /_ 128 ^ 2) & 127) + 128, ((n /_ 128 ^ 3) & 127) + 128, ((n /_ 128 ^ 4) & 127) + 128, 34, 44)
+    });
+}
+global fn toomanystr() {
+    local a = {}
+    local st, msg = pcall(fn () {
+        for i = 1, math.huge {
+            if i % (0x100000) == 0 {
+                io.stderr::write("(", i /_ 2 ^ 20, " M)");
+            }
+            a[(i)] = string.pack("I", i)
+        }
+    })
+    local size = #a
+    a = collectgarbage('count')
+    print("\nmemory:", a * 1024);
+    print("expected error:", msg);
+    print("size:", size);
+}
+global fn toomanyidx() {
+    local a = {}
+    local st, msg = pcall(fn () {
+        for i = 1, math.huge {
+            if i % (0x100000) == 0 {
+                io.stderr::write("(", i /_ 2 ^ 20, " M)");
+            }
+            a[(i)] = i
+        }
+    })
+    print("\nmemory: ", collectgarbage('count') * 1024);
+    print("expected error: ", msg);
+    print("size:", #a);
+}
+toomanyidx();
+print("OK");

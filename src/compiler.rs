@@ -223,6 +223,7 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
 fn compile_ast_helper(tree: Expression, scope: usize) -> String {
     use crate::parser::ComplexToken::*;
 
+    let mut end = String::with_capacity(4);
     let mut result = indent(scope);
     let tree = &mut tree.into_iter().peekable();
 
@@ -230,7 +231,19 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
         match ctoken {
             Variable { names, values, .. } => {
                 result += "local ";
-                result += &compile_list(names, ", ", &mut |name| name);
+                result += &compile_list(names, ", ", &mut |(name, close)| {
+                    if close {
+                        end.push('\n');
+                        end += &indent(scope);
+                        end += "getmetatable(";
+                        end += &name;
+                        end += ").__close(";
+                        end += &name;
+                        end += ");";
+                    }
+
+                    name
+                });
                 if !values.is_empty() {
                     result += " = ";
                     result += &compile_expressions(scope, values);
@@ -271,15 +284,6 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += &compile_code_block(body, scope);
                 result.push('}');
                 result += &end;
-            }
-            Lambda { args, body, .. } => {
-                result += "fn ";
-                result.push('(');
-                result += &compile_list(args, ", ", &mut |arg| arg);
-                result += ") ";
-                result += "{";
-                result += &compile_code_block(body, scope);
-                result.push('}');
             }
             IfStatement {
                 condition,
@@ -427,8 +431,9 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += &indent_if(tree, scope);
             }
             Return(exprs) => {
-                result += "return ";
+                result += "return";
                 if let Some(exprs) = exprs {
+                    result.push(' ');
                     result +=
                         &compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr));
                 }
@@ -442,7 +447,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
         }
     }
 
-    result
+    result + &end
 }
 
 pub fn compile_ast(tree: Expression) -> String {

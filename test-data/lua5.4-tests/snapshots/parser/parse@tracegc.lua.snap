@@ -1,0 +1,432 @@
+---
+source: src/main.rs
+expression: parsed
+input_file: test-data/lua5.4-tests/tracegc.lua
+---
+[
+    Variable {
+        names: [
+            (
+                "M",
+                false,
+            ),
+        ],
+        values: [
+            [
+                Table {
+                    data: [],
+                    line: 3,
+                    column: 5,
+                },
+            ],
+        ],
+        line: 6,
+        column: 0,
+    },
+    Variable {
+        names: [
+            (
+                "setmetatable",
+                false,
+            ),
+            (
+                "stderr",
+                false,
+            ),
+            (
+                "collectgarbage",
+                false,
+            ),
+        ],
+        values: [
+            [
+                Ident {
+                    expr: [
+                        Symbol(
+                            "setmetatable",
+                        ),
+                    ],
+                    line: 6,
+                },
+            ],
+            [
+                Ident {
+                    expr: [
+                        Symbol(
+                            "io",
+                        ),
+                        Symbol(
+                            ".",
+                        ),
+                        Symbol(
+                            "stderr",
+                        ),
+                    ],
+                    line: 7,
+                },
+            ],
+            [
+                Ident {
+                    expr: [
+                        Symbol(
+                            "collectgarbage",
+                        ),
+                    ],
+                    line: 7,
+                },
+            ],
+        ],
+        line: 7,
+        column: 7,
+    },
+    Alter {
+        names: [
+            Ident {
+                expr: [
+                    Symbol(
+                        "_ENV",
+                    ),
+                ],
+                line: 7,
+            },
+        ],
+        values: [
+            [
+                Symbol(
+                    "nil",
+                ),
+            ],
+        ],
+        line: 11,
+        column: 0,
+    },
+    Variable {
+        names: [
+            (
+                "active",
+                false,
+            ),
+        ],
+        values: [
+            [
+                Symbol(
+                    "false",
+                ),
+            ],
+        ],
+        line: 16,
+        column: 0,
+    },
+    Variable {
+        names: [
+            (
+                "mt",
+                false,
+            ),
+        ],
+        values: [
+            [
+                Table {
+                    data: [],
+                    line: 16,
+                    column: 5,
+                },
+            ],
+        ],
+        line: 17,
+        column: 0,
+    },
+    Function {
+        local: false,
+        name: [
+            Symbol(
+                "mt",
+            ),
+            Symbol(
+                ".",
+            ),
+            Symbol(
+                "__gc",
+            ),
+        ],
+        args: [
+            "o",
+        ],
+        body: CodeBlock {
+            start: 38,
+            code: [
+                Ident {
+                    expr: [
+                        Symbol(
+                            "stderr",
+                        ),
+                        Symbol(
+                            ":",
+                        ),
+                        Symbol(
+                            "write",
+                        ),
+                        Call(
+                            [
+                                [
+                                    Symbol(
+                                        "'.'",
+                                    ),
+                                ],
+                            ],
+                        ),
+                    ],
+                    line: 18,
+                },
+                IfStatement {
+                    condition: [
+                        Ident {
+                            expr: [
+                                Symbol(
+                                    "active",
+                                ),
+                            ],
+                            line: 19,
+                        },
+                    ],
+                    body: CodeBlock {
+                        start: 7,
+                        code: [
+                            Ident {
+                                expr: [
+                                    Symbol(
+                                        "setmetatable",
+                                    ),
+                                    Call(
+                                        [
+                                            [
+                                                Ident {
+                                                    expr: [
+                                                        Symbol(
+                                                            "o",
+                                                        ),
+                                                    ],
+                                                    line: 20,
+                                                },
+                                            ],
+                                            [
+                                                Ident {
+                                                    expr: [
+                                                        Symbol(
+                                                            "mt",
+                                                        ),
+                                                    ],
+                                                    line: 20,
+                                                },
+                                            ],
+                                        ],
+                                    ),
+                                ],
+                                line: 20,
+                            },
+                        ],
+                        end: 14,
+                    },
+                    next: None,
+                    line: 21,
+                    column: 1,
+                },
+            ],
+            end: 53,
+        },
+        line: 22,
+        column: 1,
+    },
+    Function {
+        local: false,
+        name: [
+            Symbol(
+                "M",
+            ),
+            Symbol(
+                ".",
+            ),
+            Symbol(
+                "start",
+            ),
+        ],
+        args: [],
+        body: CodeBlock {
+            start: 59,
+            code: [
+                IfStatement {
+                    condition: [
+                        Operator(
+                            (
+                                "not",
+                                false,
+                            ),
+                        ),
+                        Ident {
+                            expr: [
+                                Symbol(
+                                    "active",
+                                ),
+                            ],
+                            line: 26,
+                        },
+                    ],
+                    body: CodeBlock {
+                        start: 4,
+                        code: [
+                            Alter {
+                                names: [
+                                    Ident {
+                                        expr: [
+                                            Symbol(
+                                                "active",
+                                            ),
+                                        ],
+                                        line: 27,
+                                    },
+                                ],
+                                values: [
+                                    [
+                                        Symbol(
+                                            "true",
+                                        ),
+                                    ],
+                                ],
+                                line: 27,
+                                column: 3,
+                            },
+                            Ident {
+                                expr: [
+                                    Symbol(
+                                        "setmetatable",
+                                    ),
+                                    Call(
+                                        [
+                                            [
+                                                Table {
+                                                    data: [],
+                                                    line: 28,
+                                                    column: 4,
+                                                },
+                                            ],
+                                            [
+                                                Ident {
+                                                    expr: [
+                                                        Symbol(
+                                                            "mt",
+                                                        ),
+                                                    ],
+                                                    line: 28,
+                                                },
+                                            ],
+                                        ],
+                                    ),
+                                ],
+                                line: 27,
+                            },
+                        ],
+                        end: 15,
+                    },
+                    next: None,
+                    line: 29,
+                    column: 1,
+                },
+            ],
+            end: 75,
+        },
+        line: 30,
+        column: 1,
+    },
+    Function {
+        local: false,
+        name: [
+            Symbol(
+                "M",
+            ),
+            Symbol(
+                ".",
+            ),
+            Symbol(
+                "stop",
+            ),
+        ],
+        args: [],
+        body: CodeBlock {
+            start: 81,
+            code: [
+                IfStatement {
+                    condition: [
+                        Ident {
+                            expr: [
+                                Symbol(
+                                    "active",
+                                ),
+                            ],
+                            line: 34,
+                        },
+                    ],
+                    body: CodeBlock {
+                        start: 3,
+                        code: [
+                            Alter {
+                                names: [
+                                    Ident {
+                                        expr: [
+                                            Symbol(
+                                                "active",
+                                            ),
+                                        ],
+                                        line: 35,
+                                    },
+                                ],
+                                values: [
+                                    [
+                                        Symbol(
+                                            "false",
+                                        ),
+                                    ],
+                                ],
+                                line: 35,
+                                column: 3,
+                            },
+                            Ident {
+                                expr: [
+                                    Symbol(
+                                        "collectgarbage",
+                                    ),
+                                    Call(
+                                        [],
+                                    ),
+                                ],
+                                line: 35,
+                            },
+                        ],
+                        end: 10,
+                    },
+                    next: None,
+                    line: 37,
+                    column: 1,
+                },
+            ],
+            end: 92,
+        },
+        line: 38,
+        column: 1,
+    },
+    Return(
+        Some(
+            [
+                [
+                    Ident {
+                        expr: [
+                            Symbol(
+                                "M",
+                            ),
+                        ],
+                        line: 40,
+                    },
+                ],
+            ],
+        ),
+    ),
+]

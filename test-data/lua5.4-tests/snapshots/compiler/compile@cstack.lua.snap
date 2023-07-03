@@ -1,0 +1,141 @@
+---
+source: src/main.rs
+expression: compiled
+input_file: test-data/lua5.4-tests/cstack.lua
+---
+local tracegc = require("tracegc")
+print("testing stack overflow detection");
+local fn checkerror(msg, f, ...) {
+    local s, err = pcall(f, ...)
+    assert(nots && string.find(err, msg));
+}
+{
+    print("testing stack overflow in message handling");
+    local count = 0
+    local fn loop(x, y, z) {
+        count = count + 1
+        return 1 + loop(x, y, z)
+    }
+    tracegc.stop();
+    local res, msg = xpcall(loop, loop)
+    tracegc.start();
+    assert(msg == "error in error handling");
+    print("final count: ", count);
+}
+{
+    print("testing recursion inside pattern matching");
+    local fn f(size) {
+        local s = string.rep("a", size)
+        local p = string.rep(".?", size)
+        return string.match(s, p)
+    }
+    local m = f(80)
+    assert(#m == 80);
+    checkerror("too complex", f, 2000);
+}
+{
+    print("testing stack-overflow in recursive 'gsub'");
+    local count = 0
+    local fn foo() {
+        count = count + 1
+        string.gsub("a", ".", foo);
+    }
+    checkerror("stack overflow", foo);
+    print("final count: ", count);
+    print("testing stack-overflow in recursive 'gsub' with metatables");
+    local count = 0
+    local t = setmetatable({}, {
+        __index = foo
+    })
+    foo = fn () {
+        count = count + 1
+        string.gsub("a", ".", t);
+    }
+    checkerror("stack overflow", foo);
+    print("final count: ", count);
+}
+{
+    print("testing limits in coroutines inside deep calls");
+    local count = 0
+    local lim = 1000
+    local fn stack(n) {
+        if n > 0 {
+            return stack(n - 1) + 1
+        } else {
+            coroutine.wrap(fn () {
+                count = count + 1
+                stack(lim);
+            })();
+        }
+    }
+    local st, msg = xpcall(stack, fn () {
+        return "ok"
+    }, lim)
+    assert(notst && msg == "ok");
+    print("final count: ", count);
+}
+{
+    print("nesting of resuming yielded coroutines");
+    local count = 0
+    local fn body() {
+        coroutine.yield();
+        local f = coroutine.wrap(body)
+        f();
+        count = count + 1
+        f();
+    }
+    local f = coroutine.wrap(body)
+    f();
+    assert(notpcall(f));
+    print("final count: ", count);
+}
+{
+    print("nesting coroutines running after recoverable errors");
+    local count = 0
+    local fn foo() {
+        count = count + 1
+        pcall(1);
+        coroutine.wrap(foo)();
+    }
+    checkerror("C stack overflow", foo);
+    print("final count: ", count);
+}
+if T {
+    print("testing stack recovery");
+    local N = 0
+    local LIM = -1
+    local stack1
+    local dummy
+    local fn err(msg) {
+        assert(string.find(msg, "stack overflow"));
+        local _, stacknow = T.stacklevel()
+        assert(stacknow == stack1 + 200);
+    }
+    local fn f() {
+        dummy, stack1 = T.stacklevel()
+        if N == LIM {
+            xpcall(f, err);
+            local _, stacknow = T.stacklevel()
+            assert(stacknow == stack1);
+            return
+        }
+        N = N + 1
+        f();
+    }
+    local topB, sizeB
+    local topA, sizeA
+    topB, sizeB = T.stacklevel()
+    tracegc.stop();
+    xpcall(f, err);
+    tracegc.start();
+    topA, sizeA = T.stacklevel()
+    assert(topA == topB && sizeA < sizeB * 2);
+    print(string.format("maximum stack size: %d", stack1));
+    LIM = N
+    N = 0
+    tracegc.stop();
+    f();
+    tracegc.start();
+    print("+");
+}
+print('OK');
