@@ -43,7 +43,7 @@ local fn lexerror(s, err) {
     if err != '<eof>' {
         err = "'" .. err .. "'"
     }
-    assert(notst && string.find(msg, "near " .. err, 1, true));
+    assert(!st && string.find(msg, "near " .. err, 1, true));
 }
 lexerror(`"abc\x"`, `\x"`);
 lexerror(`"abc\x`, `\x`);
@@ -70,8 +70,8 @@ lexerror("'alo \\z", "<eof>");
 lexerror(`'alo \98`, "<eof>");
 for i = 0, 255 {
     local s = string.char(i)
-    assert(notstring.find(s, "[a-zA-Z_]") == notload(s .. "=1"));
-    assert(notstring.find(s, "[a-zA-Z_0-9]") == notload("a" .. s .. "1 = 1"));
+    assert(!string.find(s, "[a-zA-Z_]") == !load(s .. "=1"));
+    assert(!string.find(s, "[a-zA-Z_0-9]") == !load("a" .. s .. "1 = 1"));
 }
 var = string.rep('a', 15000)
 prog = string.format("%s = 5", var)
@@ -193,8 +193,8 @@ for s with coroutine.wrap(fn () {
     assert(s == load("return [====[\n" .. s .. "]====]")());
 }
 if os.setlocale("pt_BR") || os.setlocale("ptb") {
-    assert(notload("á = 3"));
-    assert(notload("a = (3,4)"));
+    assert(!load("á = 3"));
+    assert(!load("a = (3,4)"));
     assert(tonumber("3,4") == 3.4 && tonumber("3.4") == nil);
     assert(assert(load("return 3.4"))() == 3.4);
     assert(assert(load("return .4,3"))() == 0.4);
@@ -209,8 +209,8 @@ if os.setlocale("pt_BR") || os.setlocale("ptb") {
 local s = "a string with \r and \n and \r\n and \n\r"
 local c = string.format("return %q", s)
 assert(assert(load(c))() == s);
-assert(notload("a = 'non-ending string"));
-assert(notload("a = 'non-ending string\n'"));
-assert(notload("a = '\\345'"));
-assert(notload("a = [=x]"));
+assert(!load("a = 'non-ending string"));
+assert(!load("a = 'non-ending string\n'"));
+assert(!load("a = '\\345'"));
+assert(!load("a = [=x]"));
 print('OK');

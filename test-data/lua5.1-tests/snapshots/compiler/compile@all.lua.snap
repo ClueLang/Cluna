@@ -29,7 +29,7 @@ local fn formatmem(m) {
     }
 }
 local showmem = fn () {
-    if notT {
+    if !T {
         print(format("    ---- total memory: %s ----\n", formatmem(gcinfo())));
     } else {
         T.checkmemory();

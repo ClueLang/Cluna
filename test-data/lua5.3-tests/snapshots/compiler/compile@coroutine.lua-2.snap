@@ -8,11 +8,11 @@ local debug = require('debug')
 local f
 local main, ismain = coroutine.running()
 assert(type(main) == "thread" && ismain);
-assert(notcoroutine.resume(main));
-assert(notcoroutine.isyieldable());
-assert(notpcall(coroutine.yield));
-assert(notpcall(coroutine.resume, 0));
-assert(notpcall(coroutine.status, 0));
+assert(!coroutine.resume(main));
+assert(!coroutine.isyieldable());
+assert(!pcall(coroutine.yield));
+assert(!pcall(coroutine.resume, 0));
+assert(!pcall(coroutine.status, 0));
 local fn eqtab(t1, t2) {
     assert(#t1 == #t2);
     for i = 1, #t1 {
@@ -70,7 +70,7 @@ eqtab(_G.x, {
 assert(s && a == 1 && b == 2 && c == 3 && d == nil);
 assert(coroutine.status(f) == "dead");
 s, a = coroutine.resume(f, "xuxu")
-assert(nots && string.find(a, "dead") && coroutine.status(f) == "dead");
+assert(!s && string.find(a, "dead") && coroutine.status(f) == "dead");
 local fn foo(i) {
     return coroutine.yield(i)
 }
@@ -129,7 +129,7 @@ while 1 {
 assert(#a == 25 && a[(#a)] == 97);
 x, a = nil
 co = coroutine.wrap(fn () {
-    assert(notpcall(table.sort, {
+    assert(!pcall(table.sort, {
         1, 
         2, 
         3
@@ -169,7 +169,7 @@ for i = 1, 10 {
     assert(f1(i) == i);
 }
 local r1, r2, v = f1(nil)
-assert(r1 && notr2 && v[(1)] == (10 + 1) * 10 / 2);
+assert(r1 && !r2 && v[(1)] == (10 + 1) * 10 / 2);
 global fn f(a, b) {
     a = coroutine.yield(a)
     error({
@@ -184,10 +184,10 @@ co = coroutine.wrap(fn () {
 })
 assert(co() == 10);
 r, msg = co(100)
-assert(notr && msg == 240);
+assert(!r && msg == 240);
 {
     local fn f(c) {
-        assert(notcoroutine.isyieldable());
+        assert(!coroutine.isyieldable());
         return c .. c
     }
     local co = coroutine.wrap(fn (c) {
@@ -209,14 +209,14 @@ global fn goo() {
 x = coroutine.wrap(goo)
 assert(x() == 3);
 local a, b = pcall(x)
-assert(nota && b == foo);
+assert(!a && b == foo);
 x = coroutine.create(goo)
 a, b = coroutine.resume(x)
 assert(a && b == 3);
 a, b = coroutine.resume(x)
-assert(nota && b == foo && coroutine.status(x) == "dead");
+assert(!a && b == foo && coroutine.status(x) == "dead");
 a, b = coroutine.resume(x)
-assert(nota && string.find(b, "dead") && coroutine.status(x) == "dead");
+assert(!a && string.find(b, "dead") && coroutine.status(x) == "dead");
 global fn all(a, n, k) {
     if k == 0 {
         coroutine.yield(a);
@@ -284,7 +284,7 @@ assert(coroutine.resume(co, co) == false);
         return pcall(A, 1)
     })
     st, res = A()
-    assert(notst && string.find(res, "non%-suspended"));
+    assert(!st && string.find(res, "non%-suspended"));
 }
 local co1, co2
 co1 = coroutine.create(fn () {
@@ -292,7 +292,7 @@ co1 = coroutine.create(fn () {
 })
 co2 = coroutine.wrap(fn () {
     assert(coroutine.status(co1) == 'normal');
-    assert(notcoroutine.resume(co1));
+    assert(!coroutine.resume(co1));
     coroutine.yield(3);
 })
 a, b = coroutine.resume(co1)
@@ -301,7 +301,7 @@ assert(coroutine.status(co1) == 'dead');
 a = fn (a) {
     coroutine.wrap(a)(a);
 }
-assert(notpcall(a, a));
+assert(!pcall(a, a));
 a = nil
 local x = coroutine.create(fn () {
     local a = 10
@@ -311,11 +311,11 @@ local x = coroutine.create(fn () {
     }
     error('x');
 })
-assert(notcoroutine.resume(x));
-assert(notcoroutine.resume(x, 1, 1, 1, 1, 1, 1, 1));
+assert(!coroutine.resume(x));
+assert(!coroutine.resume(x, 1, 1, 1, 1, 1, 1, 1));
 assert(_G.f() == 11);
 assert(_G.f() == 12);
-if notT {
+if !T {
     (Message || print)('\n >>> testC not active: skipping yield/hook tests <<<\n');
 } else {
     print("testing yields inside hooks");
@@ -416,13 +416,13 @@ if notT {
         assert(debug.setlocal(c, 0, -2, 20));
         local t = debug.getinfo(c, 0)
         assert(t.currentline == t.linedefined + 1);
-        assert(notdebug.getinfo(c, 1));
+        assert(!debug.getinfo(c, 1));
         assert(coroutine.resume(c));
         v = {
             coroutine.resume(c)
         }
         assert(v[(1)] == true && v[(2)] == 2 && v[(3)] == 20 && v[(4)] == nil);
-        assert(notcoroutine.resume(c));
+        assert(!coroutine.resume(c));
     }
     {
         local c = coroutine.create(fn () {
@@ -513,7 +513,7 @@ _X = coroutine.wrap(fn () {
     coroutine.yield();
 })
 _X();
-if not_soft {
+if !_soft {
     local j = 2 ^ 9
     local lim = 1000000
     local t = {
@@ -533,7 +533,7 @@ if not_soft {
             return table.unpack(t)
         })
         local r, msg = coroutine.resume(co)
-        assert(notr);
+        assert(!r);
     }
     co = nil
 }
@@ -571,7 +571,7 @@ local mt = {
     }, 
     __bnot = fn (a, b) {
         coroutine.yield(nil, "bnot");
-        return ~a.x
+        return ^^a.x
     }, 
     __shl = fn (a, b) {
         coroutine.yield(nil, "shl");
@@ -593,7 +593,7 @@ local mt = {
     }, 
     __bxor = fn (a, b) {
         coroutine.yield(nil, "bxor");
-        return a.x ^^ b.x
+        return a.x ~ b.x
     }, 
     __concat = fn (a, b) {
         coroutine.yield(nil, "concat");
@@ -673,21 +673,21 @@ assert(run(fn () {
     "mod"
 }) == 10);
 assert(run(fn () {
-    return ~a & b
+    return ^^a & b
 }, {
     "bnot", 
     "band"
-}) == ~10 & 12);
+}) == ^^10 & 12);
 assert(run(fn () {
     return a | b
 }, {
     "bor"
 }) == 10 | 12);
 assert(run(fn () {
-    return a ^^ b
+    return a ~ b
 }, {
     "bxor"
-}) == 10 ^^ 12);
+}) == 10 ~ 12);
 assert(run(fn () {
     return a << b
 }, {
@@ -834,7 +834,7 @@ a = {
     co()
 }
 assert(#a == 10 && a[(2)] == coroutine.yield && a[(5)] == 20 && a[(6)] == 30 && a[(7)] == "YIELD" && a[(8)] == 3 && a[(9)] == "YIELD" && a[(10)] == 4);
-assert(notpcall(co));
+assert(!pcall(co));
 f = T.makeCfunc("pushnum 3; pushnum 5; yield 1;")
 co = coroutine.wrap(fn () {
     assert(f() == 23);
@@ -942,7 +942,7 @@ assert(a[(7)] == 3 && a[(8)] == 4);
 assert(a[(9)] == 7 && a[(10)] == 8);
 assert(a[(11)]::find("errmsg") && #a == 11);
 assert(x == "YIELD" && y == 4);
-assert(notpcall(co));
+assert(!pcall(co));
 local co = coroutine.wrap(fn () {
     local a = {
         pcall(pcall, pcall, pcall, pcall, pcall, pcall, pcall, error, "hi")

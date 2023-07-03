@@ -54,12 +54,12 @@ getmetatable(env).__newindex = fn () {
     
 }
 local e, m = pcall(f)
-assert(note && m::find("global 'X'"));
+assert(!e && m::find("global 'X'"));
 getmetatable(env).__newindex = fn () {
     error("hi");
 }
 local e, m = xpcall(f, debug.traceback)
-assert(note && m::find("'__newindex'"));
+assert(!e && m::find("'__newindex'"));
 f, X = nil
 coroutine.yield('b');
 if 2 ^ 32 == 0 {
@@ -70,7 +70,7 @@ if 2 ^ 32 == 0 {
     local longs = string.rep("\0", ssize)
     local rep = assert(load("local a = ...; return " .. string.rep("a", repstrings, "..")))
     local a, b = pcall(rep, longs)
-    assert(nota && string.find(b, "overflow"));
+    assert(!a && string.find(b, "overflow"));
 }
 print('OK');
 return 'a'

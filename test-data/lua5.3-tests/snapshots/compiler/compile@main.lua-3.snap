@@ -57,7 +57,7 @@ local fn NoRun(msg, p, ...) {
     p = string.gsub(p, "lua", '"' .. progname .. '"', 1)
     local s = string.format(p, ...)
     s = string.format("%s 2> %s", s, out)
-    assert(notos.execute(s));
+    assert(!os.execute(s));
     assert(string.find(getoutput(), msg, 1, true));
 }
 RUN('lua -v');
@@ -104,7 +104,7 @@ local defaultpath, defaultCpath
     defaultpath = string.match(out, "^(.-)\t")
     defaultCpath = string.match(out, "\t(.-)$")
 }
-assert(notstring.find(defaultpath, "xxx") && string.find(defaultpath, "lua") && notstring.find(defaultCpath, "xxx") && string.find(defaultCpath, "lua"));
+assert(!string.find(defaultpath, "xxx") && string.find(defaultpath, "lua") && !string.find(defaultCpath, "xxx") && string.find(defaultCpath, "lua"));
 local fn convert(p) {
     prepfile("print(package.path)");
     RUN('env LUA_PATH="%s" lua %s > %s', p, prog, out);
@@ -221,7 +221,7 @@ prepfile("os.exit(false, true)");
 NoRun("", "lua %s", prog);
 assert(os.remove(prog));
 assert(os.remove(otherprog));
-assert(notos.remove(out));
+assert(!os.remove(out));
 NoRun("unrecognized option '-h'", "lua -h");
 NoRun("unrecognized option '---'", "lua ---");
 NoRun("unrecognized option '-Ex'", "lua -Ex");
@@ -261,7 +261,7 @@ print('testing Ctrl C');
     assert(os.execute("sleep 1"));
     local n = 100
     for i = 0, 100 {
-        if notkill(pid) {
+        if !kill(pid) {
             n = i
             break
         }

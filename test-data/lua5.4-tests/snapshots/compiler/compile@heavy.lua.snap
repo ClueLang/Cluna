@@ -13,7 +13,7 @@ local fn teststring() {
                 print(string.format("string with %d bytes", #a));
             }
         })
-        assert(notst && (string.find(msg, "string length overflow") || string.find(msg, "not enough memory")));
+        assert(!st && (string.find(msg, "string length overflow") || string.find(msg, "not enough memory")));
         print("string length overflow with " .. #a * 100);
     }
     print('+');
@@ -46,19 +46,19 @@ global fn controlstruct() {
     s = string.rep("a = a + 1\n", lim)
     s = "while true do " .. s .. "end"
     local st, msg = load(s)
-    assert(notst && string.find(msg, "too long"));
+    assert(!st && string.find(msg, "too long"));
     print(msg);
 }
 global fn manylines() {
     print("loading chunk with too many lines");
     local st, msg = loadrep("\n", "lines")
-    assert(notst && string.find(msg, "too many lines"));
+    assert(!st && string.find(msg, "too many lines"));
     print('+');
 }
 global fn hugeid() {
     print("loading chunk with huge identifier");
     local st, msg = loadrep("a", "chars")
-    assert(notst && (string.find(msg, "lexical element too long") || string.find(msg, "not enough memory")));
+    assert(!st && (string.find(msg, "lexical element too long") || string.find(msg, "not enough memory")));
     print('+');
 }
 global fn toomanyinst() {

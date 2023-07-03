@@ -127,7 +127,7 @@ RUN("lua %s", prog);
 checkout('alo');
 assert(os.remove(prog));
 assert(os.remove(otherprog));
-assert(notos.remove(out));
+assert(!os.remove(out));
 RUN("lua -v");
 NoRun("lua -h");
 NoRun("lua -e");

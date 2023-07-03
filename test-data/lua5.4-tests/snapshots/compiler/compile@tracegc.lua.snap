@@ -15,7 +15,7 @@ method mt.__gc(o) {
     }
 }
 method M.start() {
-    if notactive {
+    if !active {
         active = true
         setmetatable({}, mt);
     }

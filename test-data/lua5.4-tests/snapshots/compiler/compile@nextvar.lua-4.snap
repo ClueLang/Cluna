@@ -6,7 +6,7 @@ input_file: test-data/lua5.4-tests/nextvar.lua
 print('testing tables, next, and for');
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(nots && string.find(err, msg));
+    assert(!s && string.find(err, msg));
 }
 local a = {}
 for i = 1, 100 {
@@ -44,7 +44,7 @@ for k, v with ipairs({
     false
 }) {
     i = i + 1
-    x = notx
+    x = !x
     assert(x == v);
 }
 assert(i == 4);
@@ -60,7 +60,7 @@ assert(type(ipairs({})) == 'function' && ipairs({}) == ipairs({}));
     }, k)
     assert(k == nil);
 }
-if notT {
+if !T {
     (Message || print)('\n >>> testC not active: skipping tests for table sizes <<<\n');
 } else {
     local fn mp2(n) {
@@ -284,7 +284,7 @@ local fn find(name) {
     local n, v
     while 1 {
         n, v = next(_G, n)
-        if notn {
+        if !n {
             return nofind
         }
         assert(_G[(n)] != undef);
@@ -305,7 +305,7 @@ assert(print == find("print") && print == find1("print"));
 assert(_G[("print")] == find("print"));
 assert(assert == find1("assert"));
 assert(nofind == find("return"));
-assert(notfind1("return"));
+assert(!find1("return"));
 _G[("ret" .. "urn")] = undef
 assert(nofind == find("return"));
 _G[("xxx")] = 1
@@ -338,7 +338,7 @@ a = nil
         a[(n)] = v
     }
     for n, v with pairs(a) {
-        if notpackage.loaded[(n)] && type(v) != "function" && notstring.find(n, "^[%u_]") {
+        if !package.loaded[(n)] && type(v) != "function" && !string.find(n, "^[%u_]") {
             _G[(n)] = undef
         }
         collectgarbage();
@@ -519,7 +519,7 @@ assert(n == 5);
     assert(count == 0 && next(t) == nil);
 }
 local fn test(a) {
-    assert(notpcall(table.insert, a, 2, 20));
+    assert(!pcall(table.insert, a, 2, 20));
     table.insert(a, 10);
     table.insert(a, 2, 20);
     table.insert(a, 1, -1);
@@ -528,8 +528,8 @@ local fn test(a) {
     table.insert(a, 2, -2);
     assert(a[(2)] != undef);
     assert(a[("2")] == undef);
-    assert(notpcall(table.insert, a, 0, 20));
-    assert(notpcall(table.insert, a, #a + 2, 20));
+    assert(!pcall(table.insert, a, 0, 20));
+    assert(!pcall(table.insert, a, #a + 2, 20));
     assert(table.remove(a, 1) == -1);
     assert(table.remove(a, 1) == -2);
     assert(table.remove(a, 1) == 10);
@@ -586,7 +586,7 @@ a = {
     40
 }
 assert(table.remove(a, #a + 1) == nil);
-assert(notpcall(table.remove, a, 0));
+assert(!pcall(table.remove, a, 0));
 assert(a[(#a)] == 40);
 assert(table.remove(a, #a) == 40);
 assert(a[(#a)] == 30);
@@ -651,7 +651,7 @@ assert(a[(#a)] == 30 && #a == 2);
     local k, v = next(t)
     assert(k == math.mininteger && v == 20);
 }
-if notT {
+if !T {
     (Message || print)('\n >>> testC not active: skipping tests for table library on non-tables <<<\n');
 } else {
     local debug = require('debug')
@@ -713,13 +713,13 @@ for i = 0, 1, -1 {
 }
 a = nil
 for i = 1, 1 {
-    assert(nota);
+    assert(!a);
     a = 1
 }
 assert(a);
 a = nil
 for i = 1, 1, -1 {
-    assert(nota);
+    assert(!a);
     a = 1
 }
 assert(a);

@@ -89,16 +89,16 @@ check(fn (a, b, c, d) {
     return a .. b .. c .. d
 }, 'MOVE', 'MOVE', 'MOVE', 'MOVE', 'CONCAT', 'RETURN');
 check(fn () {
-    return notnotnil
+    return !!nil
 }, 'LOADBOOL', 'RETURN');
 check(fn () {
-    return notnotfalse
+    return !!false
 }, 'LOADBOOL', 'RETURN');
 check(fn () {
-    return notnottrue
+    return !!true
 }, 'LOADBOOL', 'RETURN');
 check(fn () {
-    return notnot1
+    return !!1
 }, 'LOADBOOL', 'RETURN');
 check(fn () {
     local a, b, c, d
@@ -152,12 +152,12 @@ check(fn () {
 }, 'GETTABUP', 'EQ', 'JMP', 'SETTABUP', 'RETURN');
 checkequal(fn () {
     local a
-    if not(a || b) {
+    if !(a || b) {
         b = a
     }
 }, fn () {
     local a
-    if (nota && notb) {
+    if (!a && !b) {
         b = a
     }
 });
@@ -166,7 +166,7 @@ checkequal(fn (l) {
     return 0 <= a && a <= l
 }, fn (l) {
     local a
-    return not(not(a >= 0) || not(a <= l))
+    return !(!(a >= 0) || !(a <= l))
 });
 check(fn (a) {
     if a == 1 {
@@ -188,7 +188,7 @@ checkequal(fn (a) {
         a = a + 1
     }
 }, fn (a) {
-    if not(a < 10) {
+    if !(a < 10) {
         
     }
     a = a + 1
@@ -199,7 +199,7 @@ checkequal(fn (a) {
     }
 }, fn (a) {
     while true {
-        if not(a < 10) {
+        if !(a < 10) {
             break
         }
         a = a + 1

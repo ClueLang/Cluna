@@ -13,14 +13,14 @@ assert('alo\0' > 'alo');
 assert('\0' < '\1');
 assert('\0\0' < '\0\1');
 assert('\1\0a\0a' <= '\1\0a\0a');
-assert(not('\1\0a\0b' <= '\1\0a\0a'));
+assert(!('\1\0a\0b' <= '\1\0a\0a'));
 assert('\0\0\0' < '\0\0\0\0');
-assert(not('\0\0\0\0' < '\0\0\0'));
+assert(!('\0\0\0\0' < '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0\0');
-assert(not('\0\0\0\0' <= '\0\0\0'));
+assert(!('\0\0\0\0' <= '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0');
 assert('\0\0\0' >= '\0\0\0');
-assert(not('\0\0b' < '\0\0a\0'));
+assert(!('\0\0b' < '\0\0a\0'));
 print('+');
 assert(string.sub("123456789", 2, 4) == "234");
 assert(string.sub("123456789", 7) == "789");
@@ -152,12 +152,12 @@ local fn trylocale(w) {
     }
     return false
 }
-if nottrylocale("collate") {
+if !trylocale("collate") {
     print("locale not supported");
 } else {
     assert("alo" < "�lo" && "�lo" < "amo");
 }
-if nottrylocale("ctype") {
+if !trylocale("ctype") {
     print("locale not supported");
 } else {
     assert(string.gsub("�����", "%a", "x") == "xxxxx");

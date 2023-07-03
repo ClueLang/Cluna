@@ -171,9 +171,9 @@ while 1 {
 }
 print("steps (2)");
 local fn dosteps(siz) {
-    assert(notcollectgarbage("isrunning"));
+    assert(!collectgarbage("isrunning"));
     collectgarbage();
-    assert(notcollectgarbage("isrunning"));
+    assert(!collectgarbage("isrunning"));
     local a = {}
     for i = 1, 100 {
         a[(i)] = {
@@ -190,22 +190,22 @@ local fn dosteps(siz) {
     return i
 }
 collectgarbage("stop");
-if not_port {
+if !_port {
     assert(dosteps(0) > 10);
     assert(dosteps(10) < dosteps(2));
 }
 assert(dosteps(100000) == 1);
 assert(collectgarbage("step", 1000000) == true);
 assert(collectgarbage("step", 1000000) == true);
-assert(notcollectgarbage("isrunning"));
+assert(!collectgarbage("isrunning"));
 collectgarbage("restart");
 assert(collectgarbage("isrunning"));
-if not_port {
+if !_port {
     collectgarbage();
     collectgarbage();
     local x = gcinfo()
     collectgarbage("stop");
-    assert(notcollectgarbage("isrunning"));
+    assert(!collectgarbage("isrunning"));
     loop  {
         local a = {}
     } until gcinfo() > 3 * x
@@ -422,7 +422,7 @@ assert(next(a) == nil);
         __gc = fn (o) {
             local i = s[(o)]
             s[(i)] = true
-            assert(nots[(i - 1)]);
+            assert(!s[(i - 1)]);
             if i == 8 {
                 error("here");
             }
@@ -432,7 +432,7 @@ assert(next(a) == nil);
         local n = setmetatable({}, getmetatable(u))
         s[(n)] = i
     }
-    assert(notpcall(collectgarbage));
+    assert(!pcall(collectgarbage));
     for i = 8, 10 {
         assert(s[(i)]);
     }
@@ -451,7 +451,7 @@ assert(next(a) == nil);
         }
     });
     local a, b = pcall(collectgarbage)
-    assert(nota && type(b) == "string" && string.find(b, "error in __gc"));
+    assert(!a && type(b) == "string" && string.find(b, "error in __gc"));
 }
 print('+');
 if T == nil {
@@ -546,8 +546,8 @@ u = setmetatable({}, {
     }
 })
 u = nil
-assert(notpcall(collectgarbage));
-if not_soft {
+assert(!pcall(collectgarbage));
+if !_soft {
     print("deep structures");
     local a = {}
     for i = 1, 200000 {

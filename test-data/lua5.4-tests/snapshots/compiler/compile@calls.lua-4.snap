@@ -13,7 +13,7 @@ global fn f(x) {
     return a::x(x)
 }
 assert(type(f) == 'function');
-assert(notpcall(type));
+assert(!pcall(type));
 fact = false
 {
     local res = 1
@@ -108,7 +108,7 @@ global fn err_on_n(n) {
 {
     global fn dummy(n) {
         if n > 0 {
-            assert(notpcall(err_on_n, n));
+            assert(!pcall(err_on_n, n));
             dummy(n - 1);
         }
     }
@@ -350,7 +350,7 @@ global fn read1(x) {
     }
 }
 global fn cannotload(msg, a, b) {
-    assert(nota && string.find(b, msg));
+    assert(!a && string.find(b, msg));
 }
 a = assert(load(read1(x), "modname", "t", _G))
 assert(a() == "\0" && _G.x == 33);
@@ -361,7 +361,7 @@ a = assert(load(fn () {
     return nil
 }))
 a();
-assert(notload(fn () {
+assert(!load(fn () {
     return true
 }));
 local t = {
@@ -389,7 +389,7 @@ a = assert(load(read1(x), nil, "b"))
 assert(a() == 1 && _G.x == 1);
 cannotload("attempt to load a binary chunk", load(read1(x), nil, "t"));
 cannotload("attempt to load a binary chunk", load(x, nil, "t"));
-assert(notpcall(string.dump, print));
+assert(!pcall(string.dump, print));
 cannotload("unexpected symbol", load(read1("*a = 123")));
 cannotload("unexpected symbol", load("*a = 123"));
 cannotload("hhi", load(fn () {
@@ -437,7 +437,7 @@ assert(x() == nil);
 assert(debug.setupvalue(x, 1, "hi") == "a");
 assert(x() == "hi");
 assert(debug.setupvalue(x, 2, 13) == "b");
-assert(notdebug.setupvalue(x, 3, 10));
+assert(!debug.setupvalue(x, 3, 10));
 x("set");
 assert(x() == 23);
 x("set");
@@ -513,11 +513,11 @@ print("testing binary chunks");
     for i = 1, #header {
         local s = string.sub(c, 1, i - 1) .. string.char(string.byte(string.sub(c, i, i)) + 1) .. string.sub(c, i + 1, -1)
         assert(#s == #c);
-        assert(notload(s));
+        assert(!load(s));
     }
     for i = 1, #c - 1 {
         local st, msg = load(string.sub(c, 1, i))
-        assert(notst && string.find(msg, "truncated"));
+        assert(!st && string.find(msg, "truncated"));
     }
 }
 print('OK');

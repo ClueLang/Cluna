@@ -12,9 +12,9 @@ local a = {}
 setmetatable(a, {});
 assert(io.type(a) == nil);
 local a, b, c = io.open('xuxu_nao_existe')
-assert(nota && type(b) == "string" && type(c) == "number");
+assert(!a && type(b) == "string" && type(c) == "number");
 a, b, c = io.open('/a/b/c/d', 'w')
-assert(nota && type(b) == "string" && type(c) == "number");
+assert(!a && type(b) == "string" && type(c) == "number");
 local file = os.tmpname()
 local otherfile = os.tmpname()
 assert(os.setlocale('C', 'all'));
@@ -58,8 +58,8 @@ local f = io.lines(file)
 while f() {
     
 }
-assert(notpcall(f));
-assert(notpcall(f));
+assert(!pcall(f));
+assert(!pcall(f));
 for l with io.lines(file) {
     io.write(l, "\n");
 }
@@ -73,7 +73,7 @@ for l with f::lines() {
 }
 assert(f::close());
 io.close();
-assert(notpcall(io.close, f));
+assert(!pcall(io.close, f));
 assert(tostring(f) == "file (closed)");
 assert(io.type(f) == "closed file");
 io.input(file);
@@ -85,7 +85,7 @@ assert(os.remove(otherfile));
 io.input(file);
 {
     local a, b, c = io.input()::write("xuxu")
-    assert(nota && type(b) == "string" && type(c) == "number");
+    assert(!a && type(b) == "string" && type(c) == "number");
 }
 assert(io.read(0) == "");
 assert(io.read(5, '*l') == '"�lo"');
@@ -120,7 +120,7 @@ assert(io.read('*a') == '');
 collectgarbage();
 print('+');
 io.close(io.input());
-assert(notpcall(io.read));
+assert(!pcall(io.read));
 assert(os.remove(file));
 local t = '0123456789'
 for i = 1, 12 {
@@ -130,7 +130,7 @@ assert(string.len(t) == 10 * 2 ^ 12);
 io.output(file);
 io.write("alo\n");
 io.close();
-assert(notpcall(io.write));
+assert(!pcall(io.write));
 local f = io.open(file, "a")
 io.output(f);
 collectgarbage();
@@ -184,7 +184,7 @@ assert(io.read(3) == "\0\0\0");
 assert(io.read(0) == "");
 assert(io.read(1) == "\255");
 assert(io.read('*a') == "\0");
-assert(notio.read(0));
+assert(!io.read(0));
 assert(otherfilehandle == io.input());
 otherfilehandle::close();
 assert(os.remove(file));

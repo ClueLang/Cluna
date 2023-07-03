@@ -6,9 +6,9 @@ input_file: test-data/lua5.2-tests/files.lua
 debug = require("debug")
 assert(type(os.getenv("PATH")) == "string");
 assert(io.input(io.stdin) == io.stdin);
-assert(notpcall(io.input, "non-existent-file"));
+assert(!pcall(io.input, "non-existent-file"));
 assert(io.output(io.stdout) == io.stdout);
-assert(notio.close(io.stdin) && notio.stdout::close() && notio.stderr::close());
+assert(!io.close(io.stdin) && !io.stdout::close() && !io.stderr::close());
 assert(type(io.input()) == "userdata" && io.type(io.output()) == "file");
 assert(type(io.stdin) == "userdata" && io.type(io.stderr) == "file");
 assert(io.type(8) == nil);
@@ -16,23 +16,23 @@ local a = {}
 setmetatable(a, {});
 assert(io.type(a) == nil);
 local a, b, c = io.open('xuxu_nao_existe')
-assert(nota && type(b) == "string" && type(c) == "number");
+assert(!a && type(b) == "string" && type(c) == "number");
 a, b, c = io.open('/a/b/c/d', 'w')
-assert(nota && type(b) == "string" && type(c) == "number");
+assert(!a && type(b) == "string" && type(c) == "number");
 local file = os.tmpname()
 local f, msg = io.open(file, "w")
-if notf {
+if !f {
     (Message || print)("'os.tmpname' file cannot be open; skipping file tests");
 } else {
     f::close();
     print('testing i/o');
     local otherfile = os.tmpname()
-    assert(notpcall(io.open, file, "rw"));
-    assert(notpcall(io.open, file, "rb+"));
-    assert(notpcall(io.open, file, "r+bk"));
-    assert(notpcall(io.open, file, ""));
-    assert(notpcall(io.open, file, "+"));
-    assert(notpcall(io.open, file, "b"));
+    assert(!pcall(io.open, file, "rw"));
+    assert(!pcall(io.open, file, "rb+"));
+    assert(!pcall(io.open, file, "r+bk"));
+    assert(!pcall(io.open, file, ""));
+    assert(!pcall(io.open, file, "+"));
+    assert(!pcall(io.open, file, "b"));
     assert(io.open(file, "r+b"))::close();
     assert(io.open(file, "r+"))::close();
     assert(io.open(file, "rb"))::close();
@@ -72,15 +72,15 @@ if notf {
     io.output(io.open(otherfile, "ab"));
     assert(io.write("\n\n\t\t  3450\n"));
     io.close();
-    assert(notpcall(io.lines, "non-existent-file"));
+    assert(!pcall(io.lines, "non-existent-file"));
     assert(os.rename(otherfile, file));
     io.output(otherfile);
     local f = io.lines(file)
     while f() {
         
     }
-    assert(notpcall(f));
-    assert(notpcall(f));
+    assert(!pcall(f));
+    assert(!pcall(f));
     for l with io.lines(file) {
         io.write(l, "\n");
     }
@@ -95,7 +95,7 @@ if notf {
     assert(tostring(f)::sub(1, 5) == "file ");
     assert(f::close());
     io.close();
-    assert(notpcall(io.close, f));
+    assert(!pcall(io.close, f));
     assert(tostring(f) == "file (closed)");
     assert(io.type(f) == "closed file");
     io.input(file);
@@ -109,7 +109,7 @@ if notf {
     io.input(file);
     {
         local a, b, c = io.input()::write("xuxu")
-        assert(nota && type(b) == "string" && type(c) == "number");
+        assert(!a && type(b) == "string" && type(c) == "number");
     }
     assert(io.read(0) == "");
     assert(io.read(5, '*l') == '"álo"');
@@ -145,7 +145,7 @@ if notf {
     collectgarbage();
     print('+');
     io.close(io.input());
-    assert(notpcall(io.read));
+    assert(!pcall(io.read));
     assert(os.remove(file));
     local t = '0123456789'
     for i = 1, 12 {
@@ -155,7 +155,7 @@ if notf {
     io.output(file);
     io.write("alo")::write("\n");
     io.close();
-    assert(notpcall(io.write));
+    assert(!pcall(io.write));
     local f = io.open(file, "a+b")
     io.output(f);
     collectgarbage();
@@ -271,7 +271,7 @@ X
 -                                   y;
 ]])::close();
     _G.X = 1
-    assert(notload(io.lines(file)));
+    assert(!load(io.lines(file)));
     collectgarbage();
     load(io.lines(file, "*L"))();
     assert(_G.X == 2);
@@ -358,10 +358,10 @@ X
     {
         io.open(file, 'w')::write("return 10")::close();
         local s, m = loadfile(file, 'b')
-        assert(nots && string.find(m, "a text chunk"));
+        assert(!s && string.find(m, "a text chunk"));
         io.open(file, 'w')::write("\27 return 10")::close();
         local s, m = loadfile(file, 't')
-        assert(nots && string.find(m, "a binary chunk"));
+        assert(!s && string.find(m, "a binary chunk"));
         assert(os.remove(file));
     }
     io.output(file);
@@ -385,7 +385,7 @@ X
     assert(io.read(0) == "");
     assert(io.read(1) == "\255");
     assert(io.read('*a') == "\0");
-    assert(notio.read(0));
+    assert(!io.read(0));
     assert(otherfilehandle == io.input());
     otherfilehandle::close();
     assert(os.remove(file));
@@ -436,7 +436,7 @@ and the rest of the file
         fr::close();
         assert(os.remove(file));
     }
-    if not_soft {
+    if !_soft {
         print("testing large files (> BUFSIZ)");
         io.output(file);
         for i = 1, 5001 {
@@ -457,7 +457,7 @@ and the rest of the file
         x = nil
         y = nil
     }
-    if not_noposix {
+    if !_noposix {
         print("testing popen/pclose and execute");
         local tests = {
             {
@@ -531,17 +531,17 @@ D = os.date("*t", t)
 load(os.date(`assert(D.year==%Y and D.month==%m and D.day==%d and
   D.hour==%H and D.min==%M and D.sec==%S and
   D.wday==%w+1 and D.yday==%j and type(D.isdst) == 'boolean')`, t))();
-assert(notpcall(os.date, "%9"));
-assert(notpcall(os.date, "%"));
-assert(notpcall(os.date, "%O"));
-assert(notpcall(os.date, "%E"));
-assert(notpcall(os.date, "%Ea"));
-if not_noposix {
+assert(!pcall(os.date, "%9"));
+assert(!pcall(os.date, "%"));
+assert(!pcall(os.date, "%O"));
+assert(!pcall(os.date, "%E"));
+assert(!pcall(os.date, "%Ea"));
+if !_noposix {
     assert(type(os.date("%Ex")) == 'string');
     assert(type(os.date("%Oy")) == 'string');
 }
 assert(os.time(D) == t);
-assert(notpcall(os.time, {
+assert(!pcall(os.time, {
     hour = 12
 }));
 D = os.date("!*t", t)

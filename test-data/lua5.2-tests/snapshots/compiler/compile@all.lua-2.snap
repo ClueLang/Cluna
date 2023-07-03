@@ -39,7 +39,7 @@ local collectgarbage = collectgarbage
 {
     local msgs = {}
     global fn Message(m) {
-        if not_nomsg {
+        if !_nomsg {
             print(m);
             msgs[(#msgs + 1)] = string.sub(m, 3, -3)
         }
@@ -63,7 +63,7 @@ local collectgarbage = collectgarbage
         }
     }
     local showmem
-    if notT {
+    if !T {
         local max = 0
         showmem = fn () {
             local m = collectgarbage("count") * 1024
@@ -123,7 +123,7 @@ local collectgarbage = collectgarbage
     assert(dofile('locals.lua') == 5);
     dofile('constructs.lua');
     dofile('code.lua');
-    if not_G._soft {
+    if !_G._soft {
         report('big.lua');
         local f = coroutine.wrap(assert(loadfile('big.lua')))
         assert(f() == 'b');
@@ -161,7 +161,7 @@ local collectgarbage = collectgarbage
 local _G, showmem, print, format, clock, assert, open = _G, showmem, print, string.format, os.clock, assert, io.open
 local fname = T && "time-debug.txt" || "time.txt"
 local lasttime
-if notusertests {
+if !usertests {
     local f = io.open(fname)
     if f {
         lasttime = assert(tonumber(f::read('*a')))
@@ -172,7 +172,7 @@ if notusertests {
 }
 print('cleaning all!!!!');
 for n with pairs(_G) {
-    if not({
+    if !({
         ___Glob = 1, 
         tostring = 1
     })[(n)] {
@@ -188,7 +188,7 @@ collectgarbage();
 showmem();
 local time = clock() - c
 print(format("\n\ntotal time: %.2f\n", time));
-if notusertests {
+if !usertests {
     lasttime = lasttime || time
     local diff = (time - lasttime) / time
     local tolerance = 0.05

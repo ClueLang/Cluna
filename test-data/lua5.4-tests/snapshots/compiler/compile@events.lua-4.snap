@@ -47,7 +47,7 @@ assert(setmetatable(a, nil) == a);
 assert(getmetatable(a) == nil);
 assert(setmetatable(a, t) == a);
 global fn f(t, i, e) {
-    assert(note);
+    assert(!e);
     local p = rawget(t, "parent")
     return (p && p[(i)] + 3), "dummy return"
 }
@@ -122,10 +122,10 @@ assert(next(a) == nil);
     });
     foi = false
     a[(1)] = 0
-    assert(notfoi);
+    assert(!foi);
     foi = false
     a[('a1')] = 0
-    assert(notfoi);
+    assert(!foi);
     foi = false
     a[('a11')] = 0
     assert(foi);
@@ -134,7 +134,7 @@ assert(next(a) == nil);
     assert(foi);
     foi = false
     a[(1)] = undef
-    assert(notfoi);
+    assert(!foi);
     a[(1)] = undef
     foi = false
     a[(1)] = nil
@@ -300,14 +300,14 @@ checkcap({
     a, 
     "hi"
 });
-assert("hi" ^^ a == "hi");
+assert("hi" ~ a == "hi");
 checkcap({
     "bxor", 
     "hi", 
     a
 });
 (fn () {
-    assert(10 ^^ a == 10);
+    assert(10 ~ a == 10);
 })();
 checkcap({
     "bxor", 
@@ -350,7 +350,7 @@ checkcap({
     a, 
     a
 });
-assert(~a == a);
+assert(^^a == a);
 checkcap({
     "bnot", 
     a, 
@@ -403,9 +403,9 @@ t = setmetatable({
 })
 assert(#t == 10 && rawlen(t) == 3);
 assert(rawlen("abc") == 3);
-assert(notpcall(rawlen, io.stdin));
-assert(notpcall(rawlen, 34));
-assert(notpcall(rawlen));
+assert(!pcall(rawlen, io.stdin));
+assert(!pcall(rawlen, 34));
+assert(!pcall(rawlen));
 assert(rawlen(string.rep('a', 1000)) == 1000);
 t = {}
 t.__lt = fn (a, b, c) {
@@ -445,18 +445,18 @@ global fn Op(x) {
     }, t)
 }
 local fn test(a, b, c) {
-    assert(not(Op(1) < Op(1)) && (Op(1) < Op(2)) && not(Op(2) < Op(1)));
-    assert(not(1 < Op(1)) && (Op(1) < 2) && not(2 < Op(1)));
-    assert(not(Op('a') < Op('a')) && (Op('a') < Op('b')) && not(Op('b') < Op('a')));
-    assert(not('a' < Op('a')) && (Op('a') < 'b') && not(Op('b') < Op('a')));
-    assert((Op(1) <= Op(1)) && (Op(1) <= Op(2)) && not(Op(2) <= Op(1)));
-    assert((Op('a') <= Op('a')) && (Op('a') <= Op('b')) && not(Op('b') <= Op('a')));
-    assert(not(Op(1) > Op(1)) && not(Op(1) > Op(2)) && (Op(2) > Op(1)));
-    assert(not(Op('a') > Op('a')) && not(Op('a') > Op('b')) && (Op('b') > Op('a')));
-    assert((Op(1) >= Op(1)) && not(Op(1) >= Op(2)) && (Op(2) >= Op(1)));
-    assert((1 >= Op(1)) && not(1 >= Op(2)) && (Op(2) >= 1));
-    assert((Op('a') >= Op('a')) && not(Op('a') >= Op('b')) && (Op('b') >= Op('a')));
-    assert(('a' >= Op('a')) && not(Op('a') >= 'b') && (Op('b') >= Op('a')));
+    assert(!(Op(1) < Op(1)) && (Op(1) < Op(2)) && !(Op(2) < Op(1)));
+    assert(!(1 < Op(1)) && (Op(1) < 2) && !(2 < Op(1)));
+    assert(!(Op('a') < Op('a')) && (Op('a') < Op('b')) && !(Op('b') < Op('a')));
+    assert(!('a' < Op('a')) && (Op('a') < 'b') && !(Op('b') < Op('a')));
+    assert((Op(1) <= Op(1)) && (Op(1) <= Op(2)) && !(Op(2) <= Op(1)));
+    assert((Op('a') <= Op('a')) && (Op('a') <= Op('b')) && !(Op('b') <= Op('a')));
+    assert(!(Op(1) > Op(1)) && !(Op(1) > Op(2)) && (Op(2) > Op(1)));
+    assert(!(Op('a') > Op('a')) && !(Op('a') > Op('b')) && (Op('b') > Op('a')));
+    assert((Op(1) >= Op(1)) && !(Op(1) >= Op(2)) && (Op(2) >= Op(1)));
+    assert((1 >= Op(1)) && !(1 >= Op(2)) && (Op(2) >= 1));
+    assert((Op('a') >= Op('a')) && !(Op('a') >= Op('b')) && (Op('b') >= Op('a')));
+    assert(('a' >= Op('a')) && !(Op('a') >= 'b') && (Op('b') >= Op('a')));
     assert(Op(1) == Op(1) && Op(1) != Op(2));
     assert(Op('a') == Op('a') && Op('a') != Op('b'));
     assert(a == a && a != b);
@@ -475,7 +475,7 @@ local fn Set(x) {
 }
 t.__lt = fn (a, b) {
     for k with pairs(a) {
-        if notb[(k)] {
+        if !b[(k)] {
             return false
         }
         b[(k)] = undef
@@ -484,7 +484,7 @@ t.__lt = fn (a, b) {
 }
 t.__le = fn (a, b) {
     for k with pairs(a) {
-        if notb[(k)] {
+        if !b[(k)] {
             return false
         }
     }
@@ -500,7 +500,7 @@ assert(Set({
     3, 
     4
 }));
-assert(not(Set({
+assert(!(Set({
     1, 
     2, 
     3, 
@@ -533,21 +533,21 @@ assert((Set({
     3, 
     4
 })));
-assert(not(Set({
+assert(!(Set({
     1, 
     3
 }) <= Set({
     3, 
     5
 })));
-assert(not(Set({
+assert(!(Set({
     1, 
     3
 }) <= Set({
     3, 
     5
 })));
-assert(not(Set({
+assert(!(Set({
     1, 
     3
 }) >= Set({
@@ -556,7 +556,7 @@ assert(not(Set({
 })));
 t.__eq = fn (a, b) {
     for k with pairs(a) {
-        if notb[(k)] {
+        if !b[(k)] {
             return false
         }
         b[(k)] = undef
@@ -573,7 +573,7 @@ assert(s == Set({
     5, 
     1
 }));
-assert(notrawequal(s, Set({
+assert(!rawequal(s, Set({
     3, 
     5, 
     1
@@ -636,7 +636,7 @@ assert(t[(Set({
     }
     assert(a == b);
 }
-if notT {
+if !T {
     (Message || print)('\n >>> testC not active: skipping tests for \z
 userdata <<<\n');
 } else {
@@ -660,7 +660,7 @@ userdata <<<\n');
     assert(u1 == u3 && u3 == u1 && u1 != u2);
     assert(u2 == u1 && u2 == u3 && u3 == u2);
     assert(u2 != {});
-    assert(rawequal(u1, u1) && notrawequal(u1, u3));
+    assert(rawequal(u1, u1) && !rawequal(u1, u3));
     local mirror = {}
     debug.setmetatable(u3, {
         __index = mirror, 
@@ -731,12 +731,12 @@ t1.__le = fn () {
     return false
 }
 setmetatable(d, t1);
-assert(c == d && c < d && not(d <= c));
+assert(c == d && c < d && !(d <= c));
 t2 = {}
 t2.__eq = t1.__eq
 t2.__lt = t1.__lt
 setmetatable(d, t2);
-assert(c == d && c < d && not(d <= c));
+assert(c == d && c < d && !(d <= c));
 local i
 local tt = {
     __call = fn (t, ...) {
@@ -811,10 +811,10 @@ a = {}
 setmetatable(a, a);
 a.__index = a
 a.__newindex = a
-assert(notpcall(fn (a, b) {
+assert(!pcall(fn (a, b) {
     return a[(b)]
 }, a, 10));
-assert(notpcall(fn (a, b, c) {
+assert(!pcall(fn (a, b, c) {
     a[(b)] = c
 }, a, 10, true));
 T, K, V = nil

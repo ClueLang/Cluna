@@ -11,7 +11,7 @@ print("testing debug library and debug information");
 {
     local a = 1
 }
-assert(notdebug.gethook());
+assert(!debug.gethook());
 local testline = 19
 global fn test(s, l, p) {
     collectgarbage();
@@ -29,18 +29,18 @@ global fn test(s, l, p) {
     assert(#l == 0);
 }
 {
-    assert(notpcall(debug.getinfo, print, "X"));
-    assert(notpcall(debug.getinfo, 0, ">"));
-    assert(notdebug.getinfo(1000));
-    assert(notdebug.getinfo(-1));
+    assert(!pcall(debug.getinfo, print, "X"));
+    assert(!pcall(debug.getinfo, 0, ">"));
+    assert(!debug.getinfo(1000));
+    assert(!debug.getinfo(-1));
     local a = debug.getinfo(print)
     assert(a.what == "C" && a.short_src == "[C]");
     a = debug.getinfo(print, "L")
     assert(a.activelines == nil);
     local b = debug.getinfo(test, "SfL")
-    assert(b.name == nil && b.what == "Lua" && b.linedefined == testline && b.lastlinedefined == b.linedefined + 10 && b.func == test && notstring.find(b.short_src, "%["));
+    assert(b.name == nil && b.what == "Lua" && b.linedefined == testline && b.lastlinedefined == b.linedefined + 10 && b.func == test && !string.find(b.short_src, "%["));
     assert(b.activelines[(b.linedefined + 1)] && b.activelines[(b.lastlinedefined)]);
-    assert(notb.activelines[(b.linedefined)] && notb.activelines[(b.lastlinedefined + 1)]);
+    assert(!b.activelines[(b.linedefined)] && !b.activelines[(b.lastlinedefined + 1)]);
 }
 a = "function f () end"
 local fn dostring(s, x) {
@@ -79,11 +79,11 @@ loop  {
         }
     }
     local f = fn () {
-        return 1 + 1 && (not1 || g.x())
+        return 1 + 1 && (!1 || g.x())
     }
     assert(f() == 'xixi');
     g = debug.getinfo(f)
-    assert(g.what == "Lua" && g.func == f && g.namewhat == "" && notg.name);
+    assert(g.what == "Lua" && g.func == f && g.namewhat == "" && !g.name);
     global fn f(x, name) {
         name = name || 'f'
         local a = debug.getinfo(1)
@@ -127,7 +127,7 @@ loop  {
     f(g).x = f(2) && f(10) + f(9)
     assert(g.x == f(19));
     global fn g(x) {
-        if notx {
+        if !x {
             return 3
         }
         return (x('a', 'x'))
@@ -342,31 +342,31 @@ test(`for i=1,4 do a=1 end`, {
     }
 }
 print('+');
-assert(notpcall(debug.getlocal, 20, 1));
-assert(notpcall(debug.setlocal, -1, 1, 10));
+assert(!pcall(debug.getlocal, 20, 1));
+assert(!pcall(debug.setlocal, -1, 1, 10));
 local fn foo(a, b, ...) {
     local d, e
 }
 local co = coroutine.create(foo)
 assert(debug.getlocal(foo, 1) == 'a');
 assert(debug.getlocal(foo, 2) == 'b');
-assert(notdebug.getlocal(foo, 3));
+assert(!debug.getlocal(foo, 3));
 assert(debug.getlocal(co, foo, 1) == 'a');
 assert(debug.getlocal(co, foo, 2) == 'b');
-assert(notdebug.getlocal(co, foo, 3));
-assert(notdebug.getlocal(print, 1));
+assert(!debug.getlocal(co, foo, 3));
+assert(!debug.getlocal(print, 1));
 local fn foo() {
     return (debug.getlocal(1, -1))
 }
-assert(notfoo(10));
+assert(!foo(10));
 local fn foo(a, ...) {
     local t = table.pack(...)
     for i = 1, t.n {
         local n, v = debug.getlocal(1, -i)
         assert(n == "(vararg)" && v == t[(i)]);
     }
-    assert(notdebug.getlocal(1, -(t.n + 1)));
-    assert(notdebug.setlocal(1, -(t.n + 1), 30));
+    assert(!debug.getlocal(1, -(t.n + 1)));
+    assert(!debug.setlocal(1, -(t.n + 1), 30));
     if t.n > 0 {
         (fn (x) {
             assert(debug.setlocal(2, -1, x) == "(vararg)");
@@ -385,7 +385,7 @@ for i = 1, (_soft && 100 || 1000) {
 foo(table.unpack(a));
 a = nil
 {
-    assert(notdebug.gethook());
+    assert(!debug.gethook());
     local count = 0
     local fn f() {
         assert(debug.getinfo(1).namewhat == "hook");
@@ -463,16 +463,16 @@ global fn g(...) {
     }
 }
 g();
-assert(a[(f)] && a[(g)] && a[(assert)] && a[(debug.getlocal)] && nota[(print)]);
+assert(a[(f)] && a[(g)] && a[(assert)] && a[(debug.getlocal)] && !a[(print)]);
 local n, v = debug.getlocal(0, 1)
 assert(v == 0 && n == "(C temporary)");
 local n, v = debug.getlocal(0, 2)
 assert(v == 2 && n == "(C temporary)");
-assert(notdebug.getlocal(0, 3));
-assert(notdebug.getlocal(0, 0));
+assert(!debug.getlocal(0, 3));
+assert(!debug.getlocal(0, 0));
 global fn f() {
     assert(select(2, debug.getlocal(2, 3)) == 1);
-    assert(notdebug.getlocal(2, 4));
+    assert(!debug.getlocal(2, 4));
     debug.setlocal(2, 3, 10);
     return 20
 }
@@ -481,11 +481,11 @@ global fn g(a, b) {
 }
 assert(g(0, 0) == 30);
 debug.sethook(nil);
-assert(notdebug.gethook());
+assert(!debug.gethook());
 {
-    assert(notdebug.setuservalue(io.stdin, 10));
+    assert(!debug.setuservalue(io.stdin, 10));
     local a, b = debug.getuservalue(io.stdin, 10)
-    assert(a == nil && notb);
+    assert(a == nil && !b);
 }
 {
     local fn f(...) {
@@ -516,7 +516,7 @@ local fn collectlocals(level) {
     local tab = {}
     for i = 1, math.huge {
         local n, v = debug.getlocal(level + 1, i)
-        if not(n && string.find(n, "^[a-zA-Z0-9_]+$")) {
+        if !(n && string.find(n, "^[a-zA-Z0-9_]+$")) {
             break
         }
         tab[(n)] = v
@@ -534,21 +534,21 @@ method a::f(a, b, ...) {
 debug.sethook(fn (e) {
     assert(e == "call");
     dostring("XX = 12");
-    assert(notpcall(load("a='joao'+1")));
+    assert(!pcall(load("a='joao'+1")));
     debug.sethook(fn (e, l) {
         assert(debug.getinfo(2, "l").currentline == l);
         local f, m, c = debug.gethook()
         assert(e == "line");
         assert(m == 'l' && c == 0);
         debug.sethook(nil);
-        assert(notX);
+        assert(!X);
         X = collectlocals(2)
     }, "l");
 }, "c");
 a::f(1, 2, 3, 4, 5);
 assert(X.self == a && X.a == 1 && X.b == 2 && X.c == nil);
 assert(XX == 12);
-assert(notdebug.gethook());
+assert(!debug.gethook());
 {
     local X = false
     local fn foo(a, b, ...) {
@@ -590,7 +590,7 @@ local fn eqseq(t1, t2) {
     local on = false
     local inp, out
     local fn hook(event) {
-        if noton {
+        if !on {
             return
         }
         local ar = debug.getinfo(2, "ruS")
@@ -634,7 +634,7 @@ local fn eqseq(t1, t2) {
         return ...
     }
     local fn foo1() {
-        on = noton
+        on = !on
         return foo(20, 10, 0)
     }
     foo1();
@@ -653,10 +653,10 @@ local fn getupvalues(f) {
     local i = 1
     while true {
         local name, value = debug.getupvalue(f, i)
-        if notname {
+        if !name {
             break
         }
-        assert(nott[(name)]);
+        assert(!t[(name)]);
         t[(name)] = value
         i = i + 1
     }
@@ -671,9 +671,9 @@ local fn foo2(x) {
     a = x
     return c + b
 }
-assert(notdebug.getupvalue(foo1, 3));
-assert(notdebug.getupvalue(foo1, 0));
-assert(notdebug.setupvalue(foo1, 3, "xuxu"));
+assert(!debug.getupvalue(foo1, 3));
+assert(!debug.getupvalue(foo1, 0));
+assert(!debug.setupvalue(foo1, 3, "xuxu"));
 local t = getupvalues(foo1)
 assert(t.a == nil && t.b == 2 && t.c == 3);
 t = getupvalues(foo2)
@@ -805,7 +805,7 @@ assert(debug.traceback(print) == print);
 assert(debug.traceback(print, 4) == print);
 assert(string.find(debug.traceback("hi", 4), "^hi\n"));
 assert(string.find(debug.traceback("hi"), "^hi\n"));
-assert(notstring.find(debug.traceback("hi"), "'debug.traceback'"));
+assert(!string.find(debug.traceback("hi"), "'debug.traceback'"));
 assert(string.find(debug.traceback("hi", 0), "'debug.traceback'"));
 assert(string.find(debug.traceback(), "^stack traceback:\n"));
 {
@@ -892,7 +892,7 @@ for i = x.linedefined + 1, x.lastlinedefined {
     x.activelines[(i)] = undef
 }
 assert(next(x.activelines) == nil);
-assert(notdebug.getinfo(co, 2));
+assert(!debug.getinfo(co, 2));
 local a, b = debug.getlocal(co, 1, 1)
 assert(a == "x" && b == 10);
 a, b = debug.getlocal(co, 1, 2)
@@ -910,7 +910,7 @@ a, b = coroutine.resume(co)
 assert(a && b == "hi");
 assert(#tr == 4 && tr[(4)] == l.currentline + 2);
 assert(debug.gethook(co) == foo);
-assert(notdebug.gethook());
+assert(!debug.gethook());
 checktraceback(co, {});
 co = coroutine.create(fn (x) {
     local a, b = coroutine.yield(x)
@@ -921,9 +921,9 @@ a, b = coroutine.resume(co, 10)
 assert(a && b == 10);
 a, b = debug.getlocal(co, 1, 1)
 assert(a == "x" && b == 10);
-assert(notdebug.getlocal(co, 1, 5));
+assert(!debug.getlocal(co, 1, 5));
 assert(debug.setlocal(co, 1, 1, 30) == "x");
-assert(notdebug.setlocal(co, 1, 5, 40));
+assert(!debug.setlocal(co, 1, 5, 40));
 a, b = coroutine.resume(co, 100)
 assert(a && b == 30);
 global fn f(i) {
@@ -1002,13 +1002,13 @@ assert(a[(3)] == "index" && a ^ 3 == "pow" && a .. a == "concat");
 assert(a / 3 == "div" && 3 % a == "mod");
 assert(a + 3 == "add" && 3 - a == "sub" && a * 3 == "mul" && -a == "unm" && #a == "len" && a & 3 == "band");
 assert(a + 30000 == "add" && a - 3.0 == "sub" && a * 3.0 == "mul" && -a == "unm" && #a == "len" && a & 3 == "band");
-assert(a | 3 == "bor" && 3 ^^ a == "bxor" && a << 3 == "shl" && a >> 1 == "shr");
+assert(a | 3 == "bor" && 3 ~ a == "bxor" && a << 3 == "shl" && a >> 1 == "shr");
 assert(a == b && a.op == "eq");
 assert(a >= b && a.op == "le");
 assert("x" >= a && a.op == "le");
 assert(a > b && a.op == "lt");
 assert(a > 10 && a.op == "lt");
-assert(~a == "bnot");
+assert(^^a == "bnot");
 {
     local fn f() {
         assert(debug.getinfo(1).name == "for iterator");

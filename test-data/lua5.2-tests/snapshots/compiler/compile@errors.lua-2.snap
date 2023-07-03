@@ -14,7 +14,7 @@ global fn doit(s) {
         return msg
     }
     local cond, msg = pcall(f)
-    return (notcond) && msg
+    return (!cond) && msg
 }
 global fn checkmessage(prog, msg) {
     local m = doit(prog)
@@ -22,7 +22,7 @@ global fn checkmessage(prog, msg) {
 }
 global fn checksyntax(prog, extra, token, line) {
     local msg = doit(prog)
-    if notstring.find(token, "^<%a") && notstring.find(token, "^char%(") {
+    if !string.find(token, "^<%a") && !string.find(token, "^char%(") {
         token = "'" .. token .. "'"
     }
     token = string.gsub(token, "(%p)", "%%%1")
@@ -32,11 +32,11 @@ global fn checksyntax(prog, extra, token, line) {
 }
 assert(doit("error('hi', 0)") == 'hi');
 assert(doit("error()") == nil);
-if not_no32 {
+if !_no32 {
     assert(doit("table.unpack({}, 1, n=2^30)"));
 }
 assert(doit("a=math.sin()"));
-assert(notdoit("tostring(1)") && doit("tostring()"));
+assert(!doit("tostring(1)") && doit("tostring()"));
 assert(doit("tonumber()"));
 assert(doit("repeat until 1; a"));
 assert(doit("return;;"));
@@ -53,7 +53,7 @@ checkmessage("a=1; bbbb=2; a=math.sin(3)+bbbb(3)", "global 'bbbb'");
 checkmessage("a=1; local a,bbbb=2,3; a = math.sin(1) and bbbb(3)", "local 'bbbb'");
 checkmessage("a={}; do local a=1 end a:bbbb(3)", "method 'bbbb'");
 checkmessage("local a={}; a.bbbb(3)", "field 'bbbb'");
-assert(notstring.find(doit("a={13}; local bbbb=1; a[bbbb](3)"), "'bbbb'"));
+assert(!string.find(doit("a={13}; local bbbb=1; a[bbbb](3)"), "'bbbb'"));
 checkmessage("a={13}; local bbbb=1; a[bbbb](3)", "number");
 checkmessage("a=(1)..{}", "a table value");
 aaa = nil
@@ -61,14 +61,14 @@ checkmessage("aaa.bbb:ddd(9)", "global 'aaa'");
 checkmessage("local aaa={bbb=1}; aaa.bbb:ddd(9)", "field 'bbb'");
 checkmessage("local aaa={bbb={}}; aaa.bbb:ddd(9)", "method 'ddd'");
 checkmessage("local a,b,c; (function () a = b+1 end)()", "upvalue 'b'");
-assert(notdoit("local aaa={bbb={ddd=next}}; aaa.bbb:ddd(nil)"));
+assert(!doit("local aaa={bbb={ddd=next}}; aaa.bbb:ddd(nil)"));
 checkmessage("local _ENV = {x={}}; a = a + 1", "global 'a'");
 checkmessage("b=1; local aaa='a'; x=aaa+b", "local 'aaa'");
 checkmessage("aaa={}; x=3/aaa", "global 'aaa'");
 checkmessage("aaa='2'; b=nil;x=aaa*b", "global 'b'");
 checkmessage("aaa={}; x=-aaa", "global 'aaa'");
-assert(notstring.find(doit("aaa={}; x=(aaa or aaa)+(aaa and aaa)"), "'aaa'"));
-assert(notstring.find(doit("aaa={}; (aaa or aaa)()"), "'aaa'"));
+assert(!string.find(doit("aaa={}; x=(aaa or aaa)+(aaa and aaa)"), "'aaa'"));
+assert(!string.find(doit("aaa={}; (aaa or aaa)()"), "'aaa'"));
 checkmessage("print(print < 10)", "function");
 checkmessage("print(print < print)", "two function");
 _G.D = debug
@@ -213,7 +213,7 @@ X = 1
 lineerror((p), 2);
 X = 2
 lineerror((p), 1);
-if not_soft {
+if !_soft {
     C = 0
     local l = debug.getinfo(1, "l").currentline
     global fn y() {
@@ -251,7 +251,7 @@ if not_soft {
     }
     assert(i > 15);
     local res, msg = xpcall(error, error)
-    assert(notres && type(msg) == 'string');
+    assert(!res && type(msg) == 'string');
     print('+');
     local fn f(x) {
         if x == 0 {
@@ -299,7 +299,7 @@ assert(a && b == 1 && c == 2);
 a, b, c = xpcall(string.find, fn (x) {
     return {}
 }, true, "al")
-assert(nota && type(b) == "table" && c == nil);
+assert(!a && type(b) == "table" && c == nil);
 print('+');
 checksyntax("syntax error", "", "error", 1);
 checksyntax("1.000", "", "1.000", 1);
@@ -320,7 +320,7 @@ for i = 1, lim {
 local fn testrep(init, rep) {
     local s = "local a; " .. init .. string.rep(rep, 400)
     local a, b = load(s)
-    assert(nota && string.find(b, "levels"));
+    assert(!a && string.find(b, "levels"));
 }
 testrep("a=", "{");
 testrep("a=", "(");
@@ -333,7 +333,7 @@ testrep("a=", "a..");
 testrep("a=", "a^");
 local s = ("a,")::rep(200) .. "a=nil"
 local a, b = load(s)
-assert(nota && string.find(b, "levels"));
+assert(!a && string.find(b, "levels"));
 local lim = 127
 local s = "local function fooA ()\n  local "
 for j = 1, lim {

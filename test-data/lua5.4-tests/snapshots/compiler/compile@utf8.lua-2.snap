@@ -7,7 +7,7 @@ print("testing UTF-8 library");
 local utf8 = require('utf8')
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(nots && string.find(err, msg));
+    assert(!s && string.find(err, msg));
 }
 local fn len(s) {
     return #string.gsub(s, "[\x80-\xBF]", "")
@@ -24,8 +24,8 @@ local fn checksyntax(s, t) {
     ts = table.concat(ts)
     assert(assert(load(ts))() == s);
 }
-assert(notutf8.offset("alo", 5));
-assert(notutf8.offset("alo", -4));
+assert(!utf8.offset("alo", 5));
+assert(!utf8.offset("alo", -4));
 local fn check(s, t, nonstrict) {
     local l = utf8.len(s, 1, -1, nonstrict)
     assert(#t == l && len(s) == l);
@@ -50,7 +50,7 @@ local fn check(s, t, nonstrict) {
             assert(utf8.offset(s, 0, j) == pi);
         }
         for j = pi + 1, pi1 - 1 {
-            assert(notutf8.len(s, j));
+            assert(!utf8.len(s, j));
         }
         assert(utf8.len(s, pi, pi, nonstrict) == 1);
         assert(utf8.len(s, pi, pi1 - 1, nonstrict) == 1);
@@ -78,7 +78,7 @@ local fn check(s, t, nonstrict) {
 {
     local fn check(s, p) {
         local a, b = utf8.len(s)
-        assert(nota && b == p);
+        assert(!a && b == p);
     }
     check("abc\xE3def", 4);
     check("汉字\x80", #("汉字") + 1);
@@ -152,7 +152,7 @@ checkerror("value out of range", utf8.char, 0x7FFFFFFF + 1);
 checkerror("value out of range", utf8.char, -1);
 local fn invalid(s) {
     checkerror("invalid UTF%-8 code", utf8.codepoint, s);
-    assert(notutf8.len(s));
+    assert(!utf8.len(s));
 }
 invalid("\xF4\x9F\xBF\xBF");
 invalid("\u{D800}");

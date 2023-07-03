@@ -11,17 +11,17 @@ local oldmode = collectgarbage("generational")
 {
     local U = {}
     collectgarbage();
-    assert(notT || T.gcage(U) == "old");
+    assert(!T || T.gcage(U) == "old");
     U[(1)] = {
         x = {
             234
         }
     }
-    assert(notT || (T.gcage(U) == "touched1" && T.gcage(U[(1)]) == "new"));
+    assert(!T || (T.gcage(U) == "touched1" && T.gcage(U[(1)]) == "new"));
     collectgarbage("step", 0);
-    assert(notT || (T.gcage(U) == "touched2" && T.gcage(U[(1)]) == "survival"));
+    assert(!T || (T.gcage(U) == "touched2" && T.gcage(U[(1)]) == "survival"));
     collectgarbage("step", 0);
-    assert(notT || (T.gcage(U) == "old" && T.gcage(U[(1)]) == "old1"));
+    assert(!T || (T.gcage(U) == "old" && T.gcage(U[(1)]) == "old1"));
     assert(U[(1)].x[(1)] == 234);
 }
 {
@@ -32,11 +32,11 @@ local oldmode = collectgarbage("generational")
         10
     }
     collectgarbage();
-    assert(notT || T.gcage(old) == "old");
+    assert(!T || T.gcage(old) == "old");
     setmetatable(old, {});
-    assert(notT || T.gcage(getmetatable(old)) == "old0");
+    assert(!T || T.gcage(getmetatable(old)) == "old0");
     collectgarbage("step", 0);
-    assert(notT || T.gcage(getmetatable(old)) == "old1");
+    assert(!T || T.gcage(getmetatable(old)) == "old1");
     setmetatable(getmetatable(old), {
         __gc = foo
     });
@@ -47,7 +47,7 @@ local oldmode = collectgarbage("generational")
     A[(1)] = false
     local fn gcf(obj) {
         A[(1)] = obj
-        assert(notT || T.gcage(obj) == "old1");
+        assert(!T || T.gcage(obj) == "old1");
         obj = nil
         collectgarbage("step", 0);
         print(getmetatable(A[(1)]).x);
@@ -55,12 +55,12 @@ local oldmode = collectgarbage("generational")
     collectgarbage();
     local obj = {}
     collectgarbage("step", 0);
-    assert(notT || T.gcage(obj) == "survival");
+    assert(!T || T.gcage(obj) == "survival");
     setmetatable(obj, {
         __gc = gcf, 
         x = "+"
     });
-    assert(notT || T.gcage(getmetatable(obj)) == "new");
+    assert(!T || T.gcage(getmetatable(obj)) == "new");
     obj = nil
     collectgarbage("step", 0);
 }
@@ -96,15 +96,15 @@ local oldmode = collectgarbage("generational")
         __mode = "kv"
     })
     collectgarbage();
-    assert(notT || T.gcage(t) == "old");
+    assert(!T || T.gcage(t) == "old");
     t[(1)] = {
         10
     }
-    assert(notT || (T.gcage(t) == "touched1" && T.gccolor(t) == "gray"));
+    assert(!T || (T.gcage(t) == "touched1" && T.gccolor(t) == "gray"));
     collectgarbage("step", 0);
-    assert(notT || (T.gcage(t) == "touched2" && T.gccolor(t) == "black"));
+    assert(!T || (T.gcage(t) == "touched2" && T.gccolor(t) == "black"));
     collectgarbage("step", 0);
-    assert(notT || T.gcage(t) == "old");
+    assert(!T || T.gcage(t) == "old");
     t[(1)] = {
         10
     }

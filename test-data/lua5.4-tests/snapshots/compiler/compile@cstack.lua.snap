@@ -7,7 +7,7 @@ local tracegc = require("tracegc")
 print("testing stack overflow detection");
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(nots && string.find(err, msg));
+    assert(!s && string.find(err, msg));
 }
 {
     print("testing stack overflow in message handling");
@@ -71,7 +71,7 @@ local fn checkerror(msg, f, ...) {
     local st, msg = xpcall(stack, fn () {
         return "ok"
     }, lim)
-    assert(notst && msg == "ok");
+    assert(!st && msg == "ok");
     print("final count: ", count);
 }
 {
@@ -86,7 +86,7 @@ local fn checkerror(msg, f, ...) {
     }
     local f = coroutine.wrap(body)
     f();
-    assert(notpcall(f));
+    assert(!pcall(f));
     print("final count: ", count);
 }
 {

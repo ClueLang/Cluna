@@ -44,7 +44,7 @@ assert(string.match("aaa", ".*a") == "aaa");
 assert(string.match("b", ".*b") == "b");
 assert(string.match("aaab", ".+b") == "aaab");
 assert(string.match("aaa", ".+a") == "aaa");
-assert(notstring.match("b", ".+b"));
+assert(!string.match("b", ".+b"));
 assert(string.match("aaab", ".?b") == "ab");
 assert(string.match("aaa", ".?a") == "aa");
 assert(string.match("b", ".?b") == "b");
@@ -174,7 +174,7 @@ global fn isbalanced(s) {
     return string.find(string.gsub(s, "%b()", ""), "[()]") == nil
 }
 assert(isbalanced("(9 ((8))(\0) 7) \0\0 a b ()(c)() a"));
-assert(notisbalanced("(9 ((8) 7) a b (\0 c) a"));
+assert(!isbalanced("(9 ((8) 7) a b (\0 c) a"));
 assert(string.gsub("alo 'oi' alo", "%b''", '"') == 'alo " alo');
 local t = {
     "apple", 
@@ -202,12 +202,12 @@ assert(string.gsub("first second word", "%w+", fn (w) {
     t[(t.n)] = w
 }, 2) == "first second word");
 assert(t[(1)] == "first" && t[(2)] == "second" && t[(3)] == nil);
-assert(notpcall(string.gsub, "alo", "(.", print));
-assert(notpcall(string.gsub, "alo", ".)", print));
-assert(notpcall(string.gsub, "alo", "(.", {}));
-assert(notpcall(string.gsub, "alo", "(.)", "%2"));
-assert(notpcall(string.gsub, "alo", "(%1)", "a"));
-assert(notpcall(string.gsub, "alo", "(%0)", "a"));
+assert(!pcall(string.gsub, "alo", "(.", print));
+assert(!pcall(string.gsub, "alo", ".)", print));
+assert(!pcall(string.gsub, "alo", "(.", {}));
+assert(!pcall(string.gsub, "alo", "(.)", "%2"));
+assert(!pcall(string.gsub, "alo", "(%1)", "a"));
+assert(!pcall(string.gsub, "alo", "(%0)", "a"));
 {
     local fn f(size) {
         local s = string.rep("a", size)
@@ -217,15 +217,15 @@ assert(notpcall(string.gsub, "alo", "(%0)", "a"));
     local r, m = f(80)
     assert(r && #m == 80);
     r, m = f(200000)
-    assert(notr && string.find(m, "too complex"));
+    assert(!r && string.find(m, "too complex"));
 }
-if not_soft {
+if !_soft {
     local a = string.rep('a', 300000)
     assert(string.find(a, '^a*.?$'));
-    assert(notstring.find(a, '^a*.?b$'));
+    assert(!string.find(a, '^a*.?b$'));
     assert(string.find(a, '^a-.?$'));
     a = string.rep('a', 10000) .. string.rep('b', 10000)
-    assert(notpcall(string.gsub, a, 'b'));
+    assert(!pcall(string.gsub, a, 'b'));
 }
 global fn rev(s) {
     return string.gsub(s, "(.)(.+)", fn (c, s1) {
@@ -303,8 +303,8 @@ assert(string.find("a", "%f[^%z]") == 1);
 assert(string.find("a", "%f[^%l]") == 2);
 assert(string.find("aba", "%f[a%z]") == 3);
 assert(string.find("aba", "%f[%z]") == 4);
-assert(notstring.find("aba", "%f[%l%z]"));
-assert(notstring.find("aba", "%f[^%l%z]"));
+assert(!string.find("aba", "%f[%l%z]"));
+assert(!string.find("aba", "%f[^%l%z]"));
 local i, e = string.find(" alo aalo allo", "%f[%S].-%f[%s].-%f[%S]")
 assert(i == 2 && e == 5);
 local k = string.match(" alo aalo allo", "%f[%S](.-%f[%s].-%f[%S])")
@@ -323,7 +323,7 @@ assert(#a == 0);
 local fn malform(p, m) {
     m = m || "malformed"
     local r, msg = pcall(string.find, "a", p)
-    assert(notr && string.find(msg, m));
+    assert(!r && string.find(msg, m));
 }
 malform("[a");
 malform("[]");

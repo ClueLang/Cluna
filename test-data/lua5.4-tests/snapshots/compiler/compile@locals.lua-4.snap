@@ -201,7 +201,7 @@ assert(_ENV == _G);
         local fn checkro(name, code) {
             local st, msg = load(code)
             local gab = string.format("attempt to assign to const variable '%s'", name)
-            assert(notst && string.find(msg, gab));
+            assert(!st && string.find(msg, gab));
         }
         checkro("y", "local x, y <const>, z = 10, 20, 30; x = 11; y = 12");
         checkro("x", "local x <const>, y, z <const> = 10, 20, 30; x = 11");
@@ -474,7 +474,7 @@ assert(_ENV == _G);
             getmetatable(x).__close(x);
         }
         local stat, msg = pcall(foo)
-        assert(notstat && string.find(msg, "variable 'x' got a non%-closable value"));
+        assert(!stat && string.find(msg, "variable 'x' got a non%-closable value"));
         local fn foo() {
             local xyz = setmetatable({}, {
                 __close = print
@@ -483,7 +483,7 @@ assert(_ENV == _G);
             getmetatable(xyz).__close(xyz);
         }
         local stat, msg = pcall(foo)
-        assert(notstat && string.find(msg, "metamethod 'close'"));
+        assert(!stat && string.find(msg, "metamethod 'close'"));
         local fn foo() {
             local a1 = func2close(fn (_, msg) {
                 assert(string.find(msg, "number value"));
@@ -502,7 +502,7 @@ assert(_ENV == _G);
             getmetatable(a3).__close(a3);
         }
         local stat, msg = pcall(foo)
-        assert(notstat && msg == 12);
+        assert(!stat && msg == 12);
     }
     {
         local track = {}
@@ -544,7 +544,7 @@ assert(_ENV == _G);
             getmetatable(x).__close(x);
         }
         local st, msg = pcall(foo)
-        assert(notst && msg == 202);
+        assert(!st && msg == 202);
         assert(track[(1)] == "foo" && track[(2)] == "x" && track[(3)] == "xx" && track[(4)] == "x0");
     }
     local fn checktable(t1, t2) {
@@ -579,7 +579,7 @@ assert(_ENV == _G);
             getmetatable(y).__close(y);
         })
         co();
-        assert(notst && obj[(1)] == 10 && flag[(1)] == 100);
+        assert(!st && obj[(1)] == 10 && flag[(1)] == 100);
     }
     if rawget(_G, "T") {
         local fn foo() {
@@ -655,13 +655,13 @@ assert(_ENV == _G);
             m = T.totalmem()
             collectgarbage("stop");
             T.totalmem(m + extra);
-            assert(notpcall(table.concat, a));
+            assert(!pcall(table.concat, a));
             assert(T.totalmem() - m <= extra);
             T.totalmem(m + lim + extra);
-            assert(notpcall(table.concat, a));
+            assert(!pcall(table.concat, a));
             assert(T.totalmem() - m <= extra);
             T.totalmem(m + 2 * lim + extra);
-            assert(notpcall(table.concat, a));
+            assert(!pcall(table.concat, a));
             assert(T.totalmem() - m <= extra);
             T.totalmem(m + 4 * lim + extra);
             assert(#table.concat(a) == 2 * lim);
@@ -900,7 +900,7 @@ assert(_ENV == _G);
         a, b = co()
         assert(a == "z" && b == nil);
         local st, msg = co()
-        assert(notst && msg == 21);
+        assert(!st && msg == 21);
         local a, b = co()
         assert(a == "x" && b == nil);
         a, b = co()
@@ -908,7 +908,7 @@ assert(_ENV == _G);
         a, b = co()
         assert(a == "z" && b == nil);
         local st, msg = co()
-        assert(notst && msg == 10 + 20);
+        assert(!st && msg == 10 + 20);
     }
     {
         local x = false
@@ -929,11 +929,11 @@ assert(_ENV == _G);
             getmetatable(xv).__close(xv);
         })
         local b = co()
-        assert(b == 100 && notx && noty);
+        assert(b == 100 && !x && !y);
         b = co()
-        assert(b == 200 && notx && y);
+        assert(b == 200 && !x && y);
         local a, b = pcall(co)
-        assert(nota && b == 23 && x && y);
+        assert(!a && b == 23 && x && y);
     }
     {
         local x = 0
@@ -956,7 +956,7 @@ assert(_ENV == _G);
         assert(x == 0);
         local st, msg = pcall(co)
         assert(x == 2);
-        assert(notst && string.find(msg, "@YYY"));
+        assert(!st && string.find(msg, "@YYY"));
         local x = 0
         local y = 0
         co = coroutine.wrap(fn () {
@@ -978,7 +978,7 @@ assert(_ENV == _G);
         assert(x == 0);
         local st, msg = pcall(co)
         assert(x == 1 && y == 1);
-        assert(notst && string.find(msg, "%w+%.%w+:%d+: YYY"));
+        assert(!st && string.find(msg, "%w+%.%w+:%d+: YYY"));
     }
     local co
     co = coroutine.wrap(fn () {
@@ -1050,12 +1050,12 @@ assert(_ENV == _G);
             local obj = func2close(coroutine.yield)
             local co = coroutine.create(f)
             local st, msg = coroutine.resume(co, obj)
-            assert(notst && string.find(msg, "attempt to yield across"));
+            assert(!st && string.find(msg, "attempt to yield across"));
             local f = T.makeCfunc([[
       toclose 1
     ]])
             local st, msg = pcall(f, obj)
-            assert(notst && string.find(msg, "attempt to yield from outside"));
+            assert(!st && string.find(msg, "attempt to yield from outside"));
         }
     }
     {

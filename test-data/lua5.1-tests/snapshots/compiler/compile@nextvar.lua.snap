@@ -177,7 +177,7 @@ local fn find(name) {
     local n, v
     while 1 {
         n, v = next(_G, n)
-        if notn {
+        if !n {
             return nofind
         }
         assert(v != nil);
@@ -225,7 +225,7 @@ local a = {
 table.foreachi({
     n = 3
 }, fn (i, v) {
-    assert(a.n == i && notv);
+    assert(a.n == i && !v);
     a.n = a.n + 1
 });
 a = {
@@ -251,7 +251,7 @@ assert(print == find("print") && print == find1("print"));
 assert(_G[("print")] == find("print"));
 assert(assert == find1("assert"));
 assert(nofind == find("return"));
-assert(notfind1("return"));
+assert(!find1("return"));
 _G[("ret" .. "urn")] = nil
 assert(nofind == find("return"));
 _G[("xxx")] = 1
@@ -290,7 +290,7 @@ for i = 1, 10000 {
         a[(n)] = v
     }
     for n, v with pairs(a) {
-        if notpreserve[(n)] && type(v) != "function" && notstring.find(n, "^[%u_]") {
+        if !preserve[(n)] && type(v) != "function" && !string.find(n, "^[%u_]") {
             _G[(n)] = nil
         }
         collectgarbage();
@@ -499,13 +499,13 @@ for i = 0, 1, -1 {
 }
 a = nil
 for i = 1, 1 {
-    assert(nota);
+    assert(!a);
     a = 1
 }
 assert(a);
 a = nil
 for i = 1, 1, -1 {
-    assert(nota);
+    assert(!a);
     a = 1
 }
 assert(a);

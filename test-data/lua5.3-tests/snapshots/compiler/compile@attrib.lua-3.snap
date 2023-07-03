@@ -25,20 +25,20 @@ print("package config: " .. string.gsub(package.config, "\n", "|"));
     t[(#t + 1)] = ";"
     local path = table.concat(t, ";")
     local s, err = package.searchpath("xuxu", path)
-    assert(nots && string.find(err, string.rep("xuxu", 10)) && #string.gsub(err, "[^\n]", "") >= max);
+    assert(!s && string.find(err, string.rep("xuxu", 10)) && #string.gsub(err, "[^\n]", "") >= max);
     local path = string.rep("?", max)
     local s, err = package.searchpath("xuxu", path)
-    assert(nots && string.find(err, string.rep('xuxu', max)));
+    assert(!s && string.find(err, string.rep('xuxu', max)));
 }
 {
     local oldpath = package.path
     package.path = {}
     local s, err = pcall(require, "no-such-file")
-    assert(nots && string.find(err, "package.path"));
+    assert(!s && string.find(err, "package.path"));
     package.path = oldpath
 }
 print('+');
-if not_port {
+if !_port {
     local dirsep = string.match(package.config, "^([^\n]+)\n")
     local DIR = "libs" .. dirsep
     local fn D(x) {
@@ -100,9 +100,9 @@ return AA`
     assert(a[(1)] == "names" && a[(2)] == D("names.lua"));
     _G.a = nil
     local st, msg = pcall(require, "err")
-    assert(notst && string.find(msg, "arithmetic") && B == 15);
+    assert(!st && string.find(msg, "arithmetic") && B == 15);
     st, msg = pcall(require, "synerr")
-    assert(notst && string.find(msg, "error loading module"));
+    assert(!st && string.find(msg, "error loading module"));
     assert(package.searchpath("C", package.path) == D("C.lua"));
     assert(require("C") == 25);
     assert(require("C") == 25);
@@ -148,9 +148,9 @@ return AA`
     assert(require("P1") == m && m.AA == 10);
     removefiles(files);
     package.path = ""
-    assert(notpcall(require, "file_does_not_exist"));
+    assert(!pcall(require, "file_does_not_exist"));
     package.path = "??\0?"
-    assert(notpcall(require, "file_does_not_exist1"));
+    assert(!pcall(require, "file_does_not_exist1"));
     package.path = oldpath
     local fname = "file_does_not_exist2"
     local m, err = pcall(require, fname)
@@ -162,7 +162,7 @@ return AA`
         local searchers = package.searchers
         package.searchers = 3
         local st, msg = pcall(require, 'a')
-        assert(notst && string.find(msg, "must be a table"));
+        assert(!st && string.find(msg, "must be a table"));
         package.searchers = searchers
     }
     local fn import(...) {
@@ -175,12 +175,12 @@ return AA`
             }
         }
     }
-    assert(notpcall(module, 'XUXU'));
+    assert(!pcall(module, 'XUXU'));
     local p = ""
     local st, err, when = package.loadlib(DC("lib1"), "*")
-    if notst {
+    if !st {
         local f, err, when = package.loadlib("donotexist", p .. "xuxu")
-        assert(notf && type(err) == "string" && when == "absent");
+        assert(!f && type(err) == "string" && when == "absent");
         (Message || print)('\n >>> cannot load dynamic library <<<\n');
         print(err, when);
     } else {
@@ -190,9 +190,9 @@ return AA`
         f = assert(package.loadlib(DC("lib1"), p .. "anotherfunc"))
         assert(f(10, 20) == "10%20\n");
         local f, err, when = package.loadlib(DC("lib1"), p .. "xuxu")
-        assert(notf && type(err) == "string" && when == "init");
+        assert(!f && type(err) == "string" && when == "init");
         f, err, when = package.loadlib("donotexist", p .. "xuxu")
-        assert(notf && type(err) == "string" && when == "open");
+        assert(!f && type(err) == "string" && when == "open");
         f = assert(package.loadlib(DC("lib11"), p .. "luaopen_lib11"))
         assert(f() == "exported");
         package.cpath = DC("?")
@@ -256,7 +256,7 @@ assert(a[(10)] == 10 && b == a && a[(13)] == 'x');
     assert(a == 0 && b == 5 && c == nil);
 }
 a, b, c, d = 1 && nil, 1 || nil, (1 && (nil || 1)), 6
-assert(nota && b && c && d == 6);
+assert(!a && b && c && d == 6);
 d = 20
 a, b, c, d = f()
 assert(a == 10 && b == 11 && c == 12 && d == nil);
@@ -266,7 +266,7 @@ assert(a < b == false && a > b == true);
 assert((10 && 2) == 2);
 assert((10 || 2) == 10);
 assert((10 || assert(nil)) == 10);
-assert(not(nil && assert(nil)));
+assert(!(nil && assert(nil)));
 assert((nil || "alo") == "alo");
 assert((nil && 10) == nil);
 assert((false && 10) == false);
@@ -274,17 +274,17 @@ assert((true || 10) == true);
 assert((false || 10) == 10);
 assert(false != nil);
 assert(nil != false);
-assert(notnil == true);
-assert(notnotnil == false);
-assert(notnot1 == true);
-assert(notnota == true);
-assert(notnot(6 || nil) == true);
-assert(notnot(nil && 56) == false);
-assert(notnot(nil && true) == false);
-assert(not10 == false);
-assert(not{} == false);
-assert(not0.5 == false);
-assert(not"x" == false);
+assert(!nil == true);
+assert(!!nil == false);
+assert(!!1 == true);
+assert(!!a == true);
+assert(!!(6 || nil) == true);
+assert(!!(nil && 56) == false);
+assert(!!(nil && true) == false);
+assert(!10 == false);
+assert(!{} == false);
+assert(!0.5 == false);
+assert(!"x" == false);
 assert({} != {});
 print('+');
 a = {}
@@ -301,7 +301,7 @@ for i = 3000, -3000, -1 {
 a[(10e30)] = "alo"
 a[(true)] = 10
 a[(false)] = 20
-assert(a[(10e30)] == 'alo' && a[(not1)] == 20 && a[(10 < 20)] == 10);
+assert(a[(10e30)] == 'alo' && a[(!1)] == 20 && a[(10 < 20)] == 10);
 for i = 3000, -3000, -1 {
     assert(a[(i)] == i);
 }
@@ -310,11 +310,11 @@ a[(f)] = print
 a[(a)] = a
 assert(a[(a)][(a)][(a)][(a)][(print)] == assert);
 a[(print)](a[(a[(f)])] == a[(print)]);
-assert(notpcall(fn () {
+assert(!pcall(fn () {
     local a = {}
     a[(nil)] = 10
 }));
-assert(notpcall(fn () {
+assert(!pcall(fn () {
     local a = {
         nil = 10
     }
@@ -337,7 +337,7 @@ a = {
     b = 'ab'
 }
 a, a.x, a.y = a, a[(-3)]
-assert(a[(1)] == 10 && a[(-3)] == a.a && a[(f)] == print && a.x == 'a' && nota.y);
+assert(a[(1)] == 10 && a[(-3)] == a.a && a[(f)] == print && a.x == 'a' && !a.y);
 a[(1)], f(a)[(2)], b, c = {
     'alo' = assert
 }, 10, a[(1)], a[(f)], 6, 10, 23, f(a), 2

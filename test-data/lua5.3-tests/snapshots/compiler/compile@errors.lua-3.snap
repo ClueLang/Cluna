@@ -10,7 +10,7 @@ local oldmm = mt.__index
 mt.__index = nil
 local fn checkerr(msg, f, ...) {
     local st, err = pcall(f, ...)
-    assert(notst && string.find(err, msg));
+    assert(!st && string.find(err, msg));
 }
 local fn doit(s) {
     local f, msg = load(s)
@@ -18,7 +18,7 @@ local fn doit(s) {
         return msg
     }
     local cond, msg = pcall(f)
-    return (notcond) && msg
+    return (!cond) && msg
 }
 local fn checkmessage(prog, msg) {
     local m = doit(prog)
@@ -26,7 +26,7 @@ local fn checkmessage(prog, msg) {
 }
 local fn checksyntax(prog, extra, token, line) {
     local msg = doit(prog)
-    if notstring.find(token, "^<%a") && notstring.find(token, "^char%(") {
+    if !string.find(token, "^<%a") && !string.find(token, "^char%(") {
         token = "'" .. token .. "'"
     }
     token = string.gsub(token, "(%p)", "%%%1")
@@ -38,7 +38,7 @@ assert(doit("error('hi', 0)") == 'hi');
 assert(doit("error()") == nil);
 assert(doit("table.unpack({}, 1, n=2^30)"));
 assert(doit("a=math.sin()"));
-assert(notdoit("tostring(1)") && doit("tostring()"));
+assert(!doit("tostring(1)") && doit("tostring()"));
 assert(doit("tonumber()"));
 assert(doit("repeat until 1; a"));
 assert(doit("return;;"));
@@ -58,7 +58,7 @@ checkmessage("a = {} <= 1", "attempt to compare");
 checkmessage("a=1; bbbb=2; a=math.sin(3)+bbbb(3)", "global 'bbbb'");
 checkmessage("a={}; do local a=1 end a:bbbb(3)", "method 'bbbb'");
 checkmessage("local a={}; a.bbbb(3)", "field 'bbbb'");
-assert(notstring.find(doit("a={13}; local bbbb=1; a[bbbb](3)"), "'bbbb'"));
+assert(!string.find(doit("a={13}; local bbbb=1; a[bbbb](3)"), "'bbbb'"));
 checkmessage("a={13}; local bbbb=1; a[bbbb](3)", "number");
 checkmessage("a=(1)..{}", "a table value");
 checkmessage("a = #print", "length of a function value");
@@ -68,7 +68,7 @@ checkmessage("aaa.bbb:ddd(9)", "global 'aaa'");
 checkmessage("local aaa={bbb=1}; aaa.bbb:ddd(9)", "field 'bbb'");
 checkmessage("local aaa={bbb={}}; aaa.bbb:ddd(9)", "method 'ddd'");
 checkmessage("local a,b,c; (function () a = b+1 end)()", "upvalue 'b'");
-assert(notdoit("local aaa={bbb={ddd=next}}; aaa.bbb:ddd(nil)"));
+assert(!doit("local aaa={bbb={ddd=next}}; aaa.bbb:ddd(nil)"));
 checkmessage("local a,b,cc; (function () a = cc[1] end)()", "upvalue 'cc'");
 checkmessage("local a,b,cc; (function () a.x = 1 end)()", "upvalue 'a'");
 checkmessage("local _ENV = {x={}}; a = a + 1", "global 'a'");
@@ -80,8 +80,8 @@ checkmessage("a=1; local a,bbbb=2,3; a = math.sin(1) and bbbb(3)", "local 'bbbb'
 checkmessage("a=1; local a,bbbb=2,3; a = bbbb(1) or a(3)", "local 'bbbb'");
 checkmessage("local a,b,c,f = 1,1,1; f((a and b) or c)", "local 'f'");
 checkmessage("local a,b,c = 1,1,1; ((a and b) or c)()", "call a number value");
-assert(notstring.find(doit("aaa={}; x=(aaa or aaa)+(aaa and aaa)"), "'aaa'"));
-assert(notstring.find(doit("aaa={}; (aaa or aaa)()"), "'aaa'"));
+assert(!string.find(doit("aaa={}; x=(aaa or aaa)+(aaa and aaa)"), "'aaa'"));
+assert(!string.find(doit("aaa={}; (aaa or aaa)()"), "'aaa'"));
 checkmessage("print(print < 10)", "function with number");
 checkmessage("print(print < print)", "two function values");
 checkmessage("print('10' < 10)", "string with number");
@@ -273,7 +273,7 @@ X = 1
 lineerror((p), 2);
 X = 2
 lineerror((p), 1);
-if not_soft {
+if !_soft {
     collectgarbage();
     print("testing stack overflow");
     C = 0
@@ -313,7 +313,7 @@ if not_soft {
     }
     assert(i > 15);
     local res, msg = xpcall(error, error)
-    assert(notres && type(msg) == 'string');
+    assert(!res && type(msg) == 'string');
     print('+');
     local fn f(x) {
         if x == 0 {
@@ -349,11 +349,11 @@ if not_soft {
     local res, msg = pcall(fn () {
         error(t);
     })
-    assert(notres && msg == t);
+    assert(!res && msg == t);
     res, msg = pcall(fn () {
         error(nil);
     })
-    assert(notres && msg == nil);
+    assert(!res && msg == nil);
     local fn f() {
         error({
             msg = 'x'
@@ -366,25 +366,25 @@ if not_soft {
     })
     assert(msg.msg == 'xy');
     res, msg = pcall(assert, false, "X", t)
-    assert(notres && msg == "X");
+    assert(!res && msg == "X");
     res, msg = pcall(fn () {
         assert(false);
     })
     local line = string.match(msg, "%w+%.lua:(%d+): assertion failed!$")
     assert(tonumber(line) == debug.getinfo(1, "l").currentline - 2);
     res, msg = pcall(assert, false, t)
-    assert(notres && msg == t);
+    assert(!res && msg == t);
     res, msg = pcall(assert, nil, nil)
-    assert(notres && msg == nil);
+    assert(!res && msg == nil);
     res, msg = pcall(assert)
-    assert(notres && string.find(msg, "value expected"));
+    assert(!res && string.find(msg, "value expected"));
 }
 a, b, c = xpcall(string.find, error, "alo", "al")
 assert(a && b == 1 && c == 2);
 a, b, c = xpcall(string.find, fn (x) {
     return {}
 }, true, "al")
-assert(nota && type(b) == "table" && c == nil);
+assert(!a && type(b) == "table" && c == nil);
 print("testing tokens in error messages");
 checksyntax("syntax error", "", "error", 1);
 checksyntax("1.000", "", "1.000", 1);

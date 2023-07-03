@@ -10,7 +10,7 @@ local print = print
 _ENV = nil
 local fn toint(x) {
     x = tonumber(x)
-    if notx {
+    if !x {
         return false
     }
     return tointeger(x)
@@ -45,7 +45,7 @@ smt.__bor = fn (x, y) {
 }
 smt.__bxor = fn (x, y) {
     local x, y = checkargs(x, y, "__bxor")
-    return y && x ^^ y || x
+    return y && x ~ y || x
 }
 smt.__shl = fn (x, y) {
     local x, y = checkargs(x, y, "__shl")
@@ -57,5 +57,5 @@ smt.__shr = fn (x, y) {
 }
 smt.__bnot = fn (x) {
     local x, y = checkargs(x, x, "__bnot")
-    return y && ~x || x
+    return y && ^^x || x
 }

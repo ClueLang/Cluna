@@ -55,7 +55,7 @@ global fn RUN(...) {
     assert(auxrun(...));
 }
 global fn NoRun(...) {
-    assert(notauxrun(...));
+    assert(!auxrun(...));
 }
 global fn NoRunMsg(...) {
     print("\n(the next error is expected by the test)");
@@ -81,7 +81,7 @@ prepfile("print(package.path, package.cpath)");
 RUN('env LUA_INIT="error(10)" LUA_PATH=xxx LUA_CPATH=xxx lua -E %s > %s', prog, out);
 local defaultpath = getoutput()
 defaultpath = string.match(defaultpath, "^(.-)\t")
-assert(notstring.find(defaultpath, "xxx") && string.find(defaultpath, "lua"));
+assert(!string.find(defaultpath, "xxx") && string.find(defaultpath, "lua"));
 local fn convert(p) {
     prepfile("print(package.path)");
     RUN('env LUA_PATH="%s" lua %s > %s', p, prog, out);
@@ -201,7 +201,7 @@ prepfile("os.exit(false, true)");
 NoRun("lua %s", prog);
 assert(os.remove(prog));
 assert(os.remove(otherprog));
-assert(notos.remove(out));
+assert(!os.remove(out));
 RUN("lua -v");
 NoRunMsg("lua -h");
 NoRunMsg("lua -e");

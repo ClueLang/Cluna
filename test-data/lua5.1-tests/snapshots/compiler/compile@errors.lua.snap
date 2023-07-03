@@ -10,7 +10,7 @@ global fn doit(s) {
         return msg
     }
     local cond, msg = pcall(f)
-    return (notcond) && msg
+    return (!cond) && msg
 }
 global fn checkmessage(prog, msg) {
     assert(string.find(doit(prog), msg, 1, true));
@@ -26,7 +26,7 @@ assert(doit("error('hi', 0)") == 'hi');
 assert(doit("error()") == nil);
 assert(doit("unpack({}, 1, n=2^30)"));
 assert(doit("a=math.sin()"));
-assert(notdoit("tostring(1)") && doit("tostring()"));
+assert(!doit("tostring(1)") && doit("tostring()"));
 assert(doit("tonumber()"));
 assert(doit("repeat until 1; a"));
 checksyntax("break label", "", "label", 1);
@@ -46,20 +46,20 @@ checkmessage("a=1; bbbb=2; a=math.sin(3)+bbbb(3)", "global 'bbbb'");
 checkmessage("a=1; local a,bbbb=2,3; a = math.sin(1) and bbbb(3)", "local 'bbbb'");
 checkmessage("a={}; do local a=1 end a:bbbb(3)", "method 'bbbb'");
 checkmessage("local a={}; a.bbbb(3)", "field 'bbbb'");
-assert(notstring.find(doit("a={13}; local bbbb=1; a[bbbb](3)"), "'bbbb'"));
+assert(!string.find(doit("a={13}; local bbbb=1; a[bbbb](3)"), "'bbbb'"));
 checkmessage("a={13}; local bbbb=1; a[bbbb](3)", "number");
 aaa = nil
 checkmessage("aaa.bbb:ddd(9)", "global 'aaa'");
 checkmessage("local aaa={bbb=1}; aaa.bbb:ddd(9)", "field 'bbb'");
 checkmessage("local aaa={bbb={}}; aaa.bbb:ddd(9)", "method 'ddd'");
 checkmessage("local a,b,c; (function () a = b+1 end)()", "upvalue 'b'");
-assert(notdoit("local aaa={bbb={ddd=next}}; aaa.bbb:ddd(nil)"));
+assert(!doit("local aaa={bbb={ddd=next}}; aaa.bbb:ddd(nil)"));
 checkmessage("b=1; local aaa='a'; x=aaa+b", "local 'aaa'");
 checkmessage("aaa={}; x=3/aaa", "global 'aaa'");
 checkmessage("aaa='2'; b=nil;x=aaa*b", "global 'b'");
 checkmessage("aaa={}; x=-aaa", "global 'aaa'");
-assert(notstring.find(doit("aaa={}; x=(aaa or aaa)+(aaa and aaa)"), "'aaa'"));
-assert(notstring.find(doit("aaa={}; (aaa or aaa)()"), "'aaa'"));
+assert(!string.find(doit("aaa={}; x=(aaa or aaa)+(aaa and aaa)"), "'aaa'"));
+assert(!string.find(doit("aaa={}; (aaa or aaa)()"), "'aaa'"));
 checkmessage(`aaa=9
 repeat until 3==3
 local x=math.sin(math.cos(3))
@@ -145,7 +145,7 @@ while stack[(i)] != l1 {
 }
 assert(i > 15);
 local res, msg = xpcall(error, error)
-assert(notres && type(msg) == 'string');
+assert(!res && type(msg) == 'string');
 local fn f(x) {
     if x == 0 {
         error('a\n');
@@ -189,7 +189,7 @@ for i = 1, lim {
 local fn testrep(init, rep) {
     local s = "local a; " .. init .. string.rep(rep, 400)
     local a, b = loadstring(s)
-    assert(nota && string.find(b, "syntax levels"));
+    assert(!a && string.find(b, "syntax levels"));
 }
 testrep("a=", "{");
 testrep("a=", "(");

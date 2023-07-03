@@ -7,7 +7,7 @@ print('testing strings and string library');
 local maxi, mini = math.maxinteger, math.mininteger
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(nots && string.find(err, msg));
+    assert(!s && string.find(err, msg));
 }
 assert('alo' < 'alo1');
 assert('' < 'a');
@@ -18,14 +18,14 @@ assert('alo\0' > 'alo');
 assert('\0' < '\1');
 assert('\0\0' < '\0\1');
 assert('\1\0a\0a' <= '\1\0a\0a');
-assert(not('\1\0a\0b' <= '\1\0a\0a'));
+assert(!('\1\0a\0b' <= '\1\0a\0a'));
 assert('\0\0\0' < '\0\0\0\0');
-assert(not('\0\0\0\0' < '\0\0\0'));
+assert(!('\0\0\0\0' < '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0\0');
-assert(not('\0\0\0\0' <= '\0\0\0'));
+assert(!('\0\0\0\0' <= '\0\0\0'));
 assert('\0\0\0' <= '\0\0\0');
 assert('\0\0\0' >= '\0\0\0');
-assert(not('\0\0b' < '\0\0a\0'));
+assert(!('\0\0b' < '\0\0a\0'));
 assert(string.sub("123456789", 2, 4) == "234");
 assert(string.sub("123456789", 7) == "789");
 assert(string.sub("123456789", 7, 6) == "");
@@ -52,7 +52,7 @@ assert(string.find("1234567890123456789", ".45", -9) == 13);
 assert(string.find("abcdefg", "\0", 5, 1) == nil);
 assert(string.find("", "") == 1);
 assert(string.find("", "", 1) == 1);
-assert(notstring.find("", "", 2));
+assert(!string.find("", "", 2));
 assert(string.find('', 'aaa', 1) == nil);
 assert(('alo(.)alo')::find('(.)', 1, 1) == 4);
 assert(string.len("") == 0);
@@ -94,8 +94,8 @@ assert(string.rep('teste', 0, 'xuxu') == '');
 assert(string.rep('teste', 1, 'xuxu') == 'teste');
 assert(string.rep('\1\0\1', 2, '\0\0') == '\1\0\1\0\0\1\0\1');
 assert(string.rep('', 10, '.') == string.rep('.', 9));
-assert(notpcall(string.rep, "aa", maxi /_ 2 + 10));
-assert(notpcall(string.rep, "", maxi /_ 2 + 10, "aa"));
+assert(!pcall(string.rep, "aa", maxi /_ 2 + 10));
+assert(!pcall(string.rep, "", maxi /_ 2 + 10, "aa"));
 assert(string.reverse("") == "");
 assert(string.reverse("\0\1\2\3") == "\3\2\1\0");
 assert(string.reverse("\0001234") == "4321\0");
@@ -219,7 +219,7 @@ assert(string.format("%+08d", -30927) == "-0030927");
         assert(string.format("%x", min) == "8000000000000000");
         assert(string.format("%d", max) == "9223372036854775807");
         assert(string.format("%d", min) == "-9223372036854775808");
-        assert(string.format("%u", ~(-1 << 64)) == "18446744073709551615");
+        assert(string.format("%u", ^^(-1 << 64)) == "18446744073709551615");
         assert(tostring(1234567890123) == '1234567890123');
     }
 }
@@ -252,13 +252,13 @@ assert(string.format("%+08d", -30927) == "-0030927");
     }
     assert(string.find(string.format("%A", 0.0), "^0X0%.?0?P%+?0$"));
     assert(string.find(string.format("%a", -0.0), "^%-0x0%.?0?p%+?0$"));
-    if not_port {
+    if !_port {
         assert(string.find(string.format("%a", 1 / 0), "^inf"));
         assert(string.find(string.format("%A", -1 / 0), "^%-INF"));
         assert(string.find(string.format("%a", 0 / 0), "^%-?nan"));
         assert(string.find(string.format("%a", -0.0), "^%-0x0"));
     }
-    if notpcall(string.format, "%.3a", 0) {
+    if !pcall(string.format, "%.3a", 0) {
         (Message || print)("\n >>> modifiers for format '%a' not available <<<\n");
     } else {
         assert(string.find(string.format("%+.2A", 12), "^%+0X%x%.%x0P%+?%d$"));
@@ -304,7 +304,7 @@ assert(table.concat({
     maxi = "alo", 
     maxi - 1 = "y"
 }, "-", maxi - 1, maxi) == "y-alo");
-assert(notpcall(table.concat, {
+assert(!pcall(table.concat, {
     "a", 
     "b", 
     {}
@@ -320,7 +320,7 @@ assert(table.concat(a, ",", 1, 2) == "a,b");
 assert(table.concat(a, ",", 2) == "b,c");
 assert(table.concat(a, ",", 3) == "c");
 assert(table.concat(a, ",", 4) == "");
-if not_port {
+if !_port {
     local locales = {
         "ptb", 
         "pt_BR.iso88591", 

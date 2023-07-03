@@ -64,13 +64,13 @@ fn compile_symbol(lexeme: String) -> String {
     }
 }
 
-fn compile_operator(lexeme: String) -> String {
+fn compile_operator(lexeme: String, is_binop: bool) -> String {
     match &*lexeme {
         "and" => "&&".to_owned(),
         "or" => "||".to_owned(),
         "not" => "!".to_owned(),
         "~=" => "!=".to_owned(),
-        "~" => "^^".to_owned(),
+        "~" if !is_binop => "^^".to_owned(),
         "//" => "/_".to_owned(),
         _ => lexeme,
     }
@@ -162,10 +162,10 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
             Operator((op, is_binop)) => {
                 if is_binop {
                     result += " ";
-                    result += &compile_operator(op);
+                    result += &compile_operator(op, is_binop);
                     result += " ";
                 } else {
-                    result += &op;
+                    result += &compile_operator(op, is_binop);
                 }
             }
             MultilineString(string) => result += &compile_multiline_string(string),

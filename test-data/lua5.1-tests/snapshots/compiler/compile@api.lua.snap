@@ -22,14 +22,14 @@ a = T.d2s(12458954321123)
 assert(string.len(a) == 8);
 assert(T.s2d(a) == 12458954321123);
 a, b, c = T.testC("pushnum 1; pushnum 2; pushnum 3; return 2")
-assert(a == 2 && b == 3 && notc);
+assert(a == 2 && b == 3 && !c);
 a, b, c = T.testC("pushbool 1; pushbool 2; pushbool 0; return 3")
 assert(a == b && a == true && c == false);
 a, b, c = T.testC("pushbool 0; pushbool 10; pushnil;\
                       tobool -3; tobool -3; tobool -3; return 3")
 assert(a == 0 && b == 1 && c == 0);
 a, b, c = T.testC("gettop; return 2", 10, 20, 30, 40)
-assert(a == 40 && b == 5 && notc);
+assert(a == 40 && b == 5 && !c);
 t = pack(T.testC("settop 5; gettop; return .", 2, 3))
 tcheck(t, {
     n = 4, 
@@ -120,8 +120,8 @@ tcheck(t, {
 }
 assert(T.testC("lessthan 2 5, return 1", 3, 2, 2, 4, 2, 2));
 assert(T.testC("lessthan 5 2, return 1", 4, 2, 2, 3, 2, 2));
-assert(notT.testC("lessthan 2 -3, return 1", "4", "2", "2", "3", "2", "2"));
-assert(notT.testC("lessthan -3 2, return 1", "3", "2", "2", "4", "2", "2"));
+assert(!T.testC("lessthan 2 -3, return 1", "4", "2", "2", "3", "2", "2"));
+assert(!T.testC("lessthan -3 2, return 1", "3", "2", "2", "4", "2", "2"));
 local b = {
     __lt = fn (a, b) {
         return a[(1)] < b[(1)]
@@ -477,9 +477,9 @@ assert(table.getn(cl) == 1 && cl[(1)] == x);
 assert(T.testC("equal 2 4; return 1", print, 1, print, 20));
 assert(T.testC("equal 3 2; return 1", 'alo', "alo"));
 assert(T.testC("equal 2 3; return 1", nil, nil));
-assert(notT.testC("equal 2 3; return 1", {}, {}));
-assert(notT.testC("equal 2 3; return 1"));
-assert(notT.testC("equal 2 3; return 1", 3));
+assert(!T.testC("equal 2 3; return 1", {}, {}));
+assert(!T.testC("equal 2 3; return 1"));
+assert(!T.testC("equal 2 3; return 1", 3));
 {
     local map = {}
     local t = {
@@ -496,7 +496,7 @@ assert(notT.testC("equal 2 3; return 1", 3));
     assert(f(10) == f(10));
     assert(f(10) != f(11));
     assert(T.testC("equal 2 3; return 1", f(10), f(10)));
-    assert(notT.testC("equal 2 3; return 1", f(10), f(20)));
+    assert(!T.testC("equal 2 3; return 1", f(10), f(20)));
     t.__eq = nil
     assert(f(10) != f(10));
 }
@@ -588,7 +588,7 @@ L1 = nil
 print('+');
 collectgarbage();
 T.totalmem(T.totalmem() + 5000);
-assert(notpcall(loadstring("local a={}; for i=1,100000 do a[i]=i end")));
+assert(!pcall(loadstring("local a={}; for i=1,100000 do a[i]=i end")));
 T.totalmem(1000000000);
 local fn stack(x) {
     if x > 0 {
@@ -609,7 +609,7 @@ global fn testamem(s, f) {
             break
         }
         collectgarbage();
-        if nota && notstring.find(b, "memory") {
+        if !a && !string.find(b, "memory") {
             T.totalmem(1000000000);
             error(b, 0);
         }
@@ -672,9 +672,9 @@ testamem("dump/undump", fn () {
 local t = os.tmpname()
 testamem("file creation", fn () {
     local f = assert(io.open(t, 'w'))
-    assert(notio.open("nomenaoexistente"));
+    assert(!io.open("nomenaoexistente"));
     io.close(f);
-    return notloadfile('nomenaoexistente')
+    return !loadfile('nomenaoexistente')
 });
 assert(os.remove(t));
 testamem("table creation", fn () {

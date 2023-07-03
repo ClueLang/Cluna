@@ -125,7 +125,7 @@ local b
 global fn f(x) {
     local first = 1
     while 1 {
-        if x == 3 && notfirst {
+        if x == 3 && !first {
             return
         }
         local a = 'xuxu'
@@ -264,7 +264,7 @@ eqtab(_G.x, {
 assert(s && a == 1 && b == 2 && c == 3 && d == nil);
 assert(coroutine.status(f) == "dead");
 s, a = coroutine.resume(f, "xuxu")
-assert(nots && string.find(a, "dead") && coroutine.status(f) == "dead");
+assert(!s && string.find(a, "dead") && coroutine.status(f) == "dead");
 local fn foo(i) {
     return coroutine.yield(i)
 }
@@ -333,14 +333,14 @@ global fn goo() {
 x = coroutine.wrap(goo)
 assert(x() == 3);
 local a, b = pcall(x)
-assert(nota && b == foo);
+assert(!a && b == foo);
 x = coroutine.create(goo)
 a, b = coroutine.resume(x)
 assert(a && b == 3);
 a, b = coroutine.resume(x)
-assert(nota && b == foo && coroutine.status(x) == "dead");
+assert(!a && b == foo && coroutine.status(x) == "dead");
 a, b = coroutine.resume(x)
-assert(nota && string.find(b, "dead") && coroutine.status(x) == "dead");
+assert(!a && string.find(b, "dead") && coroutine.status(x) == "dead");
 global fn all(a, n, k) {
     if k == 0 {
         coroutine.yield(a);
@@ -399,11 +399,11 @@ local x = coroutine.create(fn () {
     }
     error('x');
 })
-assert(notcoroutine.resume(x));
-assert(notcoroutine.resume(x, 1, 1, 1, 1, 1, 1, 1));
+assert(!coroutine.resume(x));
+assert(!coroutine.resume(x, 1, 1, 1, 1, 1, 1, 1));
 assert(_G.f() == 11);
 assert(_G.f() == 12);
-if notT {
+if !T {
     (Message || print)('\a\n >>> testC not active: skipping yield/hook tests <<<\n\a');
 } else {
     local turn

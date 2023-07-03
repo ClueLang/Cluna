@@ -89,7 +89,7 @@ file = os.tmpname()
 io.output(file);
 for s with string.gmatch(prog, "$([^$]+)") {
     local n = tonumber(s)
-    if notn {
+    if !n {
         io.write(s);
     } else {
         F[(n)]();

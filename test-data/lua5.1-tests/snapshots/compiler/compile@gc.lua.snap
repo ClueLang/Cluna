@@ -306,8 +306,8 @@ getmetatable(u).__gc = fn () {
     error("!!!");
 }
 u = nil
-assert(notpcall(collectgarbage));
-if notrawget(_G, "_soft") {
+assert(!pcall(collectgarbage));
+if !rawget(_G, "_soft") {
     print("deep structures");
     local a = {}
     for i = 1, 200000 {

@@ -107,7 +107,7 @@ global fn err_on_n(n) {
 {
     global fn dummy(n) {
         if n > 0 {
-            assert(notpcall(err_on_n, n));
+            assert(!pcall(err_on_n, n));
             dummy(n - 1);
         }
     }
@@ -318,11 +318,11 @@ a = assert(load(read1(x)))
 assert(a() == 1 && _G.x == 1);
 i = 0
 local a, b = load(read1("*a = 123"))
-assert(nota && type(b) == "string" && i == 2);
+assert(!a && type(b) == "string" && i == 2);
 a, b = load(fn () {
     error("hhi");
 })
-assert(nota && string.find(b, "hhi"));
+assert(!a && string.find(b, "hhi"));
 x = `
   return function (x)
     return function (y)
@@ -347,7 +347,7 @@ assert(x() == nil);
 assert(debug.setupvalue(x, 1, "hi") == "a");
 assert(x() == "hi");
 assert(debug.setupvalue(x, 2, 13) == "b");
-assert(notdebug.setupvalue(x, 3, 10));
+assert(!debug.setupvalue(x, 3, 10));
 x("set");
 assert(x() == 23);
 x("set");

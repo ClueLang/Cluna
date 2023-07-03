@@ -22,18 +22,18 @@ if false {
 assert(2 ^ 3 ^ 2 == 2 ^ (3 ^ 2));
 assert(2 ^ 3 * 4 == (2 ^ 3) * 4);
 assert(2.0 ^ -2 == 1 / 4 && -2 ^ - - 2 == - - -4);
-assert(notnil && 2 && not(2 > 3 || 3 < 2));
+assert(!nil && 2 && !(2 > 3 || 3 < 2));
 assert(-3 - 1 - 5 == 0 + 0 - 9);
 assert(-2 ^ 2 == -4 && (-2) ^ 2 == 4 && 2 * 2 - 3 - 1 == 0);
 assert(-3 % 5 == 2 && -3 + 5 == 2);
 assert(2 * 1 + 3 / 3 == 3 && 1 + 2 .. 3 * 1 == "33");
-assert(not(2 + 1 > 3 * 1) && "a" .. "b" > "a");
-assert(0xF0 | 0xCC ^^ 0xAA & 0xFD == 0xF4);
-assert(0xFD & 0xAA ^^ 0xCC | 0xF0 == 0xF4);
+assert(!(2 + 1 > 3 * 1) && "a" .. "b" > "a");
+assert(0xF0 | 0xCC ~ 0xAA & 0xFD == 0xF4);
+assert(0xFD & 0xAA ~ 0xCC | 0xF0 == 0xF4);
 assert(0xF0 & 0x0F + 1 == 0x10);
 assert(3 ^ 4 /_ 2 ^ 3 /_ 5 == 2);
 assert(-3 + 4 * 5 /_ 2 ^ 3 ^ 2 /_ 9 + 4 % 10 / 3 == (-3) + (((4 * 5) /_ (2 ^ (3 ^ 2))) /_ 9) + ((4 % 10) / 3));
-assert(not((true || false) && nil));
+assert(!((true || false) && nil));
 assert(true || false && nil);
 assert((((1 || false) && true) || false) == true);
 assert((((nil && true) || false) && true) == false);
@@ -172,7 +172,7 @@ n = 100
 i = 3
 t = {}
 a = nil
-while nota {
+while !a {
     a = 0
     for i = 1, n {
         for i = i, 1, -1 {
@@ -182,7 +182,7 @@ while nota {
     }
 }
 assert(a == n * (n + 1) / 2 && i == 3);
-assert(t[(1)] && t[(n)] && nott[(0)] && nott[(n + 1)]);
+assert(t[(1)] && t[(n)] && !t[(0)] && !t[(n + 1)]);
 global fn f(b) {
     local x = 1
     loop  {
@@ -304,7 +304,7 @@ f = string.gsub(f, "%s+", "\n")
 f, a = load(f)()
 assert(a.a == 1 && a.b);
 global fn g(a, b, c, d, e) {
-    if not(a >= b || c || d && e || nil) {
+    if !(a >= b || c || d && e || nil) {
         return 0
     } else {
         return 1
@@ -324,7 +324,7 @@ assert(f(1, 2, nil, 1, 'x') == 'x' && g(1, 2, nil, 1, 'x') == 1 && h(1, 2, nil, 
 assert(f(1, 2, nil, nil, 'x') == nil && g(1, 2, nil, nil, 'x') == 0 && h(1, 2, nil, nil, 'x') == 0);
 assert(f(1, 2, nil, 1, nil) == nil && g(1, 2, nil, 1, nil) == 0 && h(1, 2, nil, 1, nil) == 0);
 assert(1 && 2 < 3 == true && 2 < 3 && 'a' < 'b' == true);
-x = 2 < 3 && not3
+x = 2 < 3 && !3
 assert(x == false);
 x = 2 < 1 || (2 > 1 && 'a')
 assert(x == 'a');
@@ -389,7 +389,7 @@ local binops = {
     {
         " and ", 
         fn (a, b) {
-            if nota {
+            if !a {
                 return a
             } else {
                 return b
@@ -421,7 +421,7 @@ local fn createcases(n) {
                     res[(#res + 1)] = t
                     res[(#res + 1)] = {
                         "not" .. t[(1)], 
-                        nott[(2)]
+                        !t[(2)]
                     }
                 }
             }
@@ -441,7 +441,7 @@ for n = 1, level {
         local s = v[(1)]
         local p = load(string.format(prog, s, s), "")
         IX = false
-        assert(p() == v[(2)] && IX == notnotv[(2)]);
+        assert(p() == v[(2)] && IX == !!v[(2)]);
         i = i + 1
         if i % 60000 == 0 {
             print('+');

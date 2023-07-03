@@ -5,7 +5,7 @@ input_file: test-data/lua5.2-tests/goto.lua
 ---
 local fn errmsg(code, m) {
     local st, msg = load(code)
-    assert(notst && string.find(msg, m));
+    assert(!st && string.find(msg, m));
 }
 errmsg(` goto l1; do ::l1:: end `, "label 'l1'");
 errmsg(` do ::l1:: end goto l1; `, "label 'l1'");
@@ -72,7 +72,7 @@ local fn foo() {
     a[(#a + 1)] = 4
     a[(#a + 1)] = 5
     assert(a[(1)] == 3 && a[(2)] == 1 && a[(3)] == 2 && a[(4)] == 5 && a[(5)] == 4);
-    if nota[(6)] {
+    if !a[(6)] {
         a[(6)] = true
     }
 }

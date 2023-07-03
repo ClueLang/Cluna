@@ -26,17 +26,17 @@ a = T.d2s(12458954321123)
 assert(string.len(a) == 8);
 assert(T.s2d(a) == 12458954321123);
 a, b, c = T.testC("pushnum 1; pushnum 2; pushnum 3; return 2")
-assert(a == 2 && b == 3 && notc);
+assert(a == 2 && b == 3 && !c);
 f = T.makeCfunc("pushnum 1; pushnum 2; pushnum 3; return 2")
 a, b, c = f()
-assert(a == 2 && b == 3 && notc);
+assert(a == 2 && b == 3 && !c);
 a, b, c = T.testC("pushbool 1; pushbool 2; pushbool 0; return 3")
 assert(a == b && a == true && c == false);
 a, b, c = T.testC("pushbool 0; pushbool 10; pushnil;\
                       tobool -3; tobool -3; tobool -3; return 3")
 assert(a == false && b == true && c == false);
 a, b, c = T.testC("gettop; return 2", 10, 20, 30, 40)
-assert(a == 40 && b == 5 && notc);
+assert(a == 40 && b == 5 && !c);
 t = pack(T.testC("settop 5; gettop; return .", 2, 3))
 tcheck(t, {
     n = 4, 
@@ -196,14 +196,14 @@ assert(T.testC("arith %; return 1", a, c)[(1)] == 4 % -3);
 assert(T.testC("arith _; arith +; arith %; return 1", b, a, c)[(1)] == 8 % (4 + (-3) * 2));
 assert(T.testC("compare 2 5 1, return 1", 3, 2, 2, 4, 2, 2));
 assert(T.testC("compare 2 5 2, return 1", 3, 2, 2, 4, 2, 2));
-assert(notT.testC("compare 3 4 1, return 1", 3, 2, 2, 4, 2, 2));
+assert(!T.testC("compare 3 4 1, return 1", 3, 2, 2, 4, 2, 2));
 assert(T.testC("compare 3 4 2, return 1", 3, 2, 2, 4, 2, 2));
 assert(T.testC("compare 5 2 1, return 1", 4, 2, 2, 3, 2, 2));
-assert(notT.testC("compare 2 -3 1, return 1", "4", "2", "2", "3", "2", "2"));
-assert(notT.testC("compare -3 2 1, return 1", "3", "2", "2", "4", "2", "2"));
-assert(notT.testC("compare 1 4 1, return 1"));
-assert(notT.testC("compare 9 1 2, return 1"));
-assert(notT.testC("compare 9 9 0, return 1"));
+assert(!T.testC("compare 2 -3 1, return 1", "4", "2", "2", "3", "2", "2"));
+assert(!T.testC("compare -3 2 1, return 1", "3", "2", "2", "4", "2", "2"));
+assert(!T.testC("compare 1 4 1, return 1"));
+assert(!T.testC("compare 9 1 2, return 1"));
+assert(!T.testC("compare 9 9 0, return 1"));
 local b = {
     __lt = fn (a, b) {
         return a[(1)] < b[(1)]
@@ -340,10 +340,10 @@ assert(a(3) == math.deg(3) && a == math.deg);
 {
     collectgarbage("stop");
     local s, msg = pcall(T.testC, "checkstack 1000023 XXXX")
-    assert(nots && string.find(msg, "XXXX"));
+    assert(!s && string.find(msg, "XXXX"));
     s = string.rep("pushnil;checkstack 1 XX;", 1000000)
     s, msg = pcall(T.testC, s)
-    assert(nots && string.find(msg, "XX"));
+    assert(!s && string.find(msg, "XX"));
     collectgarbage("restart");
 }
 local prog = {
@@ -394,7 +394,7 @@ global fn checkerrnopro(code, msg) {
         
     })
     local stt, err = pcall(T.testC, code)
-    assert(notstt && string.find(err, msg));
+    assert(!stt && string.find(err, msg));
 }
 checkerrnopro("pushnum 3; call 0 0", "attempt to call");
 global fn f() {
@@ -490,11 +490,11 @@ assert(T.upvalue(f, 2) == "xuxu");
         assert(A(("pushvalue U%d; return 1")::format(i)) == 10);
     }
     assert(A("isnull U256; return 1"));
-    assert(notA("isnil U256; return 1"));
+    assert(!A("isnil U256; return 1"));
 }
-assert(notpcall(debug.setuservalue, 3, {}));
-assert(notpcall(debug.setuservalue, nil, {}));
-assert(notpcall(debug.setuservalue, T.pushuserdata(1), {}));
+assert(!pcall(debug.setuservalue, 3, {}));
+assert(!pcall(debug.setuservalue, nil, {}));
+assert(!pcall(debug.setuservalue, T.pushuserdata(1), {}));
 local b = T.newuserdata(0)
 local a = {}
 assert(debug.getuservalue(b) == nil);
@@ -611,8 +611,8 @@ debug.setmetatable(c, tt);
 nc = T.udataval(c)
 x = T.newuserdata(4)
 y = T.newuserdata(0)
-assert(notpcall(io.input, a));
-assert(notpcall(io.input, x));
+assert(!pcall(io.input, a));
+assert(!pcall(io.input, x));
 assert(debug.getmetatable(x) == nil && debug.getmetatable(y) == nil);
 d = T.ref(a)
 e = T.ref(b)
@@ -686,9 +686,9 @@ assert(#cl == 1 && cl[(1)] == x);
 assert(T.testC("compare 2 4 0; return 1", print, 1, print, 20));
 assert(T.testC("compare 3 2 0; return 1", 'alo', "alo"));
 assert(T.testC("compare 2 3 0; return 1", nil, nil));
-assert(notT.testC("compare 2 3 0; return 1", {}, {}));
-assert(notT.testC("compare 2 3 0; return 1"));
-assert(notT.testC("compare 2 3 0; return 1", 3));
+assert(!T.testC("compare 2 3 0; return 1", {}, {}));
+assert(!T.testC("compare 2 3 0; return 1"));
+assert(!T.testC("compare 2 3 0; return 1", 3));
 {
     local map = {}
     local t = {
@@ -705,7 +705,7 @@ assert(notT.testC("compare 2 3 0; return 1", 3));
     assert(f(10) == f(10));
     assert(f(10) != f(11));
     assert(T.testC("compare 2 3 0; return 1", f(10), f(10)));
-    assert(notT.testC("compare 2 3 0; return 1", f(10), f(20)));
+    assert(!T.testC("compare 2 3 0; return 1", f(10), f(20)));
     t.__eq = nil
     assert(f(10) != f(10));
 }
@@ -817,10 +817,10 @@ assert(T.doremote(L1, "return a.x") == "1");
 T.closestate(L1);
 L1 = nil
 print('+');
-assert(notpcall(T.newuserdata, 2 ^ 32 - 4));
+assert(!pcall(T.newuserdata, 2 ^ 32 - 4));
 collectgarbage();
 T.totalmem(T.totalmem() + 5000);
-assert(notpcall(load("local a={}; for i=1,100000 do a[i]=i end")));
+assert(!pcall(load("local a={}; for i=1,100000 do a[i]=i end")));
 T.totalmem(1000000000);
 global fn testamem(s, f) {
     collectgarbage();
@@ -837,7 +837,7 @@ global fn testamem(s, f) {
             break
         }
         collectgarbage();
-        if nota && not(string.find(b, "memory") || string.find(b, "overflow")) {
+        if !a && !(string.find(b, "memory") || string.find(b, "overflow")) {
             error(b, 0);
         }
     }
@@ -900,9 +900,9 @@ testamem("dump/undump", fn () {
 local t = os.tmpname()
 testamem("file creation", fn () {
     local f = assert(io.open(t, 'w'))
-    assert(notio.open("nomenaoexistente"));
+    assert(!io.open("nomenaoexistente"));
     io.close(f);
-    return notloadfile('nomenaoexistente')
+    return !loadfile('nomenaoexistente')
 });
 assert(os.remove(t));
 testamem("table creation", fn () {
@@ -960,7 +960,7 @@ assert(gsub("...", "...", "") == "");
 local mt_xuxu, res, top = T.testC("newmetatable xuxu; gettop; return 3")
 assert(type(mt_xuxu) == "table" && res && top == 3);
 local d, res, top = T.testC("newmetatable xuxu; gettop; return 3")
-assert(mt_xuxu == d && notres && top == 3);
+assert(mt_xuxu == d && !res && top == 3);
 d, res, top = T.testC("newmetatable xuxu1; gettop; return 3")
 assert(mt_xuxu != d && res && top == 3);
 x = T.newuserdata(0)
@@ -976,17 +976,17 @@ res1, res2, top = T.testC(`testudata -1 xuxu1
 			    testudata 2 xuxu1
 			    gettop
 			    return 3`, x)
-assert(notres1 && notres2 && top == 4);
+assert(!res1 && !res2 && top == 4);
 res1, res2, top = T.testC(`testudata -1 xuxu2
 			    testudata 2 xuxu2
 			    gettop
 			    return 3`, x)
-assert(notres1 && notres2 && top == 4);
+assert(!res1 && !res2 && top == 4);
 res1, res2, top = T.testC(`testudata -1 xuxu
 			    testudata 2 xuxu
 			    gettop
 			    return 3`, y)
-assert(notres1 && notres2 && top == 4);
+assert(!res1 && !res2 && top == 4);
 {
     local r = debug.getregistry()
     assert(r.xuxu == mt_xuxu && r.xuxu1 == d);

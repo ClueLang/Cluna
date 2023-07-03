@@ -164,7 +164,7 @@ global fn isbalanced(s) {
     return string.find(string.gsub(s, "%b()", ""), "[()]") == nil
 }
 assert(isbalanced("(9 ((8))(\0) 7) \0\0 a b ()(c)() a"));
-assert(notisbalanced("(9 ((8) 7) a b (\0 c) a"));
+assert(!isbalanced("(9 ((8) 7) a b (\0 c) a"));
 assert(string.gsub("alo 'oi' alo", "%b''", '"') == 'alo " alo');
 local t = {
     "apple", 
@@ -192,15 +192,15 @@ assert(string.gsub("first second word", "%w+", fn (w) {
     t[(t.n)] = w
 }, 2) == "first second word");
 assert(t[(1)] == "first" && t[(2)] == "second" && t[(3)] == nil);
-assert(notpcall(string.gsub, "alo", "(.", print));
-assert(notpcall(string.gsub, "alo", ".)", print));
-assert(notpcall(string.gsub, "alo", "(.", {}));
-assert(notpcall(string.gsub, "alo", "(.)", "%2"));
-assert(notpcall(string.gsub, "alo", "(%1)", "a"));
-assert(notpcall(string.gsub, "alo", "(%0)", "a"));
+assert(!pcall(string.gsub, "alo", "(.", print));
+assert(!pcall(string.gsub, "alo", ".)", print));
+assert(!pcall(string.gsub, "alo", "(.", {}));
+assert(!pcall(string.gsub, "alo", "(.)", "%2"));
+assert(!pcall(string.gsub, "alo", "(%1)", "a"));
+assert(!pcall(string.gsub, "alo", "(%0)", "a"));
 local a = string.rep('a', 300000)
 assert(string.find(a, '^a*.?$'));
-assert(notstring.find(a, '^a*.?b$'));
+assert(!string.find(a, '^a*.?b$'));
 assert(string.find(a, '^a-.?$'));
 global fn rev(s) {
     return string.gsub(s, "(.)(.+)", fn (c, s1) {

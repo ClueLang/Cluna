@@ -141,7 +141,7 @@ local b
 global fn f(x) {
     local first = 1
     while 1 {
-        if x == 3 && notfirst {
+        if x == 3 && !first {
             return
         }
         local a = 'xuxu'
@@ -283,7 +283,7 @@ local debug = require('debug')
 }
 assert(debug.upvalueid(foo1, 1));
 assert(debug.upvalueid(foo1, 2));
-assert(notdebug.upvalueid(foo1, 3));
+assert(!debug.upvalueid(foo1, 3));
 assert(debug.upvalueid(foo1, 1) == debug.upvalueid(foo2, 2));
 assert(debug.upvalueid(foo1, 2) == debug.upvalueid(foo2, 1));
 assert(debug.upvalueid(foo3, 1));
@@ -298,10 +298,10 @@ debug.upvaluejoin(foo3, 2, foo2, 1);
 assert(foo3() == 10 + 5);
 debug.upvaluejoin(foo3, 2, foo2, 2);
 assert(foo3() == 10 + 3);
-assert(notpcall(debug.upvaluejoin, foo1, 3, foo2, 1));
-assert(notpcall(debug.upvaluejoin, foo1, 1, foo2, 3));
-assert(notpcall(debug.upvaluejoin, foo1, 0, foo2, 1));
-assert(notpcall(debug.upvaluejoin, print, 1, foo2, 1));
-assert(notpcall(debug.upvaluejoin, {}, 1, foo2, 1));
-assert(notpcall(debug.upvaluejoin, foo1, 1, print, 1));
+assert(!pcall(debug.upvaluejoin, foo1, 3, foo2, 1));
+assert(!pcall(debug.upvaluejoin, foo1, 1, foo2, 3));
+assert(!pcall(debug.upvaluejoin, foo1, 0, foo2, 1));
+assert(!pcall(debug.upvaluejoin, print, 1, foo2, 1));
+assert(!pcall(debug.upvaluejoin, {}, 1, foo2, 1));
+assert(!pcall(debug.upvaluejoin, foo1, 1, print, 1));
 print('OK');

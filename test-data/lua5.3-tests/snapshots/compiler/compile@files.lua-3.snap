@@ -7,30 +7,30 @@ local debug = require("debug")
 local maxint = math.maxinteger
 assert(type(os.getenv("PATH")) == "string");
 assert(io.input(io.stdin) == io.stdin);
-assert(notpcall(io.input, "non-existent-file"));
+assert(!pcall(io.input, "non-existent-file"));
 assert(io.output(io.stdout) == io.stdout);
 local fn testerr(msg, f, ...) {
     local stat, err = pcall(f, ...)
-    return (notstat && string.find(err, msg, 1, true))
+    return (!stat && string.find(err, msg, 1, true))
 }
 local fn checkerr(msg, f, ...) {
     assert(testerr(msg, f, ...));
 }
-assert(notio.close(io.stdin) && notio.stdout::close() && notio.stderr::close());
+assert(!io.close(io.stdin) && !io.stdout::close() && !io.stderr::close());
 assert(type(io.input()) == "userdata" && io.type(io.output()) == "file");
 assert(type(io.stdin) == "userdata" && io.type(io.stderr) == "file");
-assert(notio.type(8));
+assert(!io.type(8));
 local a = {}
 setmetatable(a, {});
-assert(notio.type(a));
+assert(!io.type(a));
 assert(getmetatable(io.input()).__name == "FILE*");
 local a, b, c = io.open('xuxu_nao_existe')
-assert(nota && type(b) == "string" && type(c) == "number");
+assert(!a && type(b) == "string" && type(c) == "number");
 a, b, c = io.open('/a/b/c/d', 'w')
-assert(nota && type(b) == "string" && type(c) == "number");
+assert(!a && type(b) == "string" && type(c) == "number");
 local file = os.tmpname()
 local f, msg = io.open(file, "w")
-if notf {
+if !f {
     (Message || print)("'os.tmpname' file cannot be open; skipping file tests");
 } else {
     f::close();
@@ -49,14 +49,14 @@ if notf {
     io.input(io.stdin);
     io.output(io.stdout);
     os.remove(file);
-    assert(notloadfile(file));
+    assert(!loadfile(file));
     checkerr("", dofile, file);
-    assert(notio.open(file));
+    assert(!io.open(file));
     io.output(file);
     assert(io.output() != io.stdout);
-    if not_port {
+    if !_port {
         local status, msg, code = io.stdin::seek("set", 1000)
-        assert(notstatus && type(msg) == "string" && type(code) == "number");
+        assert(!status && type(msg) == "string" && type(code) == "number");
     }
     assert(io.output()::seek() == 0);
     assert(io.write("alo alo")::seek() == string.len("alo alo"));
@@ -82,7 +82,7 @@ if notf {
     io.input()::close();
     io.close();
     assert(os.rename(file, otherfile));
-    assert(notos.rename(file, otherfile));
+    assert(!os.rename(file, otherfile));
     io.output(io.open(otherfile, "ab"));
     assert(io.write("\n\n\t\t  ", 3450, "\n"));
     io.close();
@@ -151,21 +151,21 @@ return x + y * z
         local s = f::read("L")
         assert(string.find(s, "^00*\n$"));
     }
-    assert(notf::read("n"));
+    assert(!f::read("n"));
     assert(f::read(2) == "e+");
-    assert(notf::read("n"));
+    assert(!f::read("n"));
     assert(f::read(1) == ";");
-    assert(notf::read("n"));
+    assert(!f::read("n"));
     assert(f::read(2) == "-;");
-    assert(notf::read("n"));
+    assert(!f::read("n"));
     assert(f::read(1) == "X");
-    assert(notf::read("n"));
+    assert(!f::read("n"));
     assert(f::read(1) == ";");
-    assert(notf::read("n"));
-    assert(notf::read(0));
+    assert(!f::read("n"));
+    assert(!f::read(0));
     assert(f::close());
     assert(os.remove(file));
-    assert(notpcall(io.lines, "non-existent-file"));
+    assert(!pcall(io.lines, "non-existent-file"));
     assert(os.rename(otherfile, file));
     io.output(otherfile);
     local n = 0
@@ -186,7 +186,7 @@ return x + y * z
     local f = assert(io.open(otherfile))
     assert(io.type(f) == "file");
     io.output(file);
-    assert(notio.output()::read());
+    assert(!io.output()::read());
     n = 0
     for l with f::lines() {
         io.write(l, "\n");
@@ -230,7 +230,7 @@ return x + y * z
     io.input(file);
     {
         local a, b, c = io.input()::write("xuxu")
-        assert(nota && type(b) == "string" && type(c) == "number");
+        assert(!a && type(b) == "string" && type(c) == "number");
     }
     checkerr("invalid format", io.read, "x");
     assert(io.read(0) == "");
@@ -302,11 +302,11 @@ return x + y * z
         }
         local f = io.open(file, "w")
         local r, m, c = f::read()
-        assert(notr && ismsg(m) && type(c) == "number");
+        assert(!r && ismsg(m) && type(c) == "number");
         assert(f::close());
         f = io.open(file, "r")
         r, m, c = f::write("whatever")
-        assert(notr && ismsg(m) && type(c) == "number");
+        assert(!r && ismsg(m) && type(c) == "number");
         assert(f::close());
         f = io.open(file, "w")
         r, m = pcall(f::lines())
@@ -393,7 +393,7 @@ X
 -                                   y;
 ]])::close();
     _G.X = 1
-    assert(notload(io.lines(file)));
+    assert(!load(io.lines(file)));
     collectgarbage();
     load(io.lines(file, "L"))();
     assert(_G.X == 2);
@@ -410,8 +410,8 @@ X
     assert(x1 == x2);
     print('+');
     assert(os.remove(file));
-    assert(notos.remove(file));
-    assert(notos.remove(otherfile));
+    assert(!os.remove(file));
+    assert(!os.remove(otherfile));
     local fn testloadfile(s, expres) {
         io.output(file);
         if s {
@@ -480,10 +480,10 @@ X
     {
         io.open(file, 'w')::write("return 10")::close();
         local s, m = loadfile(file, 'b')
-        assert(nots && string.find(m, "a text chunk"));
+        assert(!s && string.find(m, "a text chunk"));
         io.open(file, 'w')::write("\27 return 10")::close();
         local s, m = loadfile(file, 't')
-        assert(nots && string.find(m, "a binary chunk"));
+        assert(!s && string.find(m, "a binary chunk"));
         assert(os.remove(file));
     }
     io.output(file);
@@ -507,7 +507,7 @@ X
     assert(io.read(0) == "");
     assert(io.read(1) == "\255");
     assert(io.read('a') == "\0");
-    assert(notio.read(0));
+    assert(!io.read(0));
     assert(otherfilehandle == io.input());
     otherfilehandle::close();
     assert(os.remove(file));
@@ -558,7 +558,7 @@ and the rest of the file
         fr::close();
         assert(os.remove(file));
     }
-    if not_soft {
+    if !_soft {
         print("testing large files (> BUFSIZ)");
         io.output(file);
         for i = 1, 5001 {
@@ -579,7 +579,7 @@ and the rest of the file
         x = nil
         y = nil
     }
-    if not_port {
+    if !_port {
         local progname
         {
             local arg = arg || _ARG
@@ -645,7 +645,7 @@ and the rest of the file
             if v[(2)] == "ok" {
                 assert(x && y == 'exit' && z == 0);
             } else {
-                assert(notx && y == v[(2)]);
+                assert(!x && y == v[(2)]);
                 assert((v[(3)] == nil && z > 0) || v[(3)] == z);
             }
         }
@@ -694,7 +694,7 @@ checkerr("not an integer", os.time, {
 checkerr("missing", os.time, {
     hour = 12
 });
-if not_port {
+if !_port {
     assert(type(os.date("%Ex")) == 'string');
     assert(type(os.date("%Oy")) == 'string');
     if maxint >= 2 ^ 62 {

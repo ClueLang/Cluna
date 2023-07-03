@@ -10,7 +10,7 @@ local maxI = math.maxinteger
 local minI = math.mininteger
 local fn checkerror(msg, f, ...) {
     local s, err = pcall(f, ...)
-    assert(nots && string.find(err, msg));
+    assert(!s && string.find(err, msg));
 }
 checkerror("wrong number of arguments", table.insert, {}, 2, 3, 4);
 local x, y, z, a, n
@@ -269,7 +269,7 @@ assert(a[(1)] == nil && a.n == 4);
     table.move(a, 10, 13, 3, b);
     assert(b[(1)] == "(3,100)(4,110)(5,120)(6,130)");
     local stat, msg = pcall(table.move, b, 10, 13, 3, b)
-    assert(notstat && msg == b);
+    assert(!stat && msg == b);
 }
 {
     local fn checkmove(f, e, t, x, y) {
@@ -284,7 +284,7 @@ assert(a[(1)] == nil && a.n == 4);
             }
         })
         local st, msg = pcall(table.move, a, f, e, t)
-        assert(notst && notmsg && pos1 == x && pos2 == y);
+        assert(!st && !msg && pos1 == x && pos2 == y);
     }
     checkmove(1, maxI, 0, 1, 0);
     checkmove(0, maxI - 1, 1, maxI - 1, maxI);
@@ -347,7 +347,7 @@ global fn check(a, f) {
         return x < y
     }
     for n = #a, 2, -1 {
-        assert(notf(a[(n)], a[(n - 1)]));
+        assert(!f(a[(n)], a[(n - 1)]));
     }
 }
 a = {
