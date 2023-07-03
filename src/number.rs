@@ -7,11 +7,28 @@ pub struct HexDecimal {
 }
 
 impl HexDecimal {
+    #[inline]
     fn new(before_decimal: String, after_decimal: String) -> Self {
         HexDecimal {
             before_decimal,
             after_decimal,
         }
+    }
+
+    fn into_decimal(self) -> f64 {
+        let mut num = 0.0f64;
+
+        for (i, c) in (0..).zip(self.before_decimal.chars().rev()) {
+            let digit = c.to_digit(16).unwrap() as f64;
+            num += digit * 16f64.powi(i);
+        }
+
+        for (i, c) in (0..).zip(self.after_decimal.chars().skip(1)) {
+            let digit = c.to_digit(16).unwrap() as f64;
+            num += digit * 16f64.powi(-(i + 1));
+        }
+
+        num
     }
 }
 
@@ -21,7 +38,26 @@ pub struct Decimal {
     after_decimal: String,
 }
 
+#[inline]
+fn normalize_before_decimal(before_decimal: String) -> String {
+    if before_decimal.is_empty() {
+        "0".to_string()
+    } else {
+        before_decimal
+    }
+}
+
+#[inline]
+fn normalize_after_decimal(after_decimal: String) -> String {
+    if after_decimal == "." {
+        ".0".to_string()
+    } else {
+        after_decimal
+    }
+}
+
 impl Decimal {
+    #[inline]
     fn new(before_decimal: String, after_decimal: String) -> Self {
         Decimal {
             before_decimal: normalize_before_decimal(before_decimal),
@@ -45,39 +81,6 @@ pub enum Number {
     },
 }
 
-#[inline]
-fn normalize_before_decimal(before_decimal: String) -> String {
-    if before_decimal.is_empty() {
-        "0".to_string()
-    } else {
-        before_decimal
-    }
-}
-
-#[inline]
-fn normalize_after_decimal(after_decimal: String) -> String {
-    if after_decimal == "." {
-        ".0".to_string()
-    } else {
-        after_decimal
-    }
-}
-
-fn hex_to_decimal(before_decimal: &str, after_decimal: &str) -> f64 {
-    let mut num = 0.0f64;
-    for (i, c) in before_decimal.chars().rev().enumerate() {
-        let digit = c.to_digit(16).unwrap() as f64;
-        num += digit * 16f64.powi(i as i32);
-    }
-
-    for (i, c) in after_decimal.chars().skip(1).enumerate() {
-        let digit = c.to_digit(16).unwrap() as f64;
-        num += digit * 16f64.powf(-(i as f64 + 1.0));
-    }
-
-    num
-}
-
 impl Number {
     pub fn from_source(lexer: &mut Lexer) -> Result<Number, String> {
         let start = lexer.current;
@@ -87,8 +90,8 @@ impl Number {
         let mut is_hex = false;
         let mut sign_encountered = false;
 
-        let mut before_decimal = String::new();
-        let mut after_decimal = String::new();
+        let mut before_decimal = String::with_capacity(4);
+        let mut after_decimal = String::with_capacity(4);
         let mut exponent = String::new();
 
         while let Some(c) = lexer.advance() {
@@ -282,13 +285,28 @@ impl Number {
     pub fn into_clue_number(self) -> String {
         match self {
             Number::Hex(hex) => hex,
-            Number::HexDecimal(hd) => {
-                hex_to_decimal(&hd.before_decimal, &hd.after_decimal).to_string()
+            Number::HexDecimal(hex) => {
+                let number = hex.into_decimal().to_string();
+                if number == "inf" {
+                    "1 / 0".to_owned()
+                } else if number == "-inf" {
+                    "-1 / 0".to_owned()
+                } else {
+                    number
+                }
             }
             Number::HexScientific { mantissa, exponent } => {
-                let number = hex_to_decimal(&mantissa.before_decimal, &mantissa.after_decimal);
-                let number = number * 2f64.powf(exponent.parse::<f64>().unwrap());
-                number.to_string()
+                let number = mantissa.into_decimal();
+                let number = number * 2f64.powi(exponent.parse::<i32>().unwrap());
+                let number = number.to_string();
+
+                if number == "inf" {
+                    "1 / 0".to_owned()
+                } else if number == "-inf" {
+                    "-1 / 0".to_owned()
+                } else {
+                    number
+                }
             }
             Number::Decimal(Decimal {
                 before_decimal,

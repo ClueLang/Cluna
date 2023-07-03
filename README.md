@@ -18,5 +18,6 @@ Unsupported Lua features:
 
 ## Installation
 Binaries can be downloaded from the [releases](https://github.com/ClueLang/Clue/releases/latest)
+
 RPM and DEB packages are available.
 
