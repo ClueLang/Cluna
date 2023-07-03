@@ -279,10 +279,10 @@ impl Lexer {
             }
             while let Some(c) = self.advance() {
                 if !(c.is_alphanumeric() || c == '_') {
+                    self.go_back();
                     break;
                 }
             }
-            self.go_back();
             let lexeme: String = self.source[start..self.current].iter().collect();
 
             match &*lexeme {
@@ -436,6 +436,7 @@ impl Lexer {
 
 pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
     let mut lexer = Lexer::new(code);
+
     while let Some(c) = lexer.advance() {
         match c {
             ' ' | '\r' | '\t' | '\n' => {}
@@ -563,7 +564,7 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
                 lexer.read_string(c)?;
             }
             _ => {
-                lexer.current -= 1;
+                lexer.go_back();
                 if c.is_ascii_digit() {
                     lexer.read_number()?;
                 } else if c.is_ascii_alphabetic() || c == '_' {
