@@ -122,7 +122,7 @@ jobs:
           cd target/${{ matrix.target }}/release/ && tar -cvf "$CRATE_NAME-${{ matrix.target }}.tar.gz" "$CRATE_NAME" && cd ../../..
       - name: Build deb
         run: |
-          cd cli && cargo deb --target=${{ matrix.target }} && cd ..
+          cargo deb --target=${{ matrix.target }}
           echo "DEB_FILENAME=$(basename $(echo target/${{ matrix.target }}/debian/*.deb))" >> $GITHUB_ENV
       - name: Build rpm
         run: |
