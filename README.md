@@ -14,7 +14,7 @@ Supported versions:
 
 Unsupported Lua features:
 - Goto and labels: Clue does not support goto statements and labels
-- Lua 5.4 language features: Clue has no equivelant of const of to-be-closed variables
+- Lua 5.4 language features: Clue has no equivelant of const or to-be-closed variables
 
 ## Installation
 Binaries can be downloaded from the [releases](https://github.com/ClueLang/Clue/releases/latest)
