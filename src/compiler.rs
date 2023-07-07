@@ -70,7 +70,7 @@ fn compile_operator(lexeme: String, is_binop: bool) -> String {
         "or" => "||".to_owned(),
         "not" => "!".to_owned(),
         "~=" => "!=".to_owned(),
-        "~" if !is_binop => "^^".to_owned(),
+        "~" if is_binop => "^^".to_owned(),
         "//" => "/_".to_owned(),
         _ => lexeme,
     }

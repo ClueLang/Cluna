@@ -18,12 +18,12 @@ impl HexDecimal {
     fn into_decimal(self) -> f64 {
         let mut num = 0.0f64;
 
-        for (i, c) in (0..).zip(self.before_decimal.chars().rev()) {
+        for (i, c) in (0i32..).zip(self.before_decimal.chars().rev()) {
             let digit = c.to_digit(16).unwrap() as f64;
             num += digit * 16f64.powi(i);
         }
 
-        for (i, c) in (0..).zip(self.after_decimal.chars().skip(1)) {
+        for (i, c) in (0i32..).zip(self.after_decimal.chars().skip(1)) {
             let digit = c.to_digit(16).unwrap() as f64;
             num += digit * 16f64.powi(-(i + 1));
         }
