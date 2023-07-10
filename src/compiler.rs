@@ -223,7 +223,7 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
 fn compile_ast_helper(tree: Expression, scope: usize) -> String {
     use crate::parser::ComplexToken::*;
 
-    let mut end = String::with_capacity(4);
+    let mut end = vec![];
     let mut result = indent(scope);
     let tree = &mut tree.into_iter().peekable();
 
@@ -233,13 +233,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += "local ";
                 result += &compile_list(names, ", ", &mut |(name, close)| {
                     if close {
-                        end.push('\n');
-                        end += &indent(scope);
-                        end += "getmetatable(";
-                        end += &name;
-                        end += ").__close(";
-                        end += &name;
-                        end += ");";
+                        end.push(name.clone());
                     }
 
                     name
@@ -447,7 +441,17 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
         }
     }
 
-    result + &end
+    for name in end.iter().rev(){
+        result.push('\n');
+        result += &indent(scope);
+        result += "getmetatable(";
+        result += name;
+        result += ").__close(";
+        result += name;
+        result += ");";
+    }
+
+    result
 }
 
 pub fn compile_ast(tree: Expression) -> String {
