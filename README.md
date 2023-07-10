@@ -1,9 +1,9 @@
-# Probe
+# Cluna
 
-Probe is a tool that converts Lua code into Clue code. If you want to read more about Clue visit the repo [https://github.com/cluelang/clue](https://github.com/cluelang/clue)
+Cluna is a tool that converts Lua code into Clue code. If you want to read more about Clue visit the repo [https://github.com/cluelang/clue](https://github.com/cluelang/clue)
 
 ## Usage
-Use `probe --help` for help on flags
+Use `cluna --help` for help on flags
 
 ## Feature support
 Supported versions:

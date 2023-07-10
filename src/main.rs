@@ -1,5 +1,5 @@
 use clap::Parser;
-use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
+use cluna::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
 use std::path::PathBuf;
 
 #[derive(Parser)]
@@ -77,7 +77,7 @@ fn main() -> Result<(), String> {
 mod test {
     use std::path::PathBuf;
 
-    use probe::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
+    use cluna::{compiler::compile_ast, lexer::scan_code, parser::parse_tokens};
     use tests_proc_macro::gen_tests;
 
     macro_rules! settings {
