@@ -1,0 +1,62 @@
+---
+source: src/main.rs
+assertion_line: 136
+expression: compiled
+input_file: test-data/lua5.4-tests/bwcoercion.lua
+---
+local tonumber, tointeger = tonumber, math.tointeger
+local type, getmetatable, rawget, error = type, getmetatable, rawget, error
+local strsub = string.sub
+local print = print
+_ENV = nil
+local fn toint(x) {
+    x = tonumber(x)
+    if !x {
+        return false
+    }
+    return tointeger(x)
+}
+local fn trymt(x, y, mtname) {
+    if type(y) != "string" {
+        local mt = getmetatable(y)
+        local mm = mt && rawget(mt, mtname)
+        if mm {
+            return mm(x, y)
+        }
+    }
+    error("attempt to '" .. strsub(mtname, 3) .. "' a " .. type(x) .. " with a " .. type(y), 4);
+}
+local fn checkargs(x, y, mtname) {
+    local xi = toint(x)
+    local yi = toint(y)
+    if xi && yi {
+        return xi, yi
+    } else {
+        return trymt(x, y, mtname), nil
+    }
+}
+local smt = getmetatable("")
+smt.__band = fn (x, y) {
+    local x, y = checkargs(x, y, "__band")
+    return y && x & y || x
+}
+smt.__bor = fn (x, y) {
+    local x, y = checkargs(x, y, "__bor")
+    return y && x | y || x
+}
+smt.__bxor = fn (x, y) {
+    local x, y = checkargs(x, y, "__bxor")
+    return y && x ^^ y || x
+}
+smt.__shl = fn (x, y) {
+    local x, y = checkargs(x, y, "__shl")
+    return y && x << y || x
+}
+smt.__shr = fn (x, y) {
+    local x, y = checkargs(x, y, "__shr")
+    return y && x >> y || x
+}
+smt.__bnot = fn (x) {
+    local x, y = checkargs(x, x, "__bnot")
+    return y && ~x || x
+}
