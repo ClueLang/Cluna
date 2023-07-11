@@ -6,37 +6,37 @@ input_file: test-data/lua5.4-tests/bitwise.lua
 print("testing bitwise operations");
 require("bwcoercion");
 local numbits = string.packsize('j') * 8
-assert(^^0 == -1);
+assert(~0 == -1);
 assert((1 << (numbits - 1)) == math.mininteger);
 local a, b, c, d
 a = 0xFFFFFFFFFFFFFFFF
 assert(a == -1 && a & -1 == a && a & 35 == 35);
 a = 0xF0F0F0F0F0F0F0F0
 assert(a | -1 == -1);
-assert(a ~ a == 0 && a ~ 0 == a && a ~ ^^a == -1);
-assert(a >> 4 == ^^a);
+assert(a ^^ a == 0 && a ^^ 0 == a && a ^^ ~a == -1);
+assert(a >> 4 == ~a);
 a = 0xF0
 b = 0xCC
 c = 0xAA
 d = 0xFD
-assert(a | b ~ c & d == 0xF4);
+assert(a | b ^^ c & d == 0xF4);
 a = 240
 b = 204
 c = "0xAA.0"
 d = "0xFD.0"
-assert(a | b ~ c & d == 0xF4);
+assert(a | b ^^ c & d == 0xF4);
 a = 0xF0000000
 b = 0xCC000000
 c = 0xAA000000
 d = 0xFD000000
-assert(a | b ~ c & d == 0xF4000000);
-assert(^^ ~ a == a && ^^a == -1 ~ a && -d == ^^d + 1);
+assert(a | b ^^ c & d == 0xF4000000);
+assert(~ ^^ a == a && ~a == -1 ^^ a && -d == ~d + 1);
 a = a << 32
 b = b << 32
 c = c << 32
 d = d << 32
-assert(a | b ~ c & d == 0xF4000000 << 32);
-assert(^^ ~ a == a && ^^a == -1 ~ a && -d == ^^d + 1);
+assert(a | b ^^ c & d == 0xF4000000 << 32);
+assert(~ ^^ a == a && ~a == -1 ^^ a && -d == ~d + 1);
 assert(-1 >> 1 == (1 << (numbits - 1)) - 1 && 1 << 31 == 0x80000000);
 assert(-1 >> (numbits - 1) == 1);
 assert(-1 >> numbits == 0 && -1 >> -numbits == 0 && -1 << numbits == 0 && -1 << -numbits == 0);
@@ -52,8 +52,8 @@ assert("0xfffffffffffffffe" & "-1" == -2);
 assert(" \t-0xfffffffffffffffe\n\t" & "-1" == 2);
 assert("   \n  -45  \t " >> "  -2  " == -45 * 4);
 assert("1234.0" << "5.0" == 1234 * 32);
-assert("0xffff.0" ~ "0xAAAA" == 0x5555);
-assert(^^"0x0.000p4" == -1);
+assert("0xffff.0" ^^ "0xAAAA" == 0x5555);
+assert(~"0x0.000p4" == -1);
 assert(("7" .. 3) << 1 == 146);
 assert(0xffffffff >> (1 .. "9") == 0x1fff);
 assert(10 | (1 .. "9") == 27);
@@ -63,7 +63,7 @@ assert(10 | (1 .. "9") == 27);
     })
     assert(string.find(msg, "'band'"));
     local st, msg = pcall(fn () {
-        return ^^"a"
+        return ~"a"
     })
     assert(string.find(msg, "'bnot'"));
 }
@@ -77,7 +77,7 @@ print('+');
 package.preload.bit32 = fn () {
     local bit = {}
     method bit.bnot(a) {
-        return ^^a & 0xFFFFFFFF
+        return ~a & 0xFFFFFFFF
     }
     method bit.band(x, y, z, ...) {
         if !z {
@@ -109,14 +109,14 @@ package.preload.bit32 = fn () {
     }
     method bit.bxor(x, y, z, ...) {
         if !z {
-            return ((x || 0) ~ (y || 0)) & 0xFFFFFFFF
+            return ((x || 0) ^^ (y || 0)) & 0xFFFFFFFF
         } else {
             local arg = {
                 ...
             }
-            local res = x ~ y ~ z
+            local res = x ^^ y ^^ z
             for i = 1, #arg {
-                res = res ~ arg[(i)]
+                res = res ^^ arg[(i)]
             }
             return res & 0xFFFFFFFF
         }
@@ -135,7 +135,7 @@ package.preload.bit32 = fn () {
         if b <= 0 || (a & 0x80000000) == 0 {
             return (a >> b) & 0xFFFFFFFF
         } else {
-            return ((a >> b) | ^^(0xFFFFFFFF >> b)) & 0xFFFFFFFF
+            return ((a >> b) | ~(0xFFFFFFFF >> b)) & 0xFFFFFFFF
         }
     }
     method bit.lrotate(a, b) {
@@ -152,7 +152,7 @@ package.preload.bit32 = fn () {
         assert(f >= 0, "field cannot be negative");
         assert(w > 0, "width must be positive");
         assert(f + w <= 32, "trying to access non-existent bits");
-        return f, ^^(-1 << w)
+        return f, ~(-1 << w)
     }
     method bit.extract(a, f, w) {
         local f, mask = checkfield(f, w)
@@ -161,7 +161,7 @@ package.preload.bit32 = fn () {
     method bit.replace(a, v, f, w) {
         local f, mask = checkfield(f, w)
         v = v & mask
-        a = (a & ^^(mask << f)) | (v << f)
+        a = (a & ~(mask << f)) | (v << f)
         return a & 0xFFFFFFFF
     }
     return bit
@@ -242,14 +242,14 @@ for _, b with pairs(c) {
     assert(bit32.band(b, b, b, b) == b);
     assert(bit32.btest(b, b) == (b != 0));
     assert(bit32.band(b, b, b) == b);
-    assert(bit32.band(b, b, b, ^^b) == 0);
+    assert(bit32.band(b, b, b, ~b) == 0);
     assert(bit32.btest(b, b, b) == (b != 0));
     assert(bit32.band(b, bit32.bnot(b)) == 0);
     assert(bit32.bor(b, bit32.bnot(b)) == bit32.bnot(0));
     assert(bit32.bor(b) == b);
     assert(bit32.bor(b, b) == b);
     assert(bit32.bor(b, b, b) == b);
-    assert(bit32.bor(b, b, 0, ^^b) == 0xffffffff);
+    assert(bit32.bor(b, b, 0, ~b) == 0xffffffff);
     assert(bit32.bxor(b) == b);
     assert(bit32.bxor(b, b) == 0);
     assert(bit32.bxor(b, b, b) == b);

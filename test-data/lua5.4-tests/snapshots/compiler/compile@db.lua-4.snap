@@ -1002,13 +1002,13 @@ assert(a[(3)] == "index" && a ^ 3 == "pow" && a .. a == "concat");
 assert(a / 3 == "div" && 3 % a == "mod");
 assert(a + 3 == "add" && 3 - a == "sub" && a * 3 == "mul" && -a == "unm" && #a == "len" && a & 3 == "band");
 assert(a + 30000 == "add" && a - 3.0 == "sub" && a * 3.0 == "mul" && -a == "unm" && #a == "len" && a & 3 == "band");
-assert(a | 3 == "bor" && 3 ~ a == "bxor" && a << 3 == "shl" && a >> 1 == "shr");
+assert(a | 3 == "bor" && 3 ^^ a == "bxor" && a << 3 == "shl" && a >> 1 == "shr");
 assert(a == b && a.op == "eq");
 assert(a >= b && a.op == "le");
 assert("x" >= a && a.op == "le");
 assert(a > b && a.op == "lt");
 assert(a > 10 && a.op == "lt");
-assert(^^a == "bnot");
+assert(~a == "bnot");
 {
     local fn f() {
         assert(debug.getinfo(1).name == "for iterator");

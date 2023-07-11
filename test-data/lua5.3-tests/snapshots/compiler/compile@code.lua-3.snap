@@ -193,13 +193,13 @@ checkK(fn () {
     return -((2 ^ 8 + -(-1)) % 8) /_ 2 * 4 - 3
 }, -7.0);
 checkK(fn () {
-    return 240 | 204 ~ 0xAA & 0xFD
+    return 240 | 204 ^^ 0xAA & 0xFD
 }, 0xF4);
 checkK(fn () {
-    return ^^(^^0xFF0 | 0xFF0)
+    return ~(~0xFF0 | 0xFF0)
 }, 0);
 checkK(fn () {
-    return ^^ ~ -100024.0
+    return ~ ^^ -100024.0
 }, -100024);
 checkK(fn () {
     return ((100 << 6) << -4) >> 2

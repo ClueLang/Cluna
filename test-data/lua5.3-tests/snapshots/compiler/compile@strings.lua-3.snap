@@ -219,7 +219,7 @@ assert(string.format("%+08d", -30927) == "-0030927");
         assert(string.format("%x", min) == "8000000000000000");
         assert(string.format("%d", max) == "9223372036854775807");
         assert(string.format("%d", min) == "-9223372036854775808");
-        assert(string.format("%u", ^^(-1 << 64)) == "18446744073709551615");
+        assert(string.format("%u", ~(-1 << 64)) == "18446744073709551615");
         assert(tostring(1234567890123) == '1234567890123');
     }
 }

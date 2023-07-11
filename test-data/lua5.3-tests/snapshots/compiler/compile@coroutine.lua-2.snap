@@ -571,7 +571,7 @@ local mt = {
     }, 
     __bnot = fn (a, b) {
         coroutine.yield(nil, "bnot");
-        return ^^a.x
+        return ~a.x
     }, 
     __shl = fn (a, b) {
         coroutine.yield(nil, "shl");
@@ -593,7 +593,7 @@ local mt = {
     }, 
     __bxor = fn (a, b) {
         coroutine.yield(nil, "bxor");
-        return a.x ~ b.x
+        return a.x ^^ b.x
     }, 
     __concat = fn (a, b) {
         coroutine.yield(nil, "concat");
@@ -673,21 +673,21 @@ assert(run(fn () {
     "mod"
 }) == 10);
 assert(run(fn () {
-    return ^^a & b
+    return ~a & b
 }, {
     "bnot", 
     "band"
-}) == ^^10 & 12);
+}) == ~10 & 12);
 assert(run(fn () {
     return a | b
 }, {
     "bor"
 }) == 10 | 12);
 assert(run(fn () {
-    return a ~ b
+    return a ^^ b
 }, {
     "bxor"
-}) == 10 ~ 12);
+}) == 10 ^^ 12);
 assert(run(fn () {
     return a << b
 }, {

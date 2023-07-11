@@ -340,13 +340,13 @@ checkF(fn () {
     return -((2 ^ 8 + -(-1)) % 8) /_ 2 * 4 - 3
 }, -7.0);
 checkI(fn () {
-    return 240 | 204 ~ 0xAA & 0xFD
+    return 240 | 204 ^^ 0xAA & 0xFD
 }, 0xF4);
 checkI(fn () {
-    return ^^(^^kFF0 | kFF0)
+    return ~(~kFF0 | kFF0)
 }, 0);
 checkI(fn () {
-    return ^^ ~ -1024.0
+    return ~ ^^ -1024.0
 }, -1024);
 checkI(fn () {
     return ((100 << k6) << -4) >> 2
@@ -434,7 +434,7 @@ checkR(fn (x) {
     return 10 | x
 }, 1, 11, 'BORK', 'MMBINK', 'RETURN1');
 checkR(fn (x) {
-    return -10 ~ x
+    return -10 ^^ x
 }, -1, 9, 'BXORK', 'MMBINK', 'RETURN1');
 checkR(fn (x) {
     return x + 0.0

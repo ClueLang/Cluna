@@ -788,11 +788,11 @@ local b = setmetatable({}, getmetatable(a))
 assert(a[(3)] == "__index" && a ^ 3 == "__pow" && a .. a == "__concat");
 assert(a / 3 == "__div" && 3 % a == "__mod");
 assert(a + 3 == "__add" && 3 - a == "__sub" && a * 3 == "__mul" && -a == "__unm" && #a == "__len" && a & 3 == "__band");
-assert(a | 3 == "__bor" && 3 ~ a == "__bxor" && a << 3 == "__shl" && a >> 1 == "__shr");
+assert(a | 3 == "__bor" && 3 ^^ a == "__bxor" && a << 3 == "__shl" && a >> 1 == "__shr");
 assert(a == b && a.op == "__eq");
 assert(a >= b && a.op == "__le");
 assert(a > b && a.op == "__lt");
-assert(^^a == "__bnot");
+assert(~a == "__bnot");
 {
     local fn f() {
         assert(debug.getinfo(1).name == "for iterator");

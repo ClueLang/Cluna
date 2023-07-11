@@ -697,7 +697,7 @@ local fn testnear(val, ref, tol) {
     local h = 0x7a7040a5
     local l = 0xa323c9d6
     math.randomseed(1007);
-    local res = (h << 32 | l) & ^^(^^0 << intbits)
+    local res = (h << 32 | l) & ~(~0 << intbits)
     assert(random(0) == res);
     math.randomseed(1007, 0);
     local res

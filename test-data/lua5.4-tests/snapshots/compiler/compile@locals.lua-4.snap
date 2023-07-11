@@ -249,10 +249,10 @@ assert(_ENV == _G);
             local c = nil
             a[(#a + 1)] = "in"
             assert(w == 10 && z == 20);
-            getmetatable(b).__close(b);
-            getmetatable(x).__close(x);
-            getmetatable(y).__close(y);
             getmetatable(c).__close(c);
+            getmetatable(y).__close(y);
+            getmetatable(x).__close(x);
+            getmetatable(b).__close(b);
         }
         a[(#a + 1)] = "out"
         assert(a[(1)] == "in" && a[(2)] == "y" && a[(3)] == "x" && a[(4)] == "out");
@@ -398,11 +398,11 @@ assert(_ENV == _G);
                 error("@z");
             })
             return 200
-            getmetatable(x).__close(x);
-            getmetatable(x1).__close(x1);
-            getmetatable(gc).__close(gc);
-            getmetatable(y).__close(y);
             getmetatable(z).__close(z);
+            getmetatable(y).__close(y);
+            getmetatable(gc).__close(gc);
+            getmetatable(x1).__close(x1);
+            getmetatable(x).__close(x);
         }
         local stat, msg = pcall(foo, false)
         assert(string.find(msg, "@x"));
@@ -432,11 +432,11 @@ assert(_ENV == _G);
                 error("@z");
             })
             error(4);
-            getmetatable(x).__close(x);
-            getmetatable(x1).__close(x1);
-            getmetatable(gc).__close(gc);
-            getmetatable(y).__close(y);
             getmetatable(z).__close(z);
+            getmetatable(y).__close(y);
+            getmetatable(gc).__close(gc);
+            getmetatable(x1).__close(x1);
+            getmetatable(x).__close(x);
         }
         local stat, msg = pcall(foo, true)
         assert(string.find(msg, "@x1"));
@@ -450,8 +450,8 @@ assert(_ENV == _G);
                     assert(msg == nil);
                     error("@X");
                 })
-                getmetatable(x1).__close(x1);
                 getmetatable(x123).__close(x123);
+                getmetatable(x1).__close(x1);
             }
             os.exit(false);
         }
@@ -497,9 +497,9 @@ assert(_ENV == _G);
                 error(123);
             })
             getmetatable(a2).__close = 4
-            getmetatable(a1).__close(a1);
-            getmetatable(a2).__close(a2);
             getmetatable(a3).__close(a3);
+            getmetatable(a2).__close(a2);
+            getmetatable(a1).__close(a1);
         }
         local stat, msg = pcall(foo)
         assert(!stat && msg == 12);
@@ -540,8 +540,8 @@ assert(_ENV == _G);
             })
             track[(#track + 1)] = "foo"
             return 20, 30, 40
-            getmetatable(x0).__close(x0);
             getmetatable(x).__close(x);
+            getmetatable(x0).__close(x0);
         }
         local st, msg = pcall(foo)
         assert(!st && msg == 202);
@@ -593,8 +593,8 @@ assert(_ENV == _G);
                 }
             })
             error(1000);
-            getmetatable(y).__close(y);
             getmetatable(x).__close(x);
+            getmetatable(y).__close(y);
         }
         stack(5);
         local _, msg = pcall(foo)
@@ -627,9 +627,9 @@ assert(_ENV == _G);
             })
             local x = enter(0)
             local y = {}
-            getmetatable(xxx).__close(xxx);
-            getmetatable(xx).__close(xx);
             getmetatable(x).__close(x);
+            getmetatable(xx).__close(xx);
+            getmetatable(xxx).__close(xxx);
         }
         local _, msg = pcall(test)
         assert(msg == 1000 && closemsg == "not enough memory");
@@ -718,8 +718,8 @@ assert(_ENV == _G);
                 debug.sethook(hook, "r");
             })
             return ...
-            getmetatable(x).__close(x);
             getmetatable(y).__close(y);
+            getmetatable(x).__close(x);
         }
         local t = {
             foo(10, 20, 30)
@@ -825,8 +825,8 @@ assert(_ENV == _G);
                 x, 
                 30
             })
-            getmetatable(x).__close(x);
             getmetatable(extra).__close(extra);
+            getmetatable(x).__close(x);
         }
         check(foo, true, 10, "x", 30);
         assert(extrares == 100);
@@ -847,8 +847,8 @@ assert(_ENV == _G);
             local x = func2close(coroutine.yield)
             local extra = func2close(coroutine.yield)
             return table.unpack({}, 1, 100)
-            getmetatable(x).__close(x);
             getmetatable(extra).__close(extra);
+            getmetatable(x).__close(x);
         }
         check(foo, true, table.unpack({}, 1, 100));
     }
@@ -877,9 +877,9 @@ assert(_ENV == _G);
                 } else {
                     return 10, 20
                 }
-                getmetatable(z).__close(z);
-                getmetatable(y).__close(y);
                 getmetatable(x).__close(x);
+                getmetatable(y).__close(y);
+                getmetatable(z).__close(z);
             }
             coroutine.yield(pcall(foo, nil));
             coroutine.yield(pcall(foo, 1));
@@ -949,8 +949,8 @@ assert(_ENV == _G);
             })
             coroutine.yield(100);
             error(200);
-            getmetatable(xx).__close(xx);
             getmetatable(xv).__close(xv);
+            getmetatable(xx).__close(xx);
         })
         assert(co() == 100);
         assert(x == 0);
@@ -971,8 +971,8 @@ assert(_ENV == _G);
             })
             coroutine.yield(100);
             return 200
-            getmetatable(xx).__close(xx);
             getmetatable(xv).__close(xv);
+            getmetatable(xx).__close(xx);
         })
         assert(co() == 100);
         assert(x == 0);

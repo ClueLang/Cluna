@@ -300,14 +300,14 @@ checkcap({
     a, 
     "hi"
 });
-assert("hi" ~ a == "hi");
+assert("hi" ^^ a == "hi");
 checkcap({
     "bxor", 
     "hi", 
     a
 });
 (fn () {
-    assert(10 ~ a == 10);
+    assert(10 ^^ a == 10);
 })();
 checkcap({
     "bxor", 
@@ -350,7 +350,7 @@ checkcap({
     a, 
     a
 });
-assert(^^a == a);
+assert(~a == a);
 checkcap({
     "bnot", 
     a, 
