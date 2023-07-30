@@ -6,1015 +6,1315 @@ input_file: test-data/extra/numbers.lua
 [
     Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 1,
-    },
-    Token {
-        kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 1,
-    },
-    Token {
-        kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 1,
-    },
-    Token {
-        kind: Number,
-        lexeme: "0",
-        computed_lexeme: Some(
-            "0",
+        lexeme: Symbol(
+            "local",
         ),
         line: 1,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 2,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 2,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 1,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 2,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 1,
     },
     Token {
         kind: Number,
-        lexeme: "1.0",
-        computed_lexeme: Some(
-            "1.0",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "0",
+                    after_decimal: "",
+                },
+            ),
+        ),
+        line: 1,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 2,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 3,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 3,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 2,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 3,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 2,
     },
     Token {
         kind: Number,
-        lexeme: "1.",
-        computed_lexeme: Some(
-            "1.0",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+            ),
+        ),
+        line: 2,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 3,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 4,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 4,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 3,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 4,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 3,
     },
     Token {
         kind: Number,
-        lexeme: ".1",
-        computed_lexeme: Some(
-            "0.1",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+            ),
+        ),
+        line: 3,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 4,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 5,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 5,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 4,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 5,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 4,
     },
     Token {
         kind: Number,
-        lexeme: "1.0e10",
-        computed_lexeme: Some(
-            "1.0e10",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+            ),
+        ),
+        line: 4,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 5,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 6,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 6,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 5,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 6,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 5,
     },
     Token {
         kind: Number,
-        lexeme: "1.0e+10",
-        computed_lexeme: Some(
-            "1.0e+10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "10",
+            },
+        ),
+        line: 5,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 6,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 7,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 7,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 6,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 7,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 6,
     },
     Token {
         kind: Number,
-        lexeme: "1.0e-10",
-        computed_lexeme: Some(
-            "1.0e-10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "+10",
+            },
+        ),
+        line: 6,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 7,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 8,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 8,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 7,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 8,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 7,
     },
     Token {
         kind: Number,
-        lexeme: "1.0E10",
-        computed_lexeme: Some(
-            "1.0e10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "-10",
+            },
+        ),
+        line: 7,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 8,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 9,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 9,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 8,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 9,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 8,
     },
     Token {
         kind: Number,
-        lexeme: "1.0E+10",
-        computed_lexeme: Some(
-            "1.0e+10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "10",
+            },
+        ),
+        line: 8,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 9,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 10,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 10,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 9,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 10,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 9,
     },
     Token {
         kind: Number,
-        lexeme: "1.0E-10",
-        computed_lexeme: Some(
-            "1.0e-10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "+10",
+            },
+        ),
+        line: 9,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 10,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 11,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 11,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 10,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 11,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 10,
     },
     Token {
         kind: Number,
-        lexeme: "1e10",
-        computed_lexeme: Some(
-            "1e10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "-10",
+            },
+        ),
+        line: 10,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 11,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 12,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 12,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 11,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 12,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 11,
     },
     Token {
         kind: Number,
-        lexeme: "1e+10",
-        computed_lexeme: Some(
-            "1e+10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: "",
+                },
+                exponent: "10",
+            },
+        ),
+        line: 11,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 12,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 13,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 13,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 12,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 13,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 12,
     },
     Token {
         kind: Number,
-        lexeme: "1e-10",
-        computed_lexeme: Some(
-            "1e-10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: "",
+                },
+                exponent: "+10",
+            },
+        ),
+        line: 12,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 13,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 14,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 14,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 13,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 14,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 13,
     },
     Token {
         kind: Number,
-        lexeme: "1E10",
-        computed_lexeme: Some(
-            "1e10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: "",
+                },
+                exponent: "-10",
+            },
+        ),
+        line: 13,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 14,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 15,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 15,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 14,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 15,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 14,
     },
     Token {
         kind: Number,
-        lexeme: "1E+10",
-        computed_lexeme: Some(
-            "1e+10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: "",
+                },
+                exponent: "10",
+            },
+        ),
+        line: 14,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 15,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 16,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 16,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 15,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 16,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 15,
     },
     Token {
         kind: Number,
-        lexeme: "1E-10",
-        computed_lexeme: Some(
-            "1e-10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: "",
+                },
+                exponent: "+10",
+            },
+        ),
+        line: 15,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 16,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 17,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 17,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 16,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 17,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 16,
     },
     Token {
         kind: Number,
-        lexeme: ".1e10",
-        computed_lexeme: Some(
-            "0.1e10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: "",
+                },
+                exponent: "-10",
+            },
+        ),
+        line: 16,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 17,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 18,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 18,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 17,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 18,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 17,
     },
     Token {
         kind: Number,
-        lexeme: ".1e+10",
-        computed_lexeme: Some(
-            "0.1e+10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+                exponent: "10",
+            },
+        ),
+        line: 17,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 18,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 19,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 19,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 18,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 19,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 18,
     },
     Token {
         kind: Number,
-        lexeme: ".1e-10",
-        computed_lexeme: Some(
-            "0.1e-10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+                exponent: "+10",
+            },
+        ),
+        line: 18,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 19,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 20,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 20,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 19,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 20,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 19,
     },
     Token {
         kind: Number,
-        lexeme: "1.e10",
-        computed_lexeme: Some(
-            "1.0e10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+                exponent: "-10",
+            },
+        ),
+        line: 19,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 20,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 21,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 21,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 20,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 21,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 20,
     },
     Token {
         kind: Number,
-        lexeme: "1.e+10",
-        computed_lexeme: Some(
-            "1.0e+10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "10",
+            },
+        ),
+        line: 20,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 21,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 22,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 22,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 21,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 22,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 21,
     },
     Token {
         kind: Number,
-        lexeme: "1.e-10",
-        computed_lexeme: Some(
-            "1.0e-10",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "+10",
+            },
+        ),
+        line: 21,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 22,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 23,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 23,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 22,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 23,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 22,
     },
     Token {
         kind: Number,
-        lexeme: "0x12",
-        computed_lexeme: Some(
-            "0x12",
+        lexeme: Number(
+            Scientific {
+                mantissa: Decimal {
+                    before_decimal: "1",
+                    after_decimal: ".0",
+                },
+                exponent: "-10",
+            },
+        ),
+        line: 22,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 23,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 24,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 24,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 23,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 24,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 23,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2",
-        computed_lexeme: Some(
-            "1.125",
+        lexeme: Number(
+            Hex(
+                "0x12",
+            ),
+        ),
+        line: 23,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 24,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 25,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 25,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 24,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 25,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 24,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2e2",
-        computed_lexeme: Some(
-            "1.1328125",
+        lexeme: Number(
+            HexDecimal(
+                HexDecimal {
+                    before_decimal: "1",
+                    after_decimal: ".2",
+                },
+            ),
+        ),
+        line: 24,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 25,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 26,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 26,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 25,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 26,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 25,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.",
-        computed_lexeme: Some(
-            "1",
+        lexeme: Number(
+            HexDecimal(
+                HexDecimal {
+                    before_decimal: "1",
+                    after_decimal: ".22",
+                },
+            ),
+        ),
+        line: 25,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 26,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 27,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 27,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 26,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 27,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 26,
     },
     Token {
         kind: Number,
-        lexeme: "0x.1",
-        computed_lexeme: Some(
-            "0.0625",
+        lexeme: Number(
+            HexDecimal(
+                HexDecimal {
+                    before_decimal: "1",
+                    after_decimal: ".",
+                },
+            ),
+        ),
+        line: 26,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 27,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 29,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 29,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 27,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 29,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 27,
     },
     Token {
         kind: Number,
-        lexeme: "0x1p2",
-        computed_lexeme: Some(
-            "4",
+        lexeme: Number(
+            HexDecimal(
+                HexDecimal {
+                    before_decimal: "",
+                    after_decimal: ".1",
+                },
+            ),
+        ),
+        line: 27,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 29,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 30,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 30,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 29,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 30,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 29,
     },
     Token {
         kind: Number,
-        lexeme: "0x1p+2",
-        computed_lexeme: Some(
-            "4",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: "",
+                },
+                exponent: "2",
+            },
+        ),
+        line: 29,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 30,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 31,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 31,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 30,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 31,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 30,
     },
     Token {
         kind: Number,
-        lexeme: "0x1p-2",
-        computed_lexeme: Some(
-            "0.25",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: "",
+                },
+                exponent: "+2",
+            },
+        ),
+        line: 30,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 31,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 32,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 32,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 31,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 32,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 31,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.p2",
-        computed_lexeme: Some(
-            "4",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: "",
+                },
+                exponent: "-2",
+            },
+        ),
+        line: 31,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 32,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 33,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 33,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 32,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 33,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 32,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.p+2",
-        computed_lexeme: Some(
-            "4",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: ".",
+                },
+                exponent: "2",
+            },
+        ),
+        line: 32,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 33,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 34,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 34,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 33,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 34,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 33,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.p-2",
-        computed_lexeme: Some(
-            "0.25",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: ".",
+                },
+                exponent: "+2",
+            },
+        ),
+        line: 33,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 34,
     },
     Token {
-        kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
-        line: 35,
-    },
-    Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
-        line: 35,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 34,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
-        line: 35,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 34,
     },
     Token {
         kind: Number,
-        lexeme: "0x.1p2",
-        computed_lexeme: Some(
-            "0.25",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: ".",
+                },
+                exponent: "-2",
+            },
+        ),
+        line: 34,
+    },
+    Token {
+        kind: Local,
+        lexeme: Symbol(
+            "local",
         ),
         line: 35,
     },
     Token {
+        kind: Identifier,
+        lexeme: Symbol(
+            "num",
+        ),
+        line: 35,
+    },
+    Token {
+        kind: Equals,
+        lexeme: Symbol(
+            "=",
+        ),
+        line: 35,
+    },
+    Token {
+        kind: Number,
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+                exponent: "2",
+            },
+        ),
+        line: 35,
+    },
+    Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "local",
+        ),
         line: 36,
     },
     Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "num",
+        ),
         line: 36,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 36,
     },
     Token {
         kind: Number,
-        lexeme: "0x.1p+2",
-        computed_lexeme: Some(
-            "0.25",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+                exponent: "+2",
+            },
         ),
         line: 36,
     },
     Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "local",
+        ),
         line: 37,
     },
     Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "num",
+        ),
         line: 37,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 37,
     },
     Token {
         kind: Number,
-        lexeme: "0x.1p-2",
-        computed_lexeme: Some(
-            "0.015625",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "0",
+                    after_decimal: ".1",
+                },
+                exponent: "-2",
+            },
         ),
         line: 37,
     },
     Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "local",
+        ),
         line: 38,
     },
     Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "num",
+        ),
         line: 38,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 38,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2p2",
-        computed_lexeme: Some(
-            "4.5",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: ".2",
+                },
+                exponent: "2",
+            },
         ),
         line: 38,
     },
     Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "local",
+        ),
         line: 39,
     },
     Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "num",
+        ),
         line: 39,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 39,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2p+2",
-        computed_lexeme: Some(
-            "4.5",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: ".2",
+                },
+                exponent: "+2",
+            },
         ),
         line: 39,
     },
     Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "local",
+        ),
         line: 40,
     },
     Token {
         kind: Identifier,
-        lexeme: "num",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "num",
+        ),
         line: 40,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 40,
     },
     Token {
         kind: Number,
-        lexeme: "0x1.2p-2",
-        computed_lexeme: Some(
-            "0.28125",
+        lexeme: Number(
+            HexScientific {
+                mantissa: HexDecimal {
+                    before_decimal: "01",
+                    after_decimal: ".2",
+                },
+                exponent: "-2",
+            },
         ),
         line: 40,
     },

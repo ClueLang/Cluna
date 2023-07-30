@@ -1,5 +1,8 @@
-use crate::lexer::{Token, TokenType};
-use std::collections::VecDeque;
+use crate::{
+    lexer::{Token, TokenType},
+    number::Number,
+};
+use std::{collections::VecDeque, rc::Rc};
 
 macro_rules! vec_deque {
     ($($elem:expr),*) => {
@@ -8,13 +11,13 @@ macro_rules! vec_deque {
 }
 
 pub type Expression = VecDeque<ComplexToken>;
-pub type FunctionArgs = Vec<String>;
+pub type FunctionArgs = Vec<Rc<str>>;
 type OptionalEnd = Option<(TokenType, &'static str)>;
 
 #[derive(Debug, Clone, PartialEq)]
 pub enum ComplexToken {
     Variable {
-        names: Vec<(String, bool)>,
+        names: Vec<(Rc<str>, bool)>,
         values: Vec<Expression>,
         line: usize,
         column: usize,
@@ -64,7 +67,7 @@ pub enum ComplexToken {
         column: usize,
     },
     ForLoop {
-        iter: String,
+        iter: Rc<str>,
         start: Expression,
         end: Expression,
         step: Option<Expression>,
@@ -73,7 +76,7 @@ pub enum ComplexToken {
         column: usize,
     },
     ForFuncLoop {
-        iters: Vec<String>,
+        iters: Vec<Rc<str>>,
         expr: Expression,
         stop: Option<Expression>,
         initial: Option<Expression>,
@@ -85,9 +88,10 @@ pub enum ComplexToken {
         expr: Expression,
         line: usize,
     },
-    MultilineString(String),
-    Symbol(String),
-    Operator((String, bool)),
+    MultilineString(Rc<str>),
+    Number(Number),
+    Symbol(Rc<str>),
+    Operator((Rc<str>, bool)),
     Call(Vec<Expression>),
     Expr(Expression),
     DoBlock(CodeBlock),
@@ -288,7 +292,7 @@ impl<'a> Parser<'a> {
             if let Some(t) = self.advance() {
                 match t.kind() {
                     Identifier => {
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                     }
                     LeftParen => {
                         let call = self.parse_call()?;
@@ -303,8 +307,8 @@ impl<'a> Parser<'a> {
                                 t.line()
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(".".to_owned()));
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Symbol(".".into()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                     }
                     Colon => {
                         let t = self.advance().ok_or("Expected identifier")?.clone();
@@ -325,20 +329,20 @@ impl<'a> Parser<'a> {
                                 t.line()
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(":".to_owned()));
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Symbol(":".into()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                     }
                     LeftBracket => {
                         let index = self.parse_expression(Some((RightBracket, "]")))?;
                         self.assert(TokenType::RightBracket, "]")?;
 
-                        expr.push_back(ComplexToken::Symbol("[".to_owned()));
+                        expr.push_back(ComplexToken::Symbol("[".into()));
                         expr.push_back(ComplexToken::Expr(index));
-                        expr.push_back(ComplexToken::Symbol("]".to_owned()));
+                        expr.push_back(ComplexToken::Symbol("]".into()));
                     }
                     String | MultilineString => {
                         expr.push_back(ComplexToken::Call(vec![vec_deque![ComplexToken::Symbol(
-                            t.lexeme()
+                            t.lexeme().as_symbol(),
                         )]]));
                     }
                     LeftBrace => {
@@ -471,7 +475,7 @@ impl<'a> Parser<'a> {
                 Identifier => {
                     if self.advance_if(TokenType::Equals) {
                         data.push((
-                            Some(vec_deque![ComplexToken::Symbol(t.lexeme())]),
+                            Some(vec_deque![ComplexToken::Symbol(t.lexeme().as_symbol())]),
                             self.parse_expression(None)?,
                         ));
                     } else {
@@ -671,19 +675,19 @@ impl<'a> Parser<'a> {
                         }
                     }
                     TripleDot | True | False | String | Nil => {
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                         if self.check_val() {
                             break t;
                         }
                     }
                     Number => {
-                        expr.push_back(ComplexToken::Symbol(t.computed_lexeme().unwrap()));
+                        expr.push_back(ComplexToken::Number(t.lexeme().as_number().clone()));
                         if self.check_val() {
                             break t;
                         }
                     }
                     MultilineString => {
-                        expr.push_back(ComplexToken::MultilineString(t.lexeme()));
+                        expr.push_back(ComplexToken::MultilineString(t.lexeme().as_symbol()));
                         if self.check_val() {
                             break t;
                         }
@@ -697,7 +701,7 @@ impl<'a> Parser<'a> {
                     }
                     // unary ops
                     Hash | Not => {
-                        expr.push_back(ComplexToken::Operator((t.lexeme(), false)));
+                        expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
                         if !self.check_op() {
                             return Err(format!(
                                 "Expected expression after unary op {} at line {}",
@@ -717,7 +721,7 @@ impl<'a> Parser<'a> {
                                 t.line()
                             ));
                         }
-                        expr.push_back(ComplexToken::Operator((t.lexeme(), true)));
+                        expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
 
                         if !self.check_op() {
                             return Err(format!(
@@ -733,10 +737,10 @@ impl<'a> Parser<'a> {
                                 matches!(back, ComplexToken::Operator((_, true)))
                             })
                         {
-                            expr.push_back(ComplexToken::Operator((t.lexeme(), false)));
+                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
                             continue;
                         } else {
-                            expr.push_back(ComplexToken::Operator((t.lexeme(), true)));
+                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
                         }
 
                         if !self.check_op() {
@@ -753,10 +757,10 @@ impl<'a> Parser<'a> {
                                 matches!(back, ComplexToken::Operator((_, true)))
                             })
                         {
-                            expr.push_back(ComplexToken::Operator((t.lexeme(), false)));
+                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
                             continue;
                         } else {
-                            expr.push_back(ComplexToken::Operator((t.lexeme(), true)));
+                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
                         }
 
                         if !self.check_op() {
@@ -829,7 +833,9 @@ impl<'a> Parser<'a> {
         self.go_back();
 
         loop {
-            let name = self.assert_advance(TokenType::Identifier, "<name>")?;
+            let name = self
+                .assert_advance(TokenType::Identifier, "<name>")?
+                .clone();
             let line = name.line();
             let lexeme = name.lexeme();
             let peek = self.peek().clone();
@@ -838,14 +844,15 @@ impl<'a> Parser<'a> {
                 self.advance();
                 let kind = self
                     .assert_advance(TokenType::Identifier, "<specifier>")?
-                    .lexeme();
+                    .clone();
+                let kind = kind.lexeme();
                 self.assert(TokenType::GreaterThan, ">")?;
 
-                if kind == "const" {
-                    names.push((lexeme, false));
+                if kind.as_symbol().as_ref() == "const" {
+                    names.push((lexeme.as_symbol(), false));
                     eprintln!("Warning: const variables are not supported in clue, ignoring const specifier at line {}", line);
-                } else if kind == "close" {
-                    names.push((lexeme, true));
+                } else if kind.as_symbol().as_ref() == "close" {
+                    names.push((lexeme.as_symbol(), true));
                     eprintln!("Warning: to-be-closed variables are not supported in clue, ignoring const specifier at line {}. Manual close calls will be added at the end of the scope", line);
                 } else {
                     return Err(format!(
@@ -854,7 +861,7 @@ impl<'a> Parser<'a> {
                     ));
                 }
             } else {
-                names.push((lexeme, false));
+                names.push((lexeme.as_symbol(), false));
             }
 
             if !self.advance_if(TokenType::Comma) {
@@ -904,9 +911,9 @@ impl<'a> Parser<'a> {
 
             if let Some(t) = self.advance() {
                 match t.kind() {
-                    Comma => args.push(name.lexeme()),
+                    Comma => args.push(name.lexeme().as_symbol()),
                     RightParen => {
-                        args.push(name.lexeme());
+                        args.push(name.lexeme().as_symbol());
                         break;
                     }
                     _ => return Err(format!("Expected ',' or ')' got {}", t.lexeme())),
@@ -940,14 +947,14 @@ impl<'a> Parser<'a> {
                                 nt.line()
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                     }
                     Dot | Colon => {
                         if self
                             .peek()
                             .map_or(false, |t| t.kind() == TokenType::Identifier)
                         {
-                            expr.push_back(ComplexToken::Symbol(t.lexeme()));
+                            expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                         } else {
                             return Err(format!(
                                 "{} should only be used when indexing at line {}",
@@ -1025,7 +1032,7 @@ impl<'a> Parser<'a> {
         while let Some(t) = self.advance() {
             match t.kind() {
                 TokenType::Identifier => {
-                    iters.push(t.lexeme());
+                    iters.push(t.lexeme().as_symbol());
                 }
                 TokenType::Comma => {
                     continue;

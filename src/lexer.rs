@@ -1,6 +1,8 @@
+use std::{fmt, rc::Rc};
+
 use crate::number::Number;
 
-#[derive(Debug,Clone, Copy,PartialEq)]
+#[derive(Debug,Clone, Copy, PartialEq)]
 #[rustfmt::skip]
 pub enum TokenType {
     // tokens
@@ -26,10 +28,40 @@ pub enum TokenType {
 }
 
 #[derive(Debug, Clone, PartialEq)]
+pub enum Lexeme {
+    Symbol(Rc<str>),
+    Number(Number),
+}
+
+impl fmt::Display for Lexeme {
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        match self {
+            Lexeme::Symbol(s) => write!(f, "{}", s),
+            Lexeme::Number(n) => write!(f, "{}", n),
+        }
+    }
+}
+
+impl Lexeme {
+    pub fn as_symbol(&self) -> Rc<str> {
+        match self {
+            Lexeme::Symbol(s) => s.clone(),
+            _ => panic!("Lexeme is not a symbol"),
+        }
+    }
+
+    pub fn as_number(&self) -> &Number {
+        match self {
+            Lexeme::Number(n) => n,
+            _ => panic!("Lexeme is not a number"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
 pub struct Token {
     pub(crate) kind: TokenType,
-    lexeme: String,
-    computed_lexeme: Option<String>,
+    lexeme: Lexeme,
     line: usize,
 }
 
@@ -37,36 +69,25 @@ impl Token {
     pub fn new(kind: TokenType, lexeme: String, line: usize) -> Self {
         Self {
             kind,
-            lexeme,
+            lexeme: Lexeme::Symbol(lexeme.into()),
             line,
-            computed_lexeme: None,
         }
     }
 
-    pub fn new_number(
-        kind: TokenType,
-        lexeme: String,
-        computed_lexeme: String,
-        line: usize,
-    ) -> Self {
+    pub fn new_number(kind: TokenType, lexeme: Number, line: usize) -> Self {
         Self {
             kind,
-            lexeme,
-            computed_lexeme: Some(computed_lexeme),
+            lexeme: Lexeme::Number(lexeme),
             line,
         }
-    }
-
-    pub fn computed_lexeme(&self) -> Option<String> {
-        self.computed_lexeme.clone()
     }
 
     pub fn kind(&self) -> TokenType {
         self.kind
     }
 
-    pub fn lexeme(&self) -> String {
-        self.lexeme.clone()
+    pub fn lexeme(&self) -> &Lexeme {
+        &self.lexeme
     }
 
     pub fn line(&self) -> usize {
@@ -370,14 +391,9 @@ impl Lexer {
     }
 
     fn read_number(&mut self) -> Result<(), String> {
-        let start = self.current;
         let number = Number::from_source(self)?;
-        self.tokens.push(Token::new_number(
-            TokenType::Number,
-            self.source[start..self.current].iter().collect(),
-            number.into_clue_number(),
-            self.line,
-        ));
+        self.tokens
+            .push(Token::new_number(TokenType::Number, number, self.line));
         Ok(())
     }
 

@@ -6,1270 +6,1524 @@ input_file: test-data/lua5.1-tests/verybig.lua
 [
     Token {
         kind: If,
-        lexeme: "if",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "if",
+        ),
         line: 1,
     },
     Token {
         kind: Identifier,
-        lexeme: "rawget",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "rawget",
+        ),
         line: 1,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 1,
     },
     Token {
         kind: Identifier,
-        lexeme: "_G",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "_G",
+        ),
         line: 1,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 1,
     },
     Token {
         kind: String,
-        lexeme: "\"_soft\"",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "\"_soft\"",
+        ),
         line: 1,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 1,
     },
     Token {
         kind: Then,
-        lexeme: "then",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "then",
+        ),
         line: 1,
     },
     Token {
         kind: Return,
-        lexeme: "return",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "return",
+        ),
         line: 1,
     },
     Token {
         kind: Number,
-        lexeme: "10",
-        computed_lexeme: Some(
-            "10",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "10",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 1,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 1,
     },
     Token {
         kind: Identifier,
-        lexeme: "print",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "print",
+        ),
         line: 3,
     },
     Token {
         kind: String,
-        lexeme: "\"testing large programs (>64k)\"",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "\"testing large programs (>64k)\"",
+        ),
         line: 3,
     },
     Token {
         kind: Identifier,
-        lexeme: "prog",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "prog",
+        ),
         line: 6,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 6,
     },
     Token {
         kind: MultilineString,
-        lexeme: "[[$\n\nlocal a,b\n\nb = {$1$\n  b30009 = 65534,\n  b30010 = 65535,\n  b30011 = 65536,\n  b30012 = 65537,\n  b30013 = 16777214,\n  b30014 = 16777215,\n  b30015 = 16777216,\n  b30016 = 16777217,\n  b30017 = 4294967294,\n  b30018 = 4294967295,\n  b30019 = 4294967296,\n  b30020 = 4294967297,\n  b30021 = -65534,\n  b30022 = -65535,\n  b30023 = -65536,\n  b30024 = -4294967297,\n  b30025 = 15012.5,\n  $2$\n};\n\nassert(b.a50008 == 25004 and b[\"a11\"] == 5.5)\nassert(b.a33007 == 16503.5 and b.a50009 == 25004.5)\nassert(b[\"b\"..30024] == -4294967297)\n\nfunction b:xxx (a,b) return a+b end\nassert(b:xxx(10, 12) == 22)   -- pushself with non-constant index\nb.xxx = nil\n\ns = 0; n=0\nfor a,b in pairs(b) do s=s+b; n=n+1 end\nassert(s==13977183656.5  and n==70001)\n\nrequire \"checktable\"\nstat(b)\n\na = nil; b = nil\nprint'+'\n\nfunction f(x) b=x end\n\na = f{$3$} or 10\n\nassert(a==10)\nassert(b[1] == \"a10\" and b[2] == 5 and b[table.getn(b)-1] == \"a50009\")\n\n\nfunction xxxx (x) return b[x] end\n\nassert(xxxx(3) == \"a11\")\n\na = nil; b=nil\nxxxx = nil\n\nreturn 10\n\n]]",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "[[$\n\nlocal a,b\n\nb = {$1$\n  b30009 = 65534,\n  b30010 = 65535,\n  b30011 = 65536,\n  b30012 = 65537,\n  b30013 = 16777214,\n  b30014 = 16777215,\n  b30015 = 16777216,\n  b30016 = 16777217,\n  b30017 = 4294967294,\n  b30018 = 4294967295,\n  b30019 = 4294967296,\n  b30020 = 4294967297,\n  b30021 = -65534,\n  b30022 = -65535,\n  b30023 = -65536,\n  b30024 = -4294967297,\n  b30025 = 15012.5,\n  $2$\n};\n\nassert(b.a50008 == 25004 and b[\"a11\"] == 5.5)\nassert(b.a33007 == 16503.5 and b.a50009 == 25004.5)\nassert(b[\"b\"..30024] == -4294967297)\n\nfunction b:xxx (a,b) return a+b end\nassert(b:xxx(10, 12) == 22)   -- pushself with non-constant index\nb.xxx = nil\n\ns = 0; n=0\nfor a,b in pairs(b) do s=s+b; n=n+1 end\nassert(s==13977183656.5  and n==70001)\n\nrequire \"checktable\"\nstat(b)\n\na = nil; b = nil\nprint'+'\n\nfunction f(x) b=x end\n\na = f{$3$} or 10\n\nassert(a==10)\nassert(b[1] == \"a10\" and b[2] == 5 and b[table.getn(b)-1] == \"a50009\")\n\n\nfunction xxxx (x) return b[x] end\n\nassert(xxxx(3) == \"a11\")\n\na = nil; b=nil\nxxxx = nil\n\nreturn 10\n\n]]",
+        ),
         line: 66,
     },
     Token {
         kind: Identifier,
-        lexeme: "F",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "F",
+        ),
         line: 69,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 69,
     },
     Token {
         kind: LeftBrace,
-        lexeme: "{",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "{",
+        ),
         line: 69,
     },
     Token {
         kind: Function,
-        lexeme: "function",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "function",
+        ),
         line: 70,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 70,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 70,
     },
     Token {
         kind: For,
-        lexeme: "for",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "for",
+        ),
         line: 71,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 71,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 71,
     },
     Token {
         kind: Number,
-        lexeme: "10",
-        computed_lexeme: Some(
-            "10",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "10",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 71,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 71,
     },
     Token {
         kind: Number,
-        lexeme: "50009",
-        computed_lexeme: Some(
-            "50009",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "50009",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 71,
     },
     Token {
         kind: Do,
-        lexeme: "do",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "do",
+        ),
         line: 71,
     },
     Token {
         kind: Identifier,
-        lexeme: "io",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "io",
+        ),
         line: 72,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 72,
     },
     Token {
         kind: Identifier,
-        lexeme: "write",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "write",
+        ),
         line: 72,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 72,
     },
     Token {
         kind: String,
-        lexeme: "'a'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "'a'",
+        ),
         line: 72,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 72,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 72,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 72,
     },
     Token {
         kind: String,
-        lexeme: "' = '",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "' = '",
+        ),
         line: 72,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 72,
     },
     Token {
         kind: Number,
-        lexeme: "5",
-        computed_lexeme: Some(
-            "5",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "5",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 72,
     },
     Token {
         kind: Plus,
-        lexeme: "+",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "+",
+        ),
         line: 72,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 72,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 72,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 72,
     },
     Token {
         kind: Minus,
-        lexeme: "-",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "-",
+        ),
         line: 72,
     },
     Token {
         kind: Number,
-        lexeme: "10",
-        computed_lexeme: Some(
-            "10",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "10",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 72,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 72,
     },
     Token {
         kind: Slash,
-        lexeme: "/",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "/",
+        ),
         line: 72,
     },
     Token {
         kind: Number,
-        lexeme: "2",
-        computed_lexeme: Some(
-            "2",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "2",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 72,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 72,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 72,
     },
     Token {
         kind: String,
-        lexeme: "',\\n'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "',\\n'",
+        ),
         line: 72,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 72,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 73,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 74,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 74,
     },
     Token {
         kind: Function,
-        lexeme: "function",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "function",
+        ),
         line: 76,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 76,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 76,
     },
     Token {
         kind: For,
-        lexeme: "for",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "for",
+        ),
         line: 77,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 77,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 77,
     },
     Token {
         kind: Number,
-        lexeme: "30026",
-        computed_lexeme: Some(
-            "30026",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "30026",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 77,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 77,
     },
     Token {
         kind: Number,
-        lexeme: "50009",
-        computed_lexeme: Some(
-            "50009",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "50009",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 77,
     },
     Token {
         kind: Do,
-        lexeme: "do",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "do",
+        ),
         line: 77,
     },
     Token {
         kind: Identifier,
-        lexeme: "io",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "io",
+        ),
         line: 78,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 78,
     },
     Token {
         kind: Identifier,
-        lexeme: "write",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "write",
+        ),
         line: 78,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 78,
     },
     Token {
         kind: String,
-        lexeme: "'b'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "'b'",
+        ),
         line: 78,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 78,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 78,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 78,
     },
     Token {
         kind: String,
-        lexeme: "' = '",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "' = '",
+        ),
         line: 78,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 78,
     },
     Token {
         kind: Number,
-        lexeme: "15013",
-        computed_lexeme: Some(
-            "15013",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "15013",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 78,
     },
     Token {
         kind: Plus,
-        lexeme: "+",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "+",
+        ),
         line: 78,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 78,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 78,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 78,
     },
     Token {
         kind: Minus,
-        lexeme: "-",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "-",
+        ),
         line: 78,
     },
     Token {
         kind: Number,
-        lexeme: "30026",
-        computed_lexeme: Some(
-            "30026",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "30026",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 78,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 78,
     },
     Token {
         kind: Slash,
-        lexeme: "/",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "/",
+        ),
         line: 78,
     },
     Token {
         kind: Number,
-        lexeme: "2",
-        computed_lexeme: Some(
-            "2",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "2",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 78,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 78,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 78,
     },
     Token {
         kind: String,
-        lexeme: "',\\n'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "',\\n'",
+        ),
         line: 78,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 78,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 79,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 80,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 80,
     },
     Token {
         kind: Function,
-        lexeme: "function",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "function",
+        ),
         line: 82,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 82,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 82,
     },
     Token {
         kind: For,
-        lexeme: "for",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "for",
+        ),
         line: 83,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 83,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 83,
     },
     Token {
         kind: Number,
-        lexeme: "10",
-        computed_lexeme: Some(
-            "10",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "10",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 83,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 83,
     },
     Token {
         kind: Number,
-        lexeme: "50009",
-        computed_lexeme: Some(
-            "50009",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "50009",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 83,
     },
     Token {
         kind: Do,
-        lexeme: "do",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "do",
+        ),
         line: 83,
     },
     Token {
         kind: Identifier,
-        lexeme: "io",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "io",
+        ),
         line: 84,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 84,
     },
     Token {
         kind: Identifier,
-        lexeme: "write",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "write",
+        ),
         line: 84,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 84,
     },
     Token {
         kind: String,
-        lexeme: "'\"a'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "'\"a'",
+        ),
         line: 84,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 84,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 84,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 84,
     },
     Token {
         kind: String,
-        lexeme: "'\", '",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "'\", '",
+        ),
         line: 84,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 84,
     },
     Token {
         kind: Number,
-        lexeme: "5",
-        computed_lexeme: Some(
-            "5",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "5",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 84,
     },
     Token {
         kind: Plus,
-        lexeme: "+",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "+",
+        ),
         line: 84,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 84,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 84,
     },
     Token {
         kind: Identifier,
-        lexeme: "i",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "i",
+        ),
         line: 84,
     },
     Token {
         kind: Minus,
-        lexeme: "-",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "-",
+        ),
         line: 84,
     },
     Token {
         kind: Number,
-        lexeme: "10",
-        computed_lexeme: Some(
-            "10",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "10",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 84,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 84,
     },
     Token {
         kind: Slash,
-        lexeme: "/",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "/",
+        ),
         line: 84,
     },
     Token {
         kind: Number,
-        lexeme: "2",
-        computed_lexeme: Some(
-            "2",
+        lexeme: Number(
+            Decimal(
+                Decimal {
+                    before_decimal: "2",
+                    after_decimal: "",
+                },
+            ),
         ),
         line: 84,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 84,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 84,
     },
     Token {
         kind: String,
-        lexeme: "',\\n'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "',\\n'",
+        ),
         line: 84,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 84,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 85,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 86,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 86,
     },
     Token {
         kind: RightBrace,
-        lexeme: "}",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "}",
+        ),
         line: 87,
     },
     Token {
         kind: Identifier,
-        lexeme: "file",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "file",
+        ),
         line: 89,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 89,
     },
     Token {
         kind: Identifier,
-        lexeme: "os",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "os",
+        ),
         line: 89,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 89,
     },
     Token {
         kind: Identifier,
-        lexeme: "tmpname",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "tmpname",
+        ),
         line: 89,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 89,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 89,
     },
     Token {
         kind: Identifier,
-        lexeme: "io",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "io",
+        ),
         line: 90,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 90,
     },
     Token {
         kind: Identifier,
-        lexeme: "output",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "output",
+        ),
         line: 90,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 90,
     },
     Token {
         kind: Identifier,
-        lexeme: "file",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "file",
+        ),
         line: 90,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 90,
     },
     Token {
         kind: For,
-        lexeme: "for",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "for",
+        ),
         line: 91,
     },
     Token {
         kind: Identifier,
-        lexeme: "s",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "s",
+        ),
         line: 91,
     },
     Token {
         kind: In,
-        lexeme: "in",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "in",
+        ),
         line: 91,
     },
     Token {
         kind: Identifier,
-        lexeme: "string",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "string",
+        ),
         line: 91,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 91,
     },
     Token {
         kind: Identifier,
-        lexeme: "gmatch",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "gmatch",
+        ),
         line: 91,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 91,
     },
     Token {
         kind: Identifier,
-        lexeme: "prog",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "prog",
+        ),
         line: 91,
     },
     Token {
         kind: Comma,
-        lexeme: ",",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ",",
+        ),
         line: 91,
     },
     Token {
         kind: String,
-        lexeme: "\"$([^$]+)\"",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "\"$([^$]+)\"",
+        ),
         line: 91,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 91,
     },
     Token {
         kind: Do,
-        lexeme: "do",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "do",
+        ),
         line: 91,
     },
     Token {
         kind: Local,
-        lexeme: "local",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "local",
+        ),
         line: 92,
     },
     Token {
         kind: Identifier,
-        lexeme: "n",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "n",
+        ),
         line: 92,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 92,
     },
     Token {
         kind: Identifier,
-        lexeme: "tonumber",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "tonumber",
+        ),
         line: 92,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 92,
     },
     Token {
         kind: Identifier,
-        lexeme: "s",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "s",
+        ),
         line: 92,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 92,
     },
     Token {
         kind: If,
-        lexeme: "if",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "if",
+        ),
         line: 93,
     },
     Token {
         kind: Not,
-        lexeme: "not",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "not",
+        ),
         line: 93,
     },
     Token {
         kind: Identifier,
-        lexeme: "n",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "n",
+        ),
         line: 93,
     },
     Token {
         kind: Then,
-        lexeme: "then",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "then",
+        ),
         line: 93,
     },
     Token {
         kind: Identifier,
-        lexeme: "io",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "io",
+        ),
         line: 93,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 93,
     },
     Token {
         kind: Identifier,
-        lexeme: "write",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "write",
+        ),
         line: 93,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 93,
     },
     Token {
         kind: Identifier,
-        lexeme: "s",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "s",
+        ),
         line: 93,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 93,
     },
     Token {
         kind: Else,
-        lexeme: "else",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "else",
+        ),
         line: 93,
     },
     Token {
         kind: Identifier,
-        lexeme: "F",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "F",
+        ),
         line: 93,
     },
     Token {
         kind: LeftBracket,
-        lexeme: "[",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "[",
+        ),
         line: 93,
     },
     Token {
         kind: Identifier,
-        lexeme: "n",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "n",
+        ),
         line: 93,
     },
     Token {
         kind: RightBracket,
-        lexeme: "]",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "]",
+        ),
         line: 93,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 93,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 93,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 93,
     },
     Token {
         kind: End,
-        lexeme: "end",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "end",
+        ),
         line: 94,
     },
     Token {
         kind: Identifier,
-        lexeme: "io",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "io",
+        ),
         line: 95,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 95,
     },
     Token {
         kind: Identifier,
-        lexeme: "close",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "close",
+        ),
         line: 95,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 95,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 95,
     },
     Token {
         kind: Identifier,
-        lexeme: "result",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "result",
+        ),
         line: 96,
     },
     Token {
         kind: Equals,
-        lexeme: "=",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "=",
+        ),
         line: 96,
     },
     Token {
         kind: Identifier,
-        lexeme: "dofile",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "dofile",
+        ),
         line: 96,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 96,
     },
     Token {
         kind: Identifier,
-        lexeme: "file",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "file",
+        ),
         line: 96,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 96,
     },
     Token {
         kind: Identifier,
-        lexeme: "assert",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "assert",
+        ),
         line: 97,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 97,
     },
     Token {
         kind: Identifier,
-        lexeme: "os",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "os",
+        ),
         line: 97,
     },
     Token {
         kind: Dot,
-        lexeme: ".",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ".",
+        ),
         line: 97,
     },
     Token {
         kind: Identifier,
-        lexeme: "remove",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "remove",
+        ),
         line: 97,
     },
     Token {
         kind: LeftParen,
-        lexeme: "(",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "(",
+        ),
         line: 97,
     },
     Token {
         kind: Identifier,
-        lexeme: "file",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "file",
+        ),
         line: 97,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 97,
     },
     Token {
         kind: RightParen,
-        lexeme: ")",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            ")",
+        ),
         line: 97,
     },
     Token {
         kind: Identifier,
-        lexeme: "print",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "print",
+        ),
         line: 98,
     },
     Token {
         kind: String,
-        lexeme: "'OK'",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "'OK'",
+        ),
         line: 98,
     },
     Token {
         kind: Return,
-        lexeme: "return",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "return",
+        ),
         line: 99,
     },
     Token {
         kind: Identifier,
-        lexeme: "result",
-        computed_lexeme: None,
+        lexeme: Symbol(
+            "result",
+        ),
         line: 99,
     },
 ]

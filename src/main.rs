@@ -29,7 +29,6 @@ fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), String> {
 fn main() -> Result<(), String> {
     let args = Cli::parse();
     let path = args.path;
-
     if !path.exists() {
         return Err(format!("The path {:?} does not exist", path));
     }
@@ -64,6 +63,7 @@ fn main() -> Result<(), String> {
                         out.set_extension("clue");
                         out
                     });
+                    println!("Compiling {}", path.display());
                     compile_file(&path, output)?;
                 }
             }

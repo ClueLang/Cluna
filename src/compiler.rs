@@ -17,7 +17,7 @@ fn indent_if<T: Iterator>(ctokens: &mut Peekable<T>, scope: usize) -> String {
     }
 }
 
-fn compile_multiline_string(string: String) -> String {
+fn compile_multiline_string(string: &str) -> String {
     let mut start = 1;
     let mut equals_count = 0;
     let chars = string.chars().skip(1);
@@ -36,16 +36,16 @@ fn compile_multiline_string(string: String) -> String {
     String::from('`') + &string[start..end] + "`"
 }
 
-fn compile_list<T>(
+fn compile_list<T, S: AsRef<str>>(
     list: Vec<T>,
     separator: &str,
-    tostring: &mut impl FnMut(T) -> String,
+    tostring: &mut impl FnMut(T) -> S,
 ) -> String {
     let mut result = String::new();
     let end = list.len().saturating_sub(1);
 
     for (i, element) in list.into_iter().enumerate() {
-        result += &(tostring(element));
+        result += tostring(element).as_ref();
 
         if i != end {
             result += separator
@@ -57,21 +57,21 @@ fn compile_expressions(scope: usize, exprs: Vec<Expression>) -> String {
     compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr))
 }
 
-fn compile_symbol(lexeme: String) -> String {
-    match &*lexeme {
-        ":" => "::".to_owned(),
+fn compile_symbol(lexeme: &str) -> &str {
+    match lexeme {
+        ":" => "::",
         _ => lexeme,
     }
 }
 
-fn compile_operator(lexeme: String, is_binop: bool) -> String {
-    match &*lexeme {
-        "and" => "&&".to_owned(),
-        "or" => "||".to_owned(),
-        "not" => "!".to_owned(),
-        "~=" => "!=".to_owned(),
-        "~" if is_binop => "^^".to_owned(),
-        "//" => "/_".to_owned(),
+fn compile_operator(lexeme: &str, is_binop: bool) -> &str {
+    match lexeme {
+        "and" => "&&",
+        "or" => "||",
+        "not" => "!",
+        "~=" => "!=",
+        "~" if is_binop => "^^",
+        "//" => "/_",
         _ => lexeme,
     }
 }
@@ -84,7 +84,7 @@ fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
 
     for ctoken in expr {
         match ctoken {
-            Symbol(lexeme) => result += &compile_symbol(lexeme),
+            Symbol(lexeme) => result += compile_symbol(&lexeme),
             Expr(expr) => {
                 result.push('(');
                 result += &compile_expression(scope, expr);
@@ -158,17 +158,18 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
 
     for ctoken in expr {
         match ctoken {
-            Symbol(lexeme) => result += &compile_symbol(lexeme),
+            Symbol(lexeme) => result += compile_symbol(&lexeme),
+            Number(number) => result += &number.to_string(),
             Operator((op, is_binop)) => {
                 if is_binop {
                     result += " ";
-                    result += &compile_operator(op, is_binop);
+                    result += compile_operator(&op, is_binop);
                     result += " ";
                 } else {
-                    result += &compile_operator(op, is_binop);
+                    result += compile_operator(&op, is_binop);
                 }
             }
-            MultilineString(string) => result += &compile_multiline_string(string),
+            MultilineString(string) => result += &compile_multiline_string(&string),
             Table { data, .. } => {
                 scope += 1;
                 let pre = indent(scope);
@@ -441,7 +442,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
         }
     }
 
-    for name in end.iter().rev(){
+    for name in end.iter().rev() {
         result.push('\n');
         result += &indent(scope);
         result += "getmetatable(";

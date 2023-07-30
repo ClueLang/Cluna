@@ -1,6 +1,7 @@
 use crate::lexer::Lexer;
+use std::fmt;
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct HexDecimal {
     before_decimal: String,
     after_decimal: String,
@@ -15,7 +16,7 @@ impl HexDecimal {
         }
     }
 
-    fn into_decimal(self) -> f64 {
+    fn to_decimal(&self) -> f64 {
         let mut num = 0.0f64;
 
         for (i, c) in (0i32..).zip(self.before_decimal.chars().rev()) {
@@ -32,7 +33,7 @@ impl HexDecimal {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub struct Decimal {
     before_decimal: String,
     after_decimal: String,
@@ -66,7 +67,7 @@ impl Decimal {
     }
 }
 
-#[derive(Debug)]
+#[derive(Debug, PartialEq, Clone)]
 pub enum Number {
     Hex(String),
     HexDecimal(HexDecimal),
@@ -109,7 +110,7 @@ impl Number {
                 '.' => {
                     if decimal_encountered {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -117,7 +118,7 @@ impl Number {
                     decimal_encountered = true;
                     if is_scientific {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -127,7 +128,7 @@ impl Number {
                         && !lexer.peek().map_or(false, |c| c.is_ascii_hexdigit())
                     {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -137,7 +138,7 @@ impl Number {
                         && !lexer.peek().map_or(false, |c| c.is_ascii_digit())
                     {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -152,7 +153,7 @@ impl Number {
                             .map_or(false, |c| c.is_ascii_hexdigit() || c == '.')
                     {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -171,7 +172,7 @@ impl Number {
                         || is_scientific
                     {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     } else {
@@ -182,7 +183,7 @@ impl Number {
                 'p' | 'P' => {
                     if !is_hex || !digit_encountered || is_scientific {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -194,7 +195,7 @@ impl Number {
                         exponent.push(lexer.advance().unwrap());
                     } else {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -203,7 +204,7 @@ impl Number {
                 'a'..='f' | 'A'..='F' => {
                     if !is_hex || is_scientific {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -222,7 +223,7 @@ impl Number {
 
                     if sign_encountered {
                         return Err(format!(
-                            "Error: Malformed number at {}:{}",
+                            "Malformed number at {}:{}",
                             lexer.line, lexer.column
                         ));
                     }
@@ -241,14 +242,14 @@ impl Number {
                 || lexer.peek().map_or(false, |c| c.is_ascii_digit()))
         {
             return Err(format!(
-                "Error: Malformed number at {}:{}",
+                "Malformed number at {}:{}",
                 lexer.line, lexer.column
             ));
         }
 
         if !is_hex && !digit_encountered {
             return Err(format!(
-                "Error: Malformed number at {}:{}",
+                "Malformed number at {}:{}",
                 lexer.line, lexer.column
             ));
         }
@@ -281,51 +282,47 @@ impl Number {
         };
         Ok(number)
     }
+}
 
-    pub fn into_clue_number(self) -> String {
-        match self {
-            Number::Hex(hex) => hex,
+impl fmt::Display for Number {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        match &self {
+            Number::Hex(hex) => write!(f, "{}", hex),
             Number::HexDecimal(hex) => {
-                let number = hex.into_decimal().to_string();
+                let number = hex.to_decimal().to_string();
                 if number == "inf" {
-                    "1 / 0".to_owned()
+                    write!(f, "1 / 0")
                 } else if number == "-inf" {
-                    "-1 / 0".to_owned()
+                    write!(f, "-1 / 0")
                 } else {
-                    number
+                    write!(f, "{}", number)
                 }
             }
             Number::HexScientific { mantissa, exponent } => {
-                let number = mantissa.into_decimal();
+                let number = mantissa.to_decimal();
                 let number = number * 2f64.powi(exponent.parse::<i32>().unwrap());
                 let number = number.to_string();
 
                 if number == "inf" {
-                    "1 / 0".to_owned()
+                    write!(f, "1 / 0")
                 } else if number == "-inf" {
-                    "-1 / 0".to_owned()
+                    write!(f, "-1 / 0")
                 } else {
-                    number
+                    write!(f, "{}", number)
                 }
             }
             Number::Decimal(Decimal {
                 before_decimal,
                 after_decimal,
             }) => {
-                let mut s = String::with_capacity(4);
-
-                s.push_str(&before_decimal);
-                s.push_str(&after_decimal);
-                s
+                write!(f, "{}{}", before_decimal, after_decimal)
             }
             Number::Scientific { mantissa, exponent } => {
-                let mut s = String::with_capacity(4);
-
-                s.push_str(&mantissa.before_decimal);
-                s.push_str(&mantissa.after_decimal);
-                s.push('e');
-                s.push_str(&exponent);
-                s
+                write!(
+                    f,
+                    "{}{}e{}",
+                    mantissa.before_decimal, mantissa.after_decimal, exponent
+                )
             }
         }
     }
