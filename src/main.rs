@@ -34,6 +34,7 @@ fn main() -> Result<(), String> {
     }
 
     if path.is_file() {
+        println!("Compiling {}", path.display());
         let output = args.output.or_else(|| {
             args.out_dir.clone().map(|mut out_dir| {
                 out_dir.push(path.file_name().unwrap());

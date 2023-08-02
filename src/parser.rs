@@ -1157,7 +1157,7 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 } else {
                     let token = parser.peek().unwrap_or(Token::new(
                         TokenType::Eof,
-                        "<eof>".to_owned(),
+                        "<eof>".into(),
                         parser.line,
                     ));
 

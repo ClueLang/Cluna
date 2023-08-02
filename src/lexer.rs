@@ -1,6 +1,6 @@
-use std::{fmt, rc::Rc};
-
 use crate::number::Number;
+use collect_into_rc_slice::CollectIntoRcStr;
+use std::{fmt, rc::Rc};
 
 #[derive(Debug,Clone, Copy, PartialEq)]
 #[rustfmt::skip]
@@ -66,10 +66,10 @@ pub struct Token {
 }
 
 impl Token {
-    pub fn new(kind: TokenType, lexeme: String, line: usize) -> Self {
+    pub fn new(kind: TokenType, lexeme: Rc<str>, line: usize) -> Self {
         Self {
             kind,
-            lexeme: Lexeme::Symbol(lexeme.into()),
+            lexeme: Lexeme::Symbol(lexeme),
             line,
         }
     }
@@ -187,14 +187,16 @@ impl Lexer {
     fn add_token(&mut self, token_type: TokenType, len: usize) {
         let lexeme = self.source[self.current - len..self.current]
             .iter()
-            .collect();
+            .copied()
+            .collect_into_rc_str();
         self.tokens.push(Token::new(token_type, lexeme, self.line));
     }
 
     fn add_token_front(&mut self, token_type: TokenType, len: usize) {
         let lexeme = self.source[self.current - 1..self.current + len - 1]
             .iter()
-            .collect();
+            .copied()
+            .collect_into_rc_str();
         self.advance_to(len - 1);
         self.tokens.push(Token::new(token_type, lexeme, self.line));
     }
@@ -227,7 +229,10 @@ impl Lexer {
             ));
         }
         self.advance();
-        let lexeme = self.source[start - 1..self.current].iter().collect();
+        let lexeme = self.source[start - 1..self.current]
+            .iter()
+            .copied()
+            .collect_into_rc_str();
         self.tokens
             .push(Token::new(TokenType::String, lexeme, self.line));
         Ok(())
@@ -281,7 +286,10 @@ impl Lexer {
 
         self.advance();
 
-        let lexeme = self.source[start - 1..self.current].iter().collect();
+        let lexeme = self.source[start - 1..self.current]
+            .iter()
+            .copied()
+            .collect_into_rc_str();
 
         self.tokens
             .push(Token::new(TokenType::MultilineString, lexeme, self.line));
@@ -304,7 +312,10 @@ impl Lexer {
                     break;
                 }
             }
-            let lexeme: String = self.source[start..self.current].iter().collect();
+            let lexeme = self.source[start..self.current]
+                .iter()
+                .copied()
+                .collect_into_rc_str();
 
             match &*lexeme {
                 "and" => self
