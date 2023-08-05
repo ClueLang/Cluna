@@ -1,4 +1,4 @@
-use crate::lexer::Lexer;
+use crate::{error::Diagnostic, lexer::Lexer};
 use std::fmt;
 
 #[derive(Debug, PartialEq, Clone)]
@@ -83,7 +83,7 @@ pub enum Number {
 }
 
 impl Number {
-    pub fn from_source(lexer: &mut Lexer) -> Result<Number, String> {
+    pub fn from_source(lexer: &mut Lexer) -> Result<Number, Diagnostic> {
         let start = lexer.current;
         let mut digit_encountered = false;
         let mut decimal_encountered = false;
@@ -109,17 +109,21 @@ impl Number {
                 }
                 '.' => {
                     if decimal_encountered {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
 
                     decimal_encountered = true;
                     if is_scientific {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
 
@@ -127,9 +131,11 @@ impl Number {
                         && !digit_encountered
                         && !lexer.peek().map_or(false, |c| c.is_ascii_hexdigit())
                     {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
 
@@ -137,9 +143,11 @@ impl Number {
                         && !digit_encountered
                         && !lexer.peek().map_or(false, |c| c.is_ascii_digit())
                     {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
                     after_decimal.push(c);
@@ -152,9 +160,11 @@ impl Number {
                             .peek()
                             .map_or(false, |c| c.is_ascii_hexdigit() || c == '.')
                     {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
                     is_hex = true;
@@ -171,9 +181,11 @@ impl Number {
                             .map_or(false, |c| c.is_ascii_digit() || c == '+' || c == '-')
                         || is_scientific
                     {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     } else {
                         exponent.push(lexer.advance().unwrap());
@@ -182,9 +194,11 @@ impl Number {
                 }
                 'p' | 'P' => {
                     if !is_hex || !digit_encountered || is_scientific {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
 
@@ -194,18 +208,22 @@ impl Number {
                     {
                         exponent.push(lexer.advance().unwrap());
                     } else {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
                     is_scientific = true;
                 }
                 'a'..='f' | 'A'..='F' => {
                     if !is_hex || is_scientific {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
                     if decimal_encountered {
@@ -222,9 +240,11 @@ impl Number {
                     }
 
                     if sign_encountered {
-                        return Err(format!(
-                            "Malformed number at {}:{}",
-                            lexer.line, lexer.column
+                        return Err(Diagnostic::new(
+                            "Malformed number".to_owned(),
+                            lexer.path.clone(),
+                            lexer.line,
+                            lexer.column,
                         ));
                     }
                     sign_encountered = true;
@@ -241,16 +261,20 @@ impl Number {
             && !(lexer.source[lexer.current - 1].is_ascii_digit()
                 || lexer.peek().map_or(false, |c| c.is_ascii_digit()))
         {
-            return Err(format!(
-                "Malformed number at {}:{}",
-                lexer.line, lexer.column
+            return Err(Diagnostic::new(
+                "Malformed number".to_owned(),
+                lexer.path.clone(),
+                lexer.line,
+                lexer.column,
             ));
         }
 
         if !is_hex && !digit_encountered {
-            return Err(format!(
-                "Malformed number at {}:{}",
-                lexer.line, lexer.column
+            return Err(Diagnostic::new(
+                "Malformed number".to_owned(),
+                lexer.path.clone(),
+                lexer.line,
+                lexer.column,
             ));
         }
 

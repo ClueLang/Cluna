@@ -1,4 +1,5 @@
 use crate::{
+    error::{Diagnostic, DiagnosticLevel},
     lexer::{Token, TokenType},
     number::Number,
 };
@@ -108,6 +109,7 @@ pub struct CodeBlock {
 
 struct Parser<'a> {
     tokens: &'a [Token],
+    path: Option<String>,
     expr: Expression,
     current: usize,
     line: usize,
@@ -116,9 +118,10 @@ struct Parser<'a> {
 
 impl<'a> Parser<'a> {
     #[inline]
-    pub fn new(tokens: &'a [Token]) -> Self {
+    pub fn new(tokens: &'a [Token], path: Option<String>) -> Self {
         Self {
             tokens,
+            path,
             column: 0,
             current: 0,
             line: 1,
@@ -157,14 +160,15 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn assert_compare(&self, expected: TokenType, error: &str) -> Result<(), String> {
+    fn assert_compare(&self, expected: TokenType, error: &str) -> Result<(), Diagnostic> {
         if let Some(t) = self.peek() {
             if t.kind() != expected {
-                return Err(format!(
-                    "Expected '{}' got '{}' at line {}",
-                    error,
-                    &t.lexeme(),
-                    t.line()
+                return Err(Diagnostic::expected_found(
+                    error.to_owned(),
+                    t.lexeme().to_string(),
+                    self.path.clone(),
+                    t.line(),
+                    t.column(),
                 ));
             }
         }
@@ -172,14 +176,20 @@ impl<'a> Parser<'a> {
         Ok(())
     }
 
-    fn assert_end<T>(&mut self, tocheck: &Token, end: OptionalEnd, iftrue: T) -> Result<T, String> {
+    fn assert_end<T>(
+        &mut self,
+        tocheck: &Token,
+        end: OptionalEnd,
+        iftrue: T,
+    ) -> Result<T, Diagnostic> {
         if let Some((kind, lexeme)) = end {
             if tocheck.kind() != kind {
-                return Err(format!(
-                    "Expected '{}' got '{}' at line {}",
-                    lexeme,
-                    &tocheck.lexeme(),
+                return Err(Diagnostic::expected_found(
+                    lexeme.to_string(),
+                    tocheck.lexeme().to_string(),
+                    self.path.clone(),
                     tocheck.line(),
+                    tocheck.column(),
                 ));
             }
         }
@@ -187,27 +197,43 @@ impl<'a> Parser<'a> {
         Ok(iftrue)
     }
 
-    fn assert(&mut self, expected: TokenType, error: &str) -> Result<(), String> {
+    fn assert(&mut self, expected: TokenType, error: &str) -> Result<(), Diagnostic> {
         if !self.advance_if(expected) {
-            let t = self.peek().ok_or("Unexpected end of file")?;
-            return Err(format!(
-                "Expected '{}' got '{}' at line {}",
-                error,
-                &t.lexeme(),
-                t.line()
+            let t = self.peek().ok_or_else(|| {
+                Diagnostic::unexpected(
+                    "end of file".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
+                )
+            })?;
+            return Err(Diagnostic::expected_found(
+                error.to_owned(),
+                t.lexeme().to_string(),
+                self.path.clone(),
+                t.line(),
+                t.column(),
             ));
         }
         Ok(())
     }
 
-    fn assert_advance(&mut self, expected: TokenType, error: &str) -> Result<&Token, String> {
+    fn assert_advance(&mut self, expected: TokenType, error: &str) -> Result<&Token, Diagnostic> {
         if !self.advance_if(expected) {
-            let t = self.peek().ok_or("Unexpected end of file")?;
-            return Err(format!(
-                "Expected '{}' got '{}' at line {}",
-                error,
-                &t.lexeme(),
-                t.line()
+            let t = self.peek().ok_or_else(|| {
+                Diagnostic::unexpected(
+                    "end of file".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
+                )
+            })?;
+            return Err(Diagnostic::expected_found(
+                error.to_owned(),
+                t.lexeme().to_string(),
+                self.path.clone(),
+                t.line(),
+                t.column(),
             ));
         }
         Ok(self.current())
@@ -242,7 +268,7 @@ impl<'a> Parser<'a> {
         &self.tokens[self.current.saturating_sub(1)]
     }
 
-    fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, String> {
+    fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, Diagnostic> {
         let mut exprs = vec![];
         loop {
             let expr = self.parse_expression(None)?;
@@ -255,11 +281,12 @@ impl<'a> Parser<'a> {
                     if self.peek().map_or(false, |t| t.kind() != end_token) {
                         self.advance();
 
-                        return Err(format!(
-                            "Expected '{}' got '{}' at line {}",
-                            expected_end,
-                            &t.lexeme(),
-                            t.line()
+                        return Err(Diagnostic::expected_found(
+                            expected_end.to_owned(),
+                            t.lexeme().to_string(),
+                            self.path.clone(),
+                            t.line(),
+                            t.column(),
                         ));
                     }
                 }
@@ -273,7 +300,7 @@ impl<'a> Parser<'a> {
         matches!(kind, String | MultilineString | LeftBrace)
     }
 
-    fn parse_call(&mut self) -> Result<Vec<Expression>, String> {
+    fn parse_call(&mut self) -> Result<Vec<Expression>, Diagnostic> {
         if self.advance_if(TokenType::RightParen) {
             Ok(vec![])
         } else {
@@ -283,7 +310,7 @@ impl<'a> Parser<'a> {
         }
     }
 
-    fn parse_identifier(&mut self) -> Result<ComplexToken, String> {
+    fn parse_identifier(&mut self) -> Result<ComplexToken, Diagnostic> {
         let line = self.current().line();
         let mut expr = Expression::with_capacity(8);
 
@@ -299,34 +326,57 @@ impl<'a> Parser<'a> {
                         expr.push_back(ComplexToken::Call(call));
                     }
                     Dot => {
-                        let t = self.advance().ok_or("Expected identifier")?;
+                        let path = self.path.clone();
+                        let line = self.line;
+                        let column = self.column;
+
+                        let t = self
+                            .advance()
+                            .ok_or_else(|| {
+                                Diagnostic::expected("identifier".to_owned(), path, line, column)
+                            })?
+                            .clone();
                         if t.kind() != Identifier {
-                            return Err(format!(
-                                "Expected identifier got {} at line {}",
-                                t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_found(
+                                "identifier".to_owned(),
+                                t.lexeme().to_string(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                         expr.push_back(ComplexToken::Symbol(".".into()));
                         expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                     }
                     Colon => {
-                        let t = self.advance().ok_or("Expected identifier")?.clone();
+                        let path = self.path.clone();
+                        let line = self.line;
+                        let column = self.column;
+                        let t = self
+                            .advance()
+                            .ok_or_else(|| {
+                                Diagnostic::expected("identifier".to_owned(), path, line, column)
+                            })?
+                            .clone();
                         if t.kind() != Identifier {
-                            return Err(format!(
-                                "Expected identifier got {} at line {}",
-                                t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_found(
+                                "identifier".to_owned(),
+                                t.lexeme().to_string(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
 
                         if self.peek().unwrap().kind() != TokenType::LeftParen
                             && !self.is_arg(self.peek().unwrap().kind())
                         {
-                            return Err(format!(
-                                "Expected '(' or a single argument got {} at line {}",
-                                t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_found(
+                                "'(' or a single argument".to_owned(),
+                                t.lexeme().to_string(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                         expr.push_back(ComplexToken::Symbol(":".into()));
@@ -369,7 +419,7 @@ impl<'a> Parser<'a> {
         Ok(ComplexToken::Ident { expr, line })
     }
 
-    fn parse_identifier_statement(&mut self) -> Result<ComplexToken, String> {
+    fn parse_identifier_statement(&mut self) -> Result<ComplexToken, Diagnostic> {
         let ident = self.parse_identifier()?;
         let ComplexToken::Ident { expr, .. } = &ident else {unreachable!()};
 
@@ -396,10 +446,12 @@ impl<'a> Parser<'a> {
                 }
                 self.assert(TokenType::Equals, "=")?;
             } else if self.current().kind() != TokenType::Equals {
-                return Err(format!(
-                    "Expected '=' got {} at line {}",
-                    self.current().lexeme(),
-                    self.current().line()
+                return Err(Diagnostic::expected_found(
+                    "'='".to_owned(),
+                    self.current().lexeme().to_string(),
+                    self.path.clone(),
+                    self.current().line(),
+                    self.current().column(),
                 ));
             }
 
@@ -414,10 +466,12 @@ impl<'a> Parser<'a> {
             });
         }
 
-        Err(format!(
-            "Expected assignment or function call got {} at line {}",
-            self.current().lexeme(),
-            self.current().line()
+        Err(Diagnostic::expected_found(
+            "assignment or function call".to_owned(),
+            self.current().lexeme().to_string(),
+            self.path.clone(),
+            self.current().line(),
+            self.current().column(),
         ))
     }
 
@@ -466,7 +520,7 @@ impl<'a> Parser<'a> {
         )
     }
 
-    fn parse_table(&mut self) -> Result<ComplexToken, String> {
+    fn parse_table(&mut self) -> Result<ComplexToken, Diagnostic> {
         let mut data = vec![];
 
         while let Some(t) = self.advance().cloned() {
@@ -536,7 +590,7 @@ impl<'a> Parser<'a> {
             _ => false,
         }
     }
-    fn parse_code_block(&mut self) -> Result<CodeBlock, String> {
+    fn parse_code_block(&mut self) -> Result<CodeBlock, Diagnostic> {
         let start = self.current;
         let mut scope = 0;
         let mut in_special_do = false;
@@ -550,6 +604,7 @@ impl<'a> Parser<'a> {
                             return Ok(CodeBlock {
                                 code: parse_tokens(
                                     &self.tokens[start..self.current.saturating_sub(1)],
+                                    self.path.clone(),
                                 )?,
                                 start,
                                 end: self.current,
@@ -560,7 +615,12 @@ impl<'a> Parser<'a> {
                     }
                     Until => {
                         if scope == 0 {
-                            return Err(format!("Error: Unexpected 'until' at line {}", self.line));
+                            return Err(Diagnostic::unexpected(
+                                "'until'".to_owned(),
+                                self.path.clone(),
+                                self.line,
+                                self.column,
+                            ));
                         } else {
                             scope -= 1;
                         }
@@ -569,10 +629,15 @@ impl<'a> Parser<'a> {
                 }
             }
         }
-        Err(format!("Expected 'end' at line {}", self.line))
+        Err(Diagnostic::expected(
+            "'end'".to_owned(),
+            self.path.clone(),
+            self.line,
+            self.column,
+        ))
     }
 
-    fn parse_repeat_block(&mut self) -> Result<CodeBlock, String> {
+    fn parse_repeat_block(&mut self) -> Result<CodeBlock, Diagnostic> {
         let start = self.current;
         let mut scope = 0;
         let mut in_special_do = false;
@@ -583,7 +648,12 @@ impl<'a> Parser<'a> {
                 match t.kind() {
                     End => {
                         if scope == 0 {
-                            return Err(format!("Error: Unexpected 'end' at line {}", self.line));
+                            return Err(Diagnostic::unexpected(
+                                "'end'".to_owned(),
+                                self.path.clone(),
+                                self.line,
+                                self.column,
+                            ));
                         } else {
                             scope -= 1;
                         }
@@ -593,6 +663,7 @@ impl<'a> Parser<'a> {
                             return Ok(CodeBlock {
                                 code: parse_tokens(
                                     &self.tokens[start..self.current.saturating_sub(1)],
+                                    self.path.clone(),
                                 )?,
                                 start,
                                 end: self.current,
@@ -606,10 +677,15 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Err(format!("Expected 'until' at line {}", self.line))
+        Err(Diagnostic::expected(
+            "'until'".to_owned(),
+            self.path.clone(),
+            self.line,
+            self.column,
+        ))
     }
 
-    fn parse_if_block(&mut self) -> Result<CodeBlock, String> {
+    fn parse_if_block(&mut self) -> Result<CodeBlock, Diagnostic> {
         let start = self.current;
         let mut scope = 0;
         let mut in_special_do = false;
@@ -624,6 +700,7 @@ impl<'a> Parser<'a> {
                             return Ok(CodeBlock {
                                 code: parse_tokens(
                                     &self.tokens[start..self.current.saturating_sub(1)],
+                                    self.path.clone(),
                                 )?,
                                 start,
                                 end: self.current,
@@ -637,6 +714,7 @@ impl<'a> Parser<'a> {
                             return Ok(CodeBlock {
                                 code: parse_tokens(
                                     &self.tokens[start..self.current.saturating_sub(1)],
+                                    self.path.clone(),
                                 )?,
                                 start,
                                 end: self.current,
@@ -645,7 +723,12 @@ impl<'a> Parser<'a> {
                     }
                     Until => {
                         if scope == 0 {
-                            return Err(format!("Error: Unexpected 'until' at line {}", self.line));
+                            return Err(Diagnostic::unexpected(
+                                "'until'".to_owned(),
+                                self.path.clone(),
+                                self.line,
+                                self.column,
+                            ));
                         } else {
                             scope -= 1;
                         }
@@ -655,10 +738,15 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Err(format!("Expected 'end' at line {}", self.line))
+        Err(Diagnostic::expected(
+            "'end'".to_owned(),
+            self.path.clone(),
+            self.line,
+            self.column,
+        ))
     }
 
-    fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, String> {
+    fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, Diagnostic> {
         let mut expr = Expression::with_capacity(16);
 
         let last = loop {
@@ -703,10 +791,12 @@ impl<'a> Parser<'a> {
                     Hash | Not => {
                         expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
                         if !self.check_op() {
-                            return Err(format!(
-                                "Expected expression after unary op {} at line {}",
-                                &t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_found(
+                                "expression".to_owned(),
+                                t.lexeme().to_string(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                     }
@@ -715,19 +805,23 @@ impl<'a> Parser<'a> {
                     | LessThanOrEqual | GreaterThan | GreaterThanOrEqual | DoubleEquals
                     | NotEquals | And | Or | BitAnd | BitOr | BitShiftLeft | BitShiftRight => {
                         if expr.is_empty() {
-                            return Err(format!(
-                                "Expected expression before binary op {} at line {}",
-                                &t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_before(
+                                "expression".to_owned(),
+                                "binary op".to_owned(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                         expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
 
                         if !self.check_op() {
-                            return Err(format!(
-                                "Expected expression after binary op {} at line {}",
-                                &t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_after(
+                                "expression".to_owned(),
+                                "binary op".to_owned(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                     }
@@ -744,10 +838,12 @@ impl<'a> Parser<'a> {
                         }
 
                         if !self.check_op() {
-                            return Err(format!(
-                                "Expected expression after binary op {} at line {}",
-                                &t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_after(
+                                "expression".to_owned(),
+                                "binary op".to_owned(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                     }
@@ -764,10 +860,12 @@ impl<'a> Parser<'a> {
                         }
 
                         if !self.check_op() {
-                            return Err(format!(
-                                "Expected expression after binary op {} at line {}",
-                                &t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::expected_after(
+                                "expression".to_owned(),
+                                "binary op".to_owned(),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                     }
@@ -817,17 +915,19 @@ impl<'a> Parser<'a> {
         };
 
         if expr.is_empty() {
-            return Err(format!(
-                "Expected expression got {} at line {}",
-                &last.lexeme(),
-                last.line()
+            return Err(Diagnostic::expected_found(
+                "expression".to_owned(),
+                last.lexeme().to_string(),
+                self.path.clone(),
+                last.line(),
+                last.column(),
             ));
         }
 
         self.assert_end(&last, end, expr)
     }
 
-    fn parse_local_variable(&mut self) -> Result<ComplexToken, String> {
+    fn parse_local_variable(&mut self) -> Result<ComplexToken, Diagnostic> {
         let mut names = vec![];
 
         self.go_back();
@@ -837,6 +937,7 @@ impl<'a> Parser<'a> {
                 .assert_advance(TokenType::Identifier, "<name>")?
                 .clone();
             let line = name.line();
+            let column = name.column();
             let lexeme = name.lexeme();
             let peek = self.peek().clone();
 
@@ -850,14 +951,35 @@ impl<'a> Parser<'a> {
 
                 if kind.as_symbol().as_ref() == "const" {
                     names.push((lexeme.as_symbol(), false));
-                    eprintln!("Warning: const variables are not supported in clue, ignoring const specifier at line {}", line);
+                    eprintln!(
+                        "{}",
+                        Diagnostic::new(
+                            "const variables are not supported in clue, ignoring const specifier"
+                                .to_owned(),
+                            self.path.clone(),
+                            line,
+                            column
+                        )
+                        .level(DiagnosticLevel::Warning)
+                    );
                 } else if kind.as_symbol().as_ref() == "close" {
                     names.push((lexeme.as_symbol(), true));
-                    eprintln!("Warning: to-be-closed variables are not supported in clue, ignoring const specifier at line {}. Manual close calls will be added at the end of the scope", line);
+                    eprintln!(
+                        "{}",
+                        Diagnostic::new(
+                            "to-be-closed variables are not supported in clue, ignoring const specifier. Manual close calls will be added at the end of the scope, so variable shadowing will cause side effects".to_owned(),
+                            self.path.clone(),
+                            line,
+                            column
+                        ).level(DiagnosticLevel::Warning)
+                    );
                 } else {
-                    return Err(format!(
-                        "Expected 'const' or 'close' got {} at line {}",
-                        kind, line
+                    return Err(Diagnostic::expected_found(
+                        "'const' or 'close'".to_owned(),
+                        kind.to_string(),
+                        self.path.clone(),
+                        line,
+                        column,
                     ));
                 }
             } else {
@@ -884,7 +1006,7 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn parse_function_args(&mut self) -> Result<FunctionArgs, String> {
+    fn parse_function_args(&mut self) -> Result<FunctionArgs, Diagnostic> {
         let mut args = FunctionArgs::new();
         loop {
             use TokenType::*;
@@ -900,28 +1022,41 @@ impl<'a> Parser<'a> {
                         break;
                     }
                     _ => {
-                        return Err(format!(
-                            "Expected identifier got {} at line {}",
-                            t.lexeme(),
-                            t.line()
+                        return Err(Diagnostic::expected_found(
+                            "identifier".to_owned(),
+                            t.lexeme().to_string(),
+                            self.path.clone(),
+                            t.line(),
+                            t.column(),
                         ));
                     }
                 }
             };
 
-            if let Some(t) = self.advance() {
+            if let Some(t) = self.advance().cloned() {
                 match t.kind() {
                     Comma => args.push(name.lexeme().as_symbol()),
                     RightParen => {
                         args.push(name.lexeme().as_symbol());
                         break;
                     }
-                    _ => return Err(format!("Expected ',' or ')' got {}", t.lexeme())),
+                    _ => {
+                        let path = self.path.clone();
+                        return Err(Diagnostic::expected_found(
+                            "',' or ')'".to_owned(),
+                            t.lexeme().to_string(),
+                            path,
+                            t.line(),
+                            t.column(),
+                        ));
+                    }
                 }
             } else {
-                return Err(format!(
-                    "Unexpected end of file at line {}. Expected '<args>'",
-                    self.line
+                return Err(Diagnostic::expected(
+                    "'<args>'".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
                 ));
             }
         }
@@ -929,22 +1064,38 @@ impl<'a> Parser<'a> {
         Ok(args)
     }
 
-    fn parse_function(&mut self, local: bool) -> Result<ComplexToken, String> {
+    fn parse_function(&mut self, local: bool) -> Result<ComplexToken, Diagnostic> {
         let name = {
             use TokenType::*;
 
             let mut expr = Expression::new();
+            let path = self.path.clone();
+            let line = self.line;
+            let column = self.column;
             loop {
-                let t = self.advance().ok_or("Unexpected end of file")?.clone();
+                let t = self
+                    .advance()
+                    .ok_or_else(|| {
+                        Diagnostic::unexpected("end of file".to_owned(), path.clone(), line, column)
+                    })?
+                    .clone();
 
                 match t.kind() {
                     Identifier => {
-                        let nt = self.peek().ok_or("Unexpected end of file")?;
+                        let nt = self.peek().ok_or_else(|| {
+                            Diagnostic::unexpected(
+                                "end of file".to_owned(),
+                                self.path.clone(),
+                                self.line,
+                                self.column,
+                            )
+                        })?;
                         if nt.kind() == Identifier {
-                            return Err(format!(
-                                "Unexpected {} at line {}",
-                                nt.lexeme(),
-                                nt.line()
+                            return Err(Diagnostic::unexpected(
+                                nt.lexeme().to_string(),
+                                self.path.clone(),
+                                nt.line(),
+                                nt.column(),
                             ));
                         }
                         expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
@@ -956,19 +1107,22 @@ impl<'a> Parser<'a> {
                         {
                             expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
                         } else {
-                            return Err(format!(
-                                "{} should only be used when indexing at line {}",
-                                t.lexeme(),
-                                t.line()
+                            return Err(Diagnostic::new(
+                                format!("{} should only be used when indexing", t.lexeme()),
+                                self.path.clone(),
+                                t.line(),
+                                t.column(),
                             ));
                         }
                     }
                     LeftParen => break,
                     _ => {
-                        return Err(format!(
-                            "Expected identifier, ':' or '.' got {} at line {}",
-                            t.lexeme(),
-                            t.line()
+                        return Err(Diagnostic::expected_found(
+                            "identifier, ':' or '.'".to_string(),
+                            t.lexeme().to_string(),
+                            self.path.clone(),
+                            t.line(),
+                            t.column(),
                         ))
                     }
                 }
@@ -989,7 +1143,7 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn parse_if_else_chain(&mut self) -> Result<ComplexToken, String> {
+    fn parse_if_else_chain(&mut self) -> Result<ComplexToken, Diagnostic> {
         let condition = self.parse_expression(Some((TokenType::Then, "then")))?;
         self.advance();
         let body = self.parse_if_block()?;
@@ -1008,10 +1162,12 @@ impl<'a> Parser<'a> {
             TokenType::ElseIf => Some(Box::new(self.parse_if_else_chain()?)),
             TokenType::End => None,
             _ => {
-                return Err(format!(
-                    "Expected 'else', 'elseif' or 'end' got {} at line {}",
-                    self.current().lexeme(),
-                    self.current().line()
+                return Err(Diagnostic::expected_found(
+                    "'else', 'elseif' or 'end'".to_owned(),
+                    self.current().lexeme().to_string(),
+                    self.path.clone(),
+                    self.current().line(),
+                    self.current().column(),
                 ))
             }
         };
@@ -1025,11 +1181,11 @@ impl<'a> Parser<'a> {
         })
     }
 
-    fn parse_for_loop(&mut self) -> Result<ComplexToken, String> {
+    fn parse_for_loop(&mut self) -> Result<ComplexToken, Diagnostic> {
         let mut iters = vec![];
         let mut for_func = false;
 
-        while let Some(t) = self.advance() {
+        while let Some(t) = self.advance().cloned() {
             match t.kind() {
                 TokenType::Identifier => {
                     iters.push(t.lexeme().as_symbol());
@@ -1043,19 +1199,23 @@ impl<'a> Parser<'a> {
                 }
                 TokenType::Equals => {
                     if iters.len() != 1 {
-                        return Err(format!(
-                            "Expected 1 in numeric for loop identifier got {} at line {}",
-                            iters.len(),
-                            t.line()
+                        return Err(Diagnostic::expected_found(
+                            "1 iter in numeric for loop identifier".to_owned(),
+                            iters.len().to_string(),
+                            self.path.clone(),
+                            t.line(),
+                            t.column(),
                         ));
                     }
                     break;
                 }
                 _ => {
-                    return Err(format!(
-                        "Expected identifier, ',' or 'in' got {} at line {}",
-                        t.lexeme(),
-                        t.line()
+                    return Err(Diagnostic::expected_found(
+                        "Expected identifier, ',' or 'in'".to_owned(),
+                        t.lexeme().to_string(),
+                        self.path.clone(),
+                        t.line(),
+                        t.column(),
                     ))
                 }
             }
@@ -1113,10 +1273,10 @@ impl<'a> Parser<'a> {
     }
 }
 
-pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
-    let mut parser = Parser::new(tokens);
+pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression, Diagnostic> {
+    let mut parser = Parser::new(tokens, path);
 
-    while let Some(token) = parser.advance() {
+    while let Some(token) = parser.advance().cloned() {
         use TokenType::*;
 
         match token.kind() {
@@ -1132,11 +1292,13 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                     parser.expr.push_back(variable);
                 }
                 _ => {
-                    return Err(format!(
-                        "Expected 'function' or identifier got {} at line {}",
-                        parser.peek().unwrap().lexeme(),
-                        parser.peek().unwrap().line()
-                    ))
+                    return Err(Diagnostic::expected_found(
+                        "function or identifier".to_owned(),
+                        parser.peek().unwrap().lexeme().to_string(),
+                        parser.path.clone(),
+                        parser.peek().unwrap().line(),
+                        parser.peek().unwrap().column(),
+                    ));
                 }
             },
             Identifier => {
@@ -1155,16 +1317,21 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 if let Some(ComplexToken::Call(_)) = expr.back() {
                     parser.expr.push_back(call);
                 } else {
-                    let token = parser.peek().unwrap_or(Token::new(
-                        TokenType::Eof,
-                        "<eof>".into(),
-                        parser.line,
-                    ));
+                    let token = parser.peek().ok_or_else(|| {
+                        Diagnostic::unexpected(
+                            "end of file".to_owned(),
+                            parser.path.clone(),
+                            parser.line,
+                            parser.column,
+                        )
+                    })?;
 
-                    return Err(format!(
-                        "Expected function call got {} at line {}",
-                        token.lexeme(),
-                        token.line()
+                    return Err(Diagnostic::expected_found(
+                        "function call".to_owned(),
+                        token.lexeme().to_string(),
+                        parser.path.clone(),
+                        token.line(),
+                        token.column(),
                     ));
                 }
 
@@ -1224,9 +1391,11 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
                 parser.advance_if(TokenType::Semicolon);
 
                 if !parser.done() {
-                    return Err(format!(
-                        "Return must be the last statement in a block at line {}",
-                        parser.line
+                    return Err(Diagnostic::new(
+                        "Return must be the last statement in a block".to_owned(),
+                        parser.path.clone(),
+                        parser.line,
+                        parser.column,
                     ));
                 }
                 parser.expr.push_back(ComplexToken::Return(exprs));
@@ -1235,10 +1404,11 @@ pub fn parse_tokens(tokens: &[Token]) -> Result<Expression, String> {
             Semicolon => {
                 continue;
             }
-            _ => Err(format!(
-                "Unexpected token {} at line {}",
-                token.lexeme(),
-                token.line()
+            _ => Err(Diagnostic::unexpected(
+                token.lexeme().to_string(),
+                parser.path.clone(),
+                token.line(),
+                token.column(),
             ))?,
         }
         parser.advance_if(TokenType::Semicolon);

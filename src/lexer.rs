@@ -1,6 +1,6 @@
-use crate::number::Number;
+use crate::{error::Diagnostic, number::Number};
 use collect_into_rc_slice::CollectIntoRcStr;
-use std::{fmt, rc::Rc};
+use std::{fmt, ops::Range, rc::Rc};
 
 #[derive(Debug,Clone, Copy, PartialEq)]
 #[rustfmt::skip]
@@ -16,7 +16,7 @@ pub enum TokenType {
     BitAnd, BitOr, BitShiftLeft, BitShiftRight,
 
     // literals
-    Number, String, MultilineString,Identifier,
+    Number, String, MultilineString, Identifier,
 
     // keywords
     And, Break, Do, If, Else, ElseIf, End, True, False, Function,
@@ -63,51 +63,79 @@ pub struct Token {
     pub(crate) kind: TokenType,
     lexeme: Lexeme,
     line: usize,
+    column: usize,
+    span: Range<usize>,
 }
 
 impl Token {
-    pub fn new(kind: TokenType, lexeme: Rc<str>, line: usize) -> Self {
+    pub const fn new(
+        kind: TokenType,
+        lexeme: Rc<str>,
+        line: usize,
+        column: usize,
+        span: Range<usize>,
+    ) -> Self {
         Self {
             kind,
             lexeme: Lexeme::Symbol(lexeme),
             line,
+            column,
+            span,
         }
     }
 
-    pub fn new_number(kind: TokenType, lexeme: Number, line: usize) -> Self {
+    pub const fn new_number(
+        kind: TokenType,
+        lexeme: Number,
+        line: usize,
+        column: usize,
+        span: Range<usize>,
+    ) -> Self {
         Self {
             kind,
             lexeme: Lexeme::Number(lexeme),
             line,
+            column,
+            span,
         }
     }
 
-    pub fn kind(&self) -> TokenType {
+    pub const fn kind(&self) -> TokenType {
         self.kind
     }
 
-    pub fn lexeme(&self) -> &Lexeme {
+    pub const fn lexeme(&self) -> &Lexeme {
         &self.lexeme
     }
 
-    pub fn line(&self) -> usize {
+    pub const fn line(&self) -> usize {
         self.line
+    }
+
+    pub const fn column(&self) -> usize {
+        self.column
+    }
+
+    pub fn span(&self) -> Range<usize> {
+        self.span.clone()
     }
 }
 
 pub struct Lexer {
     pub(crate) source: Vec<char>,
     tokens: Vec<Token>,
+    pub(crate) path: Option<String>,
     pub(crate) column: usize,
     pub(crate) current: usize,
     pub(crate) line: usize,
 }
 
 impl Lexer {
-    pub fn new(source: String) -> Self {
+    pub fn new(source: String, path: Option<String>) -> Self {
         Self {
             source: source.chars().collect(),
             tokens: Vec::new(),
+            path,
             column: 0,
             current: 0,
             line: 1,
@@ -185,23 +213,27 @@ impl Lexer {
     }
 
     fn add_token(&mut self, token_type: TokenType, len: usize) {
-        let lexeme = self.source[self.current - len..self.current]
+        let span = self.current - len..self.current;
+        let lexeme = self.source[span.clone()]
             .iter()
             .copied()
             .collect_into_rc_str();
-        self.tokens.push(Token::new(token_type, lexeme, self.line));
+        self.tokens
+            .push(Token::new(token_type, lexeme, self.line, self.column, span));
     }
 
     fn add_token_front(&mut self, token_type: TokenType, len: usize) {
-        let lexeme = self.source[self.current - 1..self.current + len - 1]
+        let span = self.current - 1..self.current + len - 1;
+        let lexeme = self.source[span.clone()]
             .iter()
             .copied()
             .collect_into_rc_str();
         self.advance_to(len - 1);
-        self.tokens.push(Token::new(token_type, lexeme, self.line));
+        self.tokens
+            .push(Token::new(token_type, lexeme, self.line, self.column, span));
     }
 
-    fn read_string(&mut self, quote: char) -> Result<(), String> {
+    fn read_string(&mut self, quote: char) -> Result<(), Diagnostic> {
         let start = self.current;
         while self.peek() != Some(quote) && !self.done() {
             if self.peek() == Some('\\') {
@@ -211,10 +243,12 @@ impl Lexer {
                         self.advance();
                     }
                     None => {
-                        return Err(format!(
-                            "Error: Unterminated escape sequence at {}:{}",
-                            self.line, self.column
-                        ))
+                        return Err(Diagnostic::new(
+                            "Unterminated escape sequence".to_owned(),
+                            self.path.clone(),
+                            self.line,
+                            self.column,
+                        ));
                     }
                 }
             } else {
@@ -223,30 +257,40 @@ impl Lexer {
         }
 
         if self.done() {
-            return Err(format!(
-                "Error: Unterminated string at {}:{}",
-                self.line, self.column
+            return Err(Diagnostic::new(
+                "Unterminated string".to_owned(),
+                self.path.clone(),
+                self.line,
+                self.column,
             ));
         }
         self.advance();
-        let lexeme = self.source[start - 1..self.current]
+        let span = start - 1..self.current;
+        let lexeme = self.source[span.clone()]
             .iter()
             .copied()
             .collect_into_rc_str();
-        self.tokens
-            .push(Token::new(TokenType::String, lexeme, self.line));
+        self.tokens.push(Token::new(
+            TokenType::String,
+            lexeme,
+            self.line,
+            self.column,
+            span,
+        ));
         Ok(())
     }
 
-    fn read_multiline_string(&mut self) -> Result<(), String> {
+    fn read_multiline_string(&mut self) -> Result<(), Diagnostic> {
         let start = self.current;
         let mut equals_count = 0;
 
         while let Some(c) = self.advance() {
             if self.done() {
-                return Err(format!(
-                    "Error: Unterminated multiline string at {}:{}",
-                    self.line, self.column
+                return Err(Diagnostic::new(
+                    "Error: Unterminated multiline string".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
                 ));
             }
 
@@ -261,9 +305,11 @@ impl Lexer {
 
         while let Some(c) = self.advance() {
             if self.done() {
-                return Err(format!(
-                    "Error: Unterminated multiline string at {}:{}",
-                    self.line, self.column
+                return Err(Diagnostic::new(
+                    "Unterminated multiline string".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
                 ));
             }
 
@@ -285,25 +331,32 @@ impl Lexer {
         }
 
         self.advance();
-
-        let lexeme = self.source[start - 1..self.current]
+        let span = start - 1..self.current;
+        let lexeme = self.source[span.clone()]
             .iter()
             .copied()
             .collect_into_rc_str();
 
-        self.tokens
-            .push(Token::new(TokenType::MultilineString, lexeme, self.line));
+        self.tokens.push(Token::new(
+            TokenType::MultilineString,
+            lexeme,
+            self.line,
+            self.column,
+            span,
+        ));
         Ok(())
     }
 
-    fn read_token(&mut self) -> Result<(), String> {
+    fn read_token(&mut self) -> Result<(), Diagnostic> {
         let start = self.current;
 
         if let Some(c) = self.peek() {
             if !(c.is_alphabetic() || c == '_') {
-                return Err(format!(
-                    "Error: Invalid identifier at {}:{}",
-                    self.line, self.column
+                return Err(Diagnostic::new(
+                    "Invalid identifier".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
                 ));
             }
             while let Some(c) = self.advance() {
@@ -312,110 +365,84 @@ impl Lexer {
                     break;
                 }
             }
-            let lexeme = self.source[start..self.current]
+            let span = start..self.current;
+            let lexeme = self.source[span.clone()]
                 .iter()
                 .copied()
                 .collect_into_rc_str();
 
-            match &*lexeme {
-                "and" => self
-                    .tokens
-                    .push(Token::new(TokenType::And, lexeme, self.line)),
-                "break" => self
-                    .tokens
-                    .push(Token::new(TokenType::Break, lexeme, self.line)),
-                "do" => self
-                    .tokens
-                    .push(Token::new(TokenType::Do, lexeme, self.line)),
-                "else" => self
-                    .tokens
-                    .push(Token::new(TokenType::Else, lexeme, self.line)),
-                "elseif" => self
-                    .tokens
-                    .push(Token::new(TokenType::ElseIf, lexeme, self.line)),
-                "end" => self
-                    .tokens
-                    .push(Token::new(TokenType::End, lexeme, self.line)),
-                "false" => self
-                    .tokens
-                    .push(Token::new(TokenType::False, lexeme, self.line)),
-                "for" => self
-                    .tokens
-                    .push(Token::new(TokenType::For, lexeme, self.line)),
-                "function" => self
-                    .tokens
-                    .push(Token::new(TokenType::Function, lexeme, self.line)),
-                "if" => self
-                    .tokens
-                    .push(Token::new(TokenType::If, lexeme, self.line)),
-                "in" => self
-                    .tokens
-                    .push(Token::new(TokenType::In, lexeme, self.line)),
-                "local" => self
-                    .tokens
-                    .push(Token::new(TokenType::Local, lexeme, self.line)),
-
-                "nil" => self
-                    .tokens
-                    .push(Token::new(TokenType::Nil, lexeme, self.line)),
-                "not" => self
-                    .tokens
-                    .push(Token::new(TokenType::Not, lexeme, self.line)),
-                "or" => self
-                    .tokens
-                    .push(Token::new(TokenType::Or, lexeme, self.line)),
-                "repeat" => self
-                    .tokens
-                    .push(Token::new(TokenType::Repeat, lexeme, self.line)),
-                "return" => self
-                    .tokens
-                    .push(Token::new(TokenType::Return, lexeme, self.line)),
-                "then" => self
-                    .tokens
-                    .push(Token::new(TokenType::Then, lexeme, self.line)),
-                "true" => self
-                    .tokens
-                    .push(Token::new(TokenType::True, lexeme, self.line)),
-                "until" => self
-                    .tokens
-                    .push(Token::new(TokenType::Until, lexeme, self.line)),
-                "while" => self
-                    .tokens
-                    .push(Token::new(TokenType::While, lexeme, self.line)),
+            let kind = match &*lexeme {
+                "and" => TokenType::And,
+                "break" => TokenType::Break,
+                "do" => TokenType::Do,
+                "else" => TokenType::Else,
+                "elseif" => TokenType::ElseIf,
+                "end" => TokenType::End,
+                "false" => TokenType::False,
+                "for" => TokenType::For,
+                "function" => TokenType::Function,
+                "if" => TokenType::If,
+                "in" => TokenType::In,
+                "local" => TokenType::Local,
+                "nil" => TokenType::Nil,
+                "not" => TokenType::Not,
+                "or" => TokenType::Or,
+                "repeat" => TokenType::Repeat,
+                "return" => TokenType::Return,
+                "then" => TokenType::Then,
+                "true" => TokenType::True,
+                "until" => TokenType::Until,
+                "while" => TokenType::While,
                 "goto" => {
-                    return Err(format!(
-                        "Goto is unsupported in clue at {}:{}",
-                        self.line, self.column
+                    return Err(Diagnostic::new(
+                        "Goto is unsupported in clue".to_owned(),
+                        self.path.clone(),
+                        self.line,
+                        self.column,
                     ))
                 }
-                _ => self
-                    .tokens
-                    .push(Token::new(TokenType::Identifier, lexeme, self.line)),
-            }
+                _ => TokenType::Identifier,
+            };
+
+            self.tokens
+                .push(Token::new(kind, lexeme, self.line, self.column, span));
+
             Ok(())
         } else {
-            Err(format!(
-                "Error: Invalid identifier at {}:{}",
-                self.line, self.column
+            Err(Diagnostic::new(
+                "Invalid identifier".to_owned(),
+                self.path.clone(),
+                self.line,
+                self.column,
             ))
         }
     }
 
-    fn read_number(&mut self) -> Result<(), String> {
+    fn read_number(&mut self) -> Result<(), Diagnostic> {
+        let start = self.current;
         let number = Number::from_source(self)?;
-        self.tokens
-            .push(Token::new_number(TokenType::Number, number, self.line));
+        let span = start - 1..self.current;
+
+        self.tokens.push(Token::new_number(
+            TokenType::Number,
+            number,
+            self.line,
+            self.column,
+            span,
+        ));
         Ok(())
     }
 
-    fn read_multiline_comment(&mut self) -> Result<(), String> {
+    fn read_multiline_comment(&mut self) -> Result<(), Diagnostic> {
         let mut equals_count = 0;
 
         while let Some(c) = self.advance() {
             if self.done() {
-                return Err(format!(
-                    "Error: Unterminated block comment at {}:{}",
-                    self.line, self.column
+                return Err(Diagnostic::new(
+                    "Unterminated block comment".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
                 ));
             }
 
@@ -430,9 +457,11 @@ impl Lexer {
 
         while let Some(c) = self.advance() {
             if self.done() {
-                return Err(format!(
-                    "Error: Unterminated block comment at {}:{}",
-                    self.line, self.column
+                return Err(Diagnostic::new(
+                    "Unterminated block comment".to_owned(),
+                    self.path.clone(),
+                    self.line,
+                    self.column,
                 ));
             }
 
@@ -461,8 +490,8 @@ impl Lexer {
     }
 }
 
-pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
-    let mut lexer = Lexer::new(code);
+pub fn scan_code(code: String, path: Option<String>) -> Result<Vec<Token>, Diagnostic> {
+    let mut lexer = Lexer::new(code, path);
 
     while let Some(c) = lexer.advance() {
         match c {
@@ -576,9 +605,11 @@ pub fn scan_code(code: String) -> Result<Vec<Token>, String> {
             },
             ':' => {
                 if let Some(':') = lexer.peek() {
-                    return Err(format!(
-                        "Labels are not supported at {}:{}",
-                        lexer.line, lexer.column
+                    return Err(Diagnostic::new(
+                        "Labels are not supported".to_owned(),
+                        lexer.path.clone(),
+                        lexer.line,
+                        lexer.column,
                     ));
                 }
                 lexer.add_token(TokenType::Colon, 1)
