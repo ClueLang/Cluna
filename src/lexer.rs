@@ -634,9 +634,8 @@ pub fn scan_code(code: String, path: Option<String>) -> Result<Vec<Token>, Diagn
                     lexer.read_token()?;
                 } else {
                     panic!(
-                        "error: Unexpected character {c} at {}:{}",
-                        lexer.line(),
-                        lexer.column()
+                        "{}",
+                        Diagnostic::unexpected(c.to_string(), lexer.path, lexer.position)
                     );
                 }
             }

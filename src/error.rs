@@ -1,4 +1,9 @@
-use std::{cell::OnceCell, collections::HashMap, error::Error, fmt};
+use std::{
+    collections::HashMap,
+    error::Error,
+    fmt,
+    sync::{Arc, Mutex, OnceLock},
+};
 
 use colored::Colorize;
 
@@ -21,17 +26,12 @@ enum DiagnosticKind {
     Other,
 }
 
-type Files = HashMap<String, String>;
-static mut FILES: OnceCell<Files> = OnceCell::new();
-pub fn get_files() -> &'static Files {
-    unsafe { FILES.get_or_init(HashMap::new) }
-}
-
-pub fn get_files_mut() -> &'static mut Files {
-    if unsafe { FILES.get().is_none() } {
-        unsafe { FILES.set(HashMap::new()).unwrap() };
-    }
-    unsafe { FILES.get_mut().unwrap() }
+type Files = Arc<Mutex<HashMap<String, String>>>;
+static FILES: OnceLock<Files> = OnceLock::new();
+pub fn get_files() -> Files {
+    FILES
+        .get_or_init(|| Arc::new(Mutex::new(HashMap::new())))
+        .clone()
 }
 
 #[derive(Debug, Default)]
@@ -153,7 +153,10 @@ impl fmt::Display for Diagnostic {
                 writeln!(f, "{}:{}", line, column)?;
 
                 if let Some(path) = path {
-                    let source = get_files().get(path);
+                    let files = get_files();
+                    let files = files.lock().unwrap();
+                    let source = files.get(path);
+
                     if let Some(source) = source {
                         let mut start = position.span.start;
                         while start > 0 && source.chars().nth(start - 1) != Some('\n') {

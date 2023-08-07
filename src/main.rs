@@ -1,11 +1,12 @@
 use clap::Parser;
 use cluna::{
     compiler::compile_ast,
-    error::{get_files_mut, Diagnostic, DiagnosticLevel},
+    error::{get_files, Diagnostic, DiagnosticLevel},
     lexer::scan_code,
     parser::parse_tokens,
 };
 use colored::Colorize;
+use rayon::prelude::*;
 use std::{
     path::PathBuf,
     time::{Duration, Instant},
@@ -26,7 +27,11 @@ struct Cli {
 fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), Diagnostic> {
     eprintln!("   {} {}", "Compiling".green().bold(), path.display());
     let code = std::fs::read_to_string(path).map_err(|e| Diagnostic::other(e.to_string()))?;
-    get_files_mut().insert(path.display().to_string(), code.clone());
+    {
+        let files = get_files();
+        let mut files = files.lock().unwrap();
+        files.insert(path.display().to_string(), code.clone());
+    }
     let scanned = scan_code(code, Some(path.display().to_string()))?;
     let parsed = parse_tokens(&scanned, Some(path.display().to_string()))?;
     let compiled = compile_ast(parsed);
@@ -86,27 +91,23 @@ fn compile() -> Result<(), Diagnostic> {
                     .level(DiagnosticLevel::Warning)
             );
         }
-        let dir = path.clone();
+
         let mut stack = vec![path.clone()];
-
-        while let Some(path) = stack.pop() {
-            for entry in std::fs::read_dir(path).map_err(|e| Diagnostic::other(e.to_string()))? {
-                let entry = entry.map_err(|e| Diagnostic::other(e.to_string()))?;
-                let path = entry.path();
-
+        let files = std::iter::from_fn(move || {
+            while let Some(path) = stack.pop() {
                 if path.is_dir() {
-                    stack.push(path);
+                    stack.extend(path.read_dir().unwrap().map(|entry| entry.unwrap().path()));
                 } else if path.is_file() && path.extension().map_or(false, |ext| ext == "lua") {
-                    let output = args.out_dir.as_ref().map(|out_dir| {
-                        let mut out = out_dir.clone();
-                        out.push(path.strip_prefix(&dir).unwrap());
-                        out.set_extension("clue");
-                        out
-                    });
-                    compile_file(&path, output)?;
+                    return Some(path);
                 }
             }
-        }
+
+            None
+        });
+
+        files
+            .par_bridge()
+            .try_for_each(|path| compile_file(&path, None))?;
     }
     eprintln!(
         "    {} {} in {}",
