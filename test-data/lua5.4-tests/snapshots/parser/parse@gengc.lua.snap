@@ -4,8 +4,8 @@ expression: parsed
 input_file: test-data/lua5.4-tests/gengc.lua
 ---
 [
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -19,8 +19,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                 ],
             ),
         ],
-        line: 4,
-    },
+    ),
     Variable {
         names: [
             (
@@ -30,8 +29,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "require",
                         ),
@@ -45,23 +44,20 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 6,
-                },
+                ),
             ],
         ],
-        line: 6,
-        column: 5,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "collectgarbage",
                                 ),
@@ -75,16 +71,14 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ],
                                 ),
                             ],
-                            line: 8,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 6,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "collectgarbage",
             ),
@@ -92,8 +86,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                 [],
             ),
         ],
-        line: 8,
-    },
+    ),
     Variable {
         names: [
             (
@@ -103,8 +96,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -118,12 +111,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 12,
-                },
+                ),
             ],
         ],
-        line: 16,
-        column: 0,
     },
     DoBlock(
         CodeBlock {
@@ -138,18 +128,14 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [],
-                                line: 17,
-                                column: 5,
-                            },
+                            Table(
+                                [],
+                            ),
                         ],
                     ],
-                    line: 17,
-                    column: 5,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -157,10 +143,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             [],
                         ),
                     ],
-                    line: 17,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -173,22 +158,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 20,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -201,20 +185,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "U",
                                                                 ),
                                                             ],
-                                                            line: 20,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 20,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -228,12 +210,11 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 19,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "U",
                                 ),
@@ -256,13 +237,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     "]",
                                 ),
                             ],
-                            line: 20,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         Some(
                                             [
@@ -272,8 +252,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             ],
                                         ),
                                         [
-                                            Table {
-                                                data: [
+                                            Table(
+                                                [
                                                     (
                                                         None,
                                                         [
@@ -288,22 +268,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                         ],
                                                     ),
                                                 ],
-                                                line: 23,
-                                                column: 11,
-                                            },
+                                            ),
                                         ],
                                     ),
                                 ],
-                                line: 23,
-                                column: 12,
-                            },
+                            ),
                         ],
                     ],
-                    line: 23,
-                    column: 12,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -316,14 +290,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 24,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
@@ -332,8 +305,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ),
                                     Expr(
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -346,20 +319,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "U",
                                                                         ),
                                                                     ],
-                                                                    line: 24,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 24,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -375,8 +346,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -389,8 +360,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "U",
                                                                         ),
@@ -413,14 +384,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                             "]",
                                                                         ),
                                                                     ],
-                                                                    line: 24,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 24,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -432,18 +401,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             ),
                                         ],
                                     ),
-                                    Ident {
-                                        expr: [],
-                                        line: 24,
-                                    },
+                                    Ident(
+                                        [],
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 23,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -467,10 +434,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 24,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -483,14 +449,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 28,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
@@ -499,8 +464,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ),
                                     Expr(
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -513,20 +478,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "U",
                                                                         ),
                                                                     ],
-                                                                    line: 28,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 28,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -542,8 +505,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -556,8 +519,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "U",
                                                                         ),
@@ -580,14 +543,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                             "]",
                                                                         ),
                                                                     ],
-                                                                    line: 28,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 28,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -599,18 +560,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             ),
                                         ],
                                     ),
-                                    Ident {
-                                        expr: [],
-                                        line: 28,
-                                    },
+                                    Ident(
+                                        [],
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 27,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -634,10 +593,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 28,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -650,14 +608,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 33,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
@@ -666,8 +623,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ),
                                     Expr(
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -680,20 +637,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "U",
                                                                         ),
                                                                     ],
-                                                                    line: 33,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 33,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -709,8 +664,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -723,8 +678,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "U",
                                                                         ),
@@ -747,14 +702,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                             "]",
                                                                         ),
                                                                     ],
-                                                                    line: 33,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 33,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -766,26 +719,24 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             ),
                                         ],
                                     ),
-                                    Ident {
-                                        expr: [],
-                                        line: 33,
-                                    },
+                                    Ident(
+                                        [],
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 32,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "U",
                                             ),
@@ -832,8 +783,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 36,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -852,8 +802,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 33,
-                },
+                ),
             ],
             end: 172,
         },
@@ -875,8 +824,6 @@ input_file: test-data/lua5.4-tests/gengc.lua
                         code: [],
                         end: 6,
                     },
-                    line: 43,
-                    column: 6,
                 },
                 Variable {
                     names: [
@@ -887,8 +834,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -903,16 +850,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 44,
-                                column: 6,
-                            },
+                            ),
                         ],
                     ],
-                    line: 44,
-                    column: 6,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -920,10 +863,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             [],
                         ),
                     ],
-                    line: 44,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -936,22 +878,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 46,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -964,20 +905,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "old",
                                                                 ),
                                                             ],
-                                                            line: 46,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 46,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -991,39 +930,34 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 45,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "setmetatable",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "old",
                                             ),
                                         ],
-                                        line: 47,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [],
-                                        line: 47,
-                                        column: 6,
-                                    },
+                                    Table(
+                                        [],
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 46,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -1036,22 +970,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 48,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -1064,34 +997,31 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "getmetatable",
                                                                 ),
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "old",
                                                                                     ),
                                                                                 ],
-                                                                                line: 48,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 48,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 48,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -1105,10 +1035,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 47,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -1132,10 +1061,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 48,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -1148,22 +1076,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 50,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -1176,34 +1103,31 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "getmetatable",
                                                                 ),
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "old",
                                                                                     ),
                                                                                 ],
-                                                                                line: 50,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 50,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 50,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -1217,42 +1141,39 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 49,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "setmetatable",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "getmetatable",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "old",
                                                                 ),
                                                             ],
-                                                            line: 51,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 51,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 Some(
                                                     [
@@ -1262,28 +1183,24 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     ],
                                                 ),
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "foo",
                                                             ),
                                                         ],
-                                                        line: 51,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
                                         ],
-                                        line: 51,
-                                        column: 12,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 50,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -1307,8 +1224,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 51,
-                },
+                ),
             ],
             end: 269,
         },
@@ -1326,20 +1242,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [],
-                                line: 60,
-                                column: 5,
-                            },
+                            Table(
+                                [],
+                            ),
                         ],
                     ],
-                    line: 60,
-                    column: 5,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "A",
                                 ),
@@ -1362,8 +1274,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     "]",
                                 ),
                             ],
-                            line: 60,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -1372,8 +1283,6 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ),
                         ],
                     ],
-                    line: 64,
-                    column: 0,
                 },
                 Function {
                     local: true,
@@ -1390,8 +1299,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "A",
                                             ),
@@ -1414,26 +1323,22 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 65,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "obj",
                                                 ),
                                             ],
-                                            line: 65,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 65,
-                                column: 6,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
@@ -1446,22 +1351,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                         false,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "T",
                                                         ),
                                                     ],
-                                                    line: 66,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "or",
                                                         true,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "T",
                                                         ),
@@ -1474,20 +1378,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                         Call(
                                                             [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "obj",
                                                                             ),
                                                                         ],
-                                                                        line: 66,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 66,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "==",
@@ -1501,18 +1403,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 65,
-                            },
+                            ),
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "obj",
                                             ),
                                         ],
-                                        line: 66,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
@@ -1521,11 +1421,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ),
                                     ],
                                 ],
-                                line: 67,
-                                column: 3,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "collectgarbage",
                                     ),
@@ -1549,26 +1447,25 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 67,
-                            },
-                            Ident {
-                                expr: [
+                            ),
+                            Ident(
+                                [
                                     Symbol(
                                         "print",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "getmetatable",
                                                         ),
                                                         Call(
                                                             [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "A",
                                                                             ),
@@ -1591,8 +1488,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                                 "]",
                                                                             ),
                                                                         ],
-                                                                        line: 69,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
                                                         ),
@@ -1603,22 +1499,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                             "x",
                                                         ),
                                                     ],
-                                                    line: 69,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 68,
-                            },
+                            ),
                         ],
                         end: 59,
                     },
-                    line: 70,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -1626,8 +1518,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             [],
                         ),
                     ],
-                    line: 70,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -1637,18 +1528,14 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [],
-                                line: 73,
-                                column: 5,
-                            },
+                            Table(
+                                [],
+                            ),
                         ],
                     ],
-                    line: 73,
-                    column: 5,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -1672,10 +1559,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 73,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -1688,22 +1574,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 75,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -1716,20 +1601,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "obj",
                                                                 ),
                                                             ],
-                                                            line: 75,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 75,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -1743,28 +1626,26 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 74,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "setmetatable",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "obj",
                                             ),
                                         ],
-                                        line: 76,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 Some(
                                                     [
@@ -1774,14 +1655,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     ],
                                                 ),
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "gcf",
                                                             ),
                                                         ],
-                                                        line: 76,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
                                             (
@@ -1799,17 +1679,14 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 76,
-                                        column: 13,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 75,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -1822,22 +1699,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 77,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -1850,34 +1726,31 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "getmetatable",
                                                                 ),
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "obj",
                                                                                     ),
                                                                                 ],
-                                                                                line: 77,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 77,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 77,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -1891,18 +1764,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 76,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "obj",
                                 ),
                             ],
-                            line: 77,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -1911,11 +1782,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ),
                         ],
                     ],
-                    line: 78,
-                    column: 3,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -1939,8 +1808,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 78,
-                },
+                ),
             ],
             end: 398,
         },
@@ -1958,8 +1826,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -1974,16 +1842,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 84,
-                                column: 6,
-                            },
+                            ),
                         ],
                     ],
-                    line: 84,
-                    column: 6,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -1991,8 +1855,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             [],
                         ),
                     ],
-                    line: 84,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -2002,8 +1865,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "coroutine",
                                     ),
@@ -2035,8 +1898,6 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                         ),
                                                                     ],
                                                                 ],
-                                                                line: 89,
-                                                                column: 0,
                                                             },
                                                             Variable {
                                                                 names: [
@@ -2056,8 +1917,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                                         Some(
                                                                                             [
                                                                                                 [
-                                                                                                    Ident {
-                                                                                                        expr: [
+                                                                                                    Ident(
+                                                                                                        [
                                                                                                             Symbol(
                                                                                                                 "x",
                                                                                                             ),
@@ -2080,8 +1941,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                                                                 "]",
                                                                                                             ),
                                                                                                         ],
-                                                                                                        line: 90,
-                                                                                                    },
+                                                                                                    ),
                                                                                                 ],
                                                                                             ],
                                                                                         ),
@@ -2089,29 +1949,24 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                                 ],
                                                                                 end: 16,
                                                                             },
-                                                                            line: 91,
-                                                                            column: 1,
                                                                         },
                                                                     ],
                                                                 ],
-                                                                line: 91,
-                                                                column: 1,
                                                             },
                                                             Alter {
                                                                 names: [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "x",
                                                                             ),
                                                                         ],
-                                                                        line: 91,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 values: [
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "coroutine",
                                                                                 ),
@@ -2124,27 +1979,23 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                                 Call(
                                                                                     [
                                                                                         [
-                                                                                            Ident {
-                                                                                                expr: [
+                                                                                            Ident(
+                                                                                                [
                                                                                                     Symbol(
                                                                                                         "f",
                                                                                                     ),
                                                                                                 ],
-                                                                                                line: 92,
-                                                                                            },
+                                                                                            ),
                                                                                         ],
                                                                                     ],
                                                                                 ),
                                                                             ],
-                                                                            line: 92,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ],
-                                                                line: 92,
-                                                                column: 8,
                                                             },
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "coroutine",
                                                                     ),
@@ -2158,24 +2009,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                         [],
                                                                     ),
                                                                 ],
-                                                                line: 92,
-                                                            },
+                                                            ),
                                                         ],
                                                         end: 49,
                                                     },
-                                                    line: 94,
-                                                    column: 1,
                                                 },
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 86,
-                            },
+                            ),
                         ],
                     ],
-                    line: 96,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -2190,8 +2035,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "coroutine",
                                     ),
@@ -2204,27 +2049,23 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "co",
                                                         ),
                                                     ],
-                                                    line: 96,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 96,
-                            },
+                            ),
                         ],
                     ],
-                    line: 96,
-                    column: 11,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -2248,12 +2089,11 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 96,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "old",
                                 ),
@@ -2276,13 +2116,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     "]",
                                 ),
                             ],
-                            line: 97,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -2292,16 +2131,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 98,
-                                column: 8,
-                            },
+                            ),
                         ],
                     ],
-                    line: 98,
-                    column: 8,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "coroutine",
                         ),
@@ -2314,18 +2149,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "co",
                                             ),
                                         ],
-                                        line: 99,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 None,
                                                 [
@@ -2340,25 +2174,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 99,
-                                        column: 9,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 98,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "co",
                                 ),
                             ],
-                            line: 99,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -2367,11 +2197,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ),
                         ],
                     ],
-                    line: 100,
-                    column: 3,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -2395,18 +2223,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 100,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "f",
                                             ),
@@ -2414,8 +2241,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 [],
                                             ),
                                         ],
-                                        line: 102,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2436,8 +2262,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "old",
                                             ),
@@ -2478,8 +2304,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 102,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2493,10 +2318,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 101,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -2520,18 +2344,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 102,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "f",
                                             ),
@@ -2539,8 +2362,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 [],
                                             ),
                                         ],
-                                        line: 105,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2561,8 +2383,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "old",
                                             ),
@@ -2603,8 +2425,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 105,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2618,8 +2439,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 103,
-                },
+                ),
             ],
             end: 536,
         },
@@ -2637,23 +2457,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "setmetatable",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Table {
-                                                    data: [],
-                                                    line: 110,
-                                                    column: 7,
-                                                },
+                                                Table(
+                                                    [],
+                                                ),
                                             ],
                                             [
-                                                Table {
-                                                    data: [
+                                                Table(
+                                                    [
                                                         (
                                                             Some(
                                                                 [
@@ -2669,22 +2487,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 110,
-                                                    column: 13,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 110,
-                            },
+                            ),
                         ],
                     ],
-                    line: 110,
-                    column: 14,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -2692,10 +2505,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             [],
                         ),
                     ],
-                    line: 110,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -2708,22 +2520,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 112,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -2736,20 +2547,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "t",
                                                                 ),
                                                             ],
-                                                            line: 112,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 112,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2763,12 +2572,11 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 111,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
@@ -2791,13 +2599,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     "]",
                                 ),
                             ],
-                            line: 112,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -2812,16 +2619,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 113,
-                                column: 8,
-                            },
+                            ),
                         ],
                     ],
-                    line: 113,
-                    column: 8,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -2834,14 +2637,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 114,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
@@ -2850,8 +2652,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ),
                                     Expr(
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -2864,20 +2666,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "t",
                                                                         ),
                                                                     ],
-                                                                    line: 114,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 114,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -2893,8 +2693,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -2907,20 +2707,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "t",
                                                                         ),
                                                                     ],
-                                                                    line: 114,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 114,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -2932,18 +2730,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             ),
                                         ],
                                     ),
-                                    Ident {
-                                        expr: [],
-                                        line: 114,
-                                    },
+                                    Ident(
+                                        [],
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 113,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -2967,10 +2763,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 114,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -2983,14 +2778,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 116,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
@@ -2999,8 +2793,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ),
                                     Expr(
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -3013,20 +2807,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "t",
                                                                         ),
                                                                     ],
-                                                                    line: 116,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 116,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -3042,8 +2834,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "T",
                                                     ),
@@ -3056,20 +2848,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "t",
                                                                         ),
                                                                     ],
-                                                                    line: 116,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 116,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -3081,18 +2871,16 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             ),
                                         ],
                                     ),
-                                    Ident {
-                                        expr: [],
-                                        line: 116,
-                                    },
+                                    Ident(
+                                        [],
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 115,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -3116,10 +2904,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 116,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -3132,22 +2919,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
                                         ],
-                                        line: 118,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "or",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3160,20 +2946,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "t",
                                                                 ),
                                                             ],
-                                                            line: 118,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 118,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3187,12 +2971,11 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 117,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
@@ -3215,13 +2998,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     "]",
                                 ),
                             ],
-                            line: 118,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -3236,16 +3018,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 119,
-                                column: 8,
-                            },
+                            ),
                         ],
                     ],
-                    line: 119,
-                    column: 8,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -3269,18 +3047,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 119,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "t",
                                             ),
@@ -3303,8 +3080,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 122,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3318,22 +3094,20 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 120,
-                },
+                ),
             ],
             end: 676,
         },
     ),
     IfStatement {
         condition: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "T",
                     ),
                 ],
-                line: 126,
-            },
+            ),
             Operator(
                 (
                     "==",
@@ -3349,32 +3123,30 @@ input_file: test-data/lua5.4-tests/gengc.lua
             code: [
                 Expr(
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "Message",
                                 ),
                             ],
-                            line: 127,
-                        },
+                        ),
                         Operator(
                             (
                                 "or",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "print",
                                 ),
                             ],
-                            line: 127,
-                        },
+                        ),
                     ],
                 ),
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Call(
                             [
                                 [
@@ -3385,10 +3157,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 127,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -3402,8 +3173,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 128,
-                },
+                ),
                 Return(
                     None,
                 ),
@@ -3411,8 +3181,6 @@ input_file: test-data/lua5.4-tests/gengc.lua
             end: 693,
         },
         next: None,
-        line: 131,
-        column: 1,
     },
     DoBlock(
         CodeBlock {
@@ -3427,8 +3195,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -3463,15 +3231,12 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                         ],
                                     ),
                                 ],
-                                line: 136,
-                            },
+                            ),
                         ],
                     ],
-                    line: 136,
-                    column: 11,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -3479,18 +3244,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             [],
                         ),
                     ],
-                    line: 136,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3503,20 +3267,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "U",
                                                                 ),
                                                             ],
-                                                            line: 139,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 139,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3530,10 +3292,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 138,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "debug",
                         ),
@@ -3546,18 +3307,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "U",
                                             ),
                                         ],
-                                        line: 142,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 Some(
                                                     [
@@ -3567,8 +3327,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                     ],
                                                 ),
                                                 [
-                                                    Table {
-                                                        data: [
+                                                    Table(
+                                                        [
                                                             (
                                                                 None,
                                                                 [
@@ -3583,31 +3343,26 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                 ],
                                                             ),
                                                         ],
-                                                        line: 142,
-                                                        column: 12,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
                                         ],
-                                        line: 142,
-                                        column: 13,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 139,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3620,20 +3375,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "U",
                                                                 ),
                                                             ],
-                                                            line: 143,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 143,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3649,8 +3402,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3663,8 +3416,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "debug",
                                                                 ),
@@ -3677,26 +3430,23 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "U",
                                                                                     ),
                                                                                 ],
-                                                                                line: 144,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 144,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 143,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3710,10 +3460,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 142,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -3737,18 +3486,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 144,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3761,20 +3509,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "U",
                                                                 ),
                                                             ],
-                                                            line: 148,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 148,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3790,8 +3536,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3804,8 +3550,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "debug",
                                                                 ),
@@ -3818,26 +3564,23 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "U",
                                                                                     ),
                                                                                 ],
-                                                                                line: 149,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 149,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 148,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3851,10 +3594,9 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 147,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
@@ -3878,18 +3620,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 149,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3902,20 +3643,18 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "U",
                                                                 ),
                                                             ],
-                                                            line: 154,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 154,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3931,8 +3670,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "T",
                                             ),
@@ -3945,8 +3684,8 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "debug",
                                                                 ),
@@ -3959,26 +3698,23 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "U",
                                                                                     ),
                                                                                 ],
-                                                                                line: 155,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 155,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 154,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3992,18 +3728,17 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 153,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "debug",
                                             ),
@@ -4016,14 +3751,13 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "U",
                                                                 ),
                                                             ],
-                                                            line: 158,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
@@ -4052,8 +3786,7 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 158,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -4072,22 +3805,21 @@ input_file: test-data/lua5.4-tests/gengc.lua
                             ],
                         ),
                     ],
-                    line: 155,
-                },
+                ),
             ],
             end: 837,
         },
     ),
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "collectgarbage",
                                 ),
@@ -4101,24 +3833,22 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ],
                                 ),
                             ],
-                            line: 162,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 159,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "collectgarbage",
                                 ),
@@ -4132,38 +3862,34 @@ input_file: test-data/lua5.4-tests/gengc.lua
                                     ],
                                 ),
                             ],
-                            line: 167,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 162,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "collectgarbage",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "oldmode",
                                 ),
                             ],
-                            line: 169,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 167,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -4177,6 +3903,5 @@ input_file: test-data/lua5.4-tests/gengc.lua
                 ],
             ),
         ],
-        line: 169,
-    },
+    ),
 ]

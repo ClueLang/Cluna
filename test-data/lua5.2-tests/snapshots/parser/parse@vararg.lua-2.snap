@@ -4,8 +4,8 @@ expression: parsed
 input_file: test-data/lua5.2-tests/vararg.lua
 ---
 [
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -19,12 +19,11 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 1,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "_G",
                     ),
@@ -35,8 +34,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                         "arg",
                     ),
                 ],
-                line: 1,
-            },
+            ),
         ],
         values: [
             [
@@ -45,8 +43,6 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ),
             ],
         ],
-        line: 5,
-        column: 0,
     },
     Function {
         local: false,
@@ -71,8 +67,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         Some(
                                             [
@@ -82,8 +78,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ],
                                         ),
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "select",
                                                     ),
@@ -102,8 +98,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                         ],
                                                     ),
                                                 ],
-                                                line: 6,
-                                            },
+                                            ),
                                         ],
                                     ),
                                     (
@@ -115,13 +110,9 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         ],
                                     ),
                                 ],
-                                line: 6,
-                                column: 15,
-                            },
+                            ),
                         ],
                     ],
-                    line: 7,
-                    column: 0,
                 },
                 ForLoop {
                     iter: "i",
@@ -136,8 +127,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "arg",
                                 ),
@@ -148,23 +139,22 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "n",
                                 ),
                             ],
-                            line: 7,
-                        },
+                        ),
                     ],
                     step: None,
                     code: CodeBlock {
                         start: 24,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
@@ -173,30 +163,28 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                         ),
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "i",
                                                                         ),
                                                                     ],
-                                                                    line: 7,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                         Symbol(
                                                             "]",
                                                         ),
                                                     ],
-                                                    line: 7,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "==",
                                                         true,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "arg",
                                                         ),
@@ -205,40 +193,35 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                         ),
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "i",
                                                                         ),
                                                                     ],
-                                                                    line: 7,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                         Symbol(
                                                             "]",
                                                         ),
                                                     ],
-                                                    line: 7,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 7,
-                            },
+                            ),
                         ],
                         end: 37,
                     },
-                    line: 7,
-                    column: 22,
                 },
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "arg",
                                         ),
@@ -249,8 +232,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             "n",
                                         ),
                                     ],
-                                    line: 8,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -258,8 +240,6 @@ input_file: test-data/lua5.2-tests/vararg.lua
             ],
             end: 58,
         },
-        line: 9,
-        column: 1,
     },
     Function {
         local: false,
@@ -274,22 +254,21 @@ input_file: test-data/lua5.2-tests/vararg.lua
         body: CodeBlock {
             start: 63,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "arg",
                                             ),
                                         ],
-                                        line: 12,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -303,8 +282,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 12,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -314,8 +292,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -325,18 +303,14 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         ],
                                     ),
                                 ],
-                                line: 13,
-                                column: 6,
-                            },
+                            ),
                         ],
                     ],
-                    line: 13,
-                    column: 7,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "x",
                                 ),
@@ -347,8 +321,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "n",
                                 ),
                             ],
-                            line: 13,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -358,18 +331,15 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     false,
                                 ),
                             ),
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "x",
                                     ),
                                 ],
-                                line: 13,
-                            },
+                            ),
                         ],
                     ],
-                    line: 14,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -382,8 +352,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                         [
                             Expr(
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "x",
                                             ),
@@ -394,8 +364,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 "n",
                                             ),
                                         ],
-                                        line: 14,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -416,8 +385,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "x",
                                             ),
@@ -440,8 +409,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 14,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -462,8 +430,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "x",
                                             ),
@@ -486,8 +454,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 14,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -504,39 +471,34 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ),
                                 ],
                             ),
-                            Ident {
-                                expr: [],
-                                line: 14,
-                            },
+                            Ident(
+                                [],
+                            ),
                         ],
                     ],
-                    line: 15,
-                    column: 0,
                 },
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "res",
                                 ),
                             ],
-                            line: 15,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 46,
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "res",
                                             ),
                                         ],
-                                        line: 15,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
@@ -550,28 +512,23 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         ),
                                     ],
                                 ],
-                                line: 15,
-                                column: 3,
                             },
                         ],
                         end: 50,
                     },
                     next: None,
-                    line: 15,
-                    column: 7,
                 },
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "res",
                                         ),
                                     ],
-                                    line: 16,
-                                },
+                                ),
                             ],
                             [
                                 Number(
@@ -589,8 +546,6 @@ input_file: test-data/lua5.2-tests/vararg.lua
             ],
             end: 118,
         },
-        line: 17,
-        column: 1,
     },
     Function {
         local: false,
@@ -609,8 +564,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                     Some(
                         [
                             [
-                                Table {
-                                    data: [
+                                Table(
+                                    [
                                         (
                                             Some(
                                                 [
@@ -620,8 +575,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ],
                                             ),
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "select",
                                                         ),
@@ -640,8 +595,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 19,
-                                                },
+                                                ),
                                             ],
                                         ),
                                         (
@@ -653,9 +607,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ],
                                         ),
                                     ],
-                                    line: 19,
-                                    column: 13,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -663,8 +615,6 @@ input_file: test-data/lua5.2-tests/vararg.lua
             ],
             end: 137,
         },
-        line: 19,
-        column: 19,
     },
     Variable {
         names: [
@@ -687,16 +637,16 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "f",
                                                     ),
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "table",
                                                                         ),
@@ -709,14 +659,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                         Call(
                                                                             [
                                                                                 [
-                                                                                    Ident {
-                                                                                        expr: [
+                                                                                    Ident(
+                                                                                        [
                                                                                             Symbol(
                                                                                                 "args",
                                                                                             ),
                                                                                         ],
-                                                                                        line: 21,
-                                                                                    },
+                                                                                    ),
                                                                                 ],
                                                                                 [
                                                                                     Number(
@@ -729,8 +678,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                                     ),
                                                                                 ],
                                                                                 [
-                                                                                    Ident {
-                                                                                        expr: [
+                                                                                    Ident(
+                                                                                        [
                                                                                             Symbol(
                                                                                                 "args",
                                                                                             ),
@@ -741,20 +690,17 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                                                 "n",
                                                                                             ),
                                                                                         ],
-                                                                                        line: 21,
-                                                                                    },
+                                                                                    ),
                                                                                 ],
                                                                             ],
                                                                         ),
                                                                     ],
-                                                                    line: 21,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 21,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -762,24 +708,20 @@ input_file: test-data/lua5.2-tests/vararg.lua
                         ],
                         end: 163,
                     },
-                    line: 21,
-                    column: 26,
                 },
             ],
         ],
-        line: 21,
-        column: 26,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
@@ -787,8 +729,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     [],
                                 ),
                             ],
-                            line: 23,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -807,26 +748,25 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 21,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
                                 Call(
                                     [
                                         [
-                                            Table {
-                                                data: [
+                                            Table(
+                                                [
                                                     (
                                                         None,
                                                         [
@@ -867,9 +807,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                         ],
                                                     ),
                                                 ],
-                                                line: 24,
-                                                column: 11,
-                                            },
+                                            ),
                                         ],
                                         [
                                             Number(
@@ -904,8 +842,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ],
                                 ),
                             ],
-                            line: 24,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -924,26 +861,25 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 23,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
                                 Call(
                                     [
                                         [
-                                            Table {
-                                                data: [
+                                            Table(
+                                                [
                                                     (
                                                         None,
                                                         [
@@ -976,14 +912,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                     (
                                                         None,
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "f",
                                                                     ),
                                                                 ],
-                                                                line: 25,
-                                                            },
+                                                            ),
                                                         ],
                                                     ),
                                                     (
@@ -995,9 +930,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                         ],
                                                     ),
                                                 ],
-                                                line: 25,
-                                                column: 15,
-                                            },
+                                            ),
                                         ],
                                         [
                                             Symbol(
@@ -1020,14 +953,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "f",
                                                     ),
                                                 ],
-                                                line: 25,
-                                            },
+                                            ),
                                         ],
                                         [
                                             Symbol(
@@ -1037,8 +969,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ],
                                 ),
                             ],
-                            line: 25,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1057,18 +988,17 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 24,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "c12",
                                 ),
@@ -1097,8 +1027,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ],
                                 ),
                             ],
-                            line: 27,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1117,57 +1046,53 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 25,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 27,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "b",
                     ),
                 ],
-                line: 28,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "call",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "c12",
                                                                 ),
                                                             ],
-                                                            line: 28,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Table {
-                                                            data: [
+                                                        Table(
+                                                            [
                                                                 (
                                                                     None,
                                                                     [
@@ -1195,42 +1120,35 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 28,
-                                                            column: 15,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 28,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 28,
-                },
+                ),
             ],
         ],
-        line: 28,
-        column: 17,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 29,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1251,14 +1169,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "b",
                                 ),
                             ],
-                            line: 29,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1277,41 +1194,38 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 28,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 29,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "call",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "c12",
                                             ),
                                         ],
-                                        line: 30,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 None,
                                                 [
@@ -1358,36 +1272,30 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 30,
-                                        column: 15,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 30,
-                },
+                ),
             ],
         ],
-        line: 30,
-        column: 16,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 31,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1408,14 +1316,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "b",
                                 ),
                             ],
-                            line: 31,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1434,41 +1341,38 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 30,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 31,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "call",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "c12",
                                             ),
                                         ],
-                                        line: 32,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 None,
                                                 [
@@ -1515,22 +1419,17 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 32,
-                                        column: 15,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 32,
-                },
+                ),
             ],
         ],
-        line: 32,
-        column: 16,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
@@ -1543,30 +1442,28 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 false,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 33,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 32,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "c12",
                                 ),
@@ -1605,8 +1502,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ],
                                 ),
                             ],
-                            line: 34,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1620,8 +1516,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 33,
-    },
+    ),
     Variable {
         names: [
             (
@@ -1631,45 +1526,43 @@ input_file: test-data/lua5.2-tests/vararg.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "vararg",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "call",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "next",
                                                                 ),
                                                             ],
-                                                            line: 35,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Table {
-                                                            data: [
+                                                        Table(
+                                                            [
                                                                 (
                                                                     None,
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "_G",
                                                                                 ),
                                                                             ],
-                                                                            line: 35,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ),
                                                                 (
@@ -1700,25 +1593,19 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 35,
-                                                            column: 18,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 35,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 35,
-                },
+                ),
             ],
         ],
-        line: 36,
-        column: 0,
     },
     Variable {
         names: [
@@ -1733,43 +1620,39 @@ input_file: test-data/lua5.2-tests/vararg.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "next",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "_G",
                                             ),
                                         ],
-                                        line: 36,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 36,
-                },
+                ),
             ],
         ],
-        line: 36,
-        column: 9,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -1792,30 +1675,28 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 37,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "b",
                                 ),
                             ],
-                            line: 37,
-                        },
+                        ),
                         Operator(
                             (
                                 "and",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -1838,30 +1719,28 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 37,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "c",
                                 ),
                             ],
-                            line: 37,
-                        },
+                        ),
                         Operator(
                             (
                                 "and",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -1872,8 +1751,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "n",
                                 ),
                             ],
-                            line: 37,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -1892,67 +1770,63 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 36,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 37,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "vararg",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "call",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "call",
                                                                 ),
                                                             ],
-                                                            line: 38,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Table {
-                                                            data: [
+                                                        Table(
+                                                            [
                                                                 (
                                                                     None,
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "c12",
                                                                                 ),
                                                                             ],
-                                                                            line: 38,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ),
                                                                 (
                                                                     None,
                                                                     [
-                                                                        Table {
-                                                                            data: [
+                                                                        Table(
+                                                                            [
                                                                                 (
                                                                                     None,
                                                                                     [
@@ -1980,42 +1854,34 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                                     ],
                                                                                 ),
                                                                             ],
-                                                                            line: 38,
-                                                                            column: 16,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 38,
-                                                            column: 17,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 38,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 38,
-                },
+                ),
             ],
         ],
-        line: 38,
-        column: 19,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -2026,8 +1892,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "n",
                                 ),
                             ],
-                            line: 39,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2048,8 +1913,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -2072,8 +1937,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 39,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2094,8 +1958,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -2118,8 +1982,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 39,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2138,41 +2001,38 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 38,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 39,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "call",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "print",
                                             ),
                                         ],
-                                        line: 40,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Table {
-                                        data: [
+                                    Table(
+                                        [
                                             (
                                                 None,
                                                 [
@@ -2182,36 +2042,30 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 40,
-                                        column: 9,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 40,
-                },
+                ),
             ],
         ],
-        line: 40,
-        column: 10,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 41,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2225,8 +2079,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 40,
-    },
+    ),
     Variable {
         names: [
             (
@@ -2236,8 +2089,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
         ],
         values: [
             [
-                Table {
-                    data: [
+                Table(
+                    [
                         (
                             None,
                             [
@@ -2265,13 +2118,9 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 43,
-                    column: 8,
-                },
+                ),
             ],
         ],
-        line: 44,
-        column: 0,
     },
     Function {
         local: false,
@@ -2301,8 +2150,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -2312,20 +2161,16 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         ],
                                     ),
                                 ],
-                                line: 44,
-                                column: 6,
-                            },
+                            ),
                         ],
                     ],
-                    line: 44,
-                    column: 7,
                 },
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "self",
                                         ),
@@ -2343,8 +2188,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             "]",
                                         ),
                                     ],
-                                    line: 44,
-                                },
+                                ),
                                 Operator(
                                     (
                                         "+",
@@ -2357,14 +2201,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         false,
                                     ),
                                 ),
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "arg",
                                         ),
                                     ],
-                                    line: 44,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -2372,19 +2215,17 @@ input_file: test-data/lua5.2-tests/vararg.lua
             ],
             end: 458,
         },
-        line: 44,
-        column: 23,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
@@ -2419,8 +2260,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ],
                                 ),
                             ],
-                            line: 45,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2441,8 +2281,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
@@ -2467,8 +2307,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     ],
                                 ),
                             ],
-                            line: 45,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2487,10 +2326,9 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 44,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -2504,18 +2342,16 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 45,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "lim",
                     ),
                 ],
-                line: 46,
-            },
+            ),
         ],
         values: [
             [
@@ -2529,8 +2365,6 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ),
             ],
         ],
-        line: 49,
-        column: 0,
     },
     Variable {
         names: [
@@ -2555,48 +2389,42 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ),
             ],
             [
-                Table {
-                    data: [],
-                    line: 49,
-                    column: 9,
-                },
+                Table(
+                    [],
+                ),
             ],
         ],
-        line: 50,
-        column: 0,
     },
     WhileLoop {
         condition: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "i",
                     ),
                 ],
-                line: 50,
-            },
+            ),
             Operator(
                 (
                     "<=",
                     true,
                 ),
             ),
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "lim",
                     ),
                 ],
-                line: 50,
-            },
+            ),
         ],
         body: CodeBlock {
             start: 501,
             code: [
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -2605,33 +2433,30 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 ),
                                 Expr(
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "i",
                                                 ),
                                             ],
-                                            line: 50,
-                                        },
+                                        ),
                                     ],
                                 ),
                                 Symbol(
                                     "]",
                                 ),
                             ],
-                            line: 50,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "i",
                                     ),
                                 ],
-                                line: 50,
-                            },
+                            ),
                             Operator(
                                 (
                                     "+",
@@ -2648,30 +2473,26 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ),
                         ],
                     ],
-                    line: 50,
-                    column: 9,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "i",
                                 ),
                             ],
-                            line: 50,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "i",
                                     ),
                                 ],
-                                line: 50,
-                            },
+                            ),
                             Operator(
                                 (
                                     "+",
@@ -2688,14 +2509,10 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ),
                         ],
                     ],
-                    line: 50,
-                    column: 14,
                 },
             ],
             end: 516,
         },
-        line: 50,
-        column: 20,
     },
     Function {
         local: false,
@@ -2723,8 +2540,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [
+                            Table(
+                                [
                                     (
                                         None,
                                         [
@@ -2734,30 +2551,25 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         ],
                                     ),
                                 ],
-                                line: 53,
-                                column: 6,
-                            },
+                            ),
                         ],
                     ],
-                    line: 53,
-                    column: 6,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "a",
                                             ),
                                         ],
-                                        line: 54,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2778,8 +2590,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "more",
                                             ),
@@ -2802,8 +2614,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 54,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2824,8 +2635,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "more",
                                             ),
@@ -2834,14 +2645,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "lim",
                                                             ),
                                                         ],
-                                                        line: 55,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "-",
@@ -2862,22 +2672,20 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 54,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "lim",
                                             ),
                                         ],
-                                        line: 55,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "+",
@@ -2904,8 +2712,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "more",
                                             ),
@@ -2914,14 +2722,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "lim",
                                                             ),
                                                         ],
-                                                        line: 55,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "-",
@@ -2942,19 +2749,15 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 55,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 53,
-                },
+                ),
             ],
             end: 568,
         },
-        line: 56,
-        column: 1,
     },
     Function {
         local: false,
@@ -2971,22 +2774,21 @@ input_file: test-data/lua5.2-tests/vararg.lua
         body: CodeBlock {
             start: 577,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "a",
                                             ),
                                         ],
-                                        line: 59,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3007,14 +2809,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "b",
                                             ),
                                         ],
-                                        line: 59,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3035,14 +2836,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "c",
                                             ),
                                         ],
-                                        line: 59,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3061,111 +2861,96 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 59,
-                },
+                ),
             ],
             end: 592,
         },
-        line: 60,
-        column: 1,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "call",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
                             ],
-                            line: 62,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 62,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 60,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "call",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "g",
                                 ),
                             ],
-                            line: 63,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 63,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 62,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 63,
-            },
+            ),
         ],
         values: [
             [
-                Table {
-                    data: [],
-                    line: 65,
-                    column: 4,
-                },
+                Table(
+                    [],
+                ),
             ],
         ],
-        line: 65,
-        column: 4,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "i",
                     ),
                 ],
-                line: 65,
-            },
+            ),
         ],
         values: [
             [
@@ -3179,41 +2964,37 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ),
             ],
         ],
-        line: 67,
-        column: 0,
     },
     WhileLoop {
         condition: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "i",
                     ),
                 ],
-                line: 67,
-            },
+            ),
             Operator(
                 (
                     "<=",
                     true,
                 ),
             ),
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "lim",
                     ),
                 ],
-                line: 67,
-            },
+            ),
         ],
         body: CodeBlock {
             start: 616,
             code: [
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -3222,59 +3003,52 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 ),
                                 Expr(
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "i",
                                                 ),
                                             ],
-                                            line: 67,
-                                        },
+                                        ),
                                     ],
                                 ),
                                 Symbol(
                                     "]",
                                 ),
                             ],
-                            line: 67,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "i",
                                     ),
                                 ],
-                                line: 67,
-                            },
+                            ),
                         ],
                     ],
-                    line: 67,
-                    column: 7,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "i",
                                 ),
                             ],
-                            line: 67,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "i",
                                     ),
                                 ],
-                                line: 67,
-                            },
+                            ),
                             Operator(
                                 (
                                     "+",
@@ -3291,33 +3065,29 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ),
                         ],
                     ],
-                    line: 67,
-                    column: 12,
                 },
             ],
             end: 629,
         },
-        line: 67,
-        column: 18,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "call",
                                 ),
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "math",
                                                     ),
@@ -3328,46 +3098,41 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                         "max",
                                                     ),
                                                 ],
-                                                line: 68,
-                                            },
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 68,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 68,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "lim",
                                 ),
                             ],
-                            line: 68,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 67,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -3381,8 +3146,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 68,
-    },
+    ),
     Function {
         local: false,
         name: [
@@ -3411,8 +3175,6 @@ input_file: test-data/lua5.2-tests/vararg.lua
             ],
             end: 656,
         },
-        line: 75,
-        column: 10,
     },
     Function {
         local: false,
@@ -3437,25 +3199,22 @@ input_file: test-data/lua5.2-tests/vararg.lua
                         ),
                     ],
                     values: [],
-                    line: 78,
-                    column: 2,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "arg",
                                             ),
                                         ],
-                                        line: 79,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -3469,18 +3228,16 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 78,
-                },
+                ),
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "n",
                                 ),
                             ],
-                            line: 80,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -3521,71 +3278,65 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                         ),
                                     ],
                                 ],
-                                line: 82,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 82,
-                                            },
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
                                                 ],
-                                                line: 82,
-                                            },
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "c",
                                                     ),
                                                 ],
-                                                line: 82,
-                                            },
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "d",
                                                     ),
                                                 ],
-                                                line: 82,
-                                            },
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "oneless",
                                                     ),
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "oneless",
                                                                         ),
                                                                         Call(
                                                                             [
                                                                                 [
-                                                                                    Ident {
-                                                                                        expr: [
+                                                                                    Ident(
+                                                                                        [
                                                                                             Symbol(
                                                                                                 "oneless",
                                                                                             ),
@@ -3599,20 +3350,17 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                                                 ],
                                                                                             ),
                                                                                         ],
-                                                                                        line: 82,
-                                                                                    },
+                                                                                    ),
                                                                                 ],
                                                                             ],
                                                                         ),
                                                                     ],
-                                                                    line: 82,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 82,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -3628,41 +3376,37 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 code: [
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "n",
                                                     ),
                                                 ],
-                                                line: 84,
-                                            },
-                                            Ident {
-                                                expr: [
+                                            ),
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
                                                 ],
-                                                line: 84,
-                                            },
-                                            Ident {
-                                                expr: [
+                                            ),
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 84,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "n",
                                                         ),
                                                     ],
-                                                    line: 84,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "-",
@@ -3684,35 +3428,31 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
                                                     ],
-                                                    line: 84,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 84,
-                                        column: 13,
                                     },
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "assert",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "b",
                                                                 ),
                                                             ],
-                                                            line: 85,
-                                                        },
+                                                        ),
                                                         Operator(
                                                             (
                                                                 "==",
@@ -3726,38 +3466,35 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 84,
-                                    },
+                                    ),
                                     Return(
                                         Some(
                                             [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "f",
                                                             ),
                                                             Call(
                                                                 [
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "n",
                                                                                 ),
                                                                             ],
-                                                                            line: 86,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "a",
                                                                                 ),
                                                                             ],
-                                                                            line: 86,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                     [
                                                                         Symbol(
@@ -3767,8 +3504,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                 ],
                                                             ),
                                                         ],
-                                                        line: 86,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
@@ -3777,74 +3513,63 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 end: 70,
                             },
                             next: None,
-                            line: 87,
-                            column: 1,
                         },
                     ),
-                    line: 87,
-                    column: 1,
                 },
             ],
             end: 736,
         },
-        line: 88,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 88,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "b",
                     ),
                 ],
-                line: 90,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "c",
                     ),
                 ],
-                line: 90,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "d",
                     ),
                 ],
-                line: 90,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "e",
                     ),
                 ],
-                line: 90,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "f",
                                             ),
@@ -3913,35 +3638,30 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 90,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 90,
-                },
+                ),
             ],
         ],
-        line: 90,
-        column: 27,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 91,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -3962,14 +3682,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "b",
                                 ),
                             ],
-                            line: 91,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -3990,14 +3709,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "c",
                                 ),
                             ],
-                            line: 91,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4018,14 +3736,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "d",
                                 ),
                             ],
-                            line: 91,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4046,14 +3763,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "e",
                                 ),
                             ],
-                            line: 91,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4072,55 +3788,49 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 90,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 91,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "b",
                     ),
                 ],
-                line: 93,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "c",
                     ),
                 ],
-                line: 93,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "d",
                     ),
                 ],
-                line: 93,
-            },
-            Ident {
-                expr: [
+            ),
+            Ident(
+                [
                     Symbol(
                         "e",
                     ),
                 ],
-                line: 93,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "f",
                         ),
@@ -4139,29 +3849,25 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 93,
-                },
+                ),
             ],
         ],
-        line: 93,
-        column: 14,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 94,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4177,14 +3883,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "b",
                                 ),
                             ],
-                            line: 94,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4200,14 +3905,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "c",
                                 ),
                             ],
-                            line: 94,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4223,14 +3927,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "d",
                                 ),
                             ],
-                            line: 94,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4246,14 +3949,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "e",
                                 ),
                             ],
-                            line: 94,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4267,23 +3969,21 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 93,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "f",
                     ),
                 ],
-                line: 94,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "load",
                         ),
@@ -4297,28 +3997,24 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 98,
-                },
+                ),
             ],
         ],
-        line: 98,
-        column: 4,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "x",
                     ),
                 ],
-                line: 98,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "f",
                         ),
@@ -4347,23 +4043,20 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 99,
-                },
+                ),
             ],
         ],
-        line: 99,
-        column: 8,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "x",
                                 ),
@@ -4386,8 +4079,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 100,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4408,8 +4100,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "x",
                                 ),
@@ -4432,8 +4124,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 100,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4454,8 +4145,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "x",
                                 ),
@@ -4478,8 +4169,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 100,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4493,23 +4183,21 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 99,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "f",
                     ),
                 ],
-                line: 100,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "load",
                         ),
@@ -4523,23 +4211,20 @@ input_file: test-data/lua5.2-tests/vararg.lua
                             ],
                         ),
                     ],
-                    line: 103,
-                },
+                ),
             ],
         ],
-        line: 108,
-        column: 1,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
@@ -4561,43 +4246,38 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ),
                                         ],
                                         [
-                                            Table {
-                                                data: [],
-                                                line: 110,
-                                                column: 12,
-                                            },
+                                            Table(
+                                                [],
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "assert",
                                                     ),
                                                 ],
-                                                line: 110,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 110,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 108,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
@@ -4605,34 +4285,31 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     [],
                                 ),
                             ],
-                            line: 111,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 110,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 111,
-            },
+            ),
         ],
         values: [
             [
-                Table {
-                    data: [
+                Table(
+                    [
                         (
                             None,
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "select",
                                         ),
@@ -4649,8 +4326,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                     ),
                                                 ],
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "table",
                                                             ),
@@ -4663,8 +4340,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                             Call(
                                                                 [
                                                                     [
-                                                                        Table {
-                                                                            data: [
+                                                                        Table(
+                                                                            [
                                                                                 (
                                                                                     None,
                                                                                     [
@@ -4718,34 +4395,26 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                                                                     ],
                                                                                 ),
                                                                             ],
-                                                                            line: 113,
-                                                                            column: 19,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ],
                                                             ),
                                                         ],
-                                                        line: 113,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
                                     ],
-                                    line: 113,
-                                },
+                                ),
                             ],
                         ),
                     ],
-                    line: 113,
-                    column: 21,
-                },
+                ),
             ],
         ],
-        line: 113,
-        column: 21,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
@@ -4758,14 +4427,13 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 false,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 114,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4786,8 +4454,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -4810,8 +4478,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 114,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4832,8 +4499,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -4856,8 +4523,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 114,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4876,28 +4542,26 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 113,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 114,
-            },
+            ),
         ],
         values: [
             [
-                Table {
-                    data: [
+                Table(
+                    [
                         (
                             None,
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "select",
                                         ),
@@ -4916,49 +4580,42 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ],
                                         ),
                                     ],
-                                    line: 115,
-                                },
+                                ),
                             ],
                         ),
                     ],
-                    line: 115,
-                    column: 8,
-                },
+                ),
             ],
         ],
-        line: 115,
-        column: 8,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "next",
                                 ),
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 116,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 116,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -4972,28 +4629,26 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 115,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 116,
-            },
+            ),
         ],
         values: [
             [
-                Table {
-                    data: [
+                Table(
+                    [
                         (
                             None,
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "select",
                                         ),
@@ -5048,29 +4703,24 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ],
                                         ),
                                     ],
-                                    line: 117,
-                                },
+                                ),
                             ],
                         ),
                     ],
-                    line: 117,
-                    column: 15,
-                },
+                ),
             ],
         ],
-        line: 117,
-        column: 15,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -5093,8 +4743,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 118,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -5115,8 +4764,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -5139,8 +4788,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 118,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -5154,28 +4802,26 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 117,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 118,
-            },
+            ),
         ],
         values: [
             [
-                Table {
-                    data: [
+                Table(
+                    [
                         (
                             None,
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "select",
                                         ),
@@ -5230,29 +4876,24 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                             ],
                                         ),
                                     ],
-                                    line: 119,
-                                },
+                                ),
                             ],
                         ),
                     ],
-                    line: 119,
-                    column: 15,
-                },
+                ),
             ],
         ],
-        line: 119,
-        column: 15,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -5275,8 +4916,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 120,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -5297,8 +4937,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -5321,8 +4961,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 120,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -5343,8 +4982,8 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
@@ -5367,8 +5006,7 @@ input_file: test-data/lua5.2-tests/vararg.lua
                                     "]",
                                 ),
                             ],
-                            line: 120,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -5382,24 +5020,22 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 119,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "pcall",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "select",
                                 ),
                             ],
-                            line: 121,
-                        },
+                        ),
                     ],
                     [
                         Number(
@@ -5414,24 +5050,22 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 120,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "pcall",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "select",
                                 ),
                             ],
-                            line: 122,
-                        },
+                        ),
                     ],
                     [
                         Operator(
@@ -5452,10 +5086,9 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 121,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -5469,6 +5102,5 @@ input_file: test-data/lua5.2-tests/vararg.lua
                 ],
             ),
         ],
-        line: 122,
-    },
+    ),
 ]

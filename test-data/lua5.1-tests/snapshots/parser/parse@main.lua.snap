@@ -4,8 +4,8 @@ expression: parsed
 input_file: test-data/lua5.1-tests/main.lua
 ---
 [
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -19,18 +19,17 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 3,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "os",
                                 ),
@@ -44,8 +43,7 @@ input_file: test-data/lua5.1-tests/main.lua
                                     [],
                                 ),
                             ],
-                            line: 5,
-                        },
+                        ),
                         Operator(
                             (
                                 "~=",
@@ -64,23 +62,21 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 3,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "prog",
                     ),
                 ],
-                line: 5,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "os",
                         ),
@@ -94,28 +90,24 @@ input_file: test-data/lua5.1-tests/main.lua
                             [],
                         ),
                     ],
-                    line: 7,
-                },
+                ),
             ],
         ],
-        line: 7,
-        column: 7,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "otherprog",
                     ),
                 ],
-                line: 7,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "os",
                         ),
@@ -129,28 +121,24 @@ input_file: test-data/lua5.1-tests/main.lua
                             [],
                         ),
                     ],
-                    line: 8,
-                },
+                ),
             ],
         ],
-        line: 8,
-        column: 7,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "out",
                     ),
                 ],
-                line: 8,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "os",
                         ),
@@ -164,12 +152,9 @@ input_file: test-data/lua5.1-tests/main.lua
                             [],
                         ),
                     ],
-                    line: 9,
-                },
+                ),
             ],
         ],
-        line: 11,
-        column: 0,
     },
     DoBlock(
         CodeBlock {
@@ -194,13 +179,11 @@ input_file: test-data/lua5.1-tests/main.lua
                             ),
                         ],
                     ],
-                    line: 13,
-                    column: 0,
                 },
                 WhileLoop {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "arg",
                                 ),
@@ -209,47 +192,43 @@ input_file: test-data/lua5.1-tests/main.lua
                                 ),
                                 Expr(
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "i",
                                                 ),
                                             ],
-                                            line: 13,
-                                        },
+                                        ),
                                     ],
                                 ),
                                 Symbol(
                                     "]",
                                 ),
                             ],
-                            line: 13,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 10,
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "i",
                                             ),
                                         ],
-                                        line: 13,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "i",
                                                 ),
                                             ],
-                                            line: 13,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "-",
@@ -266,25 +245,20 @@ input_file: test-data/lua5.1-tests/main.lua
                                         ),
                                     ],
                                 ],
-                                line: 13,
-                                column: 5,
                             },
                         ],
                         end: 16,
                     },
-                    line: 13,
-                    column: 12,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "progname",
                                 ),
                             ],
-                            line: 13,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -297,8 +271,8 @@ input_file: test-data/lua5.1-tests/main.lua
                                     true,
                                 ),
                             ),
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "arg",
                                     ),
@@ -307,14 +281,13 @@ input_file: test-data/lua5.1-tests/main.lua
                                     ),
                                     Expr(
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "i",
                                                     ),
                                                 ],
-                                                line: 14,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "+",
@@ -335,8 +308,7 @@ input_file: test-data/lua5.1-tests/main.lua
                                         "]",
                                     ),
                                 ],
-                                line: 14,
-                            },
+                            ),
                             Operator(
                                 (
                                     "..",
@@ -348,35 +320,31 @@ input_file: test-data/lua5.1-tests/main.lua
                             ),
                         ],
                     ],
-                    line: 14,
-                    column: 12,
                 },
             ],
             end: 65,
         },
     ),
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "progname",
                                 ),
                             ],
-                            line: 16,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 15,
-    },
+    ),
     Variable {
         names: [
             (
@@ -396,46 +364,41 @@ input_file: test-data/lua5.1-tests/main.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "p",
                                             ),
                                         ],
-                                        line: 19,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "p",
                                                 ),
                                             ],
-                                            line: 19,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "or",
                                                 true,
                                             ),
                                         ),
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "prog",
                                                 ),
                                             ],
-                                            line: 19,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 19,
-                                column: 5,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "io",
                                     ),
@@ -448,22 +411,20 @@ input_file: test-data/lua5.1-tests/main.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "p",
                                                         ),
                                                     ],
-                                                    line: 20,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 19,
-                            },
-                            Ident {
-                                expr: [
+                            ),
+                            Ident(
+                                [
                                     Symbol(
                                         "io",
                                     ),
@@ -476,30 +437,28 @@ input_file: test-data/lua5.1-tests/main.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "s",
                                                         ),
                                                     ],
-                                                    line: 21,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 20,
-                            },
-                            Ident {
-                                expr: [
+                            ),
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "io",
                                                         ),
@@ -513,24 +472,18 @@ input_file: test-data/lua5.1-tests/main.lua
                                                             [],
                                                         ),
                                                     ],
-                                                    line: 22,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 21,
-                            },
+                            ),
                         ],
                         end: 104,
                     },
-                    line: 23,
-                    column: 1,
                 },
             ],
         ],
-        line: 25,
-        column: 0,
     },
     Function {
         local: false,
@@ -545,8 +498,8 @@ input_file: test-data/lua5.1-tests/main.lua
         body: CodeBlock {
             start: 109,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "io",
                         ),
@@ -559,20 +512,18 @@ input_file: test-data/lua5.1-tests/main.lua
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "out",
                                             ),
                                         ],
-                                        line: 26,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 26,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -582,8 +533,8 @@ input_file: test-data/lua5.1-tests/main.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "io",
                                     ),
@@ -603,15 +554,12 @@ input_file: test-data/lua5.1-tests/main.lua
                                         ],
                                     ),
                                 ],
-                                line: 27,
-                            },
+                            ),
                         ],
                     ],
-                    line: 27,
-                    column: 9,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "io",
                         ),
@@ -634,18 +582,17 @@ input_file: test-data/lua5.1-tests/main.lua
                             [],
                         ),
                     ],
-                    line: 27,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "os",
                                             ),
@@ -658,64 +605,59 @@ input_file: test-data/lua5.1-tests/main.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "out",
                                                                 ),
                                                             ],
-                                                            line: 29,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 29,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 28,
-                },
+                ),
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "s",
                                 ),
                             ],
-                            line: 30,
-                        },
+                        ),
                         Operator(
                             (
                                 "~=",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
                             ],
-                            line: 30,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 38,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "print",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "string",
                                                         ),
@@ -733,91 +675,81 @@ input_file: test-data/lua5.1-tests/main.lua
                                                                     ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "s",
                                                                             ),
                                                                         ],
-                                                                        line: 30,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "t",
                                                                             ),
                                                                         ],
-                                                                        line: 30,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 30,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 30,
-                            },
+                            ),
                         ],
                         end: 52,
                     },
                     next: None,
-                    line: 30,
-                    column: 19,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "s",
                                             ),
                                         ],
-                                        line: 31,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "t",
                                             ),
                                         ],
-                                        line: 31,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 30,
-                },
+                ),
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "t",
                                         ),
                                     ],
-                                    line: 32,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -825,8 +757,6 @@ input_file: test-data/lua5.1-tests/main.lua
             ],
             end: 170,
         },
-        line: 33,
-        column: 1,
     },
     Function {
         local: false,
@@ -850,8 +780,8 @@ input_file: test-data/lua5.1-tests/main.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "string",
                                     ),
@@ -871,28 +801,24 @@ input_file: test-data/lua5.1-tests/main.lua
                                         ],
                                     ),
                                 ],
-                                line: 36,
-                            },
+                            ),
                         ],
                     ],
-                    line: 36,
-                    column: 9,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "s",
                                 ),
                             ],
-                            line: 36,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "string",
                                     ),
@@ -905,14 +831,13 @@ input_file: test-data/lua5.1-tests/main.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "s",
                                                         ),
                                                     ],
-                                                    line: 37,
-                                                },
+                                                ),
                                             ],
                                             [
                                                 Symbol(
@@ -920,14 +845,13 @@ input_file: test-data/lua5.1-tests/main.lua
                                                 ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "progname",
                                                         ),
                                                     ],
-                                                    line: 37,
-                                                },
+                                                ),
                                             ],
                                             [
                                                 Number(
@@ -942,19 +866,16 @@ input_file: test-data/lua5.1-tests/main.lua
                                         ],
                                     ),
                                 ],
-                                line: 37,
-                            },
+                            ),
                         ],
                     ],
-                    line: 38,
-                    column: 0,
                 },
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "os",
                                         ),
@@ -967,20 +888,18 @@ input_file: test-data/lua5.1-tests/main.lua
                                         Call(
                                             [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "s",
                                                             ),
                                                         ],
-                                                        line: 38,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
                                     ],
-                                    line: 38,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -988,8 +907,6 @@ input_file: test-data/lua5.1-tests/main.lua
             ],
             end: 206,
         },
-        line: 39,
-        column: 1,
     },
     Function {
         local: false,
@@ -1004,16 +921,16 @@ input_file: test-data/lua5.1-tests/main.lua
         body: CodeBlock {
             start: 211,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "auxrun",
                                             ),
@@ -1027,8 +944,7 @@ input_file: test-data/lua5.1-tests/main.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 42,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -1047,13 +963,10 @@ input_file: test-data/lua5.1-tests/main.lua
                             ],
                         ),
                     ],
-                    line: 42,
-                },
+                ),
             ],
             end: 221,
         },
-        line: 43,
-        column: 1,
     },
     Function {
         local: false,
@@ -1068,8 +981,8 @@ input_file: test-data/lua5.1-tests/main.lua
         body: CodeBlock {
             start: 226,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1083,18 +996,17 @@ input_file: test-data/lua5.1-tests/main.lua
                             ],
                         ),
                     ],
-                    line: 46,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "auxrun",
                                             ),
@@ -1108,8 +1020,7 @@ input_file: test-data/lua5.1-tests/main.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 47,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "~=",
@@ -1128,16 +1039,13 @@ input_file: test-data/lua5.1-tests/main.lua
                             ],
                         ),
                     ],
-                    line: 46,
-                },
+                ),
             ],
             end: 240,
         },
-        line: 48,
-        column: 1,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1151,10 +1059,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 48,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1166,22 +1073,20 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "otherprog",
                                 ),
                             ],
-                            line: 52,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 51,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1193,52 +1098,47 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 53,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "otherprog",
                                 ),
                             ],
-                            line: 53,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "otherprog",
                                 ),
                             ],
-                            line: 53,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 53,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 52,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1252,8 +1152,7 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 53,
-    },
+    ),
     Variable {
         names: [
             (
@@ -1268,24 +1167,21 @@ input_file: test-data/lua5.1-tests/main.lua
                 ),
             ],
         ],
-        line: 63,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "a",
                     ),
                 ],
-                line: 63,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "string",
                         ),
@@ -1298,59 +1194,52 @@ input_file: test-data/lua5.1-tests/main.lua
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "a",
                                             ),
                                         ],
-                                        line: 64,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "progname",
                                             ),
                                         ],
-                                        line: 64,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 64,
-                },
+                ),
             ],
         ],
-        line: 64,
-        column: 10,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 65,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 64,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1362,22 +1251,20 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 66,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 65,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1391,10 +1278,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 66,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1406,22 +1292,20 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "otherprog",
                                 ),
                             ],
-                            line: 69,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 68,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1433,32 +1317,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 70,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "otherprog",
                                 ),
                             ],
-                            line: 70,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 69,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1472,10 +1353,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 70,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1487,32 +1367,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 73,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 73,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 72,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1526,10 +1403,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 73,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1543,10 +1419,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 74,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1558,18 +1433,17 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 78,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "string",
                                 ),
@@ -1599,26 +1473,23 @@ input_file: test-data/lua5.1-tests/main.lua
                                     ],
                                 ),
                             ],
-                            line: 78,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 78,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 77,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1632,10 +1503,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 78,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1647,22 +1517,20 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 81,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 79,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1676,10 +1544,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 81,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1693,10 +1560,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 82,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1708,32 +1574,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 89,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 89,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 88,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1747,10 +1610,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 89,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1764,10 +1626,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 90,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1779,32 +1640,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 98,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 98,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 97,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1818,10 +1676,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 98,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1835,32 +1692,29 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 99,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 102,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 101,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1872,32 +1726,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 103,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 103,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 102,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -1911,18 +1762,16 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 103,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "prompt",
                     ),
                 ],
-                line: 104,
-            },
+            ),
         ],
         values: [
             [
@@ -1931,11 +1780,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ),
             ],
         ],
-        line: 106,
-        column: 3,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -1949,10 +1796,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 106,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -1964,50 +1810,46 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prompt",
                                 ),
                             ],
-                            line: 110,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 110,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 110,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 109,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "string",
                                 ),
@@ -2020,14 +1862,13 @@ input_file: test-data/lua5.1-tests/main.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "prompt",
                                                     ),
                                                 ],
-                                                line: 111,
-                                            },
+                                            ),
                                         ],
                                         [
                                             Number(
@@ -2042,8 +1883,7 @@ input_file: test-data/lua5.1-tests/main.lua
                                     ],
                                 ),
                             ],
-                            line: 111,
-                        },
+                        ),
                         Operator(
                             (
                                 "..",
@@ -2057,18 +1897,16 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 110,
-    },
+    ),
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "s",
                     ),
                 ],
-                line: 111,
-            },
+            ),
         ],
         values: [
             [
@@ -2077,24 +1915,21 @@ input_file: test-data/lua5.1-tests/main.lua
                 ),
             ],
         ],
-        line: 126,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "s",
                     ),
                 ],
-                line: 126,
-            },
+            ),
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "string",
                         ),
@@ -2107,14 +1942,13 @@ input_file: test-data/lua5.1-tests/main.lua
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "s",
                                             ),
                                         ],
-                                        line: 127,
-                                    },
+                                    ),
                                 ],
                                 [
                                     Symbol(
@@ -2129,37 +1963,32 @@ input_file: test-data/lua5.1-tests/main.lua
                             ],
                         ),
                     ],
-                    line: 127,
-                },
+                ),
             ],
         ],
-        line: 127,
-        column: 12,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "s",
                                 ),
                             ],
-                            line: 128,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 127,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -2171,32 +2000,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 129,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 129,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 128,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -2210,10 +2036,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 129,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -2227,10 +2052,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 130,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -2242,22 +2066,20 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 133,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 132,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -2273,8 +2095,8 @@ input_file: test-data/lua5.1-tests/main.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "string",
                                 ),
@@ -2287,8 +2109,8 @@ input_file: test-data/lua5.1-tests/main.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "loadstring",
                                                     ),
@@ -2302,22 +2124,19 @@ input_file: test-data/lua5.1-tests/main.lua
                                                         ],
                                                     ),
                                                 ],
-                                                line: 135,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 135,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 133,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -2329,32 +2148,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 136,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 136,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 135,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -2368,10 +2184,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 136,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
@@ -2387,8 +2202,8 @@ input_file: test-data/lua5.1-tests/main.lua
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "string",
                                 ),
@@ -2401,8 +2216,8 @@ input_file: test-data/lua5.1-tests/main.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "loadstring",
                                                     ),
@@ -2416,22 +2231,19 @@ input_file: test-data/lua5.1-tests/main.lua
                                                         ],
                                                     ),
                                                 ],
-                                                line: 139,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 139,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 137,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -2443,32 +2255,29 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 140,
-                        },
+                        ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "out",
                                 ),
                             ],
-                            line: 140,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 139,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -2482,18 +2291,17 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 140,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "prepfile",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "string",
                                 ),
@@ -2511,28 +2319,25 @@ input_file: test-data/lua5.1-tests/main.lua
                                             ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "out",
                                                     ),
                                                 ],
-                                                line: 144,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 144,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 141,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -2544,22 +2349,20 @@ input_file: test-data/lua5.1-tests/main.lua
                         ),
                     ],
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "prog",
                                 ),
                             ],
-                            line: 145,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 144,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkout",
             ),
@@ -2573,18 +2376,17 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 145,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "os",
                                 ),
@@ -2597,36 +2399,33 @@ input_file: test-data/lua5.1-tests/main.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "prog",
                                                     ),
                                                 ],
-                                                line: 148,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 148,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 146,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "os",
                                 ),
@@ -2639,28 +2438,25 @@ input_file: test-data/lua5.1-tests/main.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "otherprog",
                                                     ),
                                                 ],
-                                                line: 149,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 149,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 148,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
@@ -2673,8 +2469,8 @@ input_file: test-data/lua5.1-tests/main.lua
                                 false,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "os",
                                 ),
@@ -2687,28 +2483,25 @@ input_file: test-data/lua5.1-tests/main.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "out",
                                                     ),
                                                 ],
-                                                line: 150,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 150,
-                        },
+                        ),
                     ],
                 ],
             ),
         ],
-        line: 149,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "RUN",
             ),
@@ -2722,10 +2515,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 150,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "NoRun",
             ),
@@ -2739,10 +2531,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 152,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "NoRun",
             ),
@@ -2756,10 +2547,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 154,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "NoRun",
             ),
@@ -2773,10 +2563,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 155,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "NoRun",
             ),
@@ -2790,10 +2579,9 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 156,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -2807,6 +2595,5 @@ input_file: test-data/lua5.1-tests/main.lua
                 ],
             ),
         ],
-        line: 157,
-    },
+    ),
 ]

@@ -1,6 +1,6 @@
 use crate::{
     error::{Diagnostic, DiagnosticLevel},
-    lexer::{Token, TokenType},
+    lexer::{Position, Token, TokenType},
     number::Number,
 };
 use std::{collections::VecDeque, rc::Rc};
@@ -20,52 +20,34 @@ pub enum ComplexToken {
     Variable {
         names: Vec<(Rc<str>, bool)>,
         values: Vec<Expression>,
-        line: usize,
-        column: usize,
     },
     Alter {
         names: Vec<ComplexToken>,
         values: Vec<Expression>,
-        line: usize,
-        column: usize,
     },
-    Table {
-        data: Vec<(Option<Expression>, Expression)>,
-        line: usize,
-        column: usize,
-    },
+    Table(Vec<(Option<Expression>, Expression)>),
     Function {
         local: bool,
         name: Expression,
         args: FunctionArgs,
         body: CodeBlock,
-        line: usize,
-        column: usize,
     },
     Lambda {
         args: FunctionArgs,
         body: CodeBlock,
-        line: usize,
-        column: usize,
     },
     IfStatement {
         condition: Expression,
         body: CodeBlock,
         next: Option<Box<ComplexToken>>,
-        line: usize,
-        column: usize,
     },
     WhileLoop {
         condition: Expression,
         body: CodeBlock,
-        line: usize,
-        column: usize,
     },
     RepeatLoop {
         condition: Expression,
         body: CodeBlock,
-        line: usize,
-        column: usize,
     },
     ForLoop {
         iter: Rc<str>,
@@ -73,8 +55,6 @@ pub enum ComplexToken {
         end: Expression,
         step: Option<Expression>,
         code: CodeBlock,
-        line: usize,
-        column: usize,
     },
     ForFuncLoop {
         iters: Vec<Rc<str>>,
@@ -82,13 +62,8 @@ pub enum ComplexToken {
         stop: Option<Expression>,
         initial: Option<Expression>,
         code: CodeBlock,
-        line: usize,
-        column: usize,
     },
-    Ident {
-        expr: Expression,
-        line: usize,
-    },
+    Ident(Expression),
     MultilineString(Rc<str>),
     Number(Number),
     Symbol(Rc<str>),
@@ -112,8 +87,7 @@ struct Parser<'a> {
     path: Option<String>,
     expr: Expression,
     current: usize,
-    line: usize,
-    column: usize,
+    position: Position,
 }
 
 impl<'a> Parser<'a> {
@@ -122,9 +96,8 @@ impl<'a> Parser<'a> {
         Self {
             tokens,
             path,
-            column: 0,
+            position: Position::new(0, 0, 0..0),
             current: 0,
-            line: 1,
             expr: Expression::with_capacity(16),
         }
     }
@@ -138,14 +111,10 @@ impl<'a> Parser<'a> {
         if self.done() {
             None
         } else {
-            if self.tokens[self.current].line() != self.line {
-                self.line = self.tokens[self.current].line();
-                self.column = 0;
-            }
-            let result = Some(&self.tokens[self.current]);
+            let token = &self.tokens[self.current];
+            self.position = token.position();
             self.current += 1;
-            self.column += 1;
-            result
+            Some(token)
         }
     }
 
@@ -167,8 +136,7 @@ impl<'a> Parser<'a> {
                     error.to_owned(),
                     t.lexeme().to_string(),
                     self.path.clone(),
-                    t.line(),
-                    t.column(),
+                    t.position(),
                 ));
             }
         }
@@ -188,8 +156,7 @@ impl<'a> Parser<'a> {
                     lexeme.to_string(),
                     tocheck.lexeme().to_string(),
                     self.path.clone(),
-                    tocheck.line(),
-                    tocheck.column(),
+                    tocheck.position(),
                 ));
             }
         }
@@ -203,16 +170,14 @@ impl<'a> Parser<'a> {
                 Diagnostic::unexpected(
                     "end of file".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.clone(),
                 )
             })?;
             return Err(Diagnostic::expected_found(
                 error.to_owned(),
                 t.lexeme().to_string(),
                 self.path.clone(),
-                t.line(),
-                t.column(),
+                t.position(),
             ));
         }
         Ok(())
@@ -224,16 +189,14 @@ impl<'a> Parser<'a> {
                 Diagnostic::unexpected(
                     "end of file".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.clone(),
                 )
             })?;
             return Err(Diagnostic::expected_found(
                 error.to_owned(),
                 t.lexeme().to_string(),
                 self.path.clone(),
-                t.line(),
-                t.column(),
+                t.position(),
             ));
         }
         Ok(self.current())
@@ -243,15 +206,10 @@ impl<'a> Parser<'a> {
         if self.current == 0 {
             None
         } else {
-            if self.tokens[self.current - 1].line() != self.line {
-                self.line = self.tokens[self.current].line();
-                self.column = 0;
-            } else {
-                self.column -= 1;
-            }
             self.current -= 1;
-
-            Some(&self.tokens[self.current])
+            let token = &self.tokens[self.current];
+            self.position = token.position();
+            Some(token)
         }
     }
 
@@ -270,6 +228,7 @@ impl<'a> Parser<'a> {
 
     fn find_expressions(&mut self, end: OptionalEnd) -> Result<Vec<Expression>, Diagnostic> {
         let mut exprs = vec![];
+
         loop {
             let expr = self.parse_expression(None)?;
             self.advance_if(TokenType::Comma);
@@ -285,8 +244,7 @@ impl<'a> Parser<'a> {
                             expected_end.to_owned(),
                             t.lexeme().to_string(),
                             self.path.clone(),
-                            t.line(),
-                            t.column(),
+                            t.position(),
                         ));
                     }
                 }
@@ -311,7 +269,6 @@ impl<'a> Parser<'a> {
     }
 
     fn parse_identifier(&mut self) -> Result<ComplexToken, Diagnostic> {
-        let line = self.current().line();
         let mut expr = Expression::with_capacity(8);
 
         loop {
@@ -327,13 +284,12 @@ impl<'a> Parser<'a> {
                     }
                     Dot => {
                         let path = self.path.clone();
-                        let line = self.line;
-                        let column = self.column;
+                        let position = self.position.clone();
 
                         let t = self
                             .advance()
                             .ok_or_else(|| {
-                                Diagnostic::expected("identifier".to_owned(), path, line, column)
+                                Diagnostic::expected("identifier".to_owned(), path, position)
                             })?
                             .clone();
                         if t.kind() != Identifier {
@@ -341,8 +297,7 @@ impl<'a> Parser<'a> {
                                 "identifier".to_owned(),
                                 t.lexeme().to_string(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                self.position.clone(),
                             ));
                         }
                         expr.push_back(ComplexToken::Symbol(".".into()));
@@ -350,12 +305,12 @@ impl<'a> Parser<'a> {
                     }
                     Colon => {
                         let path = self.path.clone();
-                        let line = self.line;
-                        let column = self.column;
+                        let position = self.position.clone();
+
                         let t = self
                             .advance()
                             .ok_or_else(|| {
-                                Diagnostic::expected("identifier".to_owned(), path, line, column)
+                                Diagnostic::expected("identifier".to_owned(), path, position)
                             })?
                             .clone();
                         if t.kind() != Identifier {
@@ -363,8 +318,7 @@ impl<'a> Parser<'a> {
                                 "identifier".to_owned(),
                                 t.lexeme().to_string(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
 
@@ -375,8 +329,7 @@ impl<'a> Parser<'a> {
                                 "'(' or a single argument".to_owned(),
                                 t.lexeme().to_string(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                         expr.push_back(ComplexToken::Symbol(":".into()));
@@ -416,12 +369,12 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Ok(ComplexToken::Ident { expr, line })
+        Ok(ComplexToken::Ident(expr))
     }
 
     fn parse_identifier_statement(&mut self) -> Result<ComplexToken, Diagnostic> {
         let ident = self.parse_identifier()?;
-        let ComplexToken::Ident { expr, .. } = &ident else {unreachable!()};
+        let ComplexToken::Ident(expr) = &ident else {unreachable!()};
 
         if let Some(ComplexToken::Call(_)) = expr.back() {
             return Ok(ident);
@@ -450,28 +403,21 @@ impl<'a> Parser<'a> {
                     "'='".to_owned(),
                     self.current().lexeme().to_string(),
                     self.path.clone(),
-                    self.current().line(),
-                    self.current().column(),
+                    self.current().position(),
                 ));
             }
 
             let values = self.find_expressions(None)?;
             self.advance_if(TokenType::Semicolon);
 
-            return Ok(ComplexToken::Alter {
-                names,
-                values,
-                line: self.line,
-                column: self.column,
-            });
+            return Ok(ComplexToken::Alter { names, values });
         }
 
         Err(Diagnostic::expected_found(
             "assignment or function call".to_owned(),
             self.current().lexeme().to_string(),
             self.path.clone(),
-            self.current().line(),
-            self.current().column(),
+            self.current().position(),
         ))
     }
 
@@ -560,11 +506,7 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Ok(ComplexToken::Table {
-            data,
-            line: self.line,
-            column: self.column,
-        })
+        Ok(ComplexToken::Table(data))
     }
 
     fn parse_code_block_common(scope: &mut usize, in_special_do: &mut bool, t: &Token) -> bool {
@@ -618,8 +560,7 @@ impl<'a> Parser<'a> {
                             return Err(Diagnostic::unexpected(
                                 "'until'".to_owned(),
                                 self.path.clone(),
-                                self.line,
-                                self.column,
+                                self.position.clone(),
                             ));
                         } else {
                             scope -= 1;
@@ -632,8 +573,7 @@ impl<'a> Parser<'a> {
         Err(Diagnostic::expected(
             "'end'".to_owned(),
             self.path.clone(),
-            self.line,
-            self.column,
+            self.position.clone(),
         ))
     }
 
@@ -651,8 +591,7 @@ impl<'a> Parser<'a> {
                             return Err(Diagnostic::unexpected(
                                 "'end'".to_owned(),
                                 self.path.clone(),
-                                self.line,
-                                self.column,
+                                self.position.clone(),
                             ));
                         } else {
                             scope -= 1;
@@ -680,8 +619,7 @@ impl<'a> Parser<'a> {
         Err(Diagnostic::expected(
             "'until'".to_owned(),
             self.path.clone(),
-            self.line,
-            self.column,
+            self.position.clone(),
         ))
     }
 
@@ -726,8 +664,7 @@ impl<'a> Parser<'a> {
                             return Err(Diagnostic::unexpected(
                                 "'until'".to_owned(),
                                 self.path.clone(),
-                                self.line,
-                                self.column,
+                                self.position.clone(),
                             ));
                         } else {
                             scope -= 1;
@@ -741,8 +678,7 @@ impl<'a> Parser<'a> {
         Err(Diagnostic::expected(
             "'end'".to_owned(),
             self.path.clone(),
-            self.line,
-            self.column,
+            self.position.clone(),
         ))
     }
 
@@ -795,8 +731,7 @@ impl<'a> Parser<'a> {
                                 "expression".to_owned(),
                                 t.lexeme().to_string(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                     }
@@ -809,8 +744,7 @@ impl<'a> Parser<'a> {
                                 "expression".to_owned(),
                                 "binary op".to_owned(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                         expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
@@ -820,8 +754,7 @@ impl<'a> Parser<'a> {
                                 "expression".to_owned(),
                                 "binary op".to_owned(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                     }
@@ -842,8 +775,7 @@ impl<'a> Parser<'a> {
                                 "expression".to_owned(),
                                 "binary op".to_owned(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                     }
@@ -864,8 +796,7 @@ impl<'a> Parser<'a> {
                                 "expression".to_owned(),
                                 "binary op".to_owned(),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                     }
@@ -878,12 +809,7 @@ impl<'a> Parser<'a> {
                         let args = self.parse_function_args()?;
                         let body = self.parse_code_block()?;
 
-                        expr.push_back(ComplexToken::Lambda {
-                            args,
-                            body,
-                            line: self.line,
-                            column: self.column,
-                        });
+                        expr.push_back(ComplexToken::Lambda { args, body });
 
                         if self.check_val() {
                             break t;
@@ -919,8 +845,7 @@ impl<'a> Parser<'a> {
                 "expression".to_owned(),
                 last.lexeme().to_string(),
                 self.path.clone(),
-                last.line(),
-                last.column(),
+                last.position(),
             ));
         }
 
@@ -936,18 +861,23 @@ impl<'a> Parser<'a> {
             let name = self
                 .assert_advance(TokenType::Identifier, "<name>")?
                 .clone();
-            let line = name.line();
-            let column = name.column();
+
             let lexeme = name.lexeme();
             let peek = self.peek().clone();
 
             if peek.map_or(false, |t| t.kind() == TokenType::LessThan) {
-                self.advance();
+                let start = self.advance().unwrap().clone();
                 let kind = self
                     .assert_advance(TokenType::Identifier, "<specifier>")?
                     .clone();
                 let kind = kind.lexeme();
                 self.assert(TokenType::GreaterThan, ">")?;
+
+                let position = Position::new(
+                    start.line(),
+                    start.column(),
+                    start.span().start..self.current().span().end,
+                );
 
                 if kind.as_symbol().as_ref() == "const" {
                     names.push((lexeme.as_symbol(), false));
@@ -957,8 +887,7 @@ impl<'a> Parser<'a> {
                             "const variables are not supported in clue, ignoring const specifier"
                                 .to_owned(),
                             self.path.clone(),
-                            line,
-                            column
+                            position,
                         )
                         .level(DiagnosticLevel::Warning)
                     );
@@ -969,8 +898,7 @@ impl<'a> Parser<'a> {
                         Diagnostic::new(
                             "to-be-closed variables are not supported in clue, ignoring const specifier. Manual close calls will be added at the end of the scope, so variable shadowing will cause side effects".to_owned(),
                             self.path.clone(),
-                            line,
-                            column
+                            position
                         ).level(DiagnosticLevel::Warning)
                     );
                 } else {
@@ -978,8 +906,7 @@ impl<'a> Parser<'a> {
                         "'const' or 'close'".to_owned(),
                         kind.to_string(),
                         self.path.clone(),
-                        line,
-                        column,
+                        position,
                     ));
                 }
             } else {
@@ -998,12 +925,7 @@ impl<'a> Parser<'a> {
         };
         self.advance_if(TokenType::Semicolon);
 
-        Ok(ComplexToken::Variable {
-            names,
-            values,
-            line: self.line,
-            column: self.column,
-        })
+        Ok(ComplexToken::Variable { names, values })
     }
 
     fn parse_function_args(&mut self) -> Result<FunctionArgs, Diagnostic> {
@@ -1026,8 +948,7 @@ impl<'a> Parser<'a> {
                             "identifier".to_owned(),
                             t.lexeme().to_string(),
                             self.path.clone(),
-                            t.line(),
-                            t.column(),
+                            t.position(),
                         ));
                     }
                 }
@@ -1046,8 +967,7 @@ impl<'a> Parser<'a> {
                             "',' or ')'".to_owned(),
                             t.lexeme().to_string(),
                             path,
-                            t.line(),
-                            t.column(),
+                            t.position(),
                         ));
                     }
                 }
@@ -1055,8 +975,7 @@ impl<'a> Parser<'a> {
                 return Err(Diagnostic::expected(
                     "'<args>'".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.clone(),
                 ));
             }
         }
@@ -1070,13 +989,17 @@ impl<'a> Parser<'a> {
 
             let mut expr = Expression::new();
             let path = self.path.clone();
-            let line = self.line;
-            let column = self.column;
+            let position = self.position.clone();
+
             loop {
                 let t = self
                     .advance()
                     .ok_or_else(|| {
-                        Diagnostic::unexpected("end of file".to_owned(), path.clone(), line, column)
+                        Diagnostic::unexpected(
+                            "end of file".to_owned(),
+                            path.clone(),
+                            position.clone(),
+                        )
                     })?
                     .clone();
 
@@ -1086,16 +1009,14 @@ impl<'a> Parser<'a> {
                             Diagnostic::unexpected(
                                 "end of file".to_owned(),
                                 self.path.clone(),
-                                self.line,
-                                self.column,
+                                self.position.clone(),
                             )
                         })?;
                         if nt.kind() == Identifier {
                             return Err(Diagnostic::unexpected(
                                 nt.lexeme().to_string(),
                                 self.path.clone(),
-                                nt.line(),
-                                nt.column(),
+                                nt.position(),
                             ));
                         }
                         expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
@@ -1110,8 +1031,7 @@ impl<'a> Parser<'a> {
                             return Err(Diagnostic::new(
                                 format!("{} should only be used when indexing", t.lexeme()),
                                 self.path.clone(),
-                                t.line(),
-                                t.column(),
+                                t.position(),
                             ));
                         }
                     }
@@ -1121,8 +1041,7 @@ impl<'a> Parser<'a> {
                             "identifier, ':' or '.'".to_string(),
                             t.lexeme().to_string(),
                             self.path.clone(),
-                            t.line(),
-                            t.column(),
+                            t.position(),
                         ))
                     }
                 }
@@ -1138,8 +1057,6 @@ impl<'a> Parser<'a> {
             name,
             args,
             body,
-            line: self.line,
-            column: self.column,
         })
     }
 
@@ -1155,8 +1072,6 @@ impl<'a> Parser<'a> {
                     condition: Expression::new(),
                     body,
                     next: None,
-                    line: self.line,
-                    column: self.column,
                 }))
             }
             TokenType::ElseIf => Some(Box::new(self.parse_if_else_chain()?)),
@@ -1166,8 +1081,7 @@ impl<'a> Parser<'a> {
                     "'else', 'elseif' or 'end'".to_owned(),
                     self.current().lexeme().to_string(),
                     self.path.clone(),
-                    self.current().line(),
-                    self.current().column(),
+                    self.current().position(),
                 ))
             }
         };
@@ -1176,8 +1090,6 @@ impl<'a> Parser<'a> {
             condition,
             body,
             next,
-            line: self.line,
-            column: self.column,
         })
     }
 
@@ -1203,19 +1115,17 @@ impl<'a> Parser<'a> {
                             "1 iter in numeric for loop identifier".to_owned(),
                             iters.len().to_string(),
                             self.path.clone(),
-                            t.line(),
-                            t.column(),
+                            t.position(),
                         ));
                     }
                     break;
                 }
                 _ => {
                     return Err(Diagnostic::expected_found(
-                        "Expected identifier, ',' or 'in'".to_owned(),
+                        "expected identifier, ',' or 'in'".to_owned(),
                         t.lexeme().to_string(),
                         self.path.clone(),
-                        t.line(),
-                        t.column(),
+                        t.position(),
                     ))
                 }
             }
@@ -1244,8 +1154,6 @@ impl<'a> Parser<'a> {
                 stop,
                 initial,
                 code,
-                line: self.line,
-                column: self.column,
             })
         } else {
             let start = self.parse_expression(Some((TokenType::Comma, ",")))?;
@@ -1266,8 +1174,6 @@ impl<'a> Parser<'a> {
                 end,
                 step,
                 code,
-                line: self.line,
-                column: self.column,
             })
         }
     }
@@ -1296,8 +1202,7 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                         "function or identifier".to_owned(),
                         parser.peek().unwrap().lexeme().to_string(),
                         parser.path.clone(),
-                        parser.peek().unwrap().line(),
-                        parser.peek().unwrap().column(),
+                        parser.peek().unwrap().position(),
                     ));
                 }
             },
@@ -1312,7 +1217,7 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                 parser.expr.push_back(ComplexToken::Expr(expr));
                 parser.advance();
                 let call = parser.parse_identifier()?;
-                let ComplexToken::Ident {expr, ..} = &call else {unreachable!()};
+                let ComplexToken::Ident (expr) = &call else {unreachable!()};
 
                 if let Some(ComplexToken::Call(_)) = expr.back() {
                     parser.expr.push_back(call);
@@ -1321,8 +1226,7 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                         Diagnostic::unexpected(
                             "end of file".to_owned(),
                             parser.path.clone(),
-                            parser.line,
-                            parser.column,
+                            parser.position,
                         )
                     })?;
 
@@ -1330,8 +1234,7 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                         "function call".to_owned(),
                         token.lexeme().to_string(),
                         parser.path.clone(),
-                        token.line(),
-                        token.column(),
+                        token.position(),
                     ));
                 }
 
@@ -1350,12 +1253,9 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                 parser.advance();
 
                 let body = parser.parse_code_block()?;
-                parser.expr.push_back(ComplexToken::WhileLoop {
-                    condition,
-                    body,
-                    line: parser.line,
-                    column: parser.column,
-                });
+                parser
+                    .expr
+                    .push_back(ComplexToken::WhileLoop { condition, body });
             }
             For => {
                 let for_loop = parser.parse_for_loop()?;
@@ -1364,12 +1264,9 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
             Repeat => {
                 let body = parser.parse_repeat_block()?;
                 let condition = parser.parse_expression(None)?;
-                parser.expr.push_back(ComplexToken::RepeatLoop {
-                    condition,
-                    body,
-                    line: parser.line,
-                    column: parser.column,
-                });
+                parser
+                    .expr
+                    .push_back(ComplexToken::RepeatLoop { condition, body });
             }
             Break => {
                 parser.expr.push_back(ComplexToken::Break);
@@ -1392,10 +1289,9 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
 
                 if !parser.done() {
                     return Err(Diagnostic::new(
-                        "Return must be the last statement in a block".to_owned(),
+                        "return must be the last statement in a block".to_owned(),
                         parser.path.clone(),
-                        parser.line,
-                        parser.column,
+                        parser.position,
                     ));
                 }
                 parser.expr.push_back(ComplexToken::Return(exprs));
@@ -1407,8 +1303,7 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
             _ => Err(Diagnostic::unexpected(
                 token.lexeme().to_string(),
                 parser.path.clone(),
-                token.line(),
-                token.column(),
+                token.position(),
             ))?,
         }
         parser.advance_if(TokenType::Semicolon);

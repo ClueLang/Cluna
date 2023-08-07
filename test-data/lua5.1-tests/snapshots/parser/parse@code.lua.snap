@@ -6,14 +6,13 @@ input_file: test-data/lua5.1-tests/code.lua
 [
     IfStatement {
         condition: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "T",
                     ),
                 ],
-                line: 2,
-            },
+            ),
             Operator(
                 (
                     "==",
@@ -29,32 +28,30 @@ input_file: test-data/lua5.1-tests/code.lua
             code: [
                 Expr(
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "Message",
                                 ),
                             ],
-                            line: 3,
-                        },
+                        ),
                         Operator(
                             (
                                 "or",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "print",
                                 ),
                             ],
-                            line: 3,
-                        },
+                        ),
                     ],
                 ),
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Call(
                             [
                                 [
@@ -65,8 +62,7 @@ input_file: test-data/lua5.1-tests/code.lua
                             ],
                         ),
                     ],
-                    line: 3,
-                },
+                ),
                 Return(
                     None,
                 ),
@@ -74,11 +70,9 @@ input_file: test-data/lua5.1-tests/code.lua
             end: 15,
         },
         next: None,
-        line: 5,
-        column: 1,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -92,8 +86,7 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 5,
-    },
+    ),
     DoBlock(
         CodeBlock {
             start: 18,
@@ -118,14 +111,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                     "w",
                                 ],
                                 expr: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "a",
                                             ),
                                         ],
-                                        line: 12,
-                                    },
+                                    ),
                                 ],
                                 stop: None,
                                 initial: None,
@@ -134,14 +126,10 @@ input_file: test-data/lua5.1-tests/code.lua
                                     code: [],
                                     end: 10,
                                 },
-                                line: 12,
-                                column: 10,
                             },
                         ],
                         end: 17,
                     },
-                    line: 13,
-                    column: 1,
                 },
             ],
             end: 36,
@@ -170,8 +158,8 @@ input_file: test-data/lua5.1-tests/code.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -184,24 +172,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "f",
                                                         ),
                                                     ],
-                                                    line: 18,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 18,
-                            },
+                            ),
                         ],
                     ],
-                    line: 19,
-                    column: 0,
                 },
                 ForLoop {
                     iter: "i",
@@ -216,8 +200,8 @@ input_file: test-data/lua5.1-tests/code.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "arg",
                                 ),
@@ -228,23 +212,22 @@ input_file: test-data/lua5.1-tests/code.lua
                                     "n",
                                 ),
                             ],
-                            line: 19,
-                        },
+                        ),
                     ],
                     step: None,
                     code: CodeBlock {
                         start: 18,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "string",
                                                         ),
@@ -257,8 +240,8 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         Call(
                                                             [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "c",
                                                                             ),
@@ -267,22 +250,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                             ),
                                                                             Expr(
                                                                                 [
-                                                                                    Ident {
-                                                                                        expr: [
+                                                                                    Ident(
+                                                                                        [
                                                                                             Symbol(
                                                                                                 "i",
                                                                                             ),
                                                                                         ],
-                                                                                        line: 21,
-                                                                                    },
+                                                                                    ),
                                                                                 ],
                                                                             ),
                                                                             Symbol(
                                                                                 "]",
                                                                             ),
                                                                         ],
-                                                                        line: 21,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 [
                                                                     Symbol(
@@ -294,8 +275,8 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                             true,
                                                                         ),
                                                                     ),
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "arg",
                                                                             ),
@@ -304,22 +285,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                             ),
                                                                             Expr(
                                                                                 [
-                                                                                    Ident {
-                                                                                        expr: [
+                                                                                    Ident(
+                                                                                        [
                                                                                             Symbol(
                                                                                                 "i",
                                                                                             ),
                                                                                         ],
-                                                                                        line: 21,
-                                                                                    },
+                                                                                    ),
                                                                                 ],
                                                                             ),
                                                                             Symbol(
                                                                                 "]",
                                                                             ),
                                                                         ],
-                                                                        line: 21,
-                                                                    },
+                                                                    ),
                                                                     Operator(
                                                                         (
                                                                             "..",
@@ -333,30 +312,26 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 21,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 21,
-                            },
+                            ),
                         ],
                         end: 40,
                     },
-                    line: 22,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "c",
                                             ),
@@ -365,8 +340,8 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "arg",
                                                             ),
@@ -377,8 +352,7 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                 "n",
                                                             ),
                                                         ],
-                                                        line: 23,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "+",
@@ -399,8 +373,7 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 "]",
                                             ),
                                         ],
-                                        line: 23,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -414,13 +387,10 @@ input_file: test-data/lua5.1-tests/code.lua
                             ],
                         ),
                     ],
-                    line: 22,
-                },
+                ),
             ],
             end: 97,
         },
-        line: 24,
-        column: 1,
     },
     Function {
         local: false,
@@ -438,19 +408,18 @@ input_file: test-data/lua5.1-tests/code.lua
             code: [
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "a",
                                 ),
                             ],
-                            line: 28,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -463,40 +432,35 @@ input_file: test-data/lua5.1-tests/code.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
                                                     ],
-                                                    line: 28,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 28,
-                            },
+                            ),
                         ],
                     ],
-                    line: 28,
-                    column: 8,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "b",
                                 ),
                             ],
-                            line: 28,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -509,24 +473,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
                                                     ],
-                                                    line: 29,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 29,
-                            },
+                            ),
                         ],
                     ],
-                    line: 30,
-                    column: 0,
                 },
                 ForLoop {
                     iter: "i",
@@ -541,8 +501,8 @@ input_file: test-data/lua5.1-tests/code.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "table",
                                 ),
@@ -555,20 +515,18 @@ input_file: test-data/lua5.1-tests/code.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 30,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 30,
-                        },
+                        ),
                     ],
                     step: None,
                     code: CodeBlock {
@@ -576,8 +534,8 @@ input_file: test-data/lua5.1-tests/code.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "a",
                                             ),
@@ -586,27 +544,25 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "i",
                                                             ),
                                                         ],
-                                                        line: 31,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
                                             Symbol(
                                                 "]",
                                             ),
                                         ],
-                                        line: 31,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "string",
                                                 ),
@@ -619,8 +575,8 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "a",
                                                                     ),
@@ -629,22 +585,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                     ),
                                                                     Expr(
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "i",
                                                                                     ),
                                                                                 ],
-                                                                                line: 31,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ),
                                                                     Symbol(
                                                                         "]",
                                                                     ),
                                                                 ],
-                                                                line: 31,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -659,17 +613,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 31,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 31,
-                                column: 18,
                             },
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "b",
                                             ),
@@ -678,27 +629,25 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "i",
                                                             ),
                                                         ],
-                                                        line: 32,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
                                             Symbol(
                                                 "]",
                                             ),
                                         ],
-                                        line: 31,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "string",
                                                 ),
@@ -711,8 +660,8 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "b",
                                                                     ),
@@ -721,22 +670,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                     ),
                                                                     Expr(
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "i",
                                                                                     ),
                                                                                 ],
-                                                                                line: 32,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ),
                                                                     Symbol(
                                                                         "]",
                                                                     ),
                                                                 ],
-                                                                line: 32,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -751,23 +698,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 32,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 32,
-                                column: 18,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
@@ -776,30 +720,28 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         ),
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "i",
                                                                         ),
                                                                     ],
-                                                                    line: 33,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                         Symbol(
                                                             "]",
                                                         ),
                                                     ],
-                                                    line: 33,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "==",
                                                         true,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
@@ -808,42 +750,35 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         ),
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "i",
                                                                         ),
                                                                     ],
-                                                                    line: 33,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                         Symbol(
                                                             "]",
                                                         ),
                                                     ],
-                                                    line: 33,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 32,
-                            },
+                            ),
                         ],
                         end: 77,
                     },
-                    line: 34,
-                    column: 1,
                 },
             ],
             end: 182,
         },
-        line: 35,
-        column: 1,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -864,23 +799,21 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     code: [],
                                                     end: 5,
                                                 },
-                                                line: 40,
-                                                column: 5,
                                             },
                                         ],
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Call(
                                                 [
                                                     [
-                                                        Table {
-                                                            data: [
+                                                        Table(
+                                                            [
                                                                 (
                                                                     None,
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "f",
                                                                                 ),
@@ -888,25 +821,19 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                                     [],
                                                                                 ),
                                                                             ],
-                                                                            line: 40,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 40,
-                                                            column: 11,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 40,
-                                    },
+                                    ),
                                 ],
                                 end: 199,
                             },
-                            line: 41,
-                            column: 1,
                         },
                     ],
                     [
@@ -947,10 +874,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 35,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -978,8 +904,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 46,
-                                        column: 6,
                                     },
                                     Variable {
                                         names: [
@@ -989,8 +913,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 47,
-                                        column: 3,
                                     },
                                     Variable {
                                         names: [
@@ -1000,19 +922,16 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 47,
-                                        column: 6,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 47,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -1021,19 +940,16 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 48,
-                                        column: 4,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "d",
                                                     ),
                                                 ],
-                                                line: 48,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -1042,14 +958,10 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 48,
-                                        column: 7,
                                     },
                                 ],
                                 end: 239,
                             },
-                            line: 49,
-                            column: 1,
                         },
                     ],
                     [
@@ -1060,10 +972,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 41,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1083,14 +994,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                         Some(
                                             [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 53,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
@@ -1098,8 +1008,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 255,
                             },
-                            line: 53,
-                            column: 13,
                         },
                     ],
                     [
@@ -1110,10 +1018,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 49,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1159,20 +1066,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 57,
-                                                    column: 5,
                                                 },
                                             ],
                                             end: 9,
                                         },
-                                        line: 57,
-                                        column: 9,
                                     },
                                 ],
                                 end: 273,
                             },
-                            line: 57,
-                            column: 15,
                         },
                     ],
                     [
@@ -1193,10 +1094,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 53,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1247,20 +1147,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 60,
-                                                    column: 5,
                                                 },
                                             ],
                                             end: 9,
                                         },
-                                        line: 60,
-                                        column: 9,
                                     },
                                 ],
                                 end: 295,
                             },
-                            line: 60,
-                            column: 15,
                         },
                     ],
                     [
@@ -1281,10 +1175,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 58,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1324,20 +1217,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 63,
-                                                    column: 4,
                                                 },
                                             ],
                                             end: 6,
                                         },
-                                        line: 63,
-                                        column: 7,
                                     },
                                 ],
                                 end: 315,
                             },
-                            line: 63,
-                            column: 13,
                         },
                     ],
                     [
@@ -1358,10 +1245,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 61,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1390,20 +1276,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         ),
                                                     ],
                                                     values: [],
-                                                    line: 66,
-                                                    column: 2,
                                                 },
                                             ],
                                             end: 4,
                                         },
-                                        line: 66,
-                                        column: 5,
                                     },
                                 ],
                                 end: 333,
                             },
-                            line: 66,
-                            column: 11,
                         },
                     ],
                     [
@@ -1424,10 +1304,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 64,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1467,20 +1346,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 69,
-                                                    column: 4,
                                                 },
                                             ],
                                             end: 6,
                                         },
-                                        line: 69,
-                                        column: 7,
                                     },
                                 ],
                                 end: 353,
                             },
-                            line: 69,
-                            column: 13,
                         },
                     ],
                     [
@@ -1496,10 +1369,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 67,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1520,56 +1392,52 @@ input_file: test-data/lua5.1-tests/code.lua
                                         Some(
                                             [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 74,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "..",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "b",
                                                             ),
                                                         ],
-                                                        line: 74,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "..",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "c",
                                                             ),
                                                         ],
-                                                        line: 74,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "..",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "d",
                                                             ),
                                                         ],
-                                                        line: 74,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
@@ -1577,8 +1445,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 379,
                             },
-                            line: 74,
-                            column: 21,
                         },
                     ],
                     [
@@ -1614,10 +1480,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 70,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1655,8 +1520,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 402,
                             },
-                            line: 78,
-                            column: 10,
                         },
                     ],
                     [
@@ -1672,10 +1535,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 75,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1713,8 +1575,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 417,
                             },
-                            line: 79,
-                            column: 10,
                         },
                     ],
                     [
@@ -1730,10 +1590,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 78,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1771,8 +1630,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 432,
                             },
-                            line: 80,
-                            column: 10,
                         },
                     ],
                     [
@@ -1788,10 +1645,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 79,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1834,8 +1690,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 447,
                             },
-                            line: 81,
-                            column: 10,
                         },
                     ],
                     [
@@ -1851,10 +1705,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 80,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -1886,30 +1739,26 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 85,
-                                        column: 8,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 85,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
                                                     ],
-                                                    line: 86,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "*",
@@ -1926,13 +1775,11 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 86,
-                                        column: 5,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "c",
                                                     ),
@@ -1955,10 +1802,9 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         "]",
                                                     ),
                                                 ],
-                                                line: 86,
-                                            },
-                                            Ident {
-                                                expr: [
+                                            ),
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
@@ -1967,22 +1813,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ),
                                                     Expr(
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "b",
                                                                     ),
                                                                 ],
-                                                                line: 87,
-                                                            },
+                                                            ),
                                                         ],
                                                     ),
                                                     Symbol(
                                                         "]",
                                                     ),
                                                 ],
-                                                line: 87,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -1996,28 +1840,26 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     [
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "a",
                                                                         ),
                                                                     ],
-                                                                    line: 87,
-                                                                },
+                                                                ),
                                                                 Operator(
                                                                     (
                                                                         "+",
                                                                         true,
                                                                     ),
                                                                 ),
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "d",
                                                                         ),
                                                                     ],
-                                                                    line: 87,
-                                                                },
+                                                                ),
                                                                 Operator(
                                                                     (
                                                                         "/",
@@ -2044,8 +1886,8 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                         true,
                                                                     ),
                                                                 ),
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "a",
                                                                         ),
@@ -2054,36 +1896,33 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                         ),
                                                                         Expr(
                                                                             [
-                                                                                Ident {
-                                                                                    expr: [
+                                                                                Ident(
+                                                                                    [
                                                                                         Symbol(
                                                                                             "b",
                                                                                         ),
                                                                                     ],
-                                                                                    line: 87,
-                                                                                },
+                                                                                ),
                                                                             ],
                                                                         ),
                                                                         Symbol(
                                                                             "]",
                                                                         ),
                                                                     ],
-                                                                    line: 87,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
-                                                        Ident {
-                                                            expr: [],
-                                                            line: 87,
-                                                        },
+                                                        Ident(
+                                                            [],
+                                                        ),
                                                         Operator(
                                                             (
                                                                 "^",
                                                                 true,
                                                             ),
                                                         ),
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "a",
                                                                 ),
@@ -2094,34 +1933,27 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                     "x",
                                                                 ),
                                                             ],
-                                                            line: 87,
-                                                        },
+                                                        ),
                                                     ],
                                                 ),
-                                                Ident {
-                                                    expr: [],
-                                                    line: 87,
-                                                },
+                                                Ident(
+                                                    [],
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
                                                     ],
-                                                    line: 87,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 87,
-                                        column: 32,
                                     },
                                 ],
                                 end: 503,
                             },
-                            line: 88,
-                            column: 1,
                         },
                     ],
                     [
@@ -2182,10 +2014,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 81,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -2209,13 +2040,11 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 96,
-                                        column: 4,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
@@ -2226,8 +2055,7 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 96,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -2241,13 +2069,11 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 97,
-                                        column: 5,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
@@ -2258,28 +2084,24 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 97,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
                                                     ],
-                                                    line: 98,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 98,
-                                        column: 5,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
@@ -2288,22 +2110,20 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ),
                                                     Expr(
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "b",
                                                                     ),
                                                                 ],
-                                                                line: 99,
-                                                            },
+                                                            ),
                                                         ],
                                                     ),
                                                     Symbol(
                                                         "]",
                                                     ),
                                                 ],
-                                                line: 98,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -2312,19 +2132,16 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 99,
-                                        column: 6,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 99,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -2342,29 +2159,25 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         true,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
                                                     ],
-                                                    line: 100,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 100,
-                                        column: 5,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
                                                 ],
-                                                line: 100,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -2382,29 +2195,25 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         true,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
                                                     ],
-                                                    line: 101,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 101,
-                                        column: 5,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
                                                 ],
-                                                line: 101,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -2432,13 +2241,11 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 102,
-                                        column: 5,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
@@ -2456,8 +2263,7 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         "]",
                                                     ),
                                                 ],
-                                                line: 102,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
@@ -2466,14 +2272,10 @@ input_file: test-data/lua5.1-tests/code.lua
                                                 ),
                                             ],
                                         ],
-                                        line: 103,
-                                        column: 6,
                                     },
                                 ],
                                 end: 573,
                             },
-                            line: 104,
-                            column: 1,
                         },
                     ],
                     [
@@ -2519,8 +2321,7 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 91,
-    },
+    ),
     Function {
         local: true,
         name: [
@@ -2598,16 +2399,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                                         ),
                                                     ],
                                                 ),
-                                                Ident {
-                                                    expr: [],
-                                                    line: 108,
-                                                },
+                                                Ident(
+                                                    [],
+                                                ),
                                             ],
                                         ),
-                                        Ident {
-                                            expr: [],
-                                            line: 108,
-                                        },
+                                        Ident(
+                                            [],
+                                        ),
                                         Operator(
                                             (
                                                 "%",
@@ -2624,10 +2423,9 @@ input_file: test-data/lua5.1-tests/code.lua
                                         ),
                                     ],
                                 ),
-                                Ident {
-                                    expr: [],
-                                    line: 108,
-                                },
+                                Ident(
+                                    [],
+                                ),
                                 Operator(
                                     (
                                         "/",
@@ -2677,25 +2475,22 @@ input_file: test-data/lua5.1-tests/code.lua
             ],
             end: 619,
         },
-        line: 108,
-        column: 29,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "check",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
                             ],
-                            line: 110,
-                        },
+                        ),
                     ],
                     [
                         Symbol(
@@ -2710,18 +2505,17 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 108,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "f",
                                 ),
@@ -2729,8 +2523,7 @@ input_file: test-data/lua5.1-tests/code.lua
                                     [],
                                 ),
                             ],
-                            line: 111,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -2755,10 +2548,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 110,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -2786,13 +2578,11 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 114,
-                                        column: 6,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
@@ -2801,60 +2591,53 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ),
                                                     Expr(
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "c",
                                                                     ),
                                                                 ],
-                                                                line: 115,
-                                                            },
+                                                            ),
                                                         ],
                                                     ),
                                                     Symbol(
                                                         "]",
                                                     ),
                                                 ],
-                                                line: 114,
-                                            },
-                                            Ident {
-                                                expr: [
+                                            ),
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 115,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "c",
                                                         ),
                                                     ],
-                                                    line: 115,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
                                                     ],
-                                                    line: 115,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 115,
-                                        column: 10,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
@@ -2863,131 +2646,112 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ),
                                                     Expr(
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "a",
                                                                     ),
                                                                 ],
-                                                                line: 116,
-                                                            },
+                                                            ),
                                                         ],
                                                     ),
                                                     Symbol(
                                                         "]",
                                                     ),
                                                 ],
-                                                line: 115,
-                                            },
-                                            Ident {
-                                                expr: [
+                                            ),
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 116,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "c",
                                                         ),
                                                     ],
-                                                    line: 116,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "b",
                                                         ),
                                                     ],
-                                                    line: 116,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 116,
-                                        column: 10,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 116,
-                                            },
-                                            Ident {
-                                                expr: [
+                                            ),
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "b",
                                                     ),
                                                 ],
-                                                line: 117,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "c",
                                                         ),
                                                     ],
-                                                    line: 117,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
                                                     ],
-                                                    line: 117,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 117,
-                                        column: 7,
                                     },
                                     Alter {
                                         names: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 117,
-                                            },
+                                            ),
                                         ],
                                         values: [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "a",
                                                         ),
                                                     ],
-                                                    line: 118,
-                                                },
+                                                ),
                                             ],
                                         ],
-                                        line: 118,
-                                        column: 3,
                                     },
                                 ],
                                 end: 678,
                             },
-                            line: 119,
-                            column: 1,
                         },
                     ],
                     [
@@ -3048,10 +2812,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 111,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkequal",
             ),
@@ -3067,14 +2830,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                         condition: [
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 128,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "==",
@@ -3086,24 +2848,22 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ),
                                                 ],
                                             ),
-                                            Ident {
-                                                expr: [],
-                                                line: 128,
-                                            },
+                                            Ident(
+                                                [],
+                                            ),
                                         ],
                                         body: CodeBlock {
                                             start: 7,
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "a",
                                                                 ),
                                                             ],
-                                                            line: 128,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
@@ -3117,26 +2877,21 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 128,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 11,
                                         },
                                         next: None,
-                                        line: 128,
-                                        column: 11,
                                     },
                                     IfStatement {
                                         condition: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 128,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "~=",
@@ -3152,14 +2907,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "a",
                                                                 ),
                                                             ],
-                                                            line: 128,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
@@ -3173,21 +2927,15 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 128,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 21,
                                         },
                                         next: None,
-                                        line: 128,
-                                        column: 21,
                                     },
                                 ],
                                 end: 728,
                             },
-                            line: 128,
-                            column: 27,
                         },
                     ],
                     [
@@ -3200,14 +2948,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                         condition: [
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 129,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "==",
@@ -3224,24 +2971,22 @@ input_file: test-data/lua5.1-tests/code.lua
                                                     ),
                                                 ],
                                             ),
-                                            Ident {
-                                                expr: [],
-                                                line: 129,
-                                            },
+                                            Ident(
+                                                [],
+                                            ),
                                         ],
                                         body: CodeBlock {
                                             start: 7,
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "a",
                                                                 ),
                                                             ],
-                                                            line: 129,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
@@ -3255,26 +3000,21 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 129,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 11,
                                         },
                                         next: None,
-                                        line: 129,
-                                        column: 11,
                                     },
                                     IfStatement {
                                         condition: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 129,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "~=",
@@ -3295,14 +3035,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "a",
                                                                 ),
                                                             ],
-                                                            line: 129,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
@@ -3316,30 +3055,23 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 129,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 21,
                                         },
                                         next: None,
-                                        line: 129,
-                                        column: 21,
                                     },
                                 ],
                                 end: 754,
                             },
-                            line: 129,
-                            column: 25,
                         },
                     ],
                 ],
             ),
         ],
-        line: 124,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "check",
             ),
@@ -3353,14 +3085,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                 code: [
                                     IfStatement {
                                         condition: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "a",
                                                     ),
                                                 ],
-                                                line: 131,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -3376,14 +3107,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "a",
                                                                 ),
                                                             ],
-                                                            line: 131,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
@@ -3397,21 +3127,15 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                         ],
                                                     ],
-                                                    line: 131,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 9,
                                         },
                                         next: None,
-                                        line: 131,
-                                        column: 9,
                                     },
                                 ],
                                 end: 770,
                             },
-                            line: 131,
-                            column: 15,
                         },
                     ],
                     [
@@ -3447,10 +3171,9 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 129,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkequal",
             ),
@@ -3470,8 +3193,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 135,
-                                        column: 3,
                                     },
                                     IfStatement {
                                         condition: [
@@ -3483,76 +3204,65 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                             Expr(
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 135,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "or",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "b",
                                                             ),
                                                         ],
-                                                        line: 135,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
-                                            Ident {
-                                                expr: [],
-                                                line: 135,
-                                            },
+                                            Ident(
+                                                [],
+                                            ),
                                         ],
                                         body: CodeBlock {
                                             start: 11,
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "b",
                                                                 ),
                                                             ],
-                                                            line: 135,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "a",
                                                                     ),
                                                                 ],
-                                                                line: 135,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
-                                                    line: 135,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 15,
                                         },
                                         next: None,
-                                        line: 135,
-                                        column: 15,
                                     },
                                 ],
                                 end: 804,
                             },
-                            line: 135,
-                            column: 21,
                         },
                     ],
                     [
@@ -3569,8 +3279,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 136,
-                                        column: 3,
                                     },
                                     IfStatement {
                                         condition: [
@@ -3582,14 +3290,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             false,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 136,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "and",
@@ -3602,71 +3309,60 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             false,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "b",
                                                             ),
                                                         ],
-                                                        line: 136,
-                                                    },
+                                                    ),
                                                 ],
                                             ),
-                                            Ident {
-                                                expr: [],
-                                                line: 136,
-                                            },
+                                            Ident(
+                                                [],
+                                            ),
                                         ],
                                         body: CodeBlock {
                                             start: 12,
                                             code: [
                                                 Alter {
                                                     names: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "b",
                                                                 ),
                                                             ],
-                                                            line: 136,
-                                                        },
+                                                        ),
                                                     ],
                                                     values: [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "a",
                                                                     ),
                                                                 ],
-                                                                line: 136,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
-                                                    line: 136,
-                                                    column: 3,
                                                 },
                                             ],
                                             end: 16,
                                         },
                                         next: None,
-                                        line: 136,
-                                        column: 16,
                                     },
                                 ],
                                 end: 825,
                             },
-                            line: 136,
-                            column: 20,
                         },
                     ],
                 ],
             ),
         ],
-        line: 132,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "checkequal",
             ),
@@ -3688,8 +3384,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 138,
-                                        column: 3,
                                     },
                                     Return(
                                         Some(
@@ -3709,42 +3403,39 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 138,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "and",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "a",
                                                             ),
                                                         ],
-                                                        line: 138,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "<=",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "l",
                                                             ),
                                                         ],
-                                                        line: 138,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
@@ -3752,8 +3443,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 844,
                             },
-                            line: 138,
-                            column: 18,
                         },
                     ],
                     [
@@ -3772,8 +3461,6 @@ input_file: test-data/lua5.1-tests/code.lua
                                             ),
                                         ],
                                         values: [],
-                                        line: 139,
-                                        column: 3,
                                     },
                                     Return(
                                         Some(
@@ -3795,14 +3482,13 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                             Expr(
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "a",
                                                                             ),
                                                                         ],
-                                                                        line: 139,
-                                                                    },
+                                                                    ),
                                                                     Operator(
                                                                         (
                                                                             ">=",
@@ -3819,10 +3505,9 @@ input_file: test-data/lua5.1-tests/code.lua
                                                                     ),
                                                                 ],
                                                             ),
-                                                            Ident {
-                                                                expr: [],
-                                                                line: 139,
-                                                            },
+                                                            Ident(
+                                                                [],
+                                                            ),
                                                             Operator(
                                                                 (
                                                                     "or",
@@ -3837,40 +3522,36 @@ input_file: test-data/lua5.1-tests/code.lua
                                                             ),
                                                             Expr(
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "a",
                                                                             ),
                                                                         ],
-                                                                        line: 139,
-                                                                    },
+                                                                    ),
                                                                     Operator(
                                                                         (
                                                                             "<=",
                                                                             true,
                                                                         ),
                                                                     ),
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "l",
                                                                             ),
                                                                         ],
-                                                                        line: 139,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ),
-                                                            Ident {
-                                                                expr: [],
-                                                                line: 139,
-                                                            },
+                                                            Ident(
+                                                                [],
+                                                            ),
                                                         ],
                                                     ),
-                                                    Ident {
-                                                        expr: [],
-                                                        line: 139,
-                                                    },
+                                                    Ident(
+                                                        [],
+                                                    ),
                                                 ],
                                             ],
                                         ),
@@ -3878,17 +3559,14 @@ input_file: test-data/lua5.1-tests/code.lua
                                 ],
                                 end: 870,
                             },
-                            line: 139,
-                            column: 25,
                         },
                     ],
                 ],
             ),
         ],
-        line: 136,
-    },
-    Ident {
-        expr: [
+    ),
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -3902,6 +3580,5 @@ input_file: test-data/lua5.1-tests/code.lua
                 ],
             ),
         ],
-        line: 139,
-    },
+    ),
 ]

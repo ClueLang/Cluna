@@ -46,14 +46,35 @@ impl Lexeme {
     pub fn as_symbol(&self) -> Rc<str> {
         match self {
             Lexeme::Symbol(s) => s.clone(),
-            _ => panic!("Lexeme is not a symbol"),
+            _ => panic!("lexeme is not a symbol"),
         }
     }
 
     pub fn as_number(&self) -> &Number {
         match self {
             Lexeme::Number(n) => n,
-            _ => panic!("Lexeme is not a number"),
+            _ => panic!("lexeme is not a number"),
+        }
+    }
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct Position {
+    pub line: usize,
+    pub column: usize,
+    pub span: Range<usize>,
+}
+
+impl Position {
+    pub const fn new(line: usize, column: usize, span: Range<usize>) -> Self {
+        Self { line, column, span }
+    }
+
+    pub const fn with_span(&self, span: Range<usize>) -> Self {
+        Self {
+            line: self.line,
+            column: self.column,
+            span,
         }
     }
 }
@@ -62,41 +83,23 @@ impl Lexeme {
 pub struct Token {
     pub(crate) kind: TokenType,
     lexeme: Lexeme,
-    line: usize,
-    column: usize,
-    span: Range<usize>,
+    position: Position,
 }
 
 impl Token {
-    pub const fn new(
-        kind: TokenType,
-        lexeme: Rc<str>,
-        line: usize,
-        column: usize,
-        span: Range<usize>,
-    ) -> Self {
+    pub const fn new(kind: TokenType, lexeme: Rc<str>, position: Position) -> Self {
         Self {
             kind,
             lexeme: Lexeme::Symbol(lexeme),
-            line,
-            column,
-            span,
+            position,
         }
     }
 
-    pub const fn new_number(
-        kind: TokenType,
-        lexeme: Number,
-        line: usize,
-        column: usize,
-        span: Range<usize>,
-    ) -> Self {
+    pub const fn new_number(kind: TokenType, lexeme: Number, position: Position) -> Self {
         Self {
             kind,
             lexeme: Lexeme::Number(lexeme),
-            line,
-            column,
-            span,
+            position,
         }
     }
 
@@ -108,16 +111,20 @@ impl Token {
         &self.lexeme
     }
 
+    pub fn position(&self) -> Position {
+        self.position.clone()
+    }
+
     pub const fn line(&self) -> usize {
-        self.line
+        self.position.line
     }
 
     pub const fn column(&self) -> usize {
-        self.column
+        self.position.column
     }
 
     pub fn span(&self) -> Range<usize> {
-        self.span.clone()
+        self.position.span.clone()
     }
 }
 
@@ -125,9 +132,8 @@ pub struct Lexer {
     pub(crate) source: Vec<char>,
     tokens: Vec<Token>,
     pub(crate) path: Option<String>,
-    pub(crate) column: usize,
     pub(crate) current: usize,
-    pub(crate) line: usize,
+    pub(crate) position: Position,
 }
 
 impl Lexer {
@@ -136,10 +142,17 @@ impl Lexer {
             source: source.chars().collect(),
             tokens: Vec::new(),
             path,
-            column: 0,
             current: 0,
-            line: 1,
+            position: Position::new(1, 0, 0..0),
         }
+    }
+
+    pub(crate) const fn line(&self) -> usize {
+        self.position.line
+    }
+
+    pub(crate) const fn column(&self) -> usize {
+        self.position.column
     }
 
     fn done(&self) -> bool {
@@ -151,12 +164,13 @@ impl Lexer {
             None
         } else {
             if self.source[self.current] == '\n' {
-                self.line += 1;
-                self.column = 0;
+                self.position.line += 1;
+                self.position.column = 0;
             }
             let result = Some(self.source[self.current]);
             self.current += 1;
-            self.column += 1;
+            self.position.column += 1;
+
             result
         }
     }
@@ -166,12 +180,12 @@ impl Lexer {
             None
         } else {
             if self.source[self.current + offset - 1] == '\n' {
-                self.line += 1;
-                self.column = 0;
+                self.position.line += 1;
+                self.position.column = 0;
             }
             let result = Some(self.source[self.current + offset - 1]);
             self.current += offset;
-            self.column += offset;
+            self.position.column += offset;
             result
         }
     }
@@ -181,10 +195,10 @@ impl Lexer {
             None
         } else {
             if self.source[self.current - 1] == '\n' {
-                self.line -= 1;
-                self.column = 0;
+                self.position.line -= 1;
+                self.position.column = 0;
             } else {
-                self.column -= 1;
+                self.position.column -= 1;
             }
             self.current -= 1;
 
@@ -218,8 +232,11 @@ impl Lexer {
             .iter()
             .copied()
             .collect_into_rc_str();
-        self.tokens
-            .push(Token::new(token_type, lexeme, self.line, self.column, span));
+        self.tokens.push(Token::new(
+            token_type,
+            lexeme,
+            Position::new(self.position.line, self.position.column, span),
+        ));
     }
 
     fn add_token_front(&mut self, token_type: TokenType, len: usize) {
@@ -229,8 +246,11 @@ impl Lexer {
             .copied()
             .collect_into_rc_str();
         self.advance_to(len - 1);
-        self.tokens
-            .push(Token::new(token_type, lexeme, self.line, self.column, span));
+        self.tokens.push(Token::new(
+            token_type,
+            lexeme,
+            Position::new(self.position.line, self.position.column, span),
+        ));
     }
 
     fn read_string(&mut self, quote: char) -> Result<(), Diagnostic> {
@@ -244,10 +264,9 @@ impl Lexer {
                     }
                     None => {
                         return Err(Diagnostic::new(
-                            "Unterminated escape sequence".to_owned(),
+                            "unterminated escape sequence".to_owned(),
                             self.path.clone(),
-                            self.line,
-                            self.column,
+                            self.position.clone(),
                         ));
                     }
                 }
@@ -258,10 +277,9 @@ impl Lexer {
 
         if self.done() {
             return Err(Diagnostic::new(
-                "Unterminated string".to_owned(),
+                "unterminated string".to_owned(),
                 self.path.clone(),
-                self.line,
-                self.column,
+                self.position.clone(),
             ));
         }
         self.advance();
@@ -273,9 +291,7 @@ impl Lexer {
         self.tokens.push(Token::new(
             TokenType::String,
             lexeme,
-            self.line,
-            self.column,
-            span,
+            self.position.with_span(span),
         ));
         Ok(())
     }
@@ -287,10 +303,9 @@ impl Lexer {
         while let Some(c) = self.advance() {
             if self.done() {
                 return Err(Diagnostic::new(
-                    "Error: Unterminated multiline string".to_owned(),
+                    "unterminated multiline string".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.with_span(start..self.current),
                 ));
             }
 
@@ -306,10 +321,9 @@ impl Lexer {
         while let Some(c) = self.advance() {
             if self.done() {
                 return Err(Diagnostic::new(
-                    "Unterminated multiline string".to_owned(),
+                    "unterminated multiline string".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.with_span(start..self.current),
                 ));
             }
 
@@ -340,9 +354,7 @@ impl Lexer {
         self.tokens.push(Token::new(
             TokenType::MultilineString,
             lexeme,
-            self.line,
-            self.column,
-            span,
+            self.position.with_span(span),
         ));
         Ok(())
     }
@@ -353,10 +365,9 @@ impl Lexer {
         if let Some(c) = self.peek() {
             if !(c.is_alphabetic() || c == '_') {
                 return Err(Diagnostic::new(
-                    "Invalid identifier".to_owned(),
+                    "invalid identifier".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.with_span(start..self.current),
                 ));
             }
             while let Some(c) = self.advance() {
@@ -395,25 +406,23 @@ impl Lexer {
                 "while" => TokenType::While,
                 "goto" => {
                     return Err(Diagnostic::new(
-                        "Goto is unsupported in clue".to_owned(),
+                        "goto is not supported in clue".to_owned(),
                         self.path.clone(),
-                        self.line,
-                        self.column,
+                        self.position.with_span(span),
                     ))
                 }
                 _ => TokenType::Identifier,
             };
 
             self.tokens
-                .push(Token::new(kind, lexeme, self.line, self.column, span));
+                .push(Token::new(kind, lexeme, self.position.with_span(span)));
 
             Ok(())
         } else {
             Err(Diagnostic::new(
-                "Invalid identifier".to_owned(),
+                "invalid identifier".to_owned(),
                 self.path.clone(),
-                self.line,
-                self.column,
+                self.position.with_span(start..self.current),
             ))
         }
     }
@@ -426,23 +435,21 @@ impl Lexer {
         self.tokens.push(Token::new_number(
             TokenType::Number,
             number,
-            self.line,
-            self.column,
-            span,
+            self.position.with_span(span),
         ));
         Ok(())
     }
 
     fn read_multiline_comment(&mut self) -> Result<(), Diagnostic> {
         let mut equals_count = 0;
+        let start = self.current;
 
         while let Some(c) = self.advance() {
             if self.done() {
                 return Err(Diagnostic::new(
-                    "Unterminated block comment".to_owned(),
+                    "unterminated block comment".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.with_span(start..self.current),
                 ));
             }
 
@@ -458,10 +465,9 @@ impl Lexer {
         while let Some(c) = self.advance() {
             if self.done() {
                 return Err(Diagnostic::new(
-                    "Unterminated block comment".to_owned(),
+                    "unterminated block comment".to_owned(),
                     self.path.clone(),
-                    self.line,
-                    self.column,
+                    self.position.with_span(start..self.current),
                 ));
             }
 
@@ -535,7 +541,7 @@ pub fn scan_code(code: String, path: Option<String>) -> Result<Vec<Token>, Diagn
                 _ => lexer.add_token(TokenType::Minus, 1),
             },
             '#' => {
-                if lexer.line == 1 && lexer.column == 1 {
+                if lexer.line() == 1 && lexer.column() == 1 {
                     while let Some(c) = lexer.advance() {
                         if c == '\n' {
                             break;
@@ -606,10 +612,9 @@ pub fn scan_code(code: String, path: Option<String>) -> Result<Vec<Token>, Diagn
             ':' => {
                 if let Some(':') = lexer.peek() {
                     return Err(Diagnostic::new(
-                        "Labels are not supported".to_owned(),
+                        "labels are not supported".to_owned(),
                         lexer.path.clone(),
-                        lexer.line,
-                        lexer.column,
+                        lexer.position.with_span(lexer.current - 1..lexer.current),
                     ));
                 }
                 lexer.add_token(TokenType::Colon, 1)
@@ -629,8 +634,9 @@ pub fn scan_code(code: String, path: Option<String>) -> Result<Vec<Token>, Diagn
                     lexer.read_token()?;
                 } else {
                     panic!(
-                        "Error: Unexpected character {c} at {}:{}",
-                        lexer.line, lexer.column
+                        "error: Unexpected character {c} at {}:{}",
+                        lexer.line(),
+                        lexer.column()
                     );
                 }
             }

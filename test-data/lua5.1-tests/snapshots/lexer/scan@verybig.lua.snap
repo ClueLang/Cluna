@@ -9,81 +9,99 @@ input_file: test-data/lua5.1-tests/verybig.lua
         lexeme: Symbol(
             "if",
         ),
-        line: 1,
-        column: 2,
-        span: 0..2,
+        position: Position {
+            line: 1,
+            column: 2,
+            span: 0..2,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "rawget",
         ),
-        line: 1,
-        column: 9,
-        span: 3..9,
+        position: Position {
+            line: 1,
+            column: 9,
+            span: 3..9,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 1,
-        column: 10,
-        span: 9..10,
+        position: Position {
+            line: 1,
+            column: 10,
+            span: 9..10,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "_G",
         ),
-        line: 1,
-        column: 12,
-        span: 10..12,
+        position: Position {
+            line: 1,
+            column: 12,
+            span: 10..12,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 1,
-        column: 13,
-        span: 12..13,
+        position: Position {
+            line: 1,
+            column: 13,
+            span: 12..13,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "\"_soft\"",
         ),
-        line: 1,
-        column: 21,
-        span: 14..21,
+        position: Position {
+            line: 1,
+            column: 21,
+            span: 14..21,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 1,
-        column: 22,
-        span: 21..22,
+        position: Position {
+            line: 1,
+            column: 22,
+            span: 21..22,
+        },
     },
     Token {
         kind: Then,
         lexeme: Symbol(
             "then",
         ),
-        line: 1,
-        column: 27,
-        span: 23..27,
+        position: Position {
+            line: 1,
+            column: 27,
+            span: 23..27,
+        },
     },
     Token {
         kind: Return,
         lexeme: Symbol(
             "return",
         ),
-        line: 1,
-        column: 34,
-        span: 28..34,
+        position: Position {
+            line: 1,
+            column: 34,
+            span: 28..34,
+        },
     },
     Token {
         kind: Number,
@@ -95,144 +113,176 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 1,
-        column: 37,
-        span: 34..37,
+        position: Position {
+            line: 1,
+            column: 37,
+            span: 34..37,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 1,
-        column: 0,
-        span: 38..41,
+        position: Position {
+            line: 1,
+            column: 0,
+            span: 38..41,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "print",
         ),
-        line: 3,
-        column: 6,
-        span: 43..48,
+        position: Position {
+            line: 3,
+            column: 6,
+            span: 43..48,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "\"testing large programs (>64k)\"",
         ),
-        line: 3,
-        column: 38,
-        span: 49..80,
+        position: Position {
+            line: 3,
+            column: 38,
+            span: 49..80,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "prog",
         ),
-        line: 6,
-        column: 5,
-        span: 125..129,
+        position: Position {
+            line: 6,
+            column: 5,
+            span: 125..129,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 6,
-        column: 7,
-        span: 130..131,
+        position: Position {
+            line: 6,
+            column: 7,
+            span: 130..131,
+        },
     },
     Token {
         kind: MultilineString,
         lexeme: Symbol(
             "[[$\n\nlocal a,b\n\nb = {$1$\n  b30009 = 65534,\n  b30010 = 65535,\n  b30011 = 65536,\n  b30012 = 65537,\n  b30013 = 16777214,\n  b30014 = 16777215,\n  b30015 = 16777216,\n  b30016 = 16777217,\n  b30017 = 4294967294,\n  b30018 = 4294967295,\n  b30019 = 4294967296,\n  b30020 = 4294967297,\n  b30021 = -65534,\n  b30022 = -65535,\n  b30023 = -65536,\n  b30024 = -4294967297,\n  b30025 = 15012.5,\n  $2$\n};\n\nassert(b.a50008 == 25004 and b[\"a11\"] == 5.5)\nassert(b.a33007 == 16503.5 and b.a50009 == 25004.5)\nassert(b[\"b\"..30024] == -4294967297)\n\nfunction b:xxx (a,b) return a+b end\nassert(b:xxx(10, 12) == 22)   -- pushself with non-constant index\nb.xxx = nil\n\ns = 0; n=0\nfor a,b in pairs(b) do s=s+b; n=n+1 end\nassert(s==13977183656.5  and n==70001)\n\nrequire \"checktable\"\nstat(b)\n\na = nil; b = nil\nprint'+'\n\nfunction f(x) b=x end\n\na = f{$3$} or 10\n\nassert(a==10)\nassert(b[1] == \"a10\" and b[2] == 5 and b[table.getn(b)-1] == \"a50009\")\n\n\nfunction xxxx (x) return b[x] end\n\nassert(xxxx(3) == \"a11\")\n\na = nil; b=nil\nxxxx = nil\n\nreturn 10\n\n]]",
         ),
-        line: 66,
-        column: 3,
-        span: 132..1144,
+        position: Position {
+            line: 66,
+            column: 3,
+            span: 132..1144,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "F",
         ),
-        line: 69,
-        column: 2,
-        span: 1178..1179,
+        position: Position {
+            line: 69,
+            column: 2,
+            span: 1178..1179,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 69,
-        column: 4,
-        span: 1180..1181,
+        position: Position {
+            line: 69,
+            column: 4,
+            span: 1180..1181,
+        },
     },
     Token {
         kind: LeftBrace,
         lexeme: Symbol(
             "{",
         ),
-        line: 69,
-        column: 6,
-        span: 1182..1183,
+        position: Position {
+            line: 69,
+            column: 6,
+            span: 1182..1183,
+        },
     },
     Token {
         kind: Function,
         lexeme: Symbol(
             "function",
         ),
-        line: 70,
-        column: 9,
-        span: 1184..1192,
+        position: Position {
+            line: 70,
+            column: 9,
+            span: 1184..1192,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 70,
-        column: 11,
-        span: 1193..1194,
+        position: Position {
+            line: 70,
+            column: 11,
+            span: 1193..1194,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 70,
-        column: 12,
-        span: 1194..1195,
+        position: Position {
+            line: 70,
+            column: 12,
+            span: 1194..1195,
+        },
     },
     Token {
         kind: For,
         lexeme: Symbol(
             "for",
         ),
-        line: 71,
-        column: 6,
-        span: 1207..1210,
+        position: Position {
+            line: 71,
+            column: 6,
+            span: 1207..1210,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 71,
-        column: 8,
-        span: 1211..1212,
+        position: Position {
+            line: 71,
+            column: 8,
+            span: 1211..1212,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 71,
-        column: 9,
-        span: 1212..1213,
+        position: Position {
+            line: 71,
+            column: 9,
+            span: 1212..1213,
+        },
     },
     Token {
         kind: Number,
@@ -244,18 +294,22 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 71,
-        column: 11,
-        span: 1212..1215,
+        position: Position {
+            line: 71,
+            column: 11,
+            span: 1212..1215,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 71,
-        column: 12,
-        span: 1215..1216,
+        position: Position {
+            line: 71,
+            column: 12,
+            span: 1215..1216,
+        },
     },
     Token {
         kind: Number,
@@ -267,108 +321,132 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 71,
-        column: 17,
-        span: 1215..1221,
+        position: Position {
+            line: 71,
+            column: 17,
+            span: 1215..1221,
+        },
     },
     Token {
         kind: Do,
         lexeme: Symbol(
             "do",
         ),
-        line: 71,
-        column: 0,
-        span: 1222..1224,
+        position: Position {
+            line: 71,
+            column: 0,
+            span: 1222..1224,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "io",
         ),
-        line: 72,
-        column: 7,
-        span: 1229..1231,
+        position: Position {
+            line: 72,
+            column: 7,
+            span: 1229..1231,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 72,
-        column: 8,
-        span: 1231..1232,
+        position: Position {
+            line: 72,
+            column: 8,
+            span: 1231..1232,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "write",
         ),
-        line: 72,
-        column: 13,
-        span: 1232..1237,
+        position: Position {
+            line: 72,
+            column: 13,
+            span: 1232..1237,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 72,
-        column: 14,
-        span: 1237..1238,
+        position: Position {
+            line: 72,
+            column: 14,
+            span: 1237..1238,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "'a'",
         ),
-        line: 72,
-        column: 17,
-        span: 1238..1241,
+        position: Position {
+            line: 72,
+            column: 17,
+            span: 1238..1241,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 72,
-        column: 18,
-        span: 1241..1242,
+        position: Position {
+            line: 72,
+            column: 18,
+            span: 1241..1242,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 72,
-        column: 20,
-        span: 1243..1244,
+        position: Position {
+            line: 72,
+            column: 20,
+            span: 1243..1244,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 72,
-        column: 21,
-        span: 1244..1245,
+        position: Position {
+            line: 72,
+            column: 21,
+            span: 1244..1245,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "' = '",
         ),
-        line: 72,
-        column: 27,
-        span: 1246..1251,
+        position: Position {
+            line: 72,
+            column: 27,
+            span: 1246..1251,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 72,
-        column: 28,
-        span: 1251..1252,
+        position: Position {
+            line: 72,
+            column: 28,
+            span: 1251..1252,
+        },
     },
     Token {
         kind: Number,
@@ -380,54 +458,66 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 72,
-        column: 30,
-        span: 1252..1254,
+        position: Position {
+            line: 72,
+            column: 30,
+            span: 1252..1254,
+        },
     },
     Token {
         kind: Plus,
         lexeme: Symbol(
             "+",
         ),
-        line: 72,
-        column: 31,
-        span: 1254..1255,
+        position: Position {
+            line: 72,
+            column: 31,
+            span: 1254..1255,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 72,
-        column: 32,
-        span: 1255..1256,
+        position: Position {
+            line: 72,
+            column: 32,
+            span: 1255..1256,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 72,
-        column: 33,
-        span: 1256..1257,
+        position: Position {
+            line: 72,
+            column: 33,
+            span: 1256..1257,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 72,
-        column: 34,
-        span: 1257..1258,
+        position: Position {
+            line: 72,
+            column: 34,
+            span: 1257..1258,
+        },
     },
     Token {
         kind: Minus,
         lexeme: Symbol(
             "-",
         ),
-        line: 72,
-        column: 35,
-        span: 1258..1259,
+        position: Position {
+            line: 72,
+            column: 35,
+            span: 1258..1259,
+        },
     },
     Token {
         kind: Number,
@@ -439,27 +529,33 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 72,
-        column: 37,
-        span: 1258..1261,
+        position: Position {
+            line: 72,
+            column: 37,
+            span: 1258..1261,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 72,
-        column: 38,
-        span: 1261..1262,
+        position: Position {
+            line: 72,
+            column: 38,
+            span: 1261..1262,
+        },
     },
     Token {
         kind: Slash,
         lexeme: Symbol(
             "/",
         ),
-        line: 72,
-        column: 39,
-        span: 1262..1263,
+        position: Position {
+            line: 72,
+            column: 39,
+            span: 1262..1263,
+        },
     },
     Token {
         kind: Number,
@@ -471,126 +567,154 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 72,
-        column: 40,
-        span: 1262..1264,
+        position: Position {
+            line: 72,
+            column: 40,
+            span: 1262..1264,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 72,
-        column: 41,
-        span: 1264..1265,
+        position: Position {
+            line: 72,
+            column: 41,
+            span: 1264..1265,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 72,
-        column: 42,
-        span: 1265..1266,
+        position: Position {
+            line: 72,
+            column: 42,
+            span: 1265..1266,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "',\\n'",
         ),
-        line: 72,
-        column: 48,
-        span: 1267..1272,
+        position: Position {
+            line: 72,
+            column: 48,
+            span: 1267..1272,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 72,
-        column: 49,
-        span: 1272..1273,
+        position: Position {
+            line: 72,
+            column: 49,
+            span: 1272..1273,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 73,
-        column: 0,
-        span: 1276..1279,
+        position: Position {
+            line: 73,
+            column: 0,
+            span: 1276..1279,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 74,
-        column: 4,
-        span: 1280..1283,
+        position: Position {
+            line: 74,
+            column: 4,
+            span: 1280..1283,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 74,
-        column: 5,
-        span: 1283..1284,
+        position: Position {
+            line: 74,
+            column: 5,
+            span: 1283..1284,
+        },
     },
     Token {
         kind: Function,
         lexeme: Symbol(
             "function",
         ),
-        line: 76,
-        column: 9,
-        span: 1286..1294,
+        position: Position {
+            line: 76,
+            column: 9,
+            span: 1286..1294,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 76,
-        column: 11,
-        span: 1295..1296,
+        position: Position {
+            line: 76,
+            column: 11,
+            span: 1295..1296,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 76,
-        column: 12,
-        span: 1296..1297,
+        position: Position {
+            line: 76,
+            column: 12,
+            span: 1296..1297,
+        },
     },
     Token {
         kind: For,
         lexeme: Symbol(
             "for",
         ),
-        line: 77,
-        column: 6,
-        span: 1309..1312,
+        position: Position {
+            line: 77,
+            column: 6,
+            span: 1309..1312,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 77,
-        column: 8,
-        span: 1313..1314,
+        position: Position {
+            line: 77,
+            column: 8,
+            span: 1313..1314,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 77,
-        column: 9,
-        span: 1314..1315,
+        position: Position {
+            line: 77,
+            column: 9,
+            span: 1314..1315,
+        },
     },
     Token {
         kind: Number,
@@ -602,18 +726,22 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 77,
-        column: 14,
-        span: 1314..1320,
+        position: Position {
+            line: 77,
+            column: 14,
+            span: 1314..1320,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 77,
-        column: 15,
-        span: 1320..1321,
+        position: Position {
+            line: 77,
+            column: 15,
+            span: 1320..1321,
+        },
     },
     Token {
         kind: Number,
@@ -625,108 +753,132 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 77,
-        column: 20,
-        span: 1320..1326,
+        position: Position {
+            line: 77,
+            column: 20,
+            span: 1320..1326,
+        },
     },
     Token {
         kind: Do,
         lexeme: Symbol(
             "do",
         ),
-        line: 77,
-        column: 0,
-        span: 1327..1329,
+        position: Position {
+            line: 77,
+            column: 0,
+            span: 1327..1329,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "io",
         ),
-        line: 78,
-        column: 7,
-        span: 1334..1336,
+        position: Position {
+            line: 78,
+            column: 7,
+            span: 1334..1336,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 78,
-        column: 8,
-        span: 1336..1337,
+        position: Position {
+            line: 78,
+            column: 8,
+            span: 1336..1337,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "write",
         ),
-        line: 78,
-        column: 13,
-        span: 1337..1342,
+        position: Position {
+            line: 78,
+            column: 13,
+            span: 1337..1342,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 78,
-        column: 14,
-        span: 1342..1343,
+        position: Position {
+            line: 78,
+            column: 14,
+            span: 1342..1343,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "'b'",
         ),
-        line: 78,
-        column: 17,
-        span: 1343..1346,
+        position: Position {
+            line: 78,
+            column: 17,
+            span: 1343..1346,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 78,
-        column: 18,
-        span: 1346..1347,
+        position: Position {
+            line: 78,
+            column: 18,
+            span: 1346..1347,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 78,
-        column: 20,
-        span: 1348..1349,
+        position: Position {
+            line: 78,
+            column: 20,
+            span: 1348..1349,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 78,
-        column: 21,
-        span: 1349..1350,
+        position: Position {
+            line: 78,
+            column: 21,
+            span: 1349..1350,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "' = '",
         ),
-        line: 78,
-        column: 27,
-        span: 1351..1356,
+        position: Position {
+            line: 78,
+            column: 27,
+            span: 1351..1356,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 78,
-        column: 28,
-        span: 1356..1357,
+        position: Position {
+            line: 78,
+            column: 28,
+            span: 1356..1357,
+        },
     },
     Token {
         kind: Number,
@@ -738,54 +890,66 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 78,
-        column: 34,
-        span: 1357..1363,
+        position: Position {
+            line: 78,
+            column: 34,
+            span: 1357..1363,
+        },
     },
     Token {
         kind: Plus,
         lexeme: Symbol(
             "+",
         ),
-        line: 78,
-        column: 35,
-        span: 1363..1364,
+        position: Position {
+            line: 78,
+            column: 35,
+            span: 1363..1364,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 78,
-        column: 36,
-        span: 1364..1365,
+        position: Position {
+            line: 78,
+            column: 36,
+            span: 1364..1365,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 78,
-        column: 37,
-        span: 1365..1366,
+        position: Position {
+            line: 78,
+            column: 37,
+            span: 1365..1366,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 78,
-        column: 38,
-        span: 1366..1367,
+        position: Position {
+            line: 78,
+            column: 38,
+            span: 1366..1367,
+        },
     },
     Token {
         kind: Minus,
         lexeme: Symbol(
             "-",
         ),
-        line: 78,
-        column: 39,
-        span: 1367..1368,
+        position: Position {
+            line: 78,
+            column: 39,
+            span: 1367..1368,
+        },
     },
     Token {
         kind: Number,
@@ -797,27 +961,33 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 78,
-        column: 44,
-        span: 1367..1373,
+        position: Position {
+            line: 78,
+            column: 44,
+            span: 1367..1373,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 78,
-        column: 45,
-        span: 1373..1374,
+        position: Position {
+            line: 78,
+            column: 45,
+            span: 1373..1374,
+        },
     },
     Token {
         kind: Slash,
         lexeme: Symbol(
             "/",
         ),
-        line: 78,
-        column: 46,
-        span: 1374..1375,
+        position: Position {
+            line: 78,
+            column: 46,
+            span: 1374..1375,
+        },
     },
     Token {
         kind: Number,
@@ -829,126 +999,154 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 78,
-        column: 47,
-        span: 1374..1376,
+        position: Position {
+            line: 78,
+            column: 47,
+            span: 1374..1376,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 78,
-        column: 48,
-        span: 1376..1377,
+        position: Position {
+            line: 78,
+            column: 48,
+            span: 1376..1377,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 78,
-        column: 49,
-        span: 1377..1378,
+        position: Position {
+            line: 78,
+            column: 49,
+            span: 1377..1378,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "',\\n'",
         ),
-        line: 78,
-        column: 55,
-        span: 1379..1384,
+        position: Position {
+            line: 78,
+            column: 55,
+            span: 1379..1384,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 78,
-        column: 56,
-        span: 1384..1385,
+        position: Position {
+            line: 78,
+            column: 56,
+            span: 1384..1385,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 79,
-        column: 0,
-        span: 1388..1391,
+        position: Position {
+            line: 79,
+            column: 0,
+            span: 1388..1391,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 80,
-        column: 4,
-        span: 1392..1395,
+        position: Position {
+            line: 80,
+            column: 4,
+            span: 1392..1395,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 80,
-        column: 5,
-        span: 1395..1396,
+        position: Position {
+            line: 80,
+            column: 5,
+            span: 1395..1396,
+        },
     },
     Token {
         kind: Function,
         lexeme: Symbol(
             "function",
         ),
-        line: 82,
-        column: 9,
-        span: 1398..1406,
+        position: Position {
+            line: 82,
+            column: 9,
+            span: 1398..1406,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 82,
-        column: 11,
-        span: 1407..1408,
+        position: Position {
+            line: 82,
+            column: 11,
+            span: 1407..1408,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 82,
-        column: 12,
-        span: 1408..1409,
+        position: Position {
+            line: 82,
+            column: 12,
+            span: 1408..1409,
+        },
     },
     Token {
         kind: For,
         lexeme: Symbol(
             "for",
         ),
-        line: 83,
-        column: 6,
-        span: 1421..1424,
+        position: Position {
+            line: 83,
+            column: 6,
+            span: 1421..1424,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 83,
-        column: 8,
-        span: 1425..1426,
+        position: Position {
+            line: 83,
+            column: 8,
+            span: 1425..1426,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 83,
-        column: 9,
-        span: 1426..1427,
+        position: Position {
+            line: 83,
+            column: 9,
+            span: 1426..1427,
+        },
     },
     Token {
         kind: Number,
@@ -960,18 +1158,22 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 83,
-        column: 11,
-        span: 1426..1429,
+        position: Position {
+            line: 83,
+            column: 11,
+            span: 1426..1429,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 83,
-        column: 12,
-        span: 1429..1430,
+        position: Position {
+            line: 83,
+            column: 12,
+            span: 1429..1430,
+        },
     },
     Token {
         kind: Number,
@@ -983,108 +1185,132 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 83,
-        column: 17,
-        span: 1429..1435,
+        position: Position {
+            line: 83,
+            column: 17,
+            span: 1429..1435,
+        },
     },
     Token {
         kind: Do,
         lexeme: Symbol(
             "do",
         ),
-        line: 83,
-        column: 0,
-        span: 1436..1438,
+        position: Position {
+            line: 83,
+            column: 0,
+            span: 1436..1438,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "io",
         ),
-        line: 84,
-        column: 7,
-        span: 1443..1445,
+        position: Position {
+            line: 84,
+            column: 7,
+            span: 1443..1445,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 84,
-        column: 8,
-        span: 1445..1446,
+        position: Position {
+            line: 84,
+            column: 8,
+            span: 1445..1446,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "write",
         ),
-        line: 84,
-        column: 13,
-        span: 1446..1451,
+        position: Position {
+            line: 84,
+            column: 13,
+            span: 1446..1451,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 84,
-        column: 14,
-        span: 1451..1452,
+        position: Position {
+            line: 84,
+            column: 14,
+            span: 1451..1452,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "'\"a'",
         ),
-        line: 84,
-        column: 18,
-        span: 1452..1456,
+        position: Position {
+            line: 84,
+            column: 18,
+            span: 1452..1456,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 84,
-        column: 19,
-        span: 1456..1457,
+        position: Position {
+            line: 84,
+            column: 19,
+            span: 1456..1457,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 84,
-        column: 21,
-        span: 1458..1459,
+        position: Position {
+            line: 84,
+            column: 21,
+            span: 1458..1459,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 84,
-        column: 22,
-        span: 1459..1460,
+        position: Position {
+            line: 84,
+            column: 22,
+            span: 1459..1460,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "'\", '",
         ),
-        line: 84,
-        column: 28,
-        span: 1461..1466,
+        position: Position {
+            line: 84,
+            column: 28,
+            span: 1461..1466,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 84,
-        column: 29,
-        span: 1466..1467,
+        position: Position {
+            line: 84,
+            column: 29,
+            span: 1466..1467,
+        },
     },
     Token {
         kind: Number,
@@ -1096,54 +1322,66 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 84,
-        column: 31,
-        span: 1467..1469,
+        position: Position {
+            line: 84,
+            column: 31,
+            span: 1467..1469,
+        },
     },
     Token {
         kind: Plus,
         lexeme: Symbol(
             "+",
         ),
-        line: 84,
-        column: 32,
-        span: 1469..1470,
+        position: Position {
+            line: 84,
+            column: 32,
+            span: 1469..1470,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 84,
-        column: 33,
-        span: 1470..1471,
+        position: Position {
+            line: 84,
+            column: 33,
+            span: 1470..1471,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 84,
-        column: 34,
-        span: 1471..1472,
+        position: Position {
+            line: 84,
+            column: 34,
+            span: 1471..1472,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "i",
         ),
-        line: 84,
-        column: 35,
-        span: 1472..1473,
+        position: Position {
+            line: 84,
+            column: 35,
+            span: 1472..1473,
+        },
     },
     Token {
         kind: Minus,
         lexeme: Symbol(
             "-",
         ),
-        line: 84,
-        column: 36,
-        span: 1473..1474,
+        position: Position {
+            line: 84,
+            column: 36,
+            span: 1473..1474,
+        },
     },
     Token {
         kind: Number,
@@ -1155,27 +1393,33 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 84,
-        column: 38,
-        span: 1473..1476,
+        position: Position {
+            line: 84,
+            column: 38,
+            span: 1473..1476,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 84,
-        column: 39,
-        span: 1476..1477,
+        position: Position {
+            line: 84,
+            column: 39,
+            span: 1476..1477,
+        },
     },
     Token {
         kind: Slash,
         lexeme: Symbol(
             "/",
         ),
-        line: 84,
-        column: 40,
-        span: 1477..1478,
+        position: Position {
+            line: 84,
+            column: 40,
+            span: 1477..1478,
+        },
     },
     Token {
         kind: Number,
@@ -1187,755 +1431,923 @@ input_file: test-data/lua5.1-tests/verybig.lua
                 },
             ),
         ),
-        line: 84,
-        column: 41,
-        span: 1477..1479,
+        position: Position {
+            line: 84,
+            column: 41,
+            span: 1477..1479,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 84,
-        column: 42,
-        span: 1479..1480,
+        position: Position {
+            line: 84,
+            column: 42,
+            span: 1479..1480,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 84,
-        column: 43,
-        span: 1480..1481,
+        position: Position {
+            line: 84,
+            column: 43,
+            span: 1480..1481,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "',\\n'",
         ),
-        line: 84,
-        column: 49,
-        span: 1482..1487,
+        position: Position {
+            line: 84,
+            column: 49,
+            span: 1482..1487,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 84,
-        column: 50,
-        span: 1487..1488,
+        position: Position {
+            line: 84,
+            column: 50,
+            span: 1487..1488,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 85,
-        column: 0,
-        span: 1491..1494,
+        position: Position {
+            line: 85,
+            column: 0,
+            span: 1491..1494,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 86,
-        column: 4,
-        span: 1495..1498,
+        position: Position {
+            line: 86,
+            column: 4,
+            span: 1495..1498,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 86,
-        column: 5,
-        span: 1498..1499,
+        position: Position {
+            line: 86,
+            column: 5,
+            span: 1498..1499,
+        },
     },
     Token {
         kind: RightBrace,
         lexeme: Symbol(
             "}",
         ),
-        line: 87,
-        column: 2,
-        span: 1500..1501,
+        position: Position {
+            line: 87,
+            column: 2,
+            span: 1500..1501,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "file",
         ),
-        line: 89,
-        column: 5,
-        span: 1503..1507,
+        position: Position {
+            line: 89,
+            column: 5,
+            span: 1503..1507,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 89,
-        column: 7,
-        span: 1508..1509,
+        position: Position {
+            line: 89,
+            column: 7,
+            span: 1508..1509,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "os",
         ),
-        line: 89,
-        column: 10,
-        span: 1510..1512,
+        position: Position {
+            line: 89,
+            column: 10,
+            span: 1510..1512,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 89,
-        column: 11,
-        span: 1512..1513,
+        position: Position {
+            line: 89,
+            column: 11,
+            span: 1512..1513,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "tmpname",
         ),
-        line: 89,
-        column: 18,
-        span: 1513..1520,
+        position: Position {
+            line: 89,
+            column: 18,
+            span: 1513..1520,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 89,
-        column: 19,
-        span: 1520..1521,
+        position: Position {
+            line: 89,
+            column: 19,
+            span: 1520..1521,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 89,
-        column: 20,
-        span: 1521..1522,
+        position: Position {
+            line: 89,
+            column: 20,
+            span: 1521..1522,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "io",
         ),
-        line: 90,
-        column: 3,
-        span: 1523..1525,
+        position: Position {
+            line: 90,
+            column: 3,
+            span: 1523..1525,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 90,
-        column: 4,
-        span: 1525..1526,
+        position: Position {
+            line: 90,
+            column: 4,
+            span: 1525..1526,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "output",
         ),
-        line: 90,
-        column: 10,
-        span: 1526..1532,
+        position: Position {
+            line: 90,
+            column: 10,
+            span: 1526..1532,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 90,
-        column: 11,
-        span: 1532..1533,
+        position: Position {
+            line: 90,
+            column: 11,
+            span: 1532..1533,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "file",
         ),
-        line: 90,
-        column: 15,
-        span: 1533..1537,
+        position: Position {
+            line: 90,
+            column: 15,
+            span: 1533..1537,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 90,
-        column: 16,
-        span: 1537..1538,
+        position: Position {
+            line: 90,
+            column: 16,
+            span: 1537..1538,
+        },
     },
     Token {
         kind: For,
         lexeme: Symbol(
             "for",
         ),
-        line: 91,
-        column: 4,
-        span: 1539..1542,
+        position: Position {
+            line: 91,
+            column: 4,
+            span: 1539..1542,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "s",
         ),
-        line: 91,
-        column: 6,
-        span: 1543..1544,
+        position: Position {
+            line: 91,
+            column: 6,
+            span: 1543..1544,
+        },
     },
     Token {
         kind: In,
         lexeme: Symbol(
             "in",
         ),
-        line: 91,
-        column: 9,
-        span: 1545..1547,
+        position: Position {
+            line: 91,
+            column: 9,
+            span: 1545..1547,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "string",
         ),
-        line: 91,
-        column: 16,
-        span: 1548..1554,
+        position: Position {
+            line: 91,
+            column: 16,
+            span: 1548..1554,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 91,
-        column: 17,
-        span: 1554..1555,
+        position: Position {
+            line: 91,
+            column: 17,
+            span: 1554..1555,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "gmatch",
         ),
-        line: 91,
-        column: 23,
-        span: 1555..1561,
+        position: Position {
+            line: 91,
+            column: 23,
+            span: 1555..1561,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 91,
-        column: 24,
-        span: 1561..1562,
+        position: Position {
+            line: 91,
+            column: 24,
+            span: 1561..1562,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "prog",
         ),
-        line: 91,
-        column: 28,
-        span: 1562..1566,
+        position: Position {
+            line: 91,
+            column: 28,
+            span: 1562..1566,
+        },
     },
     Token {
         kind: Comma,
         lexeme: Symbol(
             ",",
         ),
-        line: 91,
-        column: 29,
-        span: 1566..1567,
+        position: Position {
+            line: 91,
+            column: 29,
+            span: 1566..1567,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "\"$([^$]+)\"",
         ),
-        line: 91,
-        column: 40,
-        span: 1568..1578,
+        position: Position {
+            line: 91,
+            column: 40,
+            span: 1568..1578,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 91,
-        column: 41,
-        span: 1578..1579,
+        position: Position {
+            line: 91,
+            column: 41,
+            span: 1578..1579,
+        },
     },
     Token {
         kind: Do,
         lexeme: Symbol(
             "do",
         ),
-        line: 91,
-        column: 0,
-        span: 1580..1582,
+        position: Position {
+            line: 91,
+            column: 0,
+            span: 1580..1582,
+        },
     },
     Token {
         kind: Local,
         lexeme: Symbol(
             "local",
         ),
-        line: 92,
-        column: 8,
-        span: 1585..1590,
+        position: Position {
+            line: 92,
+            column: 8,
+            span: 1585..1590,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "n",
         ),
-        line: 92,
-        column: 10,
-        span: 1591..1592,
+        position: Position {
+            line: 92,
+            column: 10,
+            span: 1591..1592,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 92,
-        column: 12,
-        span: 1593..1594,
+        position: Position {
+            line: 92,
+            column: 12,
+            span: 1593..1594,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "tonumber",
         ),
-        line: 92,
-        column: 21,
-        span: 1595..1603,
+        position: Position {
+            line: 92,
+            column: 21,
+            span: 1595..1603,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 92,
-        column: 22,
-        span: 1603..1604,
+        position: Position {
+            line: 92,
+            column: 22,
+            span: 1603..1604,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "s",
         ),
-        line: 92,
-        column: 23,
-        span: 1604..1605,
+        position: Position {
+            line: 92,
+            column: 23,
+            span: 1604..1605,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 92,
-        column: 24,
-        span: 1605..1606,
+        position: Position {
+            line: 92,
+            column: 24,
+            span: 1605..1606,
+        },
     },
     Token {
         kind: If,
         lexeme: Symbol(
             "if",
         ),
-        line: 93,
-        column: 5,
-        span: 1609..1611,
+        position: Position {
+            line: 93,
+            column: 5,
+            span: 1609..1611,
+        },
     },
     Token {
         kind: Not,
         lexeme: Symbol(
             "not",
         ),
-        line: 93,
-        column: 9,
-        span: 1612..1615,
+        position: Position {
+            line: 93,
+            column: 9,
+            span: 1612..1615,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "n",
         ),
-        line: 93,
-        column: 11,
-        span: 1616..1617,
+        position: Position {
+            line: 93,
+            column: 11,
+            span: 1616..1617,
+        },
     },
     Token {
         kind: Then,
         lexeme: Symbol(
             "then",
         ),
-        line: 93,
-        column: 16,
-        span: 1618..1622,
+        position: Position {
+            line: 93,
+            column: 16,
+            span: 1618..1622,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "io",
         ),
-        line: 93,
-        column: 19,
-        span: 1623..1625,
+        position: Position {
+            line: 93,
+            column: 19,
+            span: 1623..1625,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 93,
-        column: 20,
-        span: 1625..1626,
+        position: Position {
+            line: 93,
+            column: 20,
+            span: 1625..1626,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "write",
         ),
-        line: 93,
-        column: 25,
-        span: 1626..1631,
+        position: Position {
+            line: 93,
+            column: 25,
+            span: 1626..1631,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 93,
-        column: 26,
-        span: 1631..1632,
+        position: Position {
+            line: 93,
+            column: 26,
+            span: 1631..1632,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "s",
         ),
-        line: 93,
-        column: 27,
-        span: 1632..1633,
+        position: Position {
+            line: 93,
+            column: 27,
+            span: 1632..1633,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 93,
-        column: 28,
-        span: 1633..1634,
+        position: Position {
+            line: 93,
+            column: 28,
+            span: 1633..1634,
+        },
     },
     Token {
         kind: Else,
         lexeme: Symbol(
             "else",
         ),
-        line: 93,
-        column: 33,
-        span: 1635..1639,
+        position: Position {
+            line: 93,
+            column: 33,
+            span: 1635..1639,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "F",
         ),
-        line: 93,
-        column: 35,
-        span: 1640..1641,
+        position: Position {
+            line: 93,
+            column: 35,
+            span: 1640..1641,
+        },
     },
     Token {
         kind: LeftBracket,
         lexeme: Symbol(
             "[",
         ),
-        line: 93,
-        column: 36,
-        span: 1641..1642,
+        position: Position {
+            line: 93,
+            column: 36,
+            span: 1641..1642,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "n",
         ),
-        line: 93,
-        column: 37,
-        span: 1642..1643,
+        position: Position {
+            line: 93,
+            column: 37,
+            span: 1642..1643,
+        },
     },
     Token {
         kind: RightBracket,
         lexeme: Symbol(
             "]",
         ),
-        line: 93,
-        column: 38,
-        span: 1643..1644,
+        position: Position {
+            line: 93,
+            column: 38,
+            span: 1643..1644,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 93,
-        column: 39,
-        span: 1644..1645,
+        position: Position {
+            line: 93,
+            column: 39,
+            span: 1644..1645,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 93,
-        column: 40,
-        span: 1645..1646,
+        position: Position {
+            line: 93,
+            column: 40,
+            span: 1645..1646,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 93,
-        column: 0,
-        span: 1647..1650,
+        position: Position {
+            line: 93,
+            column: 0,
+            span: 1647..1650,
+        },
     },
     Token {
         kind: End,
         lexeme: Symbol(
             "end",
         ),
-        line: 94,
-        column: 0,
-        span: 1651..1654,
+        position: Position {
+            line: 94,
+            column: 0,
+            span: 1651..1654,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "io",
         ),
-        line: 95,
-        column: 3,
-        span: 1655..1657,
+        position: Position {
+            line: 95,
+            column: 3,
+            span: 1655..1657,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 95,
-        column: 4,
-        span: 1657..1658,
+        position: Position {
+            line: 95,
+            column: 4,
+            span: 1657..1658,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "close",
         ),
-        line: 95,
-        column: 9,
-        span: 1658..1663,
+        position: Position {
+            line: 95,
+            column: 9,
+            span: 1658..1663,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 95,
-        column: 10,
-        span: 1663..1664,
+        position: Position {
+            line: 95,
+            column: 10,
+            span: 1663..1664,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 95,
-        column: 11,
-        span: 1664..1665,
+        position: Position {
+            line: 95,
+            column: 11,
+            span: 1664..1665,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "result",
         ),
-        line: 96,
-        column: 7,
-        span: 1666..1672,
+        position: Position {
+            line: 96,
+            column: 7,
+            span: 1666..1672,
+        },
     },
     Token {
         kind: Equals,
         lexeme: Symbol(
             "=",
         ),
-        line: 96,
-        column: 9,
-        span: 1673..1674,
+        position: Position {
+            line: 96,
+            column: 9,
+            span: 1673..1674,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "dofile",
         ),
-        line: 96,
-        column: 16,
-        span: 1675..1681,
+        position: Position {
+            line: 96,
+            column: 16,
+            span: 1675..1681,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 96,
-        column: 17,
-        span: 1681..1682,
+        position: Position {
+            line: 96,
+            column: 17,
+            span: 1681..1682,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "file",
         ),
-        line: 96,
-        column: 21,
-        span: 1682..1686,
+        position: Position {
+            line: 96,
+            column: 21,
+            span: 1682..1686,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 96,
-        column: 22,
-        span: 1686..1687,
+        position: Position {
+            line: 96,
+            column: 22,
+            span: 1686..1687,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "assert",
         ),
-        line: 97,
-        column: 7,
-        span: 1688..1694,
+        position: Position {
+            line: 97,
+            column: 7,
+            span: 1688..1694,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 97,
-        column: 8,
-        span: 1694..1695,
+        position: Position {
+            line: 97,
+            column: 8,
+            span: 1694..1695,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "os",
         ),
-        line: 97,
-        column: 10,
-        span: 1695..1697,
+        position: Position {
+            line: 97,
+            column: 10,
+            span: 1695..1697,
+        },
     },
     Token {
         kind: Dot,
         lexeme: Symbol(
             ".",
         ),
-        line: 97,
-        column: 11,
-        span: 1697..1698,
+        position: Position {
+            line: 97,
+            column: 11,
+            span: 1697..1698,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "remove",
         ),
-        line: 97,
-        column: 17,
-        span: 1698..1704,
+        position: Position {
+            line: 97,
+            column: 17,
+            span: 1698..1704,
+        },
     },
     Token {
         kind: LeftParen,
         lexeme: Symbol(
             "(",
         ),
-        line: 97,
-        column: 18,
-        span: 1704..1705,
+        position: Position {
+            line: 97,
+            column: 18,
+            span: 1704..1705,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "file",
         ),
-        line: 97,
-        column: 22,
-        span: 1705..1709,
+        position: Position {
+            line: 97,
+            column: 22,
+            span: 1705..1709,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 97,
-        column: 23,
-        span: 1709..1710,
+        position: Position {
+            line: 97,
+            column: 23,
+            span: 1709..1710,
+        },
     },
     Token {
         kind: RightParen,
         lexeme: Symbol(
             ")",
         ),
-        line: 97,
-        column: 24,
-        span: 1710..1711,
+        position: Position {
+            line: 97,
+            column: 24,
+            span: 1710..1711,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "print",
         ),
-        line: 98,
-        column: 6,
-        span: 1712..1717,
+        position: Position {
+            line: 98,
+            column: 6,
+            span: 1712..1717,
+        },
     },
     Token {
         kind: String,
         lexeme: Symbol(
             "'OK'",
         ),
-        line: 98,
-        column: 10,
-        span: 1717..1721,
+        position: Position {
+            line: 98,
+            column: 10,
+            span: 1717..1721,
+        },
     },
     Token {
         kind: Return,
         lexeme: Symbol(
             "return",
         ),
-        line: 99,
-        column: 7,
-        span: 1722..1728,
+        position: Position {
+            line: 99,
+            column: 7,
+            span: 1722..1728,
+        },
     },
     Token {
         kind: Identifier,
         lexeme: Symbol(
             "result",
         ),
-        line: 99,
-        column: 0,
-        span: 1729..1735,
+        position: Position {
+            line: 99,
+            column: 0,
+            span: 1729..1735,
+        },
     },
 ]

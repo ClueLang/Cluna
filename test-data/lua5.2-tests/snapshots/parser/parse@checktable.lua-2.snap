@@ -4,30 +4,29 @@ expression: parsed
 input_file: test-data/lua5.2-tests/checktable.lua
 ---
 [
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "assert",
             ),
             Call(
                 [
                     [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "rawget",
                                 ),
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "_G",
                                                     ),
                                                 ],
-                                                line: 2,
-                                            },
+                                            ),
                                         ],
                                         [
                                             Symbol(
@@ -37,8 +36,7 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     ],
                                 ),
                             ],
-                            line: 2,
-                        },
+                        ),
                         Operator(
                             (
                                 "==",
@@ -52,18 +50,16 @@ input_file: test-data/lua5.2-tests/checktable.lua
                 ],
             ),
         ],
-        line: 2,
-    },
+    ),
     IfStatement {
         condition: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "T",
                     ),
                 ],
-                line: 4,
-            },
+            ),
             Operator(
                 (
                     "==",
@@ -79,14 +75,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
             code: [
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "stat",
                                 ),
                             ],
-                            line: 5,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -95,8 +90,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                 body: CodeBlock {
                                     start: 5,
                                     code: [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "print",
                                                 ),
@@ -110,18 +105,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 5,
-                                        },
+                                        ),
                                     ],
                                     end: 8,
                                 },
-                                line: 5,
-                                column: 8,
                             },
                         ],
                     ],
-                    line: 6,
-                    column: 0,
                 },
                 Return(
                     None,
@@ -130,8 +120,6 @@ input_file: test-data/lua5.2-tests/checktable.lua
             end: 26,
         },
         next: None,
-        line: 7,
-        column: 1,
     },
     Function {
         local: false,
@@ -163,8 +151,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -177,24 +165,20 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "t",
                                                         ),
                                                     ],
-                                                    line: 11,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 11,
-                            },
+                            ),
                         ],
                     ],
-                    line: 12,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -205,15 +189,11 @@ input_file: test-data/lua5.2-tests/checktable.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [],
-                                line: 12,
-                                column: 5,
-                            },
+                            Table(
+                                [],
+                            ),
                         ],
                     ],
-                    line: 13,
-                    column: 0,
                 },
                 ForLoop {
                     iter: "i",
@@ -228,14 +208,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "hsize",
                                 ),
                             ],
-                            line: 13,
-                        },
+                        ),
                         Operator(
                             (
                                 "-",
@@ -272,8 +251,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "T",
                                                 ),
@@ -286,59 +265,52 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "t",
                                                                     ),
                                                                 ],
-                                                                line: 14,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "i",
                                                                     ),
                                                                 ],
-                                                                line: 14,
-                                                            },
+                                                            ),
                                                             Operator(
                                                                 (
                                                                     "+",
                                                                     true,
                                                                 ),
                                                             ),
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "asize",
                                                                     ),
                                                                 ],
-                                                                line: 14,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 14,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 15,
-                                column: 0,
                             },
                             IfStatement {
                                 condition: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "key",
                                             ),
                                         ],
-                                        line: 15,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -352,16 +324,16 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                 body: CodeBlock {
                                     start: 22,
                                     code: [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "assert",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "l",
                                                                     ),
@@ -370,22 +342,20 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     ),
                                                                     Expr(
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "i",
                                                                                     ),
                                                                                 ],
-                                                                                line: 16,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ),
                                                                     Symbol(
                                                                         "]",
                                                                     ),
                                                                 ],
-                                                                line: 16,
-                                                            },
+                                                            ),
                                                             Operator(
                                                                 (
                                                                     "==",
@@ -401,14 +371,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     true,
                                                                 ),
                                                             ),
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "val",
                                                                     ),
                                                                 ],
-                                                                line: 16,
-                                                            },
+                                                            ),
                                                             Operator(
                                                                 (
                                                                     "==",
@@ -424,14 +393,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     true,
                                                                 ),
                                                             ),
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "next",
                                                                     ),
                                                                 ],
-                                                                line: 16,
-                                                            },
+                                                            ),
                                                             Operator(
                                                                 (
                                                                     "==",
@@ -445,22 +413,20 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 16,
-                                        },
+                                        ),
                                     ],
                                     end: 40,
                                 },
                                 next: Some(
                                     IfStatement {
                                         condition: [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "key",
                                                     ),
                                                 ],
-                                                line: 17,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "==",
@@ -474,22 +440,21 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                         body: CodeBlock {
                                             start: 44,
                                             code: [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "assert",
                                                         ),
                                                         Call(
                                                             [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "val",
                                                                             ),
                                                                         ],
-                                                                        line: 18,
-                                                                    },
+                                                                    ),
                                                                     Operator(
                                                                         (
                                                                             "==",
@@ -503,8 +468,7 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 18,
-                                                },
+                                                ),
                                             ],
                                             end: 51,
                                         },
@@ -514,16 +478,16 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                 body: CodeBlock {
                                                     start: 51,
                                                     code: [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "assert",
                                                                 ),
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "t",
                                                                                     ),
@@ -532,42 +496,38 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                     ),
                                                                                     Expr(
                                                                                         [
-                                                                                            Ident {
-                                                                                                expr: [
+                                                                                            Ident(
+                                                                                                [
                                                                                                     Symbol(
                                                                                                         "key",
                                                                                                     ),
                                                                                                 ],
-                                                                                                line: 20,
-                                                                                            },
+                                                                                            ),
                                                                                         ],
                                                                                     ),
                                                                                     Symbol(
                                                                                         "]",
                                                                                     ),
                                                                                 ],
-                                                                                line: 20,
-                                                                            },
+                                                                            ),
                                                                             Operator(
                                                                                 (
                                                                                     "==",
                                                                                     true,
                                                                                 ),
                                                                             ),
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "val",
                                                                                     ),
                                                                                 ],
-                                                                                line: 20,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 20,
-                                                        },
+                                                        ),
                                                         Variable {
                                                             names: [
                                                                 (
@@ -577,8 +537,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                             ],
                                                             values: [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "T",
                                                                             ),
@@ -591,39 +551,34 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                             Call(
                                                                                 [
                                                                                     [
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "key",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 21,
-                                                                                        },
+                                                                                        ),
                                                                                     ],
                                                                                     [
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "t",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 21,
-                                                                                        },
+                                                                                        ),
                                                                                     ],
                                                                                 ],
                                                                             ),
                                                                         ],
-                                                                        line: 21,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
-                                                            line: 22,
-                                                            column: 0,
                                                         },
                                                         IfStatement {
                                                             condition: [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "l",
                                                                         ),
@@ -632,36 +587,34 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                         ),
                                                                         Expr(
                                                                             [
-                                                                                Ident {
-                                                                                    expr: [
+                                                                                Ident(
+                                                                                    [
                                                                                         Symbol(
                                                                                             "i",
                                                                                         ),
                                                                                     ],
-                                                                                    line: 22,
-                                                                                },
+                                                                                ),
                                                                             ],
                                                                         ),
                                                                         Symbol(
                                                                             "]",
                                                                         ),
                                                                     ],
-                                                                    line: 22,
-                                                                },
+                                                                ),
                                                             ],
                                                             body: CodeBlock {
                                                                 start: 26,
                                                                 code: [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "assert",
                                                                             ),
                                                                             Call(
                                                                                 [
                                                                                     [
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "l",
                                                                                                 ),
@@ -670,78 +623,72 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                 ),
                                                                                                 Expr(
                                                                                                     [
-                                                                                                        Ident {
-                                                                                                            expr: [
+                                                                                                        Ident(
+                                                                                                            [
                                                                                                                 Symbol(
                                                                                                                     "i",
                                                                                                                 ),
                                                                                                             ],
-                                                                                                            line: 23,
-                                                                                                        },
+                                                                                                        ),
                                                                                                     ],
                                                                                                 ),
                                                                                                 Symbol(
                                                                                                     "]",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 23,
-                                                                                        },
+                                                                                        ),
                                                                                         Operator(
                                                                                             (
                                                                                                 "==",
                                                                                                 true,
                                                                                             ),
                                                                                         ),
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "mp",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 23,
-                                                                                        },
+                                                                                        ),
                                                                                     ],
                                                                                 ],
                                                                             ),
                                                                         ],
-                                                                        line: 23,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 end: 36,
                                                             },
                                                             next: Some(
                                                                 IfStatement {
                                                                     condition: [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "mp",
                                                                                 ),
                                                                             ],
-                                                                            line: 24,
-                                                                        },
+                                                                        ),
                                                                         Operator(
                                                                             (
                                                                                 "~=",
                                                                                 true,
                                                                             ),
                                                                         ),
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "i",
                                                                                 ),
                                                                             ],
-                                                                            line: 24,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                     body: CodeBlock {
                                                                         start: 40,
                                                                         code: [
                                                                             Alter {
                                                                                 names: [
-                                                                                    Ident {
-                                                                                        expr: [
+                                                                                    Ident(
+                                                                                        [
                                                                                             Symbol(
                                                                                                 "l",
                                                                                             ),
@@ -750,37 +697,32 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                             ),
                                                                                             Expr(
                                                                                                 [
-                                                                                                    Ident {
-                                                                                                        expr: [
+                                                                                                    Ident(
+                                                                                                        [
                                                                                                             Symbol(
                                                                                                                 "i",
                                                                                                             ),
                                                                                                         ],
-                                                                                                        line: 25,
-                                                                                                    },
+                                                                                                    ),
                                                                                                 ],
                                                                                             ),
                                                                                             Symbol(
                                                                                                 "]",
                                                                                             ),
                                                                                         ],
-                                                                                        line: 25,
-                                                                                    },
+                                                                                    ),
                                                                                 ],
                                                                                 values: [
                                                                                     [
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "mp",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 25,
-                                                                                        },
+                                                                                        ),
                                                                                     ],
                                                                                 ],
-                                                                                line: 25,
-                                                                                column: 6,
                                                                             },
                                                                         ],
                                                                         end: 47,
@@ -793,8 +735,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                 code: [
                                                                                     Alter {
                                                                                         names: [
-                                                                                            Ident {
-                                                                                                expr: [
+                                                                                            Ident(
+                                                                                                [
                                                                                                     Symbol(
                                                                                                         "l",
                                                                                                     ),
@@ -803,131 +745,118 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                     ),
                                                                                                     Expr(
                                                                                                         [
-                                                                                                            Ident {
-                                                                                                                expr: [
+                                                                                                            Ident(
+                                                                                                                [
                                                                                                                     Symbol(
                                                                                                                         "mp",
                                                                                                                     ),
                                                                                                                 ],
-                                                                                                                line: 27,
-                                                                                                            },
+                                                                                                            ),
                                                                                                         ],
                                                                                                     ),
                                                                                                     Symbol(
                                                                                                         "]",
                                                                                                     ),
                                                                                                 ],
-                                                                                                line: 27,
-                                                                                            },
+                                                                                            ),
                                                                                         ],
                                                                                         values: [
                                                                                             [
-                                                                                                Table {
-                                                                                                    data: [
+                                                                                                Table(
+                                                                                                    [
                                                                                                         (
                                                                                                             None,
                                                                                                             [
-                                                                                                                Ident {
-                                                                                                                    expr: [
+                                                                                                                Ident(
+                                                                                                                    [
                                                                                                                         Symbol(
                                                                                                                             "mp",
                                                                                                                         ),
                                                                                                                     ],
-                                                                                                                    line: 27,
-                                                                                                                },
+                                                                                                                ),
                                                                                                             ],
                                                                                                         ),
                                                                                                     ],
-                                                                                                    line: 27,
-                                                                                                    column: 8,
-                                                                                                },
+                                                                                                ),
                                                                                             ],
                                                                                         ],
-                                                                                        line: 28,
-                                                                                        column: 0,
                                                                                     },
                                                                                     WhileLoop {
                                                                                         condition: [
-                                                                                            Ident {
-                                                                                                expr: [
+                                                                                            Ident(
+                                                                                                [
                                                                                                     Symbol(
                                                                                                         "next",
                                                                                                     ),
                                                                                                 ],
-                                                                                                line: 28,
-                                                                                            },
+                                                                                            ),
                                                                                         ],
                                                                                         body: CodeBlock {
                                                                                             start: 11,
                                                                                             code: [
-                                                                                                Ident {
-                                                                                                    expr: [
+                                                                                                Ident(
+                                                                                                    [
                                                                                                         Symbol(
                                                                                                             "assert",
                                                                                                         ),
                                                                                                         Call(
                                                                                                             [
                                                                                                                 [
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "ff",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 29,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                     Operator(
                                                                                                                         (
                                                                                                                             "<=",
                                                                                                                             true,
                                                                                                                         ),
                                                                                                                     ),
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "next",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 29,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                     Operator(
                                                                                                                         (
                                                                                                                             "and",
                                                                                                                             true,
                                                                                                                         ),
                                                                                                                     ),
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "next",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 29,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                     Operator(
                                                                                                                         (
                                                                                                                             "<",
                                                                                                                             true,
                                                                                                                         ),
                                                                                                                     ),
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "hsize",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 29,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                 ],
                                                                                                             ],
                                                                                                         ),
                                                                                                     ],
-                                                                                                    line: 29,
-                                                                                                },
+                                                                                                ),
                                                                                                 IfStatement {
                                                                                                     condition: [
-                                                                                                        Ident {
-                                                                                                            expr: [
+                                                                                                        Ident(
+                                                                                                            [
                                                                                                                 Symbol(
                                                                                                                     "l",
                                                                                                                 ),
@@ -936,36 +865,34 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                                 ),
                                                                                                                 Expr(
                                                                                                                     [
-                                                                                                                        Ident {
-                                                                                                                            expr: [
+                                                                                                                        Ident(
+                                                                                                                            [
                                                                                                                                 Symbol(
                                                                                                                                     "next",
                                                                                                                                 ),
                                                                                                                             ],
-                                                                                                                            line: 30,
-                                                                                                                        },
+                                                                                                                        ),
                                                                                                                     ],
                                                                                                                 ),
                                                                                                                 Symbol(
                                                                                                                     "]",
                                                                                                                 ),
                                                                                                             ],
-                                                                                                            line: 30,
-                                                                                                        },
+                                                                                                        ),
                                                                                                     ],
                                                                                                     body: CodeBlock {
                                                                                                         start: 16,
                                                                                                         code: [
-                                                                                                            Ident {
-                                                                                                                expr: [
+                                                                                                            Ident(
+                                                                                                                [
                                                                                                                     Symbol(
                                                                                                                         "assert",
                                                                                                                     ),
                                                                                                                     Call(
                                                                                                                         [
                                                                                                                             [
-                                                                                                                                Ident {
-                                                                                                                                    expr: [
+                                                                                                                                Ident(
+                                                                                                                                    [
                                                                                                                                         Symbol(
                                                                                                                                             "l",
                                                                                                                                         ),
@@ -974,42 +901,38 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                                                         ),
                                                                                                                                         Expr(
                                                                                                                                             [
-                                                                                                                                                Ident {
-                                                                                                                                                    expr: [
+                                                                                                                                                Ident(
+                                                                                                                                                    [
                                                                                                                                                         Symbol(
                                                                                                                                                             "next",
                                                                                                                                                         ),
                                                                                                                                                     ],
-                                                                                                                                                    line: 30,
-                                                                                                                                                },
+                                                                                                                                                ),
                                                                                                                                             ],
                                                                                                                                         ),
                                                                                                                                         Symbol(
                                                                                                                                             "]",
                                                                                                                                         ),
                                                                                                                                     ],
-                                                                                                                                    line: 30,
-                                                                                                                                },
+                                                                                                                                ),
                                                                                                                                 Operator(
                                                                                                                                     (
                                                                                                                                         "==",
                                                                                                                                         true,
                                                                                                                                     ),
                                                                                                                                 ),
-                                                                                                                                Ident {
-                                                                                                                                    expr: [
+                                                                                                                                Ident(
+                                                                                                                                    [
                                                                                                                                         Symbol(
                                                                                                                                             "mp",
                                                                                                                                         ),
                                                                                                                                     ],
-                                                                                                                                    line: 30,
-                                                                                                                                },
+                                                                                                                                ),
                                                                                                                             ],
                                                                                                                         ],
                                                                                                                     ),
                                                                                                                 ],
-                                                                                                                line: 30,
-                                                                                                            },
+                                                                                                            ),
                                                                                                         ],
                                                                                                         end: 26,
                                                                                                     },
@@ -1021,8 +944,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                                 code: [
                                                                                                                     Alter {
                                                                                                                         names: [
-                                                                                                                            Ident {
-                                                                                                                                expr: [
+                                                                                                                            Ident(
+                                                                                                                                [
                                                                                                                                     Symbol(
                                                                                                                                         "l",
                                                                                                                                     ),
@@ -1031,51 +954,42 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                                                     ),
                                                                                                                                     Expr(
                                                                                                                                         [
-                                                                                                                                            Ident {
-                                                                                                                                                expr: [
+                                                                                                                                            Ident(
+                                                                                                                                                [
                                                                                                                                                     Symbol(
                                                                                                                                                         "next",
                                                                                                                                                     ),
                                                                                                                                                 ],
-                                                                                                                                                line: 30,
-                                                                                                                                            },
+                                                                                                                                            ),
                                                                                                                                         ],
                                                                                                                                     ),
                                                                                                                                     Symbol(
                                                                                                                                         "]",
                                                                                                                                     ),
                                                                                                                                 ],
-                                                                                                                                line: 30,
-                                                                                                                            },
+                                                                                                                            ),
                                                                                                                         ],
                                                                                                                         values: [
                                                                                                                             [
-                                                                                                                                Ident {
-                                                                                                                                    expr: [
+                                                                                                                                Ident(
+                                                                                                                                    [
                                                                                                                                         Symbol(
                                                                                                                                             "mp",
                                                                                                                                         ),
                                                                                                                                     ],
-                                                                                                                                    line: 30,
-                                                                                                                                },
+                                                                                                                                ),
                                                                                                                             ],
                                                                                                                         ],
-                                                                                                                        line: 30,
-                                                                                                                        column: 6,
                                                                                                                     },
                                                                                                                 ],
                                                                                                                 end: 33,
                                                                                                             },
                                                                                                             next: None,
-                                                                                                            line: 30,
-                                                                                                            column: 23,
                                                                                                         },
                                                                                                     ),
-                                                                                                    line: 30,
-                                                                                                    column: 23,
                                                                                                 },
-                                                                                                Ident {
-                                                                                                    expr: [
+                                                                                                Ident(
+                                                                                                    [
                                                                                                         Symbol(
                                                                                                             "table",
                                                                                                         ),
@@ -1088,8 +1002,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                         Call(
                                                                                                             [
                                                                                                                 [
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "l",
                                                                                                                             ),
@@ -1098,69 +1012,62 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                                             ),
                                                                                                                             Expr(
                                                                                                                                 [
-                                                                                                                                    Ident {
-                                                                                                                                        expr: [
+                                                                                                                                    Ident(
+                                                                                                                                        [
                                                                                                                                             Symbol(
                                                                                                                                                 "mp",
                                                                                                                                             ),
                                                                                                                                         ],
-                                                                                                                                        line: 31,
-                                                                                                                                    },
+                                                                                                                                    ),
                                                                                                                                 ],
                                                                                                                             ),
                                                                                                                             Symbol(
                                                                                                                                 "]",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 31,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                 ],
                                                                                                                 [
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "next",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 31,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                 ],
                                                                                                             ],
                                                                                                         ),
                                                                                                     ],
-                                                                                                    line: 30,
-                                                                                                },
+                                                                                                ),
                                                                                                 Alter {
                                                                                                     names: [
-                                                                                                        Ident {
-                                                                                                            expr: [
+                                                                                                        Ident(
+                                                                                                            [
                                                                                                                 Symbol(
                                                                                                                     "key",
                                                                                                                 ),
                                                                                                             ],
-                                                                                                            line: 31,
-                                                                                                        },
-                                                                                                        Ident {
-                                                                                                            expr: [
+                                                                                                        ),
+                                                                                                        Ident(
+                                                                                                            [
                                                                                                                 Symbol(
                                                                                                                     "val",
                                                                                                                 ),
                                                                                                             ],
-                                                                                                            line: 32,
-                                                                                                        },
-                                                                                                        Ident {
-                                                                                                            expr: [
+                                                                                                        ),
+                                                                                                        Ident(
+                                                                                                            [
                                                                                                                 Symbol(
                                                                                                                     "next",
                                                                                                                 ),
                                                                                                             ],
-                                                                                                            line: 32,
-                                                                                                        },
+                                                                                                        ),
                                                                                                     ],
                                                                                                     values: [
                                                                                                         [
-                                                                                                            Ident {
-                                                                                                                expr: [
+                                                                                                            Ident(
+                                                                                                                [
                                                                                                                     Symbol(
                                                                                                                         "T",
                                                                                                                     ),
@@ -1173,103 +1080,80 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                                                     Call(
                                                                                                                         [
                                                                                                                             [
-                                                                                                                                Ident {
-                                                                                                                                    expr: [
+                                                                                                                                Ident(
+                                                                                                                                    [
                                                                                                                                         Symbol(
                                                                                                                                             "t",
                                                                                                                                         ),
                                                                                                                                     ],
-                                                                                                                                    line: 32,
-                                                                                                                                },
+                                                                                                                                ),
                                                                                                                             ],
                                                                                                                             [
-                                                                                                                                Ident {
-                                                                                                                                    expr: [
+                                                                                                                                Ident(
+                                                                                                                                    [
                                                                                                                                         Symbol(
                                                                                                                                             "next",
                                                                                                                                         ),
                                                                                                                                     ],
-                                                                                                                                    line: 32,
-                                                                                                                                },
+                                                                                                                                ),
                                                                                                                             ],
                                                                                                                         ],
                                                                                                                     ),
                                                                                                                 ],
-                                                                                                                line: 32,
-                                                                                                            },
+                                                                                                            ),
                                                                                                         ],
                                                                                                     ],
-                                                                                                    line: 32,
-                                                                                                    column: 14,
                                                                                                 },
-                                                                                                Ident {
-                                                                                                    expr: [
+                                                                                                Ident(
+                                                                                                    [
                                                                                                         Symbol(
                                                                                                             "assert",
                                                                                                         ),
                                                                                                         Call(
                                                                                                             [
                                                                                                                 [
-                                                                                                                    Ident {
-                                                                                                                        expr: [
+                                                                                                                    Ident(
+                                                                                                                        [
                                                                                                                             Symbol(
                                                                                                                                 "key",
                                                                                                                             ),
                                                                                                                         ],
-                                                                                                                        line: 33,
-                                                                                                                    },
+                                                                                                                    ),
                                                                                                                 ],
                                                                                                             ],
                                                                                                         ),
                                                                                                     ],
-                                                                                                    line: 32,
-                                                                                                },
+                                                                                                ),
                                                                                             ],
                                                                                             end: 74,
                                                                                         },
-                                                                                        line: 34,
-                                                                                        column: 1,
                                                                                     },
                                                                                 ],
                                                                                 end: 122,
                                                                             },
                                                                             next: None,
-                                                                            line: 35,
-                                                                            column: 1,
                                                                         },
                                                                     ),
-                                                                    line: 35,
-                                                                    column: 1,
                                                                 },
                                                             ),
-                                                            line: 35,
-                                                            column: 1,
                                                         },
                                                     ],
                                                     end: 174,
                                                 },
                                                 next: None,
-                                                line: 36,
-                                                column: 1,
                                             },
                                         ),
-                                        line: 36,
-                                        column: 1,
                                     },
                                 ),
-                                line: 36,
-                                column: 1,
                             },
                         ],
                         end: 202,
                     },
-                    line: 37,
-                    column: 1,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "l",
                                 ),
@@ -1280,28 +1164,24 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     "asize",
                                 ),
                             ],
-                            line: 37,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "asize",
                                     ),
                                 ],
-                                line: 38,
-                            },
+                            ),
                         ],
                     ],
-                    line: 38,
-                    column: 6,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "l",
                                 ),
@@ -1312,28 +1192,24 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     "hsize",
                                 ),
                             ],
-                            line: 38,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "hsize",
                                     ),
                                 ],
-                                line: 38,
-                            },
+                            ),
                         ],
                     ],
-                    line: 38,
-                    column: 12,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "l",
                                 ),
@@ -1344,36 +1220,31 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     "ff",
                                 ),
                             ],
-                            line: 38,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "ff",
                                     ),
                                 ],
-                                line: 38,
-                            },
+                            ),
                         ],
                     ],
-                    line: 39,
-                    column: 0,
                 },
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "l",
                                         ),
                                     ],
-                                    line: 39,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -1381,8 +1252,6 @@ input_file: test-data/lua5.2-tests/checktable.lua
             ],
             end: 253,
         },
-        line: 40,
-        column: 1,
     },
     Function {
         local: false,
@@ -1414,8 +1283,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -1428,69 +1297,61 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "t",
                                                         ),
                                                     ],
-                                                    line: 43,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 43,
-                            },
+                            ),
                         ],
                     ],
-                    line: 43,
-                    column: 13,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "asize",
                                             ),
                                         ],
-                                        line: 44,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "hsize",
                                             ),
                                         ],
-                                        line: 44,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "ff",
                                             ),
                                         ],
-                                        line: 44,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 43,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1504,8 +1365,7 @@ input_file: test-data/lua5.2-tests/checktable.lua
                             ],
                         ),
                     ],
-                    line: 44,
-                },
+                ),
                 ForLoop {
                     iter: "i",
                     start: [
@@ -1519,14 +1379,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "asize",
                                 ),
                             ],
-                            line: 46,
-                        },
+                        ),
                         Operator(
                             (
                                 "-",
@@ -1559,8 +1418,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "T",
                                                 ),
@@ -1573,45 +1432,40 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "t",
                                                                     ),
                                                                 ],
-                                                                line: 47,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "i",
                                                                     ),
                                                                 ],
-                                                                line: 47,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 47,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 47,
-                                column: 13,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "print",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "string",
                                                         ),
@@ -1629,44 +1483,38 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "i",
                                                                             ),
                                                                         ],
-                                                                        line: 48,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 48,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "v",
                                                         ),
                                                     ],
-                                                    line: 48,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 47,
-                            },
+                            ),
                         ],
                         end: 59,
                     },
-                    line: 49,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1680,8 +1528,7 @@ input_file: test-data/lua5.2-tests/checktable.lua
                             ],
                         ),
                     ],
-                    line: 49,
-                },
+                ),
                 ForLoop {
                     iter: "i",
                     start: [
@@ -1695,14 +1542,13 @@ input_file: test-data/lua5.2-tests/checktable.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "hsize",
                                 ),
                             ],
-                            line: 51,
-                        },
+                        ),
                         Operator(
                             (
                                 "-",
@@ -1722,26 +1568,25 @@ input_file: test-data/lua5.2-tests/checktable.lua
                     code: CodeBlock {
                         start: 70,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "print",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "i",
                                                         ),
                                                     ],
-                                                    line: 52,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "T",
                                                         ),
@@ -1754,58 +1599,51 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                         Call(
                                                             [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "t",
                                                                             ),
                                                                         ],
-                                                                        line: 52,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "i",
                                                                             ),
                                                                         ],
-                                                                        line: 52,
-                                                                    },
+                                                                    ),
                                                                     Operator(
                                                                         (
                                                                             "+",
                                                                             true,
                                                                         ),
                                                                     ),
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "asize",
                                                                             ),
                                                                         ],
-                                                                        line: 52,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 52,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 52,
-                            },
+                            ),
                         ],
                         end: 86,
                     },
-                    line: 53,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1819,13 +1657,10 @@ input_file: test-data/lua5.2-tests/checktable.lua
                             ],
                         ),
                     ],
-                    line: 53,
-                },
+                ),
             ],
             end: 347,
         },
-        line: 55,
-        column: 1,
     },
     Function {
         local: false,
@@ -1842,43 +1677,38 @@ input_file: test-data/lua5.2-tests/checktable.lua
             code: [
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
                             ],
-                            line: 58,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "checktable",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "t",
                                                         ),
                                                     ],
-                                                    line: 58,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 58,
-                            },
+                            ),
                         ],
                     ],
-                    line: 59,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -1913,8 +1743,6 @@ input_file: test-data/lua5.2-tests/checktable.lua
                             ),
                         ],
                     ],
-                    line: 60,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -1925,15 +1753,11 @@ input_file: test-data/lua5.2-tests/checktable.lua
                     ],
                     values: [
                         [
-                            Table {
-                                data: [],
-                                line: 60,
-                                column: 5,
-                            },
+                            Table(
+                                [],
+                            ),
                         ],
                     ],
-                    line: 61,
-                    column: 0,
                 },
                 ForLoop {
                     iter: "i",
@@ -1948,8 +1772,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "t",
                                 ),
@@ -1960,8 +1784,7 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                     "hsize",
                                 ),
                             ],
-                            line: 61,
-                        },
+                        ),
                         Operator(
                             (
                                 "-",
@@ -1983,16 +1806,16 @@ input_file: test-data/lua5.2-tests/checktable.lua
                         code: [
                             IfStatement {
                                 condition: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "type",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "t",
                                                                 ),
@@ -2001,28 +1824,25 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                 ),
                                                                 Expr(
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "i",
                                                                                 ),
                                                                             ],
-                                                                            line: 62,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ),
                                                                 Symbol(
                                                                     "]",
                                                                 ),
                                                             ],
-                                                            line: 62,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 62,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -2045,8 +1865,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                             ],
                                             values: [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "table",
                                                             ),
@@ -2059,8 +1879,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                             Call(
                                                                 [
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "t",
                                                                                 ),
@@ -2069,54 +1889,47 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                                 ),
                                                                                 Expr(
                                                                                     [
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "i",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 63,
-                                                                                        },
+                                                                                        ),
                                                                                     ],
                                                                                 ),
                                                                                 Symbol(
                                                                                     "]",
                                                                                 ),
                                                                             ],
-                                                                            line: 63,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ],
                                                             ),
                                                         ],
-                                                        line: 63,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
-                                            line: 63,
-                                            column: 12,
                                         },
                                         Alter {
                                             names: [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "nlist",
                                                         ),
                                                     ],
-                                                    line: 63,
-                                                },
+                                                ),
                                             ],
                                             values: [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "nlist",
                                                             ),
                                                         ],
-                                                        line: 64,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "+",
@@ -2133,48 +1946,41 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                     ),
                                                 ],
                                             ],
-                                            line: 64,
-                                            column: 5,
                                         },
                                         Alter {
                                             names: [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "nelem",
                                                         ),
                                                     ],
-                                                    line: 64,
-                                                },
+                                                ),
                                             ],
                                             values: [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "nelem",
                                                             ),
                                                         ],
-                                                        line: 65,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "+",
                                                             true,
                                                         ),
                                                     ),
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "n",
                                                             ),
                                                         ],
-                                                        line: 65,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
-                                            line: 66,
-                                            column: 0,
                                         },
                                         IfStatement {
                                             condition: [
@@ -2184,8 +1990,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                         false,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "maxlist",
                                                         ),
@@ -2194,30 +2000,28 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                         ),
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "n",
                                                                         ),
                                                                     ],
-                                                                    line: 66,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                         Symbol(
                                                             "]",
                                                         ),
                                                     ],
-                                                    line: 66,
-                                                },
+                                                ),
                                             ],
                                             body: CodeBlock {
                                                 start: 29,
                                                 code: [
                                                     Alter {
                                                         names: [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "maxlist",
                                                                     ),
@@ -2226,22 +2030,20 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     ),
                                                                     Expr(
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "n",
                                                                                     ),
                                                                                 ],
-                                                                                line: 66,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ),
                                                                     Symbol(
                                                                         "]",
                                                                     ),
                                                                 ],
-                                                                line: 66,
-                                                            },
+                                                            ),
                                                         ],
                                                         values: [
                                                             [
@@ -2255,20 +2057,16 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                 ),
                                                             ],
                                                         ],
-                                                        line: 66,
-                                                        column: 6,
                                                     },
                                                 ],
                                                 end: 36,
                                             },
                                             next: None,
-                                            line: 66,
-                                            column: 14,
                                         },
                                         Alter {
                                             names: [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "maxlist",
                                                         ),
@@ -2277,27 +2075,25 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                         ),
                                                         Expr(
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "n",
                                                                         ),
                                                                     ],
-                                                                    line: 67,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                         Symbol(
                                                             "]",
                                                         ),
                                                     ],
-                                                    line: 66,
-                                                },
+                                                ),
                                             ],
                                             values: [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "maxlist",
                                                             ),
@@ -2306,22 +2102,20 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                             ),
                                                             Expr(
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "n",
                                                                             ),
                                                                         ],
-                                                                        line: 67,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ),
                                                             Symbol(
                                                                 "]",
                                                             ),
                                                         ],
-                                                        line: 67,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "+",
@@ -2338,32 +2132,26 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                     ),
                                                 ],
                                             ],
-                                            line: 67,
-                                            column: 11,
                                         },
                                     ],
                                     end: 59,
                                 },
                                 next: None,
-                                line: 68,
-                                column: 1,
                             },
                         ],
                         end: 90,
                     },
-                    line: 69,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "string",
                                             ),
@@ -2381,8 +2169,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                         ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "t",
                                                                 ),
@@ -2393,36 +2181,33 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     "hsize",
                                                                 ),
                                                             ],
-                                                            line: 70,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "nelem",
                                                                 ),
                                                             ],
-                                                            line: 71,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "nelem",
                                                                 ),
                                                             ],
-                                                            line: 71,
-                                                        },
+                                                        ),
                                                         Operator(
                                                             (
                                                                 "/",
                                                                 true,
                                                             ),
                                                         ),
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "t",
                                                                 ),
@@ -2433,36 +2218,33 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     "hsize",
                                                                 ),
                                                             ],
-                                                            line: 71,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "nelem",
                                                                 ),
                                                             ],
-                                                            line: 71,
-                                                        },
+                                                        ),
                                                         Operator(
                                                             (
                                                                 "/",
                                                                 true,
                                                             ),
                                                         ),
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "nlist",
                                                                 ),
                                                             ],
-                                                            line: 71,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "t",
                                                                 ),
@@ -2473,20 +2255,17 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     "asize",
                                                                 ),
                                                             ],
-                                                            line: 71,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 70,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 69,
-                },
+                ),
                 ForLoop {
                     iter: "i",
                     start: [
@@ -2500,8 +2279,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                         ),
                     ],
                     end: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "table",
                                 ),
@@ -2514,20 +2293,18 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "maxlist",
                                                     ),
                                                 ],
-                                                line: 72,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 72,
-                        },
+                        ),
                     ],
                     step: None,
                     code: CodeBlock {
@@ -2542,8 +2319,8 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "maxlist",
                                                 ),
@@ -2552,22 +2329,20 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                 ),
                                                 Expr(
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "i",
                                                                 ),
                                                             ],
-                                                            line: 73,
-                                                        },
+                                                        ),
                                                     ],
                                                 ),
                                                 Symbol(
                                                     "]",
                                                 ),
                                             ],
-                                            line: 73,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "or",
@@ -2584,19 +2359,17 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                         ),
                                     ],
                                 ],
-                                line: 73,
-                                column: 9,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "print",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "string",
                                                         ),
@@ -2614,34 +2387,31 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                     ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "i",
                                                                             ),
                                                                         ],
-                                                                        line: 74,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "n",
                                                                             ),
                                                                         ],
-                                                                        line: 74,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "n",
                                                                             ),
                                                                         ],
-                                                                        line: 74,
-                                                                    },
+                                                                    ),
                                                                     Operator(
                                                                         (
                                                                             "*",
@@ -2662,36 +2432,29 @@ input_file: test-data/lua5.2-tests/checktable.lua
                                                                             true,
                                                                         ),
                                                                     ),
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "nlist",
                                                                             ),
                                                                         ],
-                                                                        line: 74,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 74,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 73,
-                            },
+                            ),
                         ],
                         end: 160,
                     },
-                    line: 75,
-                    column: 1,
                 },
             ],
             end: 513,
         },
-        line: 76,
-        column: 1,
     },
 ]

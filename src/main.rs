@@ -1,12 +1,12 @@
 use clap::Parser;
 use cluna::{
     compiler::compile_ast,
-    error::{Diagnostic, DiagnosticLevel},
+    error::{get_files_mut, Diagnostic, DiagnosticLevel},
     lexer::scan_code,
     parser::parse_tokens,
 };
 use colored::Colorize;
-use std::path::PathBuf;
+use std::{path::PathBuf, time::Instant};
 
 #[derive(Parser)]
 struct Cli {
@@ -21,10 +21,11 @@ struct Cli {
 }
 
 fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), Diagnostic> {
-    println!("{} {}", "Compiling".green().bold(), path.display());
+    eprintln!("   {} {}", "Compiling".green().bold(), path.display());
     let code = std::fs::read_to_string(path).map_err(|e| Diagnostic::other(e.to_string()))?;
+    get_files_mut().insert(path.display().to_string(), code.clone());
     let scanned = scan_code(code, Some(path.display().to_string()))?;
-    let parsed = parse_tokens(dbg!(&scanned), Some(path.display().to_string()))?;
+    let parsed = parse_tokens(&scanned, Some(path.display().to_string()))?;
     let compiled = compile_ast(parsed);
 
     let output = output.unwrap_or_else(|| path.with_extension("clue"));
@@ -44,6 +45,7 @@ fn compile() -> Result<(), Diagnostic> {
         )));
     }
 
+    let start = Instant::now();
     if path.is_file() {
         let output = args.output.or_else(|| {
             args.out_dir.clone().map(|mut out_dir| {
@@ -52,7 +54,7 @@ fn compile() -> Result<(), Diagnostic> {
                 out_dir
             })
         });
-        return compile_file(&path, output);
+        compile_file(&path, output)?;
     } else if path.is_dir() {
         if args.output.is_some() {
             eprintln!(
@@ -83,6 +85,7 @@ fn compile() -> Result<(), Diagnostic> {
             }
         }
     }
+    eprintln!("    {} in {:?}", "Finished".green().bold(), start.elapsed());
 
     Ok(())
 }

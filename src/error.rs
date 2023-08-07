@@ -1,6 +1,8 @@
-use std::{error::Error, fmt};
+use std::{cell::OnceCell, collections::HashMap, error::Error, fmt};
 
 use colored::Colorize;
+
+use crate::lexer::Position;
 
 #[derive(Debug)]
 pub struct Diagnostic {
@@ -14,10 +16,22 @@ pub struct Diagnostic {
 enum DiagnosticKind {
     Compiler {
         path: Option<String>,
-        line: usize,
-        column: usize,
+        position: Position,
     },
     Other,
+}
+
+type Files = HashMap<String, String>;
+static mut FILES: OnceCell<Files> = OnceCell::new();
+pub fn get_files() -> &'static Files {
+    unsafe { FILES.get_or_init(HashMap::new) }
+}
+
+pub fn get_files_mut() -> &'static mut Files {
+    if unsafe { FILES.get().is_none() } {
+        unsafe { FILES.set(HashMap::new()).unwrap() };
+    }
+    unsafe { FILES.get_mut().unwrap() }
 }
 
 #[derive(Debug, Default)]
@@ -29,21 +43,21 @@ pub enum DiagnosticLevel {
 }
 
 impl Diagnostic {
-    pub fn new(message: String, path: Option<String>, line: usize, column: usize) -> Self {
+    pub fn new(message: String, path: Option<String>, position: Position) -> Self {
         Self {
             message,
             hint: None,
             level: Default::default(),
-            kind: DiagnosticKind::Compiler { path, line, column },
+            kind: DiagnosticKind::Compiler { path, position },
         }
     }
 
-    pub fn expected(expected: String, path: Option<String>, line: usize, column: usize) -> Self {
+    pub fn expected(expected: String, path: Option<String>, position: Position) -> Self {
         Self {
             message: format!("expected {}", expected),
             hint: None,
             level: Default::default(),
-            kind: DiagnosticKind::Compiler { path, line, column },
+            kind: DiagnosticKind::Compiler { path, position },
         }
     }
 
@@ -51,14 +65,13 @@ impl Diagnostic {
         expected: String,
         found: String,
         path: Option<String>,
-        line: usize,
-        column: usize,
+        position: Position,
     ) -> Self {
         Self {
             message: format!("expected {}, found {}", expected, found),
             hint: None,
             level: Default::default(),
-            kind: DiagnosticKind::Compiler { path, line, column },
+            kind: DiagnosticKind::Compiler { path, position },
         }
     }
 
@@ -66,14 +79,13 @@ impl Diagnostic {
         expected: String,
         token: String,
         path: Option<String>,
-        line: usize,
-        column: usize,
+        position: Position,
     ) -> Self {
         Self {
             message: format!("expected {} before {}", expected, token),
             hint: None,
             level: Default::default(),
-            kind: DiagnosticKind::Compiler { path, line, column },
+            kind: DiagnosticKind::Compiler { path, position },
         }
     }
 
@@ -81,23 +93,22 @@ impl Diagnostic {
         expected: String,
         token: String,
         path: Option<String>,
-        line: usize,
-        column: usize,
+        position: Position,
     ) -> Self {
         Self {
             message: format!("expected {} after {}", expected, token),
             hint: None,
             level: Default::default(),
-            kind: DiagnosticKind::Compiler { path, line, column },
+            kind: DiagnosticKind::Compiler { path, position },
         }
     }
 
-    pub fn unexpected(found: String, path: Option<String>, line: usize, column: usize) -> Self {
+    pub fn unexpected(found: String, path: Option<String>, position: Position) -> Self {
         Self {
             message: format!("unexpected {}", found),
             hint: None,
             level: Default::default(),
-            kind: DiagnosticKind::Compiler { path, line, column },
+            kind: DiagnosticKind::Compiler { path, position },
         }
     }
 
@@ -133,12 +144,44 @@ impl fmt::Display for Diagnostic {
 
         write!(f, "{}", self.message)?;
         match &self.kind {
-            DiagnosticKind::Compiler { path, line, column } => {
+            DiagnosticKind::Compiler { path, position } => {
+                let Position { line, column, .. } = &position;
                 write!(f, "\n  {} ", "-->".blue().bold())?;
                 if let Some(path) = path {
                     write!(f, "{}:", path)?;
                 }
-                write!(f, "{}:{}", line, column)?;
+                writeln!(f, "{}:{}", line, column)?;
+
+                if let Some(path) = path {
+                    let source = get_files().get(path);
+                    if let Some(source) = source {
+                        let mut start = position.span.start;
+                        while start > 0 && source.chars().nth(start - 1) != Some('\n') {
+                            start -= 1;
+                        }
+                        let mut end = position.span.end;
+                        while end < source.len() && source.chars().nth(end) != Some('\n') {
+                            end += 1;
+                        }
+
+                        let source = source[start..end].to_owned();
+                        let end = position.span.end - start;
+                        let start = position.span.start - start;
+
+                        for (i, line) in source.lines().enumerate() {
+                            if i > 0 {
+                                writeln!(f)?;
+                            }
+                            writeln!(f, "{:4} | {}", i + position.line, line)?;
+                            write!(
+                                f,
+                                "     | {}{}",
+                                " ".repeat(start),
+                                "^".repeat(end - start).bright_red()
+                            )?;
+                        }
+                    }
+                }
             }
             DiagnosticKind::Other => {}
         }

@@ -13,15 +13,11 @@ input_file: test-data/lua5.4-tests/tracegc.lua
         ],
         values: [
             [
-                Table {
-                    data: [],
-                    line: 3,
-                    column: 5,
-                },
+                Table(
+                    [],
+                ),
             ],
         ],
-        line: 6,
-        column: 0,
     },
     Variable {
         names: [
@@ -40,18 +36,17 @@ input_file: test-data/lua5.4-tests/tracegc.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "setmetatable",
                         ),
                     ],
-                    line: 6,
-                },
+                ),
             ],
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "io",
                         ),
@@ -62,33 +57,28 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                             "stderr",
                         ),
                     ],
-                    line: 7,
-                },
+                ),
             ],
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "collectgarbage",
                         ),
                     ],
-                    line: 7,
-                },
+                ),
             ],
         ],
-        line: 7,
-        column: 7,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "_ENV",
                     ),
                 ],
-                line: 7,
-            },
+            ),
         ],
         values: [
             [
@@ -97,8 +87,6 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                 ),
             ],
         ],
-        line: 11,
-        column: 0,
     },
     Variable {
         names: [
@@ -114,8 +102,6 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                 ),
             ],
         ],
-        line: 16,
-        column: 0,
     },
     Variable {
         names: [
@@ -126,15 +112,11 @@ input_file: test-data/lua5.4-tests/tracegc.lua
         ],
         values: [
             [
-                Table {
-                    data: [],
-                    line: 16,
-                    column: 5,
-                },
+                Table(
+                    [],
+                ),
             ],
         ],
-        line: 17,
-        column: 0,
     },
     Function {
         local: false,
@@ -155,8 +137,8 @@ input_file: test-data/lua5.4-tests/tracegc.lua
         body: CodeBlock {
             start: 38,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "stderr",
                         ),
@@ -176,66 +158,57 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                             ],
                         ),
                     ],
-                    line: 18,
-                },
+                ),
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "active",
                                 ),
                             ],
-                            line: 19,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 7,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "setmetatable",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "o",
                                                         ),
                                                     ],
-                                                    line: 20,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "mt",
                                                         ),
                                                     ],
-                                                    line: 20,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 20,
-                            },
+                            ),
                         ],
                         end: 14,
                     },
                     next: None,
-                    line: 21,
-                    column: 1,
                 },
             ],
             end: 53,
         },
-        line: 22,
-        column: 1,
     },
     Function {
         local: false,
@@ -262,28 +235,26 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                                 false,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "active",
                                 ),
                             ],
-                            line: 26,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 4,
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "active",
                                             ),
                                         ],
-                                        line: 27,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
@@ -292,50 +263,40 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                                         ),
                                     ],
                                 ],
-                                line: 27,
-                                column: 3,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "setmetatable",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Table {
-                                                    data: [],
-                                                    line: 28,
-                                                    column: 4,
-                                                },
+                                                Table(
+                                                    [],
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "mt",
                                                         ),
                                                     ],
-                                                    line: 28,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 27,
-                            },
+                            ),
                         ],
                         end: 15,
                     },
                     next: None,
-                    line: 29,
-                    column: 1,
                 },
             ],
             end: 75,
         },
-        line: 30,
-        column: 1,
     },
     Function {
         local: false,
@@ -356,28 +317,26 @@ input_file: test-data/lua5.4-tests/tracegc.lua
             code: [
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "active",
                                 ),
                             ],
-                            line: 34,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 3,
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "active",
                                             ),
                                         ],
-                                        line: 35,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
@@ -386,11 +345,9 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                                         ),
                                     ],
                                 ],
-                                line: 35,
-                                column: 3,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "collectgarbage",
                                     ),
@@ -398,33 +355,27 @@ input_file: test-data/lua5.4-tests/tracegc.lua
                                         [],
                                     ),
                                 ],
-                                line: 35,
-                            },
+                            ),
                         ],
                         end: 10,
                     },
                     next: None,
-                    line: 37,
-                    column: 1,
                 },
             ],
             end: 92,
         },
-        line: 38,
-        column: 1,
     },
     Return(
         Some(
             [
                 [
-                    Ident {
-                        expr: [
+                    Ident(
+                        [
                             Symbol(
                                 "M",
                             ),
                         ],
-                        line: 40,
-                    },
+                    ),
                 ],
             ],
         ),

@@ -13,8 +13,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "require",
                         ),
@@ -28,15 +28,12 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 5,
-                },
+                ),
             ],
         ],
-        line: 5,
-        column: 5,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -50,8 +47,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                 ],
             ),
         ],
-        line: 5,
-    },
+    ),
     Function {
         local: true,
         name: [
@@ -80,22 +76,21 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "pcall",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "f",
                                                         ),
                                                     ],
-                                                    line: 16,
-                                                },
+                                                ),
                                             ],
                                             [
                                                 Symbol(
@@ -105,15 +100,12 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ],
                                     ),
                                 ],
-                                line: 16,
-                            },
+                            ),
                         ],
                     ],
-                    line: 16,
-                    column: 11,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -126,22 +118,21 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "s",
                                             ),
                                         ],
-                                        line: 17,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "and",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "string",
                                             ),
@@ -154,48 +145,42 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "err",
                                                                 ),
                                                             ],
-                                                            line: 17,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "msg",
                                                                 ),
                                                             ],
-                                                            line: 17,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 17,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 16,
-                },
+                ),
             ],
             end: 43,
         },
-        line: 18,
-        column: 1,
     },
     DoBlock(
         CodeBlock {
             start: 44,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -209,8 +194,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 20,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -230,8 +214,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 22,
-                    column: 0,
                 },
                 Function {
                     local: true,
@@ -250,25 +232,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 23,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "count",
                                                 ),
                                             ],
-                                            line: 23,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "+",
@@ -285,8 +265,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ),
                                     ],
                                 ],
-                                line: 24,
-                                column: 0,
                             },
                             Return(
                                 Some(
@@ -306,48 +284,44 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "loop",
                                                     ),
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "x",
                                                                         ),
                                                                     ],
-                                                                    line: 24,
-                                                                },
+                                                                ),
                                                             ],
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "y",
                                                                         ),
                                                                     ],
-                                                                    line: 24,
-                                                                },
+                                                                ),
                                                             ],
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "z",
                                                                         ),
                                                                     ],
-                                                                    line: 24,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 24,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -355,11 +329,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         ],
                         end: 35,
                     },
-                    line: 25,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "tracegc",
                         ),
@@ -373,8 +345,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 25,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -388,45 +359,40 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "xpcall",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "loop",
                                                         ),
                                                     ],
-                                                    line: 27,
-                                                },
+                                                ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "loop",
                                                         ),
                                                     ],
-                                                    line: 27,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 27,
-                            },
+                            ),
                         ],
                     ],
-                    line: 27,
-                    column: 11,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "tracegc",
                         ),
@@ -440,24 +406,22 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 27,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "msg",
                                             ),
                                         ],
-                                        line: 29,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -471,10 +435,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 28,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -486,20 +449,18 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 30,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 29,
-                },
+                ),
             ],
             end: 113,
         },
@@ -508,8 +469,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
         CodeBlock {
             start: 114,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -523,8 +484,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 35,
-                },
+                ),
                 Function {
                     local: true,
                     name: [
@@ -547,8 +507,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "string",
                                                 ),
@@ -566,24 +526,20 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                             ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "size",
                                                                     ),
                                                                 ],
-                                                                line: 37,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 37,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 38,
-                                column: 0,
                             },
                             Variable {
                                 names: [
@@ -594,8 +550,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "string",
                                                 ),
@@ -613,31 +569,27 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                             ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "size",
                                                                     ),
                                                                 ],
-                                                                line: 38,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 38,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 39,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "string",
                                                     ),
@@ -650,30 +602,27 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                     Call(
                                                         [
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "s",
                                                                         ),
                                                                     ],
-                                                                    line: 39,
-                                                                },
+                                                                ),
                                                             ],
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "p",
                                                                         ),
                                                                     ],
-                                                                    line: 39,
-                                                                },
+                                                                ),
                                                             ],
                                                         ],
                                                     ),
                                                 ],
-                                                line: 39,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -681,8 +630,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         ],
                         end: 42,
                     },
-                    line: 40,
-                    column: 1,
                 },
                 Variable {
                     names: [
@@ -693,8 +640,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "f",
                                     ),
@@ -713,15 +660,12 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ],
                                     ),
                                 ],
-                                line: 41,
-                            },
+                            ),
                         ],
                     ],
-                    line: 41,
-                    column: 7,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -734,14 +678,13 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "m",
                                             ),
                                         ],
-                                        line: 42,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -760,10 +703,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 41,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "checkerror",
                         ),
@@ -775,14 +717,13 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "f",
                                             ),
                                         ],
-                                        line: 43,
-                                    },
+                                    ),
                                 ],
                                 [
                                     Number(
@@ -797,8 +738,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 42,
-                },
+                ),
             ],
             end: 179,
         },
@@ -807,8 +747,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
         CodeBlock {
             start: 180,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -822,8 +762,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 47,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -843,8 +782,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 49,
-                    column: 0,
                 },
                 Function {
                     local: true,
@@ -859,25 +796,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 50,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "count",
                                                 ),
                                             ],
-                                            line: 50,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "+",
@@ -894,11 +829,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ),
                                     ],
                                 ],
-                                line: 50,
-                                column: 5,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "string",
                                     ),
@@ -921,28 +854,24 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                 ),
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "foo",
                                                         ),
                                                     ],
-                                                    line: 51,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 50,
-                            },
+                            ),
                         ],
                         end: 29,
                     },
-                    line: 52,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "checkerror",
                         ),
@@ -954,22 +883,20 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "foo",
                                             ),
                                         ],
-                                        line: 53,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 52,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -981,22 +908,20 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 54,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 53,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1010,8 +935,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 54,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -1031,8 +955,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 58,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -1043,23 +965,21 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "setmetatable",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Table {
-                                                    data: [],
-                                                    line: 58,
-                                                    column: 7,
-                                                },
+                                                Table(
+                                                    [],
+                                                ),
                                             ],
                                             [
-                                                Table {
-                                                    data: [
+                                                Table(
+                                                    [
                                                         (
                                                             Some(
                                                                 [
@@ -1069,41 +989,34 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                                 ],
                                                             ),
                                                             [
-                                                                Ident {
-                                                                    expr: [
+                                                                Ident(
+                                                                    [
                                                                         Symbol(
                                                                             "foo",
                                                                         ),
                                                                     ],
-                                                                    line: 58,
-                                                                },
+                                                                ),
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 58,
-                                                    column: 13,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 58,
-                            },
+                            ),
                         ],
                     ],
-                    line: 58,
-                    column: 14,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "foo",
                                 ),
                             ],
-                            line: 58,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -1114,25 +1027,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     code: [
                                         Alter {
                                             names: [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "count",
                                                         ),
                                                     ],
-                                                    line: 60,
-                                                },
+                                                ),
                                             ],
                                             values: [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "count",
                                                             ),
                                                         ],
-                                                        line: 60,
-                                                    },
+                                                    ),
                                                     Operator(
                                                         (
                                                             "+",
@@ -1149,11 +1060,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                     ),
                                                 ],
                                             ],
-                                            line: 60,
-                                            column: 5,
                                         },
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "string",
                                                 ),
@@ -1176,33 +1085,27 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                             ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "t",
                                                                     ),
                                                                 ],
-                                                                line: 61,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 60,
-                                        },
+                                        ),
                                     ],
                                     end: 84,
                                 },
-                                line: 62,
-                                column: 1,
                             },
                         ],
                     ],
-                    line: 62,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "checkerror",
                         ),
@@ -1214,22 +1117,20 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "foo",
                                             ),
                                         ],
-                                        line: 63,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 62,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1241,20 +1142,18 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 64,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 63,
-                },
+                ),
             ],
             end: 277,
         },
@@ -1263,8 +1162,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
         CodeBlock {
             start: 278,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1278,8 +1177,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 69,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -1299,8 +1197,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 71,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -1321,8 +1217,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 72,
-                    column: 0,
                 },
                 Function {
                     local: true,
@@ -1339,14 +1233,13 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         code: [
                             IfStatement {
                                 condition: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "n",
                                             ),
                                         ],
-                                        line: 73,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             ">",
@@ -1369,22 +1262,21 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             Some(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "stack",
                                                                 ),
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "n",
                                                                                     ),
                                                                                 ],
-                                                                                line: 73,
-                                                                            },
+                                                                            ),
                                                                             Operator(
                                                                                 (
                                                                                     "-",
@@ -1403,8 +1295,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 73,
-                                                        },
+                                                        ),
                                                         Operator(
                                                             (
                                                                 "+",
@@ -1432,8 +1323,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         body: CodeBlock {
                                             start: 15,
                                             code: [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "coroutine",
                                                         ),
@@ -1453,25 +1344,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                                             code: [
                                                                                 Alter {
                                                                                     names: [
-                                                                                        Ident {
-                                                                                            expr: [
+                                                                                        Ident(
+                                                                                            [
                                                                                                 Symbol(
                                                                                                     "count",
                                                                                                 ),
                                                                                             ],
-                                                                                            line: 75,
-                                                                                        },
+                                                                                        ),
                                                                                     ],
                                                                                     values: [
                                                                                         [
-                                                                                            Ident {
-                                                                                                expr: [
+                                                                                            Ident(
+                                                                                                [
                                                                                                     Symbol(
                                                                                                         "count",
                                                                                                     ),
                                                                                                 ],
-                                                                                                line: 75,
-                                                                                            },
+                                                                                            ),
                                                                                             Operator(
                                                                                                 (
                                                                                                     "+",
@@ -1488,36 +1377,30 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                                                             ),
                                                                                         ],
                                                                                     ],
-                                                                                    line: 75,
-                                                                                    column: 5,
                                                                                 },
-                                                                                Ident {
-                                                                                    expr: [
+                                                                                Ident(
+                                                                                    [
                                                                                         Symbol(
                                                                                             "stack",
                                                                                         ),
                                                                                         Call(
                                                                                             [
                                                                                                 [
-                                                                                                    Ident {
-                                                                                                        expr: [
+                                                                                                    Ident(
+                                                                                                        [
                                                                                                             Symbol(
                                                                                                                 "lim",
                                                                                                             ),
                                                                                                         ],
-                                                                                                        line: 76,
-                                                                                                    },
+                                                                                                    ),
                                                                                                 ],
                                                                                             ],
                                                                                         ),
                                                                                     ],
-                                                                                    line: 75,
-                                                                                },
+                                                                                ),
                                                                             ],
                                                                             end: 17,
                                                                         },
-                                                                        line: 77,
-                                                                        column: 1,
                                                                     },
                                                                 ],
                                                             ],
@@ -1526,24 +1409,17 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                             [],
                                                         ),
                                                     ],
-                                                    line: 74,
-                                                },
+                                                ),
                                             ],
                                             end: 36,
                                         },
                                         next: None,
-                                        line: 78,
-                                        column: 1,
                                     },
                                 ),
-                                line: 78,
-                                column: 1,
                             },
                         ],
                         end: 55,
                     },
-                    line: 79,
-                    column: 1,
                 },
                 Variable {
                     names: [
@@ -1558,22 +1434,21 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "xpcall",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "stack",
                                                         ),
                                                     ],
-                                                    line: 81,
-                                                },
+                                                ),
                                             ],
                                             [
                                                 Lambda {
@@ -1595,32 +1470,26 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                         ],
                                                         end: 70,
                                                     },
-                                                    line: 81,
-                                                    column: 15,
                                                 },
                                             ],
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "lim",
                                                         ),
                                                     ],
-                                                    line: 81,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 81,
-                            },
+                            ),
                         ],
                     ],
-                    line: 81,
-                    column: 18,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -1633,28 +1502,26 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "st",
                                             ),
                                         ],
-                                        line: 82,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "and",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "msg",
                                             ),
                                         ],
-                                        line: 82,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
@@ -1668,10 +1535,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 81,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1683,20 +1549,18 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 83,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 82,
-                },
+                ),
             ],
             end: 367,
         },
@@ -1705,8 +1569,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
         CodeBlock {
             start: 368,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1720,8 +1584,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 88,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -1741,8 +1604,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 91,
-                    column: 0,
                 },
                 Function {
                     local: true,
@@ -1755,8 +1616,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     body: CodeBlock {
                         start: 13,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "coroutine",
                                     ),
@@ -1770,8 +1631,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 92,
-                            },
+                            ),
                             Variable {
                                 names: [
                                     (
@@ -1781,8 +1641,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "coroutine",
                                                 ),
@@ -1795,27 +1655,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "body",
                                                                     ),
                                                                 ],
-                                                                line: 93,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 93,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 93,
-                                column: 9,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "f",
                                     ),
@@ -1823,29 +1679,26 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 93,
-                            },
+                            ),
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 94,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "count",
                                                 ),
                                             ],
-                                            line: 95,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "+",
@@ -1862,11 +1715,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ),
                                     ],
                                 ],
-                                line: 95,
-                                column: 5,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "f",
                                     ),
@@ -1874,13 +1725,10 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 95,
-                            },
+                            ),
                         ],
                         end: 40,
                     },
-                    line: 97,
-                    column: 1,
                 },
                 Variable {
                     names: [
@@ -1891,8 +1739,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "coroutine",
                                     ),
@@ -1905,27 +1753,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "body",
                                                         ),
                                                     ],
-                                                    line: 99,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 99,
-                            },
+                            ),
                         ],
                     ],
-                    line: 99,
-                    column: 9,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "f",
                         ),
@@ -1933,10 +1777,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 99,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
@@ -1949,36 +1792,33 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             false,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "pcall",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "f",
                                                                 ),
                                                             ],
-                                                            line: 101,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 101,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 100,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -1990,20 +1830,18 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 102,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 101,
-                },
+                ),
             ],
             end: 435,
         },
@@ -2012,8 +1850,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
         CodeBlock {
             start: 436,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -2027,8 +1865,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 107,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -2048,8 +1885,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 109,
-                    column: 0,
                 },
                 Function {
                     local: true,
@@ -2064,25 +1899,23 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 110,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "count",
                                                 ),
                                             ],
-                                            line: 110,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "+",
@@ -2099,11 +1932,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ),
                                     ],
                                 ],
-                                line: 110,
-                                column: 5,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "pcall",
                                     ),
@@ -2122,10 +1953,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ],
                                     ),
                                 ],
-                                line: 110,
-                            },
-                            Ident {
-                                expr: [
+                            ),
+                            Ident(
+                                [
                                     Symbol(
                                         "coroutine",
                                     ),
@@ -2138,14 +1968,13 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "foo",
                                                         ),
                                                     ],
-                                                    line: 113,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
@@ -2153,16 +1982,13 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 111,
-                            },
+                            ),
                         ],
                         end: 31,
                     },
-                    line: 114,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "checkerror",
                         ),
@@ -2174,22 +2000,20 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "foo",
                                             ),
                                         ],
-                                        line: 115,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 114,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -2201,40 +2025,37 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "count",
                                             ),
                                         ],
-                                        line: 116,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 115,
-                },
+                ),
             ],
             end: 480,
         },
     ),
     IfStatement {
         condition: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "T",
                     ),
                 ],
-                line: 120,
-            },
+            ),
         ],
         body: CodeBlock {
             start: 483,
             code: [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -2248,8 +2069,7 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 121,
-                },
+                ),
                 Variable {
                     names: [
                         (
@@ -2269,8 +2089,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 123,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -2297,8 +2115,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 127,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -2308,8 +2124,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         ),
                     ],
                     values: [],
-                    line: 127,
-                    column: 2,
                 },
                 Variable {
                     names: [
@@ -2319,8 +2133,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         ),
                     ],
                     values: [],
-                    line: 128,
-                    column: 2,
                 },
                 Function {
                     local: true,
@@ -2335,16 +2147,16 @@ input_file: test-data/lua5.4-tests/cstack.lua
                     body: CodeBlock {
                         start: 23,
                         code: [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "string",
                                                         ),
@@ -2357,14 +2169,13 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                         Call(
                                                             [
                                                                 [
-                                                                    Ident {
-                                                                        expr: [
+                                                                    Ident(
+                                                                        [
                                                                             Symbol(
                                                                                 "msg",
                                                                             ),
                                                                         ],
-                                                                        line: 131,
-                                                                    },
+                                                                    ),
                                                                 ],
                                                                 [
                                                                     Symbol(
@@ -2374,14 +2185,12 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                             ],
                                                         ),
                                                     ],
-                                                    line: 131,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 131,
-                            },
+                            ),
                             Variable {
                                 names: [
                                     (
@@ -2395,8 +2204,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "T",
                                                 ),
@@ -2410,43 +2219,38 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                     [],
                                                 ),
                                             ],
-                                            line: 132,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 132,
-                                column: 10,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "assert",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "stacknow",
                                                         ),
                                                     ],
-                                                    line: 133,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "==",
                                                         true,
                                                     ),
                                                 ),
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "stack1",
                                                         ),
                                                     ],
-                                                    line: 133,
-                                                },
+                                                ),
                                                 Operator(
                                                     (
                                                         "+",
@@ -2465,13 +2269,10 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ],
                                     ),
                                 ],
-                                line: 132,
-                            },
+                            ),
                         ],
                         end: 53,
                     },
-                    line: 134,
-                    column: 1,
                 },
                 Function {
                     local: true,
@@ -2486,27 +2287,25 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         code: [
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "dummy",
                                             ),
                                         ],
-                                        line: 142,
-                                    },
-                                    Ident {
-                                        expr: [
+                                    ),
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "stack1",
                                             ),
                                         ],
-                                        line: 142,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "T",
                                                 ),
@@ -2520,73 +2319,65 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                     [],
                                                 ),
                                             ],
-                                            line: 142,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 143,
-                                column: 0,
                             },
                             IfStatement {
                                 condition: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "N",
                                             ),
                                         ],
-                                        line: 143,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "LIM",
                                             ),
                                         ],
-                                        line: 143,
-                                    },
+                                    ),
                                 ],
                                 body: CodeBlock {
                                     start: 14,
                                     code: [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "xpcall",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "f",
                                                                     ),
                                                                 ],
-                                                                line: 144,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "err",
                                                                     ),
                                                                 ],
-                                                                line: 144,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 144,
-                                        },
+                                        ),
                                         Variable {
                                             names: [
                                                 (
@@ -2600,8 +2391,8 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                             ],
                                             values: [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "T",
                                                             ),
@@ -2615,49 +2406,43 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                                 [],
                                                             ),
                                                         ],
-                                                        line: 145,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
-                                            line: 145,
-                                            column: 10,
                                         },
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "assert",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "stacknow",
                                                                     ),
                                                                 ],
-                                                                line: 146,
-                                                            },
+                                                            ),
                                                             Operator(
                                                                 (
                                                                     "==",
                                                                     true,
                                                                 ),
                                                             ),
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "stack1",
                                                                     ),
                                                                 ],
-                                                                line: 146,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 145,
-                                        },
+                                        ),
                                         Return(
                                             None,
                                         ),
@@ -2665,30 +2450,26 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                     end: 38,
                                 },
                                 next: None,
-                                line: 148,
-                                column: 1,
                             },
                             Alter {
                                 names: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "N",
                                             ),
                                         ],
-                                        line: 148,
-                                    },
+                                    ),
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "N",
                                                 ),
                                             ],
-                                            line: 149,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "+",
@@ -2705,11 +2486,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         ),
                                     ],
                                 ],
-                                line: 149,
-                                column: 5,
                             },
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "f",
                                     ),
@@ -2717,13 +2496,10 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 149,
-                            },
+                            ),
                         ],
                         end: 105,
                     },
-                    line: 151,
-                    column: 1,
                 },
                 Variable {
                     names: [
@@ -2737,8 +2513,6 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         ),
                     ],
                     values: [],
-                    line: 153,
-                    column: 4,
                 },
                 Variable {
                     names: [
@@ -2752,32 +2526,28 @@ input_file: test-data/lua5.4-tests/cstack.lua
                         ),
                     ],
                     values: [],
-                    line: 154,
-                    column: 4,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "topB",
                                 ),
                             ],
-                            line: 154,
-                        },
-                        Ident {
-                            expr: [
+                        ),
+                        Ident(
+                            [
                                 Symbol(
                                     "sizeB",
                                 ),
                             ],
-                            line: 155,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -2791,15 +2561,12 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 155,
-                            },
+                            ),
                         ],
                     ],
-                    line: 155,
-                    column: 9,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "tracegc",
                         ),
@@ -2813,42 +2580,38 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 155,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "xpcall",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "f",
                                             ),
                                         ],
-                                        line: 157,
-                                    },
+                                    ),
                                 ],
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "err",
                                             ),
                                         ],
-                                        line: 157,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 156,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "tracegc",
                         ),
@@ -2862,31 +2625,28 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 157,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "topA",
                                 ),
                             ],
-                            line: 158,
-                        },
-                        Ident {
-                            expr: [
+                        ),
+                        Ident(
+                            [
                                 Symbol(
                                     "sizeA",
                                 ),
                             ],
-                            line: 159,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "T",
                                     ),
@@ -2900,71 +2660,64 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                         [],
                                     ),
                                 ],
-                                line: 159,
-                            },
+                            ),
                         ],
                     ],
-                    line: 159,
-                    column: 9,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "assert",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "topA",
                                             ),
                                         ],
-                                        line: 161,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "==",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "topB",
                                             ),
                                         ],
-                                        line: 161,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "and",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "sizeA",
                                             ),
                                         ],
-                                        line: 161,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "<",
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "sizeB",
                                             ),
                                         ],
-                                        line: 161,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "*",
@@ -2983,18 +2736,17 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 159,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
                         Call(
                             [
                                 [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "string",
                                             ),
@@ -3012,62 +2764,54 @@ input_file: test-data/lua5.4-tests/cstack.lua
                                                         ),
                                                     ],
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "stack1",
                                                                 ),
                                                             ],
-                                                            line: 162,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 162,
-                                    },
+                                    ),
                                 ],
                             ],
                         ),
                     ],
-                    line: 161,
-                },
+                ),
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "LIM",
                                 ),
                             ],
-                            line: 162,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "N",
                                     ),
                                 ],
-                                line: 163,
-                            },
+                            ),
                         ],
                     ],
-                    line: 163,
-                    column: 3,
                 },
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "N",
                                 ),
                             ],
-                            line: 163,
-                        },
+                        ),
                     ],
                     values: [
                         [
@@ -3081,11 +2825,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ),
                         ],
                     ],
-                    line: 164,
-                    column: 3,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "tracegc",
                         ),
@@ -3099,10 +2841,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 164,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "f",
                         ),
@@ -3110,10 +2851,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 165,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "tracegc",
                         ),
@@ -3127,10 +2867,9 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             [],
                         ),
                     ],
-                    line: 166,
-                },
-                Ident {
-                    expr: [
+                ),
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
@@ -3144,17 +2883,14 @@ input_file: test-data/lua5.4-tests/cstack.lua
                             ],
                         ),
                     ],
-                    line: 167,
-                },
+                ),
             ],
             end: 675,
         },
         next: None,
-        line: 169,
-        column: 1,
     },
-    Ident {
-        expr: [
+    Ident(
+        [
             Symbol(
                 "print",
             ),
@@ -3168,6 +2904,5 @@ input_file: test-data/lua5.4-tests/cstack.lua
                 ],
             ),
         ],
-        line: 169,
-    },
+    ),
 ]

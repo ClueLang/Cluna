@@ -80,7 +80,7 @@ fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
     use crate::parser::ComplexToken::*;
 
     let mut result = String::new();
-    let Ident {expr, ..} = ident else {unreachable!()};
+    let Ident(expr) = ident else {unreachable!()};
 
     for ctoken in expr {
         match ctoken {
@@ -170,7 +170,7 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
                 }
             }
             MultilineString(string) => result += &compile_multiline_string(&string),
-            Table { data, .. } => {
+            Table(data) => {
                 scope += 1;
                 let pre = indent(scope);
                 result.push('{');

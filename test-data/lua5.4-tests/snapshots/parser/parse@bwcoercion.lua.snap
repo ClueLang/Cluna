@@ -17,18 +17,17 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "tonumber",
                         ),
                     ],
-                    line: 1,
-                },
+                ),
             ],
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "math",
                         ),
@@ -39,12 +38,9 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                             "tointeger",
                         ),
                     ],
-                    line: 1,
-                },
+                ),
             ],
         ],
-        line: 2,
-        column: 0,
     },
     Variable {
         names: [
@@ -67,48 +63,42 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "type",
                         ),
                     ],
-                    line: 2,
-                },
+                ),
             ],
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "getmetatable",
                         ),
                     ],
-                    line: 2,
-                },
+                ),
             ],
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "rawget",
                         ),
                     ],
-                    line: 2,
-                },
+                ),
             ],
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "error",
                         ),
                     ],
-                    line: 2,
-                },
+                ),
             ],
         ],
-        line: 3,
-        column: 0,
     },
     Variable {
         names: [
@@ -119,8 +109,8 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "string",
                         ),
@@ -131,12 +121,9 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                             "sub",
                         ),
                     ],
-                    line: 3,
-                },
+                ),
             ],
         ],
-        line: 5,
-        column: 0,
     },
     Variable {
         names: [
@@ -147,29 +134,25 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "print",
                         ),
                     ],
-                    line: 5,
-                },
+                ),
             ],
         ],
-        line: 5,
-        column: 4,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "_ENV",
                     ),
                 ],
-                line: 5,
-            },
+            ),
         ],
         values: [
             [
@@ -178,8 +161,6 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                 ),
             ],
         ],
-        line: 10,
-        column: 0,
     },
     Function {
         local: true,
@@ -196,43 +177,38 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
             code: [
                 Alter {
                     names: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "x",
                                 ),
                             ],
-                            line: 11,
-                        },
+                        ),
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "tonumber",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "x",
                                                         ),
                                                     ],
-                                                    line: 11,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 11,
-                            },
+                            ),
                         ],
                     ],
-                    line: 12,
-                    column: 0,
                 },
                 IfStatement {
                     condition: [
@@ -242,14 +218,13 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 false,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "x",
                                 ),
                             ],
-                            line: 12,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 10,
@@ -269,35 +244,31 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         end: 13,
                     },
                     next: None,
-                    line: 14,
-                    column: 1,
                 },
                 Return(
                     Some(
                         [
                             [
-                                Ident {
-                                    expr: [
+                                Ident(
+                                    [
                                         Symbol(
                                             "tointeger",
                                         ),
                                         Call(
                                             [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "x",
                                                             ),
                                                         ],
-                                                        line: 15,
-                                                    },
+                                                    ),
                                                 ],
                                             ],
                                         ),
                                     ],
-                                    line: 15,
-                                },
+                                ),
                             ],
                         ],
                     ),
@@ -305,8 +276,6 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
             ],
             end: 64,
         },
-        line: 16,
-        column: 1,
     },
     Function {
         local: true,
@@ -325,28 +294,26 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
             code: [
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "type",
                                 ),
                                 Call(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 23,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
                             ],
-                            line: 23,
-                        },
+                        ),
                         Operator(
                             (
                                 "~=",
@@ -369,32 +336,28 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "getmetatable",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "y",
                                                                     ),
                                                                 ],
-                                                                line: 24,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 24,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 25,
-                                column: 0,
                             },
                             Variable {
                                 names: [
@@ -405,67 +368,60 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "mt",
                                                 ),
                                             ],
-                                            line: 25,
-                                        },
+                                        ),
                                         Operator(
                                             (
                                                 "and",
                                                 true,
                                             ),
                                         ),
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "rawget",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "mt",
                                                                     ),
                                                                 ],
-                                                                line: 25,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "mtname",
                                                                     ),
                                                                 ],
-                                                                line: 25,
-                                                            },
+                                                            ),
                                                         ],
                                                     ],
                                                 ),
                                             ],
-                                            line: 25,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 26,
-                                column: 0,
                             },
                             IfStatement {
                                 condition: [
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "mm",
                                             ),
                                         ],
-                                        line: 26,
-                                    },
+                                    ),
                                 ],
                                 body: CodeBlock {
                                     start: 21,
@@ -474,38 +430,35 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                             Some(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "mm",
                                                                 ),
                                                                 Call(
                                                                     [
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "x",
                                                                                     ),
                                                                                 ],
-                                                                                line: 27,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                         [
-                                                                            Ident {
-                                                                                expr: [
+                                                                            Ident(
+                                                                                [
                                                                                     Symbol(
                                                                                         "y",
                                                                                     ),
                                                                                 ],
-                                                                                line: 27,
-                                                                            },
+                                                                            ),
                                                                         ],
                                                                     ],
                                                                 ),
                                                             ],
-                                                            line: 27,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
@@ -514,18 +467,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                     end: 29,
                                 },
                                 next: None,
-                                line: 28,
-                                column: 1,
                             },
                         ],
                         end: 38,
                     },
                     next: None,
-                    line: 29,
-                    column: 1,
                 },
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "error",
                         ),
@@ -541,22 +490,21 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "strsub",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "mtname",
                                                                 ),
                                                             ],
-                                                            line: 31,
-                                                        },
+                                                        ),
                                                     ],
                                                     [
                                                         Number(
@@ -571,8 +519,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                 ],
                                             ),
                                         ],
-                                        line: 31,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "..",
@@ -588,28 +535,26 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "type",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "x",
                                                                 ),
                                                             ],
-                                                            line: 32,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 32,
-                                    },
+                                    ),
                                     Operator(
                                         (
                                             "..",
@@ -625,28 +570,26 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                             true,
                                         ),
                                     ),
-                                    Ident {
-                                        expr: [
+                                    Ident(
+                                        [
                                             Symbol(
                                                 "type",
                                             ),
                                             Call(
                                                 [
                                                     [
-                                                        Ident {
-                                                            expr: [
+                                                        Ident(
+                                                            [
                                                                 Symbol(
                                                                     "y",
                                                                 ),
                                                             ],
-                                                            line: 32,
-                                                        },
+                                                        ),
                                                     ],
                                                 ],
                                             ),
                                         ],
-                                        line: 32,
-                                    },
+                                    ),
                                 ],
                                 [
                                     Number(
@@ -661,13 +604,10 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                             ],
                         ),
                     ],
-                    line: 29,
-                },
+                ),
             ],
             end: 140,
         },
-        line: 33,
-        column: 1,
     },
     Function {
         local: true,
@@ -693,32 +633,28 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "toint",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "x",
                                                         ),
                                                     ],
-                                                    line: 37,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 37,
-                            },
+                            ),
                         ],
                     ],
-                    line: 38,
-                    column: 0,
                 },
                 Variable {
                     names: [
@@ -729,57 +665,51 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                     ],
                     values: [
                         [
-                            Ident {
-                                expr: [
+                            Ident(
+                                [
                                     Symbol(
                                         "toint",
                                     ),
                                     Call(
                                         [
                                             [
-                                                Ident {
-                                                    expr: [
+                                                Ident(
+                                                    [
                                                         Symbol(
                                                             "y",
                                                         ),
                                                     ],
-                                                    line: 38,
-                                                },
+                                                ),
                                             ],
                                         ],
                                     ),
                                 ],
-                                line: 38,
-                            },
+                            ),
                         ],
                     ],
-                    line: 39,
-                    column: 0,
                 },
                 IfStatement {
                     condition: [
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "xi",
                                 ),
                             ],
-                            line: 39,
-                        },
+                        ),
                         Operator(
                             (
                                 "and",
                                 true,
                             ),
                         ),
-                        Ident {
-                            expr: [
+                        Ident(
+                            [
                                 Symbol(
                                     "yi",
                                 ),
                             ],
-                            line: 39,
-                        },
+                        ),
                     ],
                     body: CodeBlock {
                         start: 19,
@@ -788,24 +718,22 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "xi",
                                                     ),
                                                 ],
-                                                line: 40,
-                                            },
+                                            ),
                                         ],
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "yi",
                                                     ),
                                                 ],
-                                                line: 40,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -823,48 +751,44 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                         Some(
                                             [
                                                 [
-                                                    Ident {
-                                                        expr: [
+                                                    Ident(
+                                                        [
                                                             Symbol(
                                                                 "trymt",
                                                             ),
                                                             Call(
                                                                 [
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "x",
                                                                                 ),
                                                                             ],
-                                                                            line: 42,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "y",
                                                                                 ),
                                                                             ],
-                                                                            line: 42,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                     [
-                                                                        Ident {
-                                                                            expr: [
+                                                                        Ident(
+                                                                            [
                                                                                 Symbol(
                                                                                     "mtname",
                                                                                 ),
                                                                             ],
-                                                                            line: 42,
-                                                                        },
+                                                                        ),
                                                                     ],
                                                                 ],
                                                             ),
                                                         ],
-                                                        line: 42,
-                                                    },
+                                                    ),
                                                 ],
                                                 [
                                                     Symbol(
@@ -878,18 +802,12 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 end: 36,
                             },
                             next: None,
-                            line: 43,
-                            column: 1,
                         },
                     ),
-                    line: 43,
-                    column: 1,
                 },
             ],
             end: 187,
         },
-        line: 44,
-        column: 1,
     },
     Variable {
         names: [
@@ -900,8 +818,8 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
         ],
         values: [
             [
-                Ident {
-                    expr: [
+                Ident(
+                    [
                         Symbol(
                             "getmetatable",
                         ),
@@ -915,17 +833,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                             ],
                         ),
                     ],
-                    line: 47,
-                },
+                ),
             ],
         ],
-        line: 47,
-        column: 7,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "smt",
                     ),
@@ -936,8 +851,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         "__band",
                     ),
                 ],
-                line: 47,
-            },
+            ),
         ],
         values: [
             [
@@ -962,32 +876,30 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "checkargs",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 50,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "y",
                                                                     ),
                                                                 ],
-                                                                line: 50,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -997,67 +909,60 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 50,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 51,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 51,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "and",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 51,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "&",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 51,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "or",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 51,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -1065,18 +970,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         ],
                         end: 226,
                     },
-                    line: 52,
-                    column: 1,
                 },
             ],
         ],
-        line: 52,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "smt",
                     ),
@@ -1087,8 +988,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         "__bor",
                     ),
                 ],
-                line: 52,
-            },
+            ),
         ],
         values: [
             [
@@ -1113,32 +1013,30 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "checkargs",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 55,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "y",
                                                                     ),
                                                                 ],
-                                                                line: 55,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -1148,67 +1046,60 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 55,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 56,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 56,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "and",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 56,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "|",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 56,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "or",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 56,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -1216,18 +1107,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         ],
                         end: 258,
                     },
-                    line: 57,
-                    column: 1,
                 },
             ],
         ],
-        line: 57,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "smt",
                     ),
@@ -1238,8 +1125,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         "__bxor",
                     ),
                 ],
-                line: 57,
-            },
+            ),
         ],
         values: [
             [
@@ -1264,32 +1150,30 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "checkargs",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 60,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "y",
                                                                     ),
                                                                 ],
-                                                                line: 60,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -1299,67 +1183,60 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 60,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 61,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 61,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "and",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 61,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "~",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 61,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "or",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 61,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -1367,18 +1244,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         ],
                         end: 290,
                     },
-                    line: 62,
-                    column: 1,
                 },
             ],
         ],
-        line: 62,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "smt",
                     ),
@@ -1389,8 +1262,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         "__shl",
                     ),
                 ],
-                line: 62,
-            },
+            ),
         ],
         values: [
             [
@@ -1415,32 +1287,30 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "checkargs",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 65,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "y",
                                                                     ),
                                                                 ],
-                                                                line: 65,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -1450,67 +1320,60 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 65,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 66,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 66,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "and",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 66,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "<<",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 66,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "or",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 66,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -1518,18 +1381,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         ],
                         end: 322,
                     },
-                    line: 67,
-                    column: 1,
                 },
             ],
         ],
-        line: 67,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "smt",
                     ),
@@ -1540,8 +1399,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         "__shr",
                     ),
                 ],
-                line: 67,
-            },
+            ),
         ],
         values: [
             [
@@ -1566,32 +1424,30 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "checkargs",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 70,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "y",
                                                                     ),
                                                                 ],
-                                                                line: 70,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -1601,67 +1457,60 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 70,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 71,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 71,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "and",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 71,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     ">>",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 71,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "or",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 71,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -1669,18 +1518,14 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         ],
                         end: 354,
                     },
-                    line: 72,
-                    column: 1,
                 },
             ],
         ],
-        line: 72,
-        column: 1,
     },
     Alter {
         names: [
-            Ident {
-                expr: [
+            Ident(
+                [
                     Symbol(
                         "smt",
                     ),
@@ -1691,8 +1536,7 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         "__bnot",
                     ),
                 ],
-                line: 72,
-            },
+            ),
         ],
         values: [
             [
@@ -1716,32 +1560,30 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                 ],
                                 values: [
                                     [
-                                        Ident {
-                                            expr: [
+                                        Ident(
+                                            [
                                                 Symbol(
                                                     "checkargs",
                                                 ),
                                                 Call(
                                                     [
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 75,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
-                                                            Ident {
-                                                                expr: [
+                                                            Ident(
+                                                                [
                                                                     Symbol(
                                                                         "x",
                                                                     ),
                                                                 ],
-                                                                line: 75,
-                                                            },
+                                                            ),
                                                         ],
                                                         [
                                                             Symbol(
@@ -1751,25 +1593,21 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     ],
                                                 ),
                                             ],
-                                            line: 75,
-                                        },
+                                        ),
                                     ],
                                 ],
-                                line: 76,
-                                column: 0,
                             },
                             Return(
                                 Some(
                                     [
                                         [
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "y",
                                                     ),
                                                 ],
-                                                line: 76,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "and",
@@ -1782,28 +1620,26 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                                                     false,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 76,
-                                            },
+                                            ),
                                             Operator(
                                                 (
                                                     "or",
                                                     true,
                                                 ),
                                             ),
-                                            Ident {
-                                                expr: [
+                                            Ident(
+                                                [
                                                     Symbol(
                                                         "x",
                                                     ),
                                                 ],
-                                                line: 76,
-                                            },
+                                            ),
                                         ],
                                     ],
                                 ),
@@ -1811,12 +1647,8 @@ input_file: test-data/lua5.4-tests/bwcoercion.lua
                         ],
                         end: 383,
                     },
-                    line: 77,
-                    column: 1,
                 },
             ],
         ],
-        line: 77,
-        column: 1,
     },
 ]
