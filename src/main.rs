@@ -6,7 +6,10 @@ use cluna::{
     parser::parse_tokens,
 };
 use colored::Colorize;
-use std::{path::PathBuf, time::Instant};
+use std::{
+    path::PathBuf,
+    time::{Duration, Instant},
+};
 
 #[derive(Parser)]
 struct Cli {
@@ -31,8 +34,28 @@ fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), Diagnosti
     let output = output.unwrap_or_else(|| path.with_extension("clue"));
     std::fs::create_dir_all(output.parent().unwrap())
         .map_err(|e| Diagnostic::other(e.to_string()))?;
-    std::fs::write(output, compiled).map_err(|e| Diagnostic::other(e.to_string()))?;
-    Ok(())
+    std::fs::write(output, compiled).map_err(|e| Diagnostic::other(e.to_string()))
+}
+
+fn format_duration(duration: Duration) -> String {
+    let secs = duration.as_secs();
+    let millis = duration.subsec_millis();
+    let micros = duration.subsec_micros() % 1000;
+    let nanos = duration.subsec_nanos() % 1000;
+
+    if secs > 3600 {
+        format!("{}h {}m {}s", secs / 3600, secs % 3600 / 60, secs % 60)
+    } else if secs > 60 {
+        format!("{}m {}s", secs / 60, secs % 60)
+    } else if secs > 0 {
+        format!("{}.{:03}s", secs, millis)
+    } else if millis > 0 {
+        format!("{}.{:03}ms", millis, micros)
+    } else if micros > 0 {
+        format!("{}.{:03}μs", micros, nanos)
+    } else {
+        format!("{}ns", nanos)
+    }
 }
 
 fn compile() -> Result<(), Diagnostic> {
@@ -64,7 +87,7 @@ fn compile() -> Result<(), Diagnostic> {
             );
         }
         let dir = path.clone();
-        let mut stack = vec![path];
+        let mut stack = vec![path.clone()];
 
         while let Some(path) = stack.pop() {
             for entry in std::fs::read_dir(path).map_err(|e| Diagnostic::other(e.to_string()))? {
@@ -85,7 +108,12 @@ fn compile() -> Result<(), Diagnostic> {
             }
         }
     }
-    eprintln!("    {} in {:?}", "Finished".green().bold(), start.elapsed());
+    eprintln!(
+        "    {} {} in {}",
+        "Finished".green().bold(),
+        path.display(),
+        format_duration(start.elapsed())
+    );
 
     Ok(())
 }
