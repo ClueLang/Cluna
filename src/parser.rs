@@ -10,13 +10,18 @@ macro_rules! vec_deque {
       VecDeque::from([$(($elem)),*])
     };
 }
+macro_rules! complex_token {
+    ($t:expr, $($expr:tt)+) => {
+        $crate::parser::ComplexToken::new($crate::parser::ComplexTokenKind::$($expr)+, $t.leading(), $t.trailing())
+    };
+}
 
 pub type Expression = VecDeque<ComplexToken>;
 pub type FunctionArgs = Vec<Rc<str>>;
 type OptionalEnd = Option<(TokenType, &'static str)>;
 
 #[derive(Debug, Clone, PartialEq)]
-pub enum ComplexToken {
+pub enum ComplexTokenKind {
     Variable {
         names: Vec<(Rc<str>, bool)>,
         values: Vec<Expression>,
@@ -73,6 +78,35 @@ pub enum ComplexToken {
     DoBlock(CodeBlock),
     Return(Option<Vec<Expression>>),
     Break,
+}
+
+#[derive(Debug, Clone, PartialEq)]
+pub struct ComplexToken {
+    leading: String,
+    kind: ComplexTokenKind,
+    trailing: String,
+}
+
+impl ComplexToken {
+    fn new(kind: ComplexTokenKind, leading: String, trailing: String) -> Self {
+        Self {
+            kind,
+            leading,
+            trailing,
+        }
+    }
+
+    pub fn token(&self) -> &ComplexTokenKind {
+        &self.kind
+    }
+
+    pub fn leading(&self) -> &str {
+        &self.leading
+    }
+
+    pub fn trailing(&self) -> &str {
+        &self.trailing
+    }
 }
 
 #[derive(Clone, Debug, PartialEq)]
@@ -273,14 +307,14 @@ impl<'a> Parser<'a> {
 
         loop {
             use TokenType::*;
-            if let Some(t) = self.advance() {
+            if let Some(t) = self.advance().cloned() {
                 match t.kind() {
                     Identifier => {
-                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
+                        expr.push_back(complex_token!(t, Symbol(t.lexeme().as_symbol())));
                     }
                     LeftParen => {
                         let call = self.parse_call()?;
-                        expr.push_back(ComplexToken::Call(call));
+                        expr.push_back(complex_token!(t, Call(call)));
                     }
                     Dot => {
                         let path = self.path.clone();
@@ -300,8 +334,8 @@ impl<'a> Parser<'a> {
                                 self.position.clone(),
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(".".into()));
-                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
+                        expr.push_back(complex_token!(t, Symbol(".".into())));
+                        expr.push_back(complex_token!(t, Symbol(t.lexeme().as_symbol())));
                     }
                     Colon => {
                         let path = self.path.clone();
@@ -332,25 +366,29 @@ impl<'a> Parser<'a> {
                                 t.position(),
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(":".into()));
-                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
+                        expr.push_back(complex_token!(t, Symbol(":".into())));
+                        expr.push_back(complex_token!(t, Symbol(t.lexeme().as_symbol())));
                     }
                     LeftBracket => {
                         let index = self.parse_expression(Some((RightBracket, "]")))?;
                         self.assert(TokenType::RightBracket, "]")?;
 
-                        expr.push_back(ComplexToken::Symbol("[".into()));
-                        expr.push_back(ComplexToken::Expr(index));
-                        expr.push_back(ComplexToken::Symbol("]".into()));
+                        expr.push_back(complex_token!(t, Symbol("[".into())));
+                        expr.push_back(complex_token!(t, Expr(index)));
+                        expr.push_back(complex_token!(t, Symbol("]".into())));
                     }
                     String | MultilineString => {
-                        expr.push_back(ComplexToken::Call(vec![vec_deque![ComplexToken::Symbol(
-                            t.lexeme().as_symbol(),
-                        )]]));
+                        expr.push_back(complex_token!(
+                            t,
+                            Call(vec![vec_deque![complex_token!(
+                                t,
+                                Symbol(t.lexeme().as_symbol(),)
+                            )]])
+                        ));
                     }
                     LeftBrace => {
                         let table = self.parse_table()?;
-                        expr.push_back(ComplexToken::Call(vec![vec_deque![table]]));
+                        expr.push_back(complex_token!(t, Call(vec![vec_deque![table]])));
                     }
                     _ => {
                         self.go_back();
@@ -369,14 +407,14 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Ok(ComplexToken::Ident(expr))
+        Ok(complex_token!(self.current(), Ident(expr)))
     }
 
     fn parse_identifier_statement(&mut self) -> Result<ComplexToken, Diagnostic> {
         let ident = self.parse_identifier()?;
-        let ComplexToken::Ident(expr) = &ident else {unreachable!()};
+        let ComplexTokenKind::Ident(expr) = &ident.token() else {unreachable!()};
 
-        if let Some(ComplexToken::Call(_)) = expr.back() {
+        if let Some(ComplexTokenKind::Call(_)) = expr.back().map(|t| t.token()) {
             return Ok(ident);
         }
 
@@ -385,7 +423,7 @@ impl<'a> Parser<'a> {
                 kind: TokenType::Equals | TokenType::Comma,
                 ..
             },
-        ) = self.advance()
+        ) = self.advance().cloned()
         {
             let mut names = vec![ident];
 
@@ -410,7 +448,7 @@ impl<'a> Parser<'a> {
             let values = self.find_expressions(None)?;
             self.advance_if(TokenType::Semicolon);
 
-            return Ok(ComplexToken::Alter { names, values });
+            return Ok(complex_token!(t, Alter { names, values }));
         }
 
         Err(Diagnostic::expected_found(
@@ -475,7 +513,10 @@ impl<'a> Parser<'a> {
                 Identifier => {
                     if self.advance_if(TokenType::Equals) {
                         data.push((
-                            Some(vec_deque![ComplexToken::Symbol(t.lexeme().as_symbol())]),
+                            Some(vec_deque![complex_token!(
+                                t,
+                                Symbol(t.lexeme().as_symbol())
+                            )]),
                             self.parse_expression(None)?,
                         ));
                     } else {
@@ -506,7 +547,8 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Ok(ComplexToken::Table(data))
+        let last = self.current().clone();
+        Ok(complex_token!(last, Table(data)))
     }
 
     fn parse_code_block_common(scope: &mut usize, in_special_do: &mut bool, t: &Token) -> bool {
@@ -699,19 +741,19 @@ impl<'a> Parser<'a> {
                         }
                     }
                     TripleDot | True | False | String | Nil => {
-                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
+                        expr.push_back(complex_token!(t, Symbol(t.lexeme().as_symbol())));
                         if self.check_val() {
                             break t;
                         }
                     }
                     Number => {
-                        expr.push_back(ComplexToken::Number(t.lexeme().as_number().clone()));
+                        expr.push_back(complex_token!(t, Number(t.lexeme().as_number().clone())));
                         if self.check_val() {
                             break t;
                         }
                     }
                     MultilineString => {
-                        expr.push_back(ComplexToken::MultilineString(t.lexeme().as_symbol()));
+                        expr.push_back(complex_token!(t, MultilineString(t.lexeme().as_symbol())));
                         if self.check_val() {
                             break t;
                         }
@@ -725,7 +767,10 @@ impl<'a> Parser<'a> {
                     }
                     // unary ops
                     Hash | Not => {
-                        expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
+                        expr.push_back(complex_token!(
+                            t,
+                            Operator((t.lexeme().as_symbol(), false))
+                        ));
                         if !self.check_op() {
                             return Err(Diagnostic::expected_found(
                                 "expression".to_owned(),
@@ -747,7 +792,7 @@ impl<'a> Parser<'a> {
                                 t.position(),
                             ));
                         }
-                        expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
+                        expr.push_back(complex_token!(t, Operator((t.lexeme().as_symbol(), true))));
 
                         if !self.check_op() {
                             return Err(Diagnostic::expected_after(
@@ -761,13 +806,19 @@ impl<'a> Parser<'a> {
                     Minus => {
                         if expr.is_empty()
                             || expr.back().map_or(false, |back| {
-                                matches!(back, ComplexToken::Operator((_, true)))
+                                matches!(back.token(), ComplexTokenKind::Operator((_, true)))
                             })
                         {
-                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
+                            expr.push_back(complex_token!(
+                                t,
+                                Operator((t.lexeme().as_symbol(), false))
+                            ));
                             continue;
                         } else {
-                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
+                            expr.push_back(complex_token!(
+                                t,
+                                Operator((t.lexeme().as_symbol(), true))
+                            ));
                         }
 
                         if !self.check_op() {
@@ -782,13 +833,19 @@ impl<'a> Parser<'a> {
                     Tilde => {
                         if expr.is_empty()
                             || expr.back().map_or(false, |back| {
-                                matches!(back, ComplexToken::Operator((_, true)))
+                                matches!(back.kind, ComplexTokenKind::Operator((_, true)))
                             })
                         {
-                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), false)));
+                            expr.push_back(complex_token!(
+                                t,
+                                Operator((t.lexeme().as_symbol(), false))
+                            ));
                             continue;
                         } else {
-                            expr.push_back(ComplexToken::Operator((t.lexeme().as_symbol(), true)));
+                            expr.push_back(complex_token!(
+                                t,
+                                Operator((t.lexeme().as_symbol(), true))
+                            ));
                         }
 
                         if !self.check_op() {
@@ -809,7 +866,7 @@ impl<'a> Parser<'a> {
                         let args = self.parse_function_args()?;
                         let body = self.parse_code_block()?;
 
-                        expr.push_back(ComplexToken::Lambda { args, body });
+                        expr.push_back(complex_token!(t, Lambda { args, body }));
 
                         if self.check_val() {
                             break t;
@@ -817,7 +874,7 @@ impl<'a> Parser<'a> {
                     }
                     LeftParen => {
                         let exprs = self.parse_expression(Some((RightParen, ")")))?;
-                        expr.push_back(ComplexToken::Expr(exprs));
+                        expr.push_back(complex_token!(t, Expr(exprs)));
                         self.assert(TokenType::RightParen, ")")?;
 
                         if self.check_val() {
@@ -925,7 +982,7 @@ impl<'a> Parser<'a> {
         };
         self.advance_if(TokenType::Semicolon);
 
-        Ok(ComplexToken::Variable { names, values })
+        Ok(complex_token!(self.current(), Variable { names, values }))
     }
 
     fn parse_function_args(&mut self) -> Result<FunctionArgs, Diagnostic> {
@@ -1019,14 +1076,14 @@ impl<'a> Parser<'a> {
                                 nt.position(),
                             ));
                         }
-                        expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
+                        expr.push_back(complex_token!(t, Symbol(t.lexeme().as_symbol())));
                     }
                     Dot | Colon => {
                         if self
                             .peek()
                             .map_or(false, |t| t.kind() == TokenType::Identifier)
                         {
-                            expr.push_back(ComplexToken::Symbol(t.lexeme().as_symbol()));
+                            expr.push_back(complex_token!(t, Symbol(t.lexeme().as_symbol())));
                         } else {
                             return Err(Diagnostic::new(
                                 format!("{} should only be used when indexing", t.lexeme()),
@@ -1052,12 +1109,15 @@ impl<'a> Parser<'a> {
         let args = self.parse_function_args()?;
         let body = self.parse_code_block()?;
 
-        Ok(ComplexToken::Function {
-            local,
-            name,
-            args,
-            body,
-        })
+        Ok(complex_token!(
+            self.current(),
+            Function {
+                local,
+                name,
+                args,
+                body,
+            }
+        ))
     }
 
     fn parse_if_else_chain(&mut self) -> Result<ComplexToken, Diagnostic> {
@@ -1068,11 +1128,14 @@ impl<'a> Parser<'a> {
         let next = match self.current().kind() {
             TokenType::Else => {
                 let body = self.parse_code_block()?;
-                Some(Box::new(ComplexToken::IfStatement {
-                    condition: Expression::new(),
-                    body,
-                    next: None,
-                }))
+                Some(Box::new(complex_token!(
+                    self.current(),
+                    IfStatement {
+                        condition: Expression::new(),
+                        body,
+                        next: None,
+                    }
+                )))
             }
             TokenType::ElseIf => Some(Box::new(self.parse_if_else_chain()?)),
             TokenType::End => None,
@@ -1086,11 +1149,14 @@ impl<'a> Parser<'a> {
             }
         };
 
-        Ok(ComplexToken::IfStatement {
-            condition,
-            body,
-            next,
-        })
+        Ok(complex_token!(
+            self.current(),
+            IfStatement {
+                condition,
+                body,
+                next,
+            }
+        ))
     }
 
     fn parse_for_loop(&mut self) -> Result<ComplexToken, Diagnostic> {
@@ -1148,13 +1214,16 @@ impl<'a> Parser<'a> {
 
             let code = self.parse_code_block()?;
 
-            Ok(ComplexToken::ForFuncLoop {
-                iters,
-                expr,
-                stop,
-                initial,
-                code,
-            })
+            Ok(complex_token!(
+                self.current(),
+                ForFuncLoop {
+                    iters,
+                    expr,
+                    stop,
+                    initial,
+                    code,
+                }
+            ))
         } else {
             let start = self.parse_expression(Some((TokenType::Comma, ",")))?;
             self.assert_advance(TokenType::Comma, ",")?;
@@ -1168,13 +1237,16 @@ impl<'a> Parser<'a> {
             self.assert_advance(TokenType::Do, "do")?;
             let code = self.parse_code_block()?;
 
-            Ok(ComplexToken::ForLoop {
-                iter: iters.pop().unwrap(),
-                start,
-                end,
-                step,
-                code,
-            })
+            Ok(complex_token!(
+                self.current(),
+                ForLoop {
+                    iter: iters.pop().unwrap(),
+                    start,
+                    end,
+                    step,
+                    code,
+                }
+            ))
         }
     }
 }
@@ -1214,12 +1286,14 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
             }
             LeftParen => {
                 let expr = parser.parse_expression(Some((RightParen, ")")))?;
-                parser.expr.push_back(ComplexToken::Expr(expr));
+                parser
+                    .expr
+                    .push_back(complex_token!(parser.current(), Expr(expr)));
                 parser.advance();
                 let call = parser.parse_identifier()?;
-                let ComplexToken::Ident (expr) = &call else {unreachable!()};
+                let ComplexTokenKind::Ident (expr) = &call.kind else {unreachable!()};
 
-                if let Some(ComplexToken::Call(_)) = expr.back() {
+                if let Some(ComplexTokenKind::Call(_)) = expr.back().map(|t| t.token()) {
                     parser.expr.push_back(call);
                 } else {
                     let token = parser.peek().ok_or_else(|| {
@@ -1253,9 +1327,10 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                 parser.advance();
 
                 let body = parser.parse_code_block()?;
-                parser
-                    .expr
-                    .push_back(ComplexToken::WhileLoop { condition, body });
+                parser.expr.push_back(complex_token!(
+                    parser.current(),
+                    WhileLoop { condition, body }
+                ));
             }
             For => {
                 let for_loop = parser.parse_for_loop()?;
@@ -1264,17 +1339,24 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
             Repeat => {
                 let body = parser.parse_repeat_block()?;
                 let condition = parser.parse_expression(None)?;
-                parser
-                    .expr
-                    .push_back(ComplexToken::RepeatLoop { condition, body });
+                parser.expr.push_back(complex_token!(
+                    parser.current(),
+                    RepeatLoop { condition, body }
+                ));
             }
             Break => {
-                parser.expr.push_back(ComplexToken::Break);
+                parser
+                    .expr
+                    .push_back(complex_token!(parser.current(), Break));
                 parser.advance_if(TokenType::Semicolon);
             }
             Do => {
                 let block = parser.parse_code_block()?;
-                parser.expr.push_back(ComplexToken::DoBlock(block));
+                parser.expr.push_back(ComplexToken::new(
+                    ComplexTokenKind::DoBlock(block),
+                    token.leading(),
+                    parser.current().trailing(),
+                ));
             }
             Return => {
                 let exprs = if parser
@@ -1294,7 +1376,9 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                         parser.position,
                     ));
                 }
-                parser.expr.push_back(ComplexToken::Return(exprs));
+                parser
+                    .expr
+                    .push_back(complex_token!(parser.current(), Return(exprs)));
                 parser.advance_if(TokenType::Semicolon);
             }
             Semicolon => {

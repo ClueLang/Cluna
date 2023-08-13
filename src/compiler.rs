@@ -3,18 +3,20 @@ use std::iter::Peekable;
 use crate::parser::{CodeBlock, ComplexToken, Expression};
 
 fn indent(scope: usize) -> String {
-    let mut result = String::new();
-    for _ in 0..scope {
-        result += "    ";
-    }
-    result
+    // let mut result = String::new();
+    // for _ in 0..scope {
+    //     result += "    ";
+    // }
+    // result
+    String::new()
 }
 
 fn indent_if<T: Iterator>(ctokens: &mut Peekable<T>, scope: usize) -> String {
-    match ctokens.peek() {
-        Some(_) => String::from('\n') + &indent(scope),
-        None => String::with_capacity(4),
-    }
+    // match ctokens.peek() {
+    //     Some(_) => indent(scope),
+    //     None => String::with_capacity(4),
+    // }
+    String::new()
 }
 
 fn compile_multiline_string(string: &str) -> String {
@@ -37,14 +39,14 @@ fn compile_multiline_string(string: &str) -> String {
 }
 
 fn compile_list<T, S: AsRef<str>>(
-    list: Vec<T>,
+    list: &[T],
     separator: &str,
-    tostring: &mut impl FnMut(T) -> S,
+    tostring: &mut impl FnMut(&T) -> S,
 ) -> String {
     let mut result = String::new();
     let end = list.len().saturating_sub(1);
 
-    for (i, element) in list.into_iter().enumerate() {
+    for (i, element) in list.iter().enumerate() {
         result += tostring(element).as_ref();
 
         if i != end {
@@ -53,8 +55,8 @@ fn compile_list<T, S: AsRef<str>>(
     }
     result
 }
-fn compile_expressions(scope: usize, exprs: Vec<Expression>) -> String {
-    compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr))
+fn compile_expressions(scope: usize, exprs: &[Expression]) -> String {
+    compile_list(exprs, ",", &mut |expr| compile_expression(scope, expr))
 }
 
 fn compile_symbol(lexeme: &str) -> &str {
@@ -76,15 +78,16 @@ fn compile_operator(lexeme: &str, is_binop: bool) -> &str {
     }
 }
 
-fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
-    use crate::parser::ComplexToken::*;
+fn compile_identifier(scope: usize, ident: &ComplexToken) -> String {
+    use crate::parser::ComplexTokenKind::*;
 
     let mut result = String::new();
-    let Ident(expr) = ident else {unreachable!()};
+    let Ident(expr) = ident.token() else {unreachable!()};
 
     for ctoken in expr {
-        match ctoken {
-            Symbol(lexeme) => result += compile_symbol(&lexeme),
+        result += ctoken.leading();
+        match ctoken.token() {
+            Symbol(lexeme) => result += compile_symbol(lexeme),
             Expr(expr) => {
                 result.push('(');
                 result += &compile_expression(scope, expr);
@@ -97,6 +100,7 @@ fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
             }
             _ => unreachable!(),
         }
+        result += ctoken.trailing();
     }
 
     result
@@ -105,16 +109,16 @@ fn compile_identifier(scope: usize, ident: ComplexToken) -> String {
 fn compile_code_block(body: CodeBlock, scope: usize) -> String {
     let code = compile_ast_helper(body.code, scope + 1);
 
-    String::from('\n') + &code + "\n" + &indent(scope)
+    code + &indent(scope)
 }
 
 fn compile_if_else_chain(
     scope: usize,
-    condition: Expression,
+    condition: &Expression,
     code: CodeBlock,
     next: Option<Box<ComplexToken>>,
 ) -> String {
-    use crate::parser::ComplexToken::*;
+    use crate::parser::ComplexTokenKind::*;
     let mut result = String::new();
 
     let condition = compile_expression(scope, condition);
@@ -122,7 +126,7 @@ fn compile_if_else_chain(
 
     let next = if let Some(next) = next {
         String::from(" else")
-            + &match *next {
+            + &match next.token().clone() {
                 IfStatement {
                     condition,
                     body,
@@ -132,7 +136,10 @@ fn compile_if_else_chain(
                     if condition.is_empty() {
                         format!(" {{{}}}", compile_code_block(body, scope))
                     } else {
-                        format!("if {}", compile_if_else_chain(scope, condition, body, next))
+                        format!(
+                            "if {}",
+                            compile_if_else_chain(scope, &condition, body, next),
+                        )
                     }
                 }
                 _ => unreachable!(),
@@ -150,44 +157,37 @@ fn compile_if_else_chain(
 
     result
 }
-
-fn compile_expression(mut scope: usize, expr: Expression) -> String {
-    use crate::parser::ComplexToken::*;
+fn compile_expression(mut scope: usize, expr: &Expression) -> String {
+    use crate::parser::ComplexTokenKind::*;
 
     let mut result = String::new();
 
     for ctoken in expr {
-        match ctoken {
-            Symbol(lexeme) => result += compile_symbol(&lexeme),
+        result += ctoken.leading();
+        match ctoken.token() {
+            Symbol(lexeme) => result += compile_symbol(lexeme),
             Number(number) => result += &number.to_string(),
             Operator((op, is_binop)) => {
-                if is_binop {
-                    result += " ";
-                    result += compile_operator(&op, is_binop);
-                    result += " ";
-                } else {
-                    result += compile_operator(&op, is_binop);
-                }
+                let is_binop = *is_binop;
+                result += compile_operator(op, is_binop);
             }
-            MultilineString(string) => result += &compile_multiline_string(&string),
+            MultilineString(string) => result += &compile_multiline_string(string),
             Table(data) => {
                 scope += 1;
-                let pre = indent(scope);
                 result.push('{');
                 if !data.is_empty() {
-                    result += &compile_list(data, ", ", &mut |(key, value)| {
+                    result += &compile_list(data, ",", &mut |(key, value)| {
                         if let Some(key) = key {
                             format!(
-                                "\n{}{} = {}",
-                                pre,
+                                "{}{} = {}",
+                                indent(scope),
                                 compile_expression(scope, key),
                                 compile_expression(scope, value),
                             )
                         } else {
-                            String::from('\n') + &pre + &compile_expression(scope, value)
+                            indent(scope) + &compile_expression(scope, value)
                         }
                     });
-                    result.push('\n');
                     result += &indent(scope - 1);
                 }
                 result.push('}');
@@ -195,14 +195,14 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
             Lambda { args, body, .. } => {
                 result += "fn ";
                 result.push('(');
-                result += &compile_list(args, ", ", &mut |arg| arg);
+                result += &compile_list(args, ",", &mut |arg| arg.clone());
                 result += ") ";
                 result += "{";
-                result += &compile_code_block(body, scope);
+                result += &compile_code_block(body.clone(), scope);
                 result.push('}');
             }
-            ident @ Ident { .. } => {
-                result += &compile_identifier(scope, ident);
+            Ident { .. } => {
+                result += &compile_identifier(scope, ctoken);
             }
             Call(args) => {
                 result.push('(');
@@ -216,28 +216,30 @@ fn compile_expression(mut scope: usize, expr: Expression) -> String {
             }
             _ => unreachable!(),
         }
+        result += ctoken.trailing();
     }
 
     result
 }
 
 fn compile_ast_helper(tree: Expression, scope: usize) -> String {
-    use crate::parser::ComplexToken::*;
+    use crate::parser::ComplexTokenKind::*;
 
     let mut end = vec![];
     let mut result = indent(scope);
     let tree = &mut tree.into_iter().peekable();
 
     while let Some(ctoken) = tree.next() {
-        match ctoken {
+        result += ctoken.leading();
+        match ctoken.token() {
             Variable { names, values, .. } => {
                 result += "local ";
-                result += &compile_list(names, ", ", &mut |(name, close)| {
-                    if close {
+                result += &compile_list(names, ",", &mut |(name, close)| {
+                    if *close {
                         end.push(name.clone());
                     }
 
-                    name
+                    name.clone()
                 });
                 if !values.is_empty() {
                     result += " = ";
@@ -246,7 +248,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += &indent_if(tree, scope);
             }
             Alter { names, values, .. } => {
-                result += &compile_list(names, ", ", &mut |name| compile_identifier(scope, name));
+                result += &compile_list(names, ",", &mut |name| compile_identifier(scope, name));
                 result += " = ";
                 result += &compile_expressions(scope, values);
                 result += &indent_if(tree, scope);
@@ -261,7 +263,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 let end = indent_if(tree, scope);
 
                 if name.len() == 1 {
-                    if local {
+                    if *local {
                         result += "local ";
                     } else {
                         result += "global ";
@@ -273,10 +275,10 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
 
                 result += &compile_expression(scope, name);
                 result.push('(');
-                result += &compile_list(args, ", ", &mut |arg| arg);
+                result += &compile_list(args, ",", &mut |arg| arg.clone());
                 result += ") ";
                 result += "{";
-                result += &compile_code_block(body, scope);
+                result += &compile_code_block(body.clone(), scope);
                 result.push('}');
                 result += &end;
             }
@@ -286,7 +288,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 next,
                 ..
             } => {
-                let code = compile_if_else_chain(scope, condition, body, next);
+                let code = compile_if_else_chain(scope, condition, body.clone(), next.clone());
                 result += &code;
                 result += &indent_if(tree, scope);
             }
@@ -294,7 +296,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 condition, body, ..
             } => {
                 let condition = compile_expression(scope, condition);
-                let body = compile_code_block(body, scope);
+                let body = compile_code_block(body.clone(), scope);
 
                 result += "while ";
                 result += &condition;
@@ -312,17 +314,17 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 ..
             } => {
                 result += "for ";
-                result += &iter;
+                result += iter;
                 result += " = ";
                 result += &compile_expression(scope, start);
-                result += ", ";
+                result += ",";
                 result += &compile_expression(scope, end);
                 if let Some(step) = step {
-                    result += ", ";
+                    result += ",";
                     result += &compile_expression(scope, step);
                 }
                 result += " {";
-                result += &compile_code_block(code, scope);
+                result += &compile_code_block(code.clone(), scope);
                 result.push('}');
                 result += &indent_if(tree, scope);
             }
@@ -336,7 +338,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
             } => {
                 if stop.is_some() || initial.is_some() {
                     let s = scope;
-                    let iters_compiled = &compile_list(iters.clone(), ", ", &mut |iter| iter);
+                    let iters_compiled = &compile_list(iters, ",", &mut |iter| iter.clone());
 
                     result += "{\n";
                     let scope = scope + 1;
@@ -346,10 +348,10 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                         s
                     );
                     result += &compile_expression(scope, expr);
-                    result += ", ";
-                    result += &compile_expression(scope, stop.unwrap());
-                    result += ", ";
-                    result += &initial.map_or("nil".to_owned(), |initial| {
+                    result += ",";
+                    result += &compile_expression(scope, stop.as_ref().unwrap());
+                    result += ",";
+                    result += &initial.as_ref().map_or("nil".to_owned(), |initial| {
                         compile_expression(scope, initial)
                     });
                     result += ";\n";
@@ -375,17 +377,17 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                     result += " { break; }";
 
                     let scope = scope - 1;
-                    result += &compile_code_block(code, scope);
+                    result += &compile_code_block(code.clone(), scope);
                     result += "}\n";
                     result += &indent(scope - 1);
                     result += "}\n";
                 } else {
                     result += "for ";
-                    result += &compile_list(iters, ", ", &mut |iter| iter);
+                    result += &compile_list(iters, ",", &mut |iter| iter.clone());
                     result += " with ";
                     result += &compile_expression(scope, expr);
                     result += " {";
-                    result += &compile_code_block(code, scope);
+                    result += &compile_code_block(code.clone(), scope);
                     result.push('}');
                     result += &indent_if(tree, scope);
                 }
@@ -394,7 +396,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 condition, body, ..
             } => {
                 let condition = compile_expression(scope, condition);
-                let body = compile_code_block(body, scope);
+                let body = compile_code_block(body.clone(), scope);
 
                 result += "loop ";
                 result += " {";
@@ -404,8 +406,8 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 result += &condition;
                 result += &indent_if(tree, scope);
             }
-            ctoken @ Ident { .. } => {
-                result += &compile_identifier(scope, ctoken);
+            Ident { .. } => {
+                result += &compile_identifier(scope, &ctoken);
                 result.push(';');
                 result += &indent_if(tree, scope);
             }
@@ -421,7 +423,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
             }
             DoBlock(body) => {
                 result += "{";
-                result += &compile_code_block(body, scope);
+                result += &compile_code_block(body.clone(), scope);
                 result += "}";
                 result += &indent_if(tree, scope);
             }
@@ -430,7 +432,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
                 if let Some(exprs) = exprs {
                     result.push(' ');
                     result +=
-                        &compile_list(exprs, ", ", &mut |expr| compile_expression(scope, expr));
+                        &compile_list(exprs, ",", &mut |expr| compile_expression(scope, expr));
                 }
             }
             Break => {
@@ -440,6 +442,7 @@ fn compile_ast_helper(tree: Expression, scope: usize) -> String {
 
             _ => unreachable!(),
         }
+        result += ctoken.trailing();
     }
 
     for name in end.iter().rev() {

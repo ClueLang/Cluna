@@ -35,7 +35,6 @@ fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), Diagnosti
     let scanned = scan_code(code, Some(path.display().to_string()))?;
     let parsed = parse_tokens(&scanned, Some(path.display().to_string()))?;
     let compiled = compile_ast(parsed);
-
     let output = output.unwrap_or_else(|| path.with_extension("clue"));
     std::fs::create_dir_all(output.parent().unwrap())
         .map_err(|e| Diagnostic::other(e.to_string()))?;

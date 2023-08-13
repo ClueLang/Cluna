@@ -84,22 +84,40 @@ pub struct Token {
     pub(crate) kind: TokenType,
     lexeme: Lexeme,
     position: Position,
+    leading: String,
+    trailing: String,
 }
 
 impl Token {
-    pub const fn new(kind: TokenType, lexeme: Rc<str>, position: Position) -> Self {
+    pub const fn new(
+        kind: TokenType,
+        lexeme: Rc<str>,
+        position: Position,
+        leading: String,
+        trailing: String,
+    ) -> Self {
         Self {
             kind,
             lexeme: Lexeme::Symbol(lexeme),
             position,
+            leading,
+            trailing,
         }
     }
 
-    pub const fn new_number(kind: TokenType, lexeme: Number, position: Position) -> Self {
+    pub const fn new_number(
+        kind: TokenType,
+        lexeme: Number,
+        position: Position,
+        leading: String,
+        trailing: String,
+    ) -> Self {
         Self {
             kind,
             lexeme: Lexeme::Number(lexeme),
             position,
+            leading,
+            trailing,
         }
     }
 
@@ -126,11 +144,20 @@ impl Token {
     pub fn span(&self) -> Range<usize> {
         self.position.span.clone()
     }
+
+    pub fn leading(&self) -> String {
+        self.leading.clone()
+    }
+
+    pub fn trailing(&self) -> String {
+        self.trailing.clone()
+    }
 }
 
 pub struct Lexer {
     pub(crate) source: Vec<char>,
     tokens: Vec<Token>,
+    leading: String,
     pub(crate) path: Option<String>,
     pub(crate) current: usize,
     pub(crate) position: Position,
@@ -141,6 +168,7 @@ impl Lexer {
         Self {
             source: source.chars().collect(),
             tokens: Vec::new(),
+            leading: String::new(),
             path,
             current: 0,
             position: Position::new(1, 0, 0..0),
@@ -226,16 +254,33 @@ impl Lexer {
         (self.current != 0).then_some(self.source[self.current - 2])
     }
 
+    fn collect_trailing(&mut self) -> String {
+        let mut trailing = String::new();
+        while let Some(c) = self.advance() {
+            if matches!(c, ' ' | '\r' | '\t' | '\n') {
+                trailing.push(c);
+            } else {
+                self.go_back();
+                break;
+            }
+        }
+        trailing
+    }
+
     fn add_token(&mut self, token_type: TokenType, len: usize) {
         let span = self.current - len..self.current;
         let lexeme = self.source[span.clone()]
             .iter()
             .copied()
             .collect_into_rc_str();
+        let trailing = self.collect_trailing();
+
         self.tokens.push(Token::new(
             token_type,
             lexeme,
             Position::new(self.position.line, self.position.column, span),
+            self.leading.drain(..).collect(),
+            trailing,
         ));
     }
 
@@ -246,10 +291,14 @@ impl Lexer {
             .copied()
             .collect_into_rc_str();
         self.advance_to(len - 1);
+        let trailing = self.collect_trailing();
+
         self.tokens.push(Token::new(
             token_type,
             lexeme,
             Position::new(self.position.line, self.position.column, span),
+            self.leading.drain(..).collect(),
+            trailing,
         ));
     }
 
@@ -288,11 +337,16 @@ impl Lexer {
             .iter()
             .copied()
             .collect_into_rc_str();
+        let trailing = self.collect_trailing();
+
         self.tokens.push(Token::new(
             TokenType::String,
             lexeme,
             self.position.with_span(span),
+            self.leading.drain(..).collect(),
+            trailing,
         ));
+
         Ok(())
     }
 
@@ -350,12 +404,16 @@ impl Lexer {
             .iter()
             .copied()
             .collect_into_rc_str();
+        let trailing = self.collect_trailing();
 
         self.tokens.push(Token::new(
             TokenType::MultilineString,
             lexeme,
             self.position.with_span(span),
+            self.leading.drain(..).collect(),
+            trailing,
         ));
+
         Ok(())
     }
 
@@ -413,9 +471,15 @@ impl Lexer {
                 }
                 _ => TokenType::Identifier,
             };
+            let trailing = self.collect_trailing();
 
-            self.tokens
-                .push(Token::new(kind, lexeme, self.position.with_span(span)));
+            self.tokens.push(Token::new(
+                kind,
+                lexeme,
+                self.position.with_span(span),
+                self.leading.drain(..).collect(),
+                trailing,
+            ));
 
             Ok(())
         } else {
@@ -431,12 +495,16 @@ impl Lexer {
         let start = self.current;
         let number = Number::from_source(self)?;
         let span = start - 1..self.current;
+        let trailing = self.collect_trailing();
 
         self.tokens.push(Token::new_number(
             TokenType::Number,
             number,
             self.position.with_span(span),
+            self.leading.drain(..).collect(),
+            trailing,
         ));
+
         Ok(())
     }
 
@@ -501,7 +569,9 @@ pub fn scan_code(code: String, path: Option<String>) -> Result<Vec<Token>, Diagn
 
     while let Some(c) = lexer.advance() {
         match c {
-            ' ' | '\r' | '\t' | '\n' => {}
+            ' ' | '\r' | '\t' | '\n' => {
+                lexer.leading.push(c);
+            }
             '(' => lexer.add_token(TokenType::LeftParen, 1),
             ')' => lexer.add_token(TokenType::RightParen, 1),
             '{' => lexer.add_token(TokenType::LeftBrace, 1),
