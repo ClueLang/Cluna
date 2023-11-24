@@ -170,18 +170,19 @@ impl fmt::Display for Diagnostic {
                         let source = source[start..end].to_owned();
                         let end = position.span.end - start;
                         let start = position.span.start - start;
+                        let pointer = "^".repeat(end - start);
+                        let pointer = match self.level {
+                            DiagnosticLevel::Error => pointer.red().bold(),
+                            DiagnosticLevel::Warning => pointer.yellow().bold(),
+                            DiagnosticLevel::Note => pointer.blue().bold(),
+                        };
 
                         for (i, line) in source.lines().enumerate() {
                             if i > 0 {
                                 writeln!(f)?;
                             }
                             writeln!(f, "{:4} | {}", i + position.line, line)?;
-                            write!(
-                                f,
-                                "     | {}{}",
-                                " ".repeat(start),
-                                "^".repeat(end - start).bright_red()
-                            )?;
+                            write!(f, "     | {}{}", " ".repeat(start), pointer)?;
                         }
                     }
                 }

@@ -82,7 +82,9 @@ fn compile_identifier(scope: usize, ident: &ComplexToken) -> String {
     use crate::parser::ComplexTokenKind::*;
 
     let mut result = String::new();
-    let Ident(expr) = ident.token() else {unreachable!()};
+    let Ident(expr) = ident.token() else {
+        unreachable!()
+    };
 
     for ctoken in expr {
         result += ctoken.leading();

@@ -412,7 +412,9 @@ impl<'a> Parser<'a> {
 
     fn parse_identifier_statement(&mut self) -> Result<ComplexToken, Diagnostic> {
         let ident = self.parse_identifier()?;
-        let ComplexTokenKind::Ident(expr) = &ident.token() else {unreachable!()};
+        let ComplexTokenKind::Ident(expr) = &ident.token() else {
+            unreachable!()
+        };
 
         if let Some(ComplexTokenKind::Call(_)) = expr.back().map(|t| t.token()) {
             return Ok(ident);
@@ -717,11 +719,10 @@ impl<'a> Parser<'a> {
             }
         }
 
-        Err(Diagnostic::expected(
-            "'end'".to_owned(),
-            self.path.clone(),
-            self.position.clone(),
-        ))
+        Err(
+            Diagnostic::expected("'end'".to_owned(), self.path.clone(), self.position.clone())
+                .with_hint("if blocks must end with 'end'".to_owned()),
+        )
     }
 
     fn parse_expression(&mut self, end: OptionalEnd) -> Result<Expression, Diagnostic> {
@@ -1291,7 +1292,9 @@ pub fn parse_tokens(tokens: &[Token], path: Option<String>) -> Result<Expression
                     .push_back(complex_token!(parser.current(), Expr(expr)));
                 parser.advance();
                 let call = parser.parse_identifier()?;
-                let ComplexTokenKind::Ident (expr) = &call.kind else {unreachable!()};
+                let ComplexTokenKind::Ident(expr) = &call.kind else {
+                    unreachable!()
+                };
 
                 if let Some(ComplexTokenKind::Call(_)) = expr.back().map(|t| t.token()) {
                     parser.expr.push_back(call);

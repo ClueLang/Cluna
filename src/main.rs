@@ -22,10 +22,15 @@ struct Cli {
     /// Output directory path.
     #[clap(long)]
     out_dir: Option<PathBuf>,
+    /// Supress debug output.
+    #[clap(short, long)]
+    quiet: bool,
 }
 
-fn compile_file(path: &PathBuf, output: Option<PathBuf>) -> Result<(), Diagnostic> {
-    eprintln!("   {} {}", "Compiling".green().bold(), path.display());
+fn compile_file(path: &PathBuf, output: Option<PathBuf>, quiet: bool) -> Result<(), Diagnostic> {
+    if !quiet {
+        eprintln!("   {} {}", "Compiling".green().bold(), path.display());
+    }
     let code = std::fs::read_to_string(path).map_err(|e| Diagnostic::other(e.to_string()))?;
     {
         let files = get_files();
@@ -81,7 +86,7 @@ fn compile() -> Result<(), Diagnostic> {
                 out_dir
             })
         });
-        compile_file(&path, output)?;
+        compile_file(&path, output, args.quiet)?;
     } else if path.is_dir() {
         if args.output.is_some() {
             eprintln!(
@@ -92,6 +97,7 @@ fn compile() -> Result<(), Diagnostic> {
         }
 
         let mut stack = vec![path.clone()];
+
         let files = std::iter::from_fn(move || {
             while let Some(path) = stack.pop() {
                 if path.is_dir() {
@@ -106,14 +112,17 @@ fn compile() -> Result<(), Diagnostic> {
 
         files
             .par_bridge()
-            .try_for_each(|path| compile_file(&path, None))?;
+            .try_for_each(|path| compile_file(&path, None, args.quiet))?;
     }
-    eprintln!(
-        "    {} {} in {}",
-        "Finished".green().bold(),
-        path.display(),
-        format_duration(start.elapsed())
-    );
+
+    if !args.quiet {
+        eprintln!(
+            "    {} {} in {}",
+            "Finished".green().bold(),
+            path.display(),
+            format_duration(start.elapsed())
+        );
+    }
 
     Ok(())
 }
